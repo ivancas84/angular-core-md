@@ -62,7 +62,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   ) {}
   
   ngAfterViewInit(): void {
-    //this.removeStorage();
+    this.removeStorage();
     /**
      * Si no se incluye, nunca se limpia el formulario 
      * Puede resultar confuso cuando se asignan otros parametros a la url
@@ -70,8 +70,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    //this.storageValueChanges();
-    //this.initData();   
+    this.storageValueChanges();
+    this.initData();   
   }
 
   storageValueChanges() {
@@ -214,6 +214,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   serverData() {  
+    console.log(this.adminForm);
     return this.adminForm.get(this.entityName).value;
     //return this.adminForm.value
   }
