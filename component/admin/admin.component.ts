@@ -7,10 +7,14 @@ import { Location } from '@angular/common';
 import { emptyUrl } from '../../function/empty-url.function';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { isEmptyObject } from '../../function/is-empty-object.function';
-import { OnInit, AfterViewInit } from '@angular/core';
+import { OnInit, AfterViewInit, Component } from '@angular/core';
 import { markAllAsTouched } from '../../function/mark-all-as-touched';
 import { logValidationErrors } from '../../function/log-validation-errors';
 
+@Component({
+  selector: 'app-admin',
+  template: '',
+})
 export abstract class AdminComponent implements OnInit, AfterViewInit {
 /**
  * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
@@ -58,7 +62,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   ) {}
   
   ngAfterViewInit(): void {
-    this.removeStorage();
+    //this.removeStorage();
     /**
      * Si no se incluye, nunca se limpia el formulario 
      * Puede resultar confuso cuando se asignan otros parametros a la url
@@ -66,8 +70,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.storageValueChanges();
-    this.initData();   
+    //this.storageValueChanges();
+    //this.initData();   
   }
 
   storageValueChanges() {
