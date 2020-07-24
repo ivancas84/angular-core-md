@@ -13,6 +13,7 @@ import { logValidationErrors } from '../../function/log-validation-errors';
 import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
 
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-admin',
@@ -63,6 +64,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     protected dd: DataDefinitionService, 
     protected storage: SessionStorageService,
     protected dialog: MatDialog,
+    protected snackBar: MatSnackBar,
   ) {}
   
   ngAfterViewInit(): void {
@@ -82,7 +84,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     var s = this.adminForm.valueChanges.subscribe (
       formValues => { this.storage.setItem(this.router.url, formValues); },
       error => { 
-        //this.toast.showDanger(JSON.stringify(error)); 
+        this.snackBar.open(JSON.stringify(error), "X"); 
       }
     );
     this.subscriptions.add(s);
@@ -96,7 +98,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     var s = this.route.queryParams.subscribe(
       params => { this.setData(params); },
       error => { 
-        //this.toast.showDanger(JSON.stringify(error)); 
+        this.snackBar.open(JSON.stringify(error), "X"); 
       }
     )
     this.subscriptions.add(s);
@@ -138,7 +140,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   back() { this.location.back(); }
 
   delete() { 
-    //this.toast.showInfo ("No implementado"); 
+    this.snackBar.open("No implementado", "X"); 
   }
 
   clear(): void {
@@ -176,7 +178,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         width: '250px',
         data: {title: "Error", message: "El formulario posee errores."}
       });
-      //this.toast.showInfo("Verificar formulario");
       this.isSubmitted = false;
 
     } else {
@@ -203,8 +204,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      */
     let route = emptyUrl(this.router.url) + "?id="+this.getProcessedId(response);
     if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
-    else this.setData(this.route.snapshot.queryParams)
-    //this.toast.showSuccess("Registro realizado");
+    else this.setData(this.route.snapshot.queryParams);
+    this.snackBar.open("Registro realizado", "X");
     this.isSubmitted = false;
   }
 
