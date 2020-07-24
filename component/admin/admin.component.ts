@@ -10,6 +10,9 @@ import { isEmptyObject } from '../../function/is-empty-object.function';
 import { OnInit, AfterViewInit, Component } from '@angular/core';
 import { markAllAsTouched } from '../../function/mark-all-as-touched';
 import { logValidationErrors } from '../../function/log-validation-errors';
+import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
+
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-admin',
@@ -58,7 +61,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     protected router: Router, 
     protected location: Location, 
     protected dd: DataDefinitionService, 
-    protected storage: SessionStorageService 
+    protected storage: SessionStorageService,
+    protected dialog: MatDialog,
   ) {}
   
   ngAfterViewInit(): void {
@@ -111,9 +115,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         else this.data$.next(params);
       },
       error => { 
-        //const modalRef = this.modalService.open(ModalAlertComponent); 
-        //modalRef.componentInstance.title = 'Error';
-        //modalRef.componentInstance.message = error.error;
+        const dialogRef = this.dialog.open(DialogAlertComponent, {
+          width: '250px',
+          data: {title: "Error", message: error.error}
+        });
       }
     ); 
   }
@@ -167,9 +172,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     if (!this.adminForm.valid) {
       markAllAsTouched(this.adminForm);
       logValidationErrors(this.adminForm);
-      //const modalRef = this.modalService.open(ModalAlertComponent); 
-      //modalRef.componentInstance.title = 'Error';
-      //modalRef.componentInstance.message = "El formulario posee errores.";
+      const dialogRef = this.dialog.open(DialogAlertComponent, {
+        width: '250px',
+        data: {title: "Error", message: "El formulario posee errores."}
+      });
       //this.toast.showInfo("Verificar formulario");
       this.isSubmitted = false;
 
@@ -181,9 +187,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         },
         error => { 
           console.log(error);
-          //const modalRef = this.modalService.open(ModalAlertComponent); 
-          //modalRef.componentInstance.title = 'Error';
-          //modalRef.componentInstance.message = error.error;
+          const dialogRef = this.dialog.open(DialogAlertComponent, {
+            width: '250px',
+            data: {title: "Error", message: error.error}
+          });
         }
       );
       this.subscriptions.add(s);
