@@ -8,7 +8,7 @@ import { emptyUrl } from '../../function/empty-url.function';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { isEmptyObject } from '../../function/is-empty-object.function';
 import { OnInit, AfterViewInit, Component } from '@angular/core';
-import { markAllAsTouched } from '../../function/mark-all-as-touched';
+import { markAllAsDirty } from '../../function/mark-all-as-dirty';
 import { logValidationErrors } from '../../function/log-validation-errors';
 import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
 
@@ -172,7 +172,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.isSubmitted = true;
     
     if (!this.adminForm.valid) {
-      markAllAsTouched(this.adminForm);
+      markAllAsDirty(this.adminForm);
       logValidationErrors(this.adminForm);
       const dialogRef = this.dialog.open(DialogAlertComponent, {
         width: '250px',
