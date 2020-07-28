@@ -34,8 +34,8 @@ export class InputAutocompleteComponent implements  OnInit {
   filteredOptions: Observable<Array<{[key:string]: any}>>;
 
   constructor(
-    protected dd: DataDefinitionService, 
-    protected storage: SessionStorageService, 
+    public dd: DataDefinitionService, 
+    public storage: SessionStorageService, 
   ) { }
 
   ngOnInit(): void {
@@ -91,8 +91,8 @@ export class InputAutocompleteComponent implements  OnInit {
     return this.dd.all(this.entityName, display);
   }
 
-  displayFn(value: any): string {
-    return value && value.id ? value.id : '';
+  displayFn = value => {
+    return (value && value.id) ? this.dd.label(this.entityName, value.id) : value;
   }
   
 

@@ -2,9 +2,15 @@
   <mat-label>Sistema</mat-label>
 
   <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
+  <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
+  <mat-error>Test</mat-error>
+  <mat-hint *ngIf="field.dirty && field.hasError('required')"><span class="mat-error">Please choose a X</span></mat-hint>
+
+
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
     <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
       {{option.id | label:"sistema"}}
   </mat-option>
   </mat-autocomplete>
+  
 </mat-form-field>
