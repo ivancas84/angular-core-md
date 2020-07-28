@@ -1,0 +1,10 @@
+<mat-form-field *ngIf="load$ | async">
+  <mat-label>Sistema</mat-label>
+
+  <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+      {{option.id | label:"sistema"}}
+  </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
