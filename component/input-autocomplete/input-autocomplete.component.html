@@ -1,5 +1,5 @@
 <mat-form-field *ngIf="load$ | async">
-  <mat-label>Sistema</mat-label>
+  <mat-label>{{entityName}}</mat-label>
 
   <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
   <button type="button" mat-icon-button matSuffix (click)="field.setValue(null)">
@@ -9,7 +9,7 @@
 
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
     <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-      {{option.id | label:"sistema"}}
+      {{option.id | label:entityName}}
     </mat-option>
   </mat-autocomplete>
   
