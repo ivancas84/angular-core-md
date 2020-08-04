@@ -1,5 +1,5 @@
 <mat-form-field *ngIf="load$ | async">
-  <mat-label>{{entityName}}</mat-label>
+  <mat-label>{{title}}</mat-label>
 
   <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
   <button type="button" mat-icon-button matSuffix (click)="field.setValue(null)">

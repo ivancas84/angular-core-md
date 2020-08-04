@@ -22,8 +22,10 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
 
   @Input() field: FormControl;
   @Input() entityName: string;
+  @Input() title?: string;
   @Input() readonly?: boolean = false;
   @Input() load$: Observable<any>;
+
 
   searchControl: FormControl = new FormControl();
   searchFailed: boolean = false;
@@ -35,18 +37,15 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
 
   constructor(
     public dd: DataDefinitionService, 
-    public storage: SessionStorageService, 
-  ) { 
-
-  }
+  ) { }
 
   ngDoCheck(): void {
     if(this.field.errors && !this.searchControl.errors) this.searchControl.setErrors(this.field.getError);
     if(this.field.dirty && !this.searchControl.dirty) this.searchControl.markAsDirty();
-
   }
 
   ngOnInit(): void {
+    if(!this.title) this.title = this.entityName;
 
     this.searchControl.setValidators(this.field.validator)
 
@@ -99,8 +98,6 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
 
   private _filter(value: string): Observable<any> {
     if(value === "") return of([]);
-    //this.field.markAsPending();
-
     var display = new Display();
     display.addCondition(["nombre","=~",value]);
     return this.dd.all(this.entityName, display);
