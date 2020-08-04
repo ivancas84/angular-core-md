@@ -111,18 +111,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       return;
     } 
 
-    this.dd.uniqueOrNull(this.entityName, params).pipe(first()).subscribe(
-      response => {
-        if (response) this.data$.next(response);
-        else this.data$.next(params);
-      },
-      error => { 
-        const dialogRef = this.dialog.open(DialogAlertComponent, {
-          width: '250px',
-          data: {title: "Error", message: error.error}
-        });
-      }
-    ); 
+    this.data$.next(params);
+  
   }
 
   removeStorage(){ 
