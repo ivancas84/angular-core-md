@@ -1,0 +1,9 @@
+<mat-form-field >
+  <mat-label>{{entityName}}</mat-label>
+  <mat-select [formControl]="field">
+    <mat-option>--Seleccione--</mat-option>
+    <mat-option *ngFor="let opt of (options$ | async)" [value]="opt.id">
+      {{opt.id | label:entityName}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
