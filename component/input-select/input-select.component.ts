@@ -19,6 +19,7 @@ export class InputSelectComponent implements  OnInit {
 
   @Input() field: FormControl;
   @Input() entityName: string;
+  @Input() title?: string;
   @Input() readonly?: boolean = false;
 
   options$: Observable<Array<any>>;
@@ -32,6 +33,7 @@ export class InputSelectComponent implements  OnInit {
   constructor( public dd: DataDefinitionService ) { }
 
   ngOnInit(): void {
+    if(!this.title) this.title = this.entityName;
     this.options$ = this.dd.all(this.entityName, new Display)
   }
 
