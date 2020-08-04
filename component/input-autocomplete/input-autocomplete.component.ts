@@ -99,7 +99,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
   private _filter(value: string): Observable<any> {
     if(value === "") return of([]);
     var display = new Display();
-    display.addCondition(["nombre","=~",value]);
+    display.addCondition(["_label","=~",value]);
     return this.dd.all(this.entityName, display);
   }
 
