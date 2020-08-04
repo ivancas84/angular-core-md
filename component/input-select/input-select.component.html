@@ -6,4 +6,6 @@
       {{opt.id | label:entityName}}
     </mat-option>
   </mat-select>
+  <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
+
 </mat-form-field>
