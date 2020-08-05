@@ -40,6 +40,7 @@ export class InputSearchGoComponent implements  OnInit {
         if (typeof value == "string" ) return this._filter(value)
         else {
           this.router.navigate([this.route],{queryParams: {id:value.id}});
+          return of([])
         }
       })
     )
