@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
 import { first } from 'rxjs/operators';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-admin',
@@ -26,6 +27,16 @@ export abstract class ShowElementComponent  {
   constructor(
     protected router: Router,
   ) {}
+
+  
+  onChangePage($event: PageEvent){
+    this.display$.pipe(first()).subscribe(
+      display => {
+        console.log(display);
+        //this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
+      }
+    );
+  }
 
   order(params: Array<string>): void {
     /**
