@@ -110,8 +110,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       return;
     } 
 
-    this.data$.next(params);
-  
     this.dd.uniqueOrNull(this.entityName, params).pipe(first()).subscribe(
       response => {
         if (response) this.data$.next(response);
