@@ -6,7 +6,7 @@ import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 
 @Component({
-  selector: 'core-table',
+  selector: 'core-show',
   template: '',
 })
 export abstract class ShowComponent implements OnInit, OnDestroy {
