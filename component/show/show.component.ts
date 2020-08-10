@@ -1,11 +1,15 @@
-import { OnInit, OnDestroy } from '@angular/core';
+import { OnInit, OnDestroy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, BehaviorSubject, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { Display } from '../../class/display';
+import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 
-export class ShowComponent implements OnInit, OnDestroy {
+@Component({
+  selector: 'core-table',
+  template: '',
+})
+export abstract class ShowComponent implements OnInit, OnDestroy {
 
   readonly entityName: string;
   /**
