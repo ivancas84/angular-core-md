@@ -1,35 +1,46 @@
-import { Input, Output, EventEmitter, Component } from '@angular/core';
+import { Input, Component, OnInit } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
-import { first } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { compare } from '@function/compare';
+import { fastClone } from '@function/fast-clone';
 
 @Component({
-  selector: 'app-admin',
+  selector: 'core-table',
   template: '',
 })
-export abstract class ShowElementComponent  {
+export abstract class TableComponent implements OnInit {
 
   @Input() data$: Observable<any>; 
-  /**
-   * datos principales
-   */
-
   @Input() display$?: BehaviorSubject<Display> = new BehaviorSubject(null);
-
   @Input() collectionSize$?: BehaviorSubject<number> = new BehaviorSubject(null);
  
-  dataSource  = [];
+  load$: Observable<any>;
+  displayedColumns: string[] = ['id', 'motivo'];
+  dataSource: { [index: string]: any }[] = [];
+  /**
+   * Se necesita un atributo para poder aplicar ordenamiento en el cliente de los datos
+   */
 
   constructor(
     protected router: Router,
   ) {}
 
-  
+  ngOnInit(): void {
+    this.load$ = this.data$.pipe(
+      map(
+        data => {
+          this.dataSource = data;
+          return true;
+        }
+      )
+    )
+  }
+
   onChangePage($event: PageEvent){
     this.display$.pipe(first()).subscribe(
       display => {
@@ -53,8 +64,9 @@ export abstract class ShowElementComponent  {
 
   onChangeSort(sort: Sort) {
     if(this.collectionSize$ && this.display$.value && this.dataSource.length < this.collectionSize$.value){
-      this.display$.value.setOrderByKeys([sort.active]);
-      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
+      var display = fastClone(this.display$.value);
+      display.setOrderByKeys([sort.active]);
+      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
       return;
     }
 
