@@ -20,7 +20,7 @@ export abstract class TableComponent implements OnInit {
   @Input() collectionSize$?: BehaviorSubject<number> = new BehaviorSubject(null);
  
   load$: Observable<any>;
-  displayedColumns: string[] = ['id', 'motivo'];
+  displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
   /**
    * Se necesita un atributo para poder aplicar ordenamiento en el cliente de los datos
@@ -82,4 +82,3 @@ export abstract class TableComponent implements OnInit {
     });
   }
 }
-
