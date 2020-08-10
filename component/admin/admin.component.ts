@@ -102,7 +102,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       }
     )
     this.subscriptions.add(s);
-    
   }
 
   setData(params: any): void {
@@ -111,8 +110,18 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       return;
     } 
 
-    this.data$.next(params);
-  
+    this.dd.uniqueOrNull(this.entityName, params).pipe(first()).subscribe(
+      response => {
+        if (response) this.data$.next(response);
+        else this.data$.next(params);
+      },
+      error => { 
+        const dialogRef = this.dialog.open(DialogAlertComponent, {
+          data: {title: "Error", message: error.error}
+        });
+      }
+    ); 
+
   }
 
   removeStorage(){ 
@@ -165,7 +174,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       markAllAsDirty(this.adminForm);
       logValidationErrors(this.adminForm);
       const dialogRef = this.dialog.open(DialogAlertComponent, {
-        width: '250px',
         data: {title: "Error", message: "El formulario posee errores."}
       });
       this.isSubmitted = false;
@@ -179,7 +187,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         error => { 
           console.log(error);
           const dialogRef = this.dialog.open(DialogAlertComponent, {
-            width: '250px',
             data: {title: "Error", message: error.error}
           });
         }
