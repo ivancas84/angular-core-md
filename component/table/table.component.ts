@@ -1,5 +1,5 @@
 import { Input, Component, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
@@ -16,10 +16,13 @@ import { fastClone } from '@function/fast-clone';
 export abstract class TableComponent implements OnInit {
 
   @Input() data$: Observable<any>; 
-  @Input() display$?: BehaviorSubject<Display> = new BehaviorSubject(null);
-  @Input() collectionSize$?: BehaviorSubject<number> = new BehaviorSubject(null);
+  @Input() display$?: BehaviorSubject<Display>;
+  @Input() collectionSize$?: BehaviorSubject<number>;
  
   load$: Observable<any>;
+  loadLength$: Observable<any>;
+
+  length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
   /**
@@ -35,19 +38,27 @@ export abstract class TableComponent implements OnInit {
       map(
         data => {
           this.dataSource = data;
-          return true;
+          return this.dataSource;
         }
       )
     )
+
+    //No se por que no funciona utilizar collectionSize directamente, 
+    //en la paginacion me da que es undefined
+    this.loadLength$ = this.collectionSize$.pipe(
+      map(
+        length => {
+          this.length = length;
+          return this.length;
+        }
+      )
+    )
+
   }
 
   onChangePage($event: PageEvent){
-    this.display$.pipe(first()).subscribe(
-      display => {
-        console.log(display);
-        //this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
-      }
-    );
+    this.display$.value.setPage($event.pageIndex+1);
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
   }
 
   order(params: Array<string>): void {
@@ -63,10 +74,9 @@ export abstract class TableComponent implements OnInit {
   }
 
   onChangeSort(sort: Sort) {
-    if(this.collectionSize$ && this.display$.value && this.dataSource.length < this.collectionSize$.value){
-      var display = fastClone(this.display$.value);
-      display.setOrderByKeys([sort.active]);
-      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
+    if(this.length && this.display$.value && this.dataSource.length < this.length){
+      this.display$.value.setOrderByKeys([sort.active]);
+      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
       return;
     }
 
