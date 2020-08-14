@@ -115,6 +115,7 @@ export class Display {
   }
 
   public setOrder(params: {[key: string]: string }){
+    this.order = {};
     for(var i in params){
       if (params.hasOwnProperty(i)){ this.order[i] = params[i]; }
     }    

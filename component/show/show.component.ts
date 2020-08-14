@@ -61,7 +61,7 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
   
   initCount(){ 
     this.dd.count(this.entityName, this.display$.value).pipe(first()).subscribe(
-      count => {  this.collectionSize$.next(count); }
+      count => { this.collectionSize$.next(count); }
     ) 
   }
 
