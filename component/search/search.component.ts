@@ -1,4 +1,4 @@
-import { Input } from '@angular/core';
+import { Input, Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -10,6 +10,10 @@ import { logValidationErrors } from '@function/log-validation-errors';
 import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
 import { MatDialog } from '@angular/material/dialog';
 
+@Component({
+  selector: 'core-search',
+  template: '',
+})
 export abstract class SearchComponent {
 
   @Input() display$: Observable<Display>;
