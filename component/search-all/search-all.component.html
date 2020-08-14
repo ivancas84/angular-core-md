@@ -1,4 +1,4 @@
-<mat-form-field [formGroup]="fieldset">
+<mat-form-field *ngIf="load$ | async" [formGroup]="fieldset">
   <mat-label>Buscar</mat-label>
   <input matInput formControlName="_search" >
 </mat-form-field>
