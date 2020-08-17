@@ -1,0 +1,5 @@
+<mat-form-field *ngIf="load$ | async" [formGroup]="fieldset">
+  <mat-label>Buscar</mat-label>
+  <input matInput formControlName="_search" >
+</mat-form-field>
+

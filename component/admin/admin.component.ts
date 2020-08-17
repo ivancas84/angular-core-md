@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-admin',
+  selector: 'core-admin',
   template: '',
 })
 export abstract class AdminComponent implements OnInit, AfterViewInit {
@@ -116,7 +116,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         else this.data$.next(params);
       },
       error => { 
-        const dialogRef = this.dialog.open(DialogAlertComponent, {
+        this.dialog.open(DialogAlertComponent, {
           data: {title: "Error", message: error.error}
         });
       }
