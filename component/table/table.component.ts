@@ -12,6 +12,10 @@ import { fastClone } from '@function/fast-clone';
 @Component({
   selector: 'core-table',
   template: '',
+  styles:[`
+  .mat-card-content { overflow-x: auto; }
+  .mat-table.mat-table { min-width: 500px; }
+  `],
 })
 export abstract class TableComponent implements OnInit {
 
