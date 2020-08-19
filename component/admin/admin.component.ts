@@ -181,7 +181,11 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     } else {
       var s = this.persist().pipe(first()).subscribe(
         response => {
-          this.storage.removeItemsPersisted(response);
+          this.storage.removeItemsPersisted(response["detail"]);
+          this.removeStorage();
+          /**
+           * al recargar puede que se modifique la url, es necesario limpiar el storage para que no queden antiguas referencias a la url anterior
+           */
           this.reload(response);
         },
         error => { 
@@ -199,27 +203,14 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     /**
      * Recargar una vez persistido
      */
-    let route = emptyUrl(this.router.url) + "?id="+this.getProcessedId(response);
+    let route = emptyUrl(this.router.url) + "?id="+response["id"];
     if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
     else this.setData(this.route.snapshot.queryParams);
     this.snackBar.open("Registro realizado", "X");
     this.isSubmitted = false;
   }
 
-  getProcessedId(logs: Array<any>) {  
-    /**
-     * Obtener el id de procesamientoo principal
-     */
-    for(var i in logs){
-      if(logs[i].indexOf(this.entityName) === 0) {
-        var re = new RegExp(this.entityName,"g");
-        return logs[i].replace(re, "");
-      }
-    }
-  }
-
   serverData() {  
-    console.log(this.adminForm);
     return this.adminForm.get(this.entityName).value;
     //return this.adminForm.value
   }
