@@ -1,4 +1,4 @@
-import { Input, Component } from '@angular/core';
+import { Input, Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -9,6 +9,7 @@ import { markAllAsTouched } from '@function/mark-all-as-touched';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'core-search',
@@ -28,21 +29,20 @@ export abstract class SearchComponent {
    * Formulario de busqueda
    */
 
-  public optCard: boolean = false;
-  /**
-   * Activar o desactivar el card de opciones
-   */
 
   isSubmitted: boolean = false;
   /**
    * Flag para habilitar/deshabilitar boton aceptar
    */
 
+  @ViewChild(MatExpansionPanel) searchPanel: MatExpansionPanel;
+
   constructor(
     protected fb: FormBuilder,
     protected router: Router,
     protected dialog: MatDialog,
   ) {}
+
 
   onSubmit(): void {
     /**
@@ -64,7 +64,7 @@ export abstract class SearchComponent {
           if(this.searchForm.get("condition")) display.setConditionByFilters(this.searchForm.get("condition").value);    
           if(this.searchForm.get("params")) display.setParams(this.searchForm.get("params").value);    
           if(this.searchForm.get("order")) { display.setOrderByElement(this.searchForm.get("order").value); }    
-
+          this.searchPanel.close();
           this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
         }
       );
