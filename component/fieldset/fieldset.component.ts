@@ -80,7 +80,7 @@ export abstract class FieldsetComponent implements  OnInit {
     /**
      * No suscribirse desde el template!
      * Puede disparar errores ExpressionChanged... no deseados (por ejemplo en la validacion inicial)
-     * Al suscribirse desde el template se cambia el Lifehook cycle 
+     * Al suscribirse desde el template se cambia el Lifehook cycle ?
      */  
       var s = this.data$.subscribe(
         response => {
@@ -109,6 +109,8 @@ export abstract class FieldsetComponent implements  OnInit {
           if(!res.hasOwnProperty(key)) res[key] = this.defaultValues[key];
         }
       }
+      console.log("datos resultantes initValues")
+      console.log(res);
       this.fieldset.reset(res) 
     }
   }
