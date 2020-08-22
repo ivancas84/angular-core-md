@@ -1,0 +1,17 @@
+<mat-form-field *ngIf="!field.value">
+  <mat-label>Archivo</mat-label>
+
+  <input type="file" matInput [readonly]="readonly" [formControl]="fileControl" (change)="onFileSelect($event)">
+  <mat-icon matSuffix *ngIf="field.pending">hourglass_empty</mat-icon>
+
+</mat-form-field>
+
+<mat-form-field *ngIf="field.value">
+  <mat-label>Archivo</mat-label>
+
+  <input type="text" matInput readounly value="{{field.value | label:'file'}}">
+  <mat-icon matSuffix (click)="field.setValue(null)">autorenew</mat-icon>
+  <mat-hint *ngIf="file">
+    <a class="oi oi-cloud-download" [href]="file.link" target="_blank" [download]="file.name"><mat-icon>cloud_download</mat-icon></a>
+  </mat-hint>
+</mat-form-field>
