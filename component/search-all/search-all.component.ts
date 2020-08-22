@@ -16,7 +16,6 @@ export class SearchAllComponent extends SearchParamsComponent {
 
 
   formGroup(): FormGroup {
-    console.log("test")
     let fg: FormGroup = this.fb.group({
       _search: null
     });
