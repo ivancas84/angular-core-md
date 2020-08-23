@@ -9,9 +9,9 @@ import { Location } from '@angular/common';
 
 @Component({
   selector: 'core-upload',
-  templateUrl: './upload.component.html',
+  template: '',
 })
-export class UploadComponent {
+export abstract class UploadComponent {
   /**
    * Comportamiento basico para subir archivos
    * A través del atributo entityName se define el controlador de procesamiento del archivo idea es subir un archivo que sera procesado en un controlador
@@ -28,9 +28,7 @@ export class UploadComponent {
    * Formulario principal
    */
 
-  readonly title?: string = "Archivo";
-
-  readonly entityName: string = "file";
+  readonly entityName: string;
   /**
    * La entidad hace referencia principalmente al controlador que procesara el archivo
    */
@@ -65,12 +63,23 @@ export class UploadComponent {
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array con la informacion del archivo)"
      */
-    this.dd.upload(this.formData).subscribe(
+
+    const file = this.file.value._files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    /**
+     * El controlador procesa un unico archivo identificado como file
+     * No confundir con el entityName
+     **/
+
+    this.dd.upload(this.entityName, formData).subscribe(
       (res) => {
         console.log(res);
         this.snackBar.open("Archivo subido", "X");
       },
       (err) => {  
+        console.log(err);
+
         this.dialog.open(DialogAlertComponent, {
           data: {title: "Error", message: err.error}
         });
@@ -82,14 +91,6 @@ export class UploadComponent {
     this.file.setValue(null);
   }
   
-  onFileSelect(event) {
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      this.formData = new FormData();
-      this.formData.append(this.entityName, file);
-    }
-  }
-
   onSubmit(): void {
     this.isSubmitted = true;
     

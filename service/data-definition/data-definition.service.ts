@@ -228,13 +228,13 @@ export class DataDefinitionService {
     );
   }
 
-  public upload(data: FormData, type: string = "file") {
+  public upload(entity: string = "file", data: FormData) {
     /**
-     * @param type: Permite clasificar el procesamiento que debe darse a un archivo. 
+     * @param entity: Permite clasificar el procesamiento que debe darse a un archivo. 
      *   "File" es el procesamiento por defecto.
+     *   Otros tipos de procesamiento pueden ser "Image", o si es un procesamiento particular algun nombre personalizado, por ejemplo "Info"
      */
-    let url = API_URL + type + '/upload';
-
+    let url = API_URL + entity + '/upload';
     return this.http.post<any>(url, data);
   }
 }

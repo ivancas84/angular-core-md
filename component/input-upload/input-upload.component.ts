@@ -22,7 +22,6 @@ export class InputUploadComponent implements OnInit {
 
   @Input() entityName?: string = "file";
   /**
-   * Tipo de procesamiento
    * Permite seleccionar una alternativa entre diferentes controladores de procesamiento
    * sin necesidad de reimplementar el componente
    */
@@ -65,9 +64,12 @@ export class InputUploadComponent implements OnInit {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       const formData = new FormData();
-      formData.append(this.entityName, file);
+      formData.append("file", file);
+      /**
+       * El controlador procesa un unico archivo identificado como file, no confundir con el entityName
+       */
       this.field.markAsPending();
-      this.dd.upload(formData).subscribe(
+      this.dd.upload(this.entityName, formData).subscribe(
         (res) => {
           this.storage.setItem("file" + res.id, res);
           this.field.setValue(res.id);
