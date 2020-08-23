@@ -14,10 +14,7 @@ import { Location } from '@angular/common';
 export class UploadComponent {
   /**
    * Comportamiento basico para subir archivos
-   * La idea es subir un archivo que sera procesado en un controlador
-   * La idea es sobrescribir esta clase para modificar la propiedad entityName y seleccionar el controlador correspondiente de procesamiento
-   * El componente no define si se almacena o no el archivo
-   * Utilizado habitualmente para archivos de texto plano con un formato particular que el controlador entiende
+   * A través del atributo entityName se define el controlador de procesamiento del archivo idea es subir un archivo que sera procesado en un controlador
    */
 
   uploadForm: FormGroup = this.fb.group(
@@ -27,7 +24,6 @@ export class UploadComponent {
       }],
     }
   );
-
   /**
    * Formulario principal
    */
