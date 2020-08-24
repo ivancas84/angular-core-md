@@ -33,6 +33,7 @@ export abstract class TableComponent implements OnInit {
    * Se necesita un atributo para poder aplicar ordenamiento en el cliente de los datos
    */
 
+  progress = false;
   constructor(
     protected router: Router,
   ) {}
@@ -42,39 +43,24 @@ export abstract class TableComponent implements OnInit {
       map(
         data => {
           this.dataSource = data;
-          return this.dataSource;
+          return true;
         }
       )
     )
 
-    //No se por que no funciona utilizar collectionSize directamente, 
-    //en la paginacion me da que es undefined
     this.loadLength$ = this.collectionSize$.pipe(
       map(
         length => {
           this.length = length;
-          return this.length;
+          return true;
         }
       )
     )
-
   }
 
   onChangePage($event: PageEvent){
     this.display$.value.setPage($event.pageIndex+1);
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
-  }
-
-  order(params: Array<string>): void {
-    /**
-     * Transformar valores de ordenamiento del atributo display
-     */
-    this.display$.pipe(first()).subscribe(
-      display => {
-        display.setOrderByKeys(params);
-        this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
-      }
-    );
   }
 
   onChangeSort(sort: Sort) {
