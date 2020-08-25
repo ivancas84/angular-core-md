@@ -211,21 +211,10 @@ export class DataDefinitionService {
     )
   }
 
-  data (entity: string, data: any = null): Observable<any> {
+  base (entity: string, data: any = null): Observable<any> {
     var jsonParams = JSON.stringify(data);
-    let key = entity + ".data" + jsonParams;
-    if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
-
-
-    let url = API_URL + entity + '/data'
-    return this.http.post<any>(url, jsonParams, HTTP_OPTIONS).pipe(
-      map(
-        data => {
-          this.storage.setItem(key, data)
-          return data;
-        }
-      )
-    );
+    let url = API_URL + entity + '/base'
+    return this.http.post<any>(url, jsonParams, HTTP_OPTIONS);
   }
 
   public upload(entity: string = "file", data: FormData) {
