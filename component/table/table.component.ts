@@ -66,15 +66,27 @@ export abstract class TableComponent implements OnInit {
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
   }
 
-  onChangeSort(sort: Sort) {
-    this.paginator.pageIndex = 0;
-
+  serverSort(sort: Sort): boolean{
+    /**
+     * Ordenamiento en el servidor
+     * Para que se produzca ordenamiento en el servidor se tienen que cumplir ciertas condiciones
+     * @return true si se efectuo ordenamiento en el servidor
+     *         false si no se efectuo ordenamiento en el servidor
+     */
     if(this.length && this.display$.value && this.dataSource.length < this.length){
       this.display$.value.setOrderByKeys([sort.active]);
       this.display$.value.setPage(1);
       this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
-      return;
+      return true;
     }
+
+    return false;
+  }
+
+  onChangeSort(sort: Sort) {
+    this.paginator.pageIndex = 0;
+
+    if(this.serverSort(sort)) return;
 
     const data = this.dataSource.slice();
     if (!sort.active || sort.direction === '') {
