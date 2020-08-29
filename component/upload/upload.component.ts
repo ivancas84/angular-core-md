@@ -38,11 +38,6 @@ export abstract class UploadComponent {
    * Flag para habilitar/deshabilitar boton aceptar
    */
 
-  formData: FormData;
-  /**
-   * Objeto con el archivo que sera enviado al servidor
-   */
-
   protected subscriptions = new Subscription();
    
   constructor(
@@ -57,29 +52,38 @@ export abstract class UploadComponent {
 
   back() { this.location.back(); }
 
-  upload(): void {
+  formData(): FormData{
     /**
-     * subida de archivo
+     * Crear FormData
      * Se define un metodo independiente para facilitar la redefinicion
-     * @return "datos de respuesta (habitualmente array con la informacion del archivo)"
+     * 
+     * Los objetos FormData le permiten compilar un conjunto de pares clave/valor para enviar mediante XMLHttpRequest. 
+     * Están destinados principalmente para el envío de los datos del formulario, 
+     * pero se pueden utilizar de forma independiente con el fin de transmitir los datos tecleados. 
+     * Los datos transmitidos estarán en el mismo formato que usa el método submit() del formulario
+     * para enviar los datos si el tipo de codificación del formulario se establece en "multipart/form-data".
+     * 
+     * @return FormData
      */
 
     const file = this.file.value._files[0];
     const formData = new FormData();
     formData.append("file", file);
-    /**
-     * El controlador procesa un unico archivo identificado como file
-     * No confundir con el entityName
-     **/
+    return formData;
+  }
 
-    this.dd.upload(this.entityName, formData).subscribe(
+  upload(): void {
+    /**
+     * subida de archivo
+     * Se define un metodo independiente para facilitar la redefinicion
+     * @return "datos de respuesta (habitualmente array con la informacion del archivo)"
+     */    
+    this.dd.upload(this.entityName, this.formData()).subscribe(
       (res) => {
-        console.log(res);
         this.snackBar.open("Archivo subido", "X");
       },
-      (err) => {  
-        console.log(err);
-
+      (err) => {
+        this.isSubmitted = false;  
         this.dialog.open(DialogAlertComponent, {
           data: {title: "Error", message: err.error}
         });
