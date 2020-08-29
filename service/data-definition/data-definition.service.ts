@@ -203,8 +203,6 @@ export class DataDefinitionService {
     return this.http.post<any>(url, JSON.stringify(data), HTTP_OPTIONS).pipe(
       map(
         response => {
-          console.log(response);
-          //this.message.add("Se efectuado un registro de datos");
           return response;
         }
       )
