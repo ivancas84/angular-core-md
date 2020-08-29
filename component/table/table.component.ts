@@ -1,10 +1,10 @@
-import { Input, Component, OnInit } from '@angular/core';
+import { Input, Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
 import { first, map } from 'rxjs/operators';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { compare } from '@function/compare';
 import { fastClone } from '@function/fast-clone';
@@ -29,6 +29,9 @@ export abstract class TableComponent implements OnInit {
   length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   /**
    * Se necesita un atributo para poder aplicar ordenamiento en el cliente de los datos
    */
@@ -64,8 +67,11 @@ export abstract class TableComponent implements OnInit {
   }
 
   onChangeSort(sort: Sort) {
+    this.paginator.pageIndex = 0;
+
     if(this.length && this.display$.value && this.dataSource.length < this.length){
       this.display$.value.setOrderByKeys([sort.active]);
+      this.display$.value.setPage(1);
       this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
       return;
     }
