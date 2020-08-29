@@ -203,38 +203,25 @@ export class DataDefinitionService {
     return this.http.post<any>(url, JSON.stringify(data), HTTP_OPTIONS).pipe(
       map(
         response => {
-          console.log(response);
-          //this.message.add("Se efectuado un registro de datos");
           return response;
         }
       )
     )
   }
 
-  data (entity: string, data: any = null): Observable<any> {
+  base (entity: string, data: any = null): Observable<any> {
     var jsonParams = JSON.stringify(data);
-    let key = entity + ".data" + jsonParams;
-    if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
-
-
-    let url = API_URL + entity + '/data'
-    return this.http.post<any>(url, jsonParams, HTTP_OPTIONS).pipe(
-      map(
-        data => {
-          this.storage.setItem(key, data)
-          return data;
-        }
-      )
-    );
+    let url = API_URL + entity + '/base'
+    return this.http.post<any>(url, jsonParams, HTTP_OPTIONS);
   }
 
-  public upload(data: FormData, type: string = "file") {
+  public upload(entity: string = "file", data: FormData) {
     /**
-     * @param type: Permite clasificar el procesamiento que debe darse a un archivo. 
+     * @param entity: Permite clasificar el procesamiento que debe darse a un archivo. 
      *   "File" es el procesamiento por defecto.
+     *   Otros tipos de procesamiento pueden ser "Image", o si es un procesamiento particular algun nombre personalizado, por ejemplo "Info"
      */
-    let url = API_URL + type + '/upload';
-
+    let url = API_URL + entity + '/upload';
     return this.http.post<any>(url, data);
   }
 }
