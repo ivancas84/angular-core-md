@@ -1,10 +1,10 @@
-import { Input, Component, OnInit } from '@angular/core';
+import { Input, Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
 import { first, map } from 'rxjs/operators';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { compare } from '@function/compare';
 import { fastClone } from '@function/fast-clone';
@@ -29,6 +29,9 @@ export abstract class TableComponent implements OnInit {
   length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   /**
    * Se necesita un atributo para poder aplicar ordenamiento en el cliente de los datos
    */
@@ -63,12 +66,27 @@ export abstract class TableComponent implements OnInit {
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
   }
 
-  onChangeSort(sort: Sort) {
+  serverSort(sort: Sort): boolean{
+    /**
+     * Ordenamiento en el servidor
+     * Para que se produzca ordenamiento en el servidor se tienen que cumplir ciertas condiciones
+     * @return true si se efectuo ordenamiento en el servidor
+     *         false si no se efectuo ordenamiento en el servidor
+     */
     if(this.length && this.display$.value && this.dataSource.length < this.length){
       this.display$.value.setOrderByKeys([sort.active]);
+      this.display$.value.setPage(1);
       this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
-      return;
+      return true;
     }
+
+    return false;
+  }
+
+  onChangeSort(sort: Sort) {
+    this.paginator.pageIndex = 0;
+
+    if(this.serverSort(sort)) return;
 
     const data = this.dataSource.slice();
     if (!sort.active || sort.direction === '') {
