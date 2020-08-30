@@ -10,7 +10,7 @@ import { Display } from '../../class/display';
 
 
 @Component({
-  selector: 'app-input-autocomplete',
+  selector: 'core-input-autocomplete',
   templateUrl: './input-autocomplete.component.html',
 })
 export class InputAutocompleteComponent implements  OnInit, DoCheck {
@@ -24,7 +24,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
   @Input() entityName: string;
   @Input() title?: string;
   @Input() readonly?: boolean = false;
-  @Input() load$: Observable<any>;
+  load$: Observable<any>;
 
 
   searchControl: FormControl = new FormControl();
@@ -70,7 +70,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
     this.load$ = this.field.valueChanges.pipe(
       startWith(this.field.value),
       map(
-      value => {
+        value => {
           if(!this.searchControl.value
           || (typeof this.searchControl.value != "string" 
               && this.searchControl.value.id != value)){

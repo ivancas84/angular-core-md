@@ -3,7 +3,7 @@
   <mat-select [formControl]="field">
     <mat-option>--Seleccione--</mat-option>
     <mat-option *ngFor="let opt of (options$ | async)" [value]="opt.id">
-      {{opt.id | label:entityName}}
+      <core-label [id]="opt.id" [entityName]="entityName"></core-label>
     </mat-option>
   </mat-select>
   <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>

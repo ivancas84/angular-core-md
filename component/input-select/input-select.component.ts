@@ -5,7 +5,7 @@ import { DataDefinitionService } from '@service/data-definition/data-definition.
 import { Display } from '@class/display';
 
 @Component({
-  selector: 'app-input-select',
+  selector: 'core-input-select',
   templateUrl: './input-select.component.html',
 })
 export class InputSelectComponent implements  OnInit {
