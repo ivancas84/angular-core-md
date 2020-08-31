@@ -3,6 +3,8 @@
     <mat-card-title>Template de ejemplo</mat-card-title>
   </mat-card-header>
   <mat-card-content>
+    <mat-progress-bar *ngIf="!response && isSubmitted" mode="indeterminate"></mat-progress-bar>
+    
     <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" novalidate autocomplete="off">
       <mat-form-field>
         <mat-label>Archivo</mat-label>

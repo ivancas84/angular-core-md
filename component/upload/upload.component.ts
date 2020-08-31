@@ -39,6 +39,8 @@ export abstract class UploadComponent {
    */
 
   protected subscriptions = new Subscription();
+
+  response: any;
    
   constructor(
     protected fb: FormBuilder, 
@@ -80,6 +82,7 @@ export abstract class UploadComponent {
      */    
     this.dd.upload(this.entityName, this.formData()).subscribe(
       (res) => {
+        this.response = res;
         this.snackBar.open("Archivo subido", "X");
       },
       (err) => {
