@@ -65,8 +65,8 @@ export abstract class StorageService {
   }
 
   removeItemsPersisted(response): void {
+    this.removeItemsContains(".");
     if(response && response.length){
-      this.removeItemsContains(".");
       response.forEach(
         (element: string) => this.removeItem(element)
       );
