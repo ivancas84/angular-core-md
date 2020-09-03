@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SessionStorageService } from '../storage/session-storage.service';
-import { FormControl, ValidatorFn, AsyncValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { FormControl, ValidatorFn, AsyncValidatorFn, ValidationErrors, AbstractControl, Validators } from '@angular/forms';
 import { timer, of, Observable } from 'rxjs';
 import { Display } from '../../class/display';
 import { DataDefinitionService } from '../data-definition/data-definition.service';
@@ -23,6 +23,10 @@ export class ValidatorsService {
       if(year.length != 4) return {notYear:true}
     }
     return null;
+  }
+
+  static email(): ValidatorFn {
+    return Validators.pattern("[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}");
   }
 
   year(): ValidatorFn {
