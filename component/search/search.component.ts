@@ -65,9 +65,14 @@ export abstract class SearchComponent {
           if(this.searchForm.get("params")) display.setParams(this.searchForm.get("params").value);    
           if(this.searchForm.get("order")) { display.setOrderByElement(this.searchForm.get("order").value); }    
           this.searchPanel.close();
-          this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
+          this.search(display);
         }
       );
     }
+  }
+  
+  search(display: Display): void {
+    /** Metodo independiente para facilitar reimplementacion */
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
   }
 }
