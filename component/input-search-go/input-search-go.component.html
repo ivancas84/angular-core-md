@@ -5,7 +5,7 @@
 
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
     <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-      {{option.id | label:entityName}}
+      <core-label [id]="option.id" [entityName]="entityName"></core-label>
     </mat-option>
   </mat-autocomplete>
   
