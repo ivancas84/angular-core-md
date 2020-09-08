@@ -53,7 +53,6 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
    
   initDisplay(params: { [x: string]: any; }): void {
     let display = new Display();
-    display = new Display();
     display.setSize(100);
     display.setParamsByQueryParams(params);
     this.display$.next(display);
