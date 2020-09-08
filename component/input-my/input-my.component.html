@@ -1,0 +1,11 @@
+<mat-form-field >
+  <mat-label>{{title}}</mat-label>
+  <input matInput [matDatepicker]="fieldPicker" [formControl]="field">
+  <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
+  <mat-datepicker #fieldPicker
+                  startView="multi-year"
+                  (yearSelected)="chosenYearHandler($event)"
+                  (monthSelected)="chosenMonthHandler($event, fieldPicker)"
+  ></mat-datepicker>
+  <mat-error *ngIf="field.hasError('matDatepickerParse')">El formato es incorrecto</mat-error>  
+  <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
