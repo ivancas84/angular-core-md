@@ -147,7 +147,6 @@ export class Display {
       this.setOrder(params);
     }
   }
-
   
   public encodeURI(){
     let d = [];
