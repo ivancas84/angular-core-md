@@ -10,6 +10,11 @@ import { getControlName } from '@function/get-control-name';
 @Component({
   selector: 'core-input-ym',
   templateUrl: './input-ym.component.html',
+  styles:[`
+    mat-datepicker-toggle {
+      display: inline-block;
+  }
+  `],
   providers: [{
       provide: DateAdapter,
       useClass: MomentDateAdapter,
@@ -29,6 +34,7 @@ export class InputYmComponent implements OnInit {
 
   @Input() field: FormControl;
   @Input() title?: string;
+  @Input() placeholder?: string = "Ingrese año y mes";
  
   adminRoute:string;
   /**

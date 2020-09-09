@@ -8,17 +8,23 @@ import { getControlName } from '@function/get-control-name';
 @Component({
   selector: 'core-input-date',
   templateUrl: './input-date.component.html',
+  styles:[`
+    mat-datepicker-toggle {
+      display: inline-block;
+  }
+  `],
   providers: [{
       provide: DateAdapter,
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
     },
     {provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS},
-  ],
+  ]
 })
 export class InputDateComponent implements OnInit {
   @Input() field: FormControl;
   @Input() title?: string;
+  @Input() placeholder?: string = "Seleccione fecha";
  
   adminRoute:string;
   /**

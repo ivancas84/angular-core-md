@@ -3,7 +3,7 @@
 
   <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
   <button type="button" mat-icon-button matSuffix (click)="field.setValue(null)">
-    <mat-icon>autorenew</mat-icon>
+    <mat-icon>clear</mat-icon>
   </button>
   <mat-error *ngIf="searchControl.hasError('required')">Debe completar valor</mat-error>
 
