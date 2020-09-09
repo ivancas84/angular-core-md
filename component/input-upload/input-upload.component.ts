@@ -18,8 +18,6 @@ export class InputUploadComponent implements OnInit {
    * Field correspondiente a la entidad padre con el id del archivo
    */
 
-  @Input() readonly?: boolean = false;
-
   @Input() entityName?: string = "file";
   /**
    * Permite seleccionar una alternativa entre diferentes controladores de procesamiento
@@ -54,7 +52,7 @@ export class InputUploadComponent implements OnInit {
           this.fileControl.disable();
         } else {
           this.file = null;
-          if(!this.readonly) this.fileControl.enable();
+          if(this.field.enabled) this.fileControl.enable();
         }
       }
     );

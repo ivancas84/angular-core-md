@@ -1,0 +1,11 @@
+<mat-form-field>
+  <mat-label>{{title}}</mat-label>
+  <input matInput [matDatepicker]="fieldPicker" [formControl]="field" placeholder="Seleccione fecha">
+  <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
+  <mat-datepicker #fieldPicker></mat-datepicker>
+  <mat-error *ngIf="field.hasError('matDatepickerParse')">El formato es incorrecto</mat-error>  
+  <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
+  <mat-error *ngIf="field.hasError('notUnique')">
+    El valor ya se encuentra utilizado: <a routerLink="/{{adminRoute}}" [queryParams]="adminParams">Cargar</a>    
+  </mat-error>
+</mat-form-field>

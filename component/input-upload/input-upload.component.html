@@ -1,7 +1,7 @@
 <mat-form-field *ngIf="!field.value">
   <mat-label>Archivo</mat-label>
 
-  <input type="file" matInput [readonly]="readonly" [formControl]="fileControl" (change)="onFileSelect($event)">
+  <input type="file" matInput [formControl]="fileControl" (change)="onFileSelect($event)">
   <mat-icon matSuffix *ngIf="field.pending">hourglass_empty</mat-icon>
 
 </mat-form-field>

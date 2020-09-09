@@ -23,7 +23,6 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
   @Input() field: FormControl;
   @Input() entityName: string;
   @Input() title?: string;
-  @Input() readonly?: boolean = false;
   load$: Observable<any>;
 
 

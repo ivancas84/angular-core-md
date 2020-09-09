@@ -18,7 +18,6 @@ export class InputSelectComponent implements  OnInit {
   @Input() field: FormControl;
   @Input() entityName: string;
   @Input() title?: string;
-  @Input() readonly?: boolean = false;
 
   options$: Observable<Array<any>>;
 
