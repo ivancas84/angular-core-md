@@ -51,6 +51,7 @@ export abstract class TableComponent implements OnInit {
       )
     )
 
+    if(this.collectionSize$){
     this.loadLength$ = this.collectionSize$.pipe(
       map(
         length => {
@@ -59,6 +60,7 @@ export abstract class TableComponent implements OnInit {
         }
       )
     )
+    }
   }
 
   onChangePage($event: PageEvent){
@@ -73,7 +75,7 @@ export abstract class TableComponent implements OnInit {
      * @return true si se efectuo ordenamiento en el servidor
      *         false si no se efectuo ordenamiento en el servidor
      */
-    if(this.length && this.display$.value && this.dataSource.length < this.length){
+    if(this.length && this.display$ && this.display$.value && this.dataSource.length < this.length){
       this.display$.value.setOrderByKeys([sort.active]);
       this.display$.value.setPage(1);
       this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
@@ -84,7 +86,7 @@ export abstract class TableComponent implements OnInit {
   }
 
   onChangeSort(sort: Sort) {
-    this.paginator.pageIndex = 0;
+    if(this.paginator) this.paginator.pageIndex = 0;
 
     if(this.serverSort(sort)) return;
 
