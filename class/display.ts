@@ -44,11 +44,11 @@ export class Display {
   public addCondition(condition){ this.condition.push(condition); }
   public setCondition(condition){ this.condition = condition; }
   
-  public addField(field){ this.fields.push(field); }
-  public setFields(fields){ this.fields = fields; }
+  public addField(field: string){ this.fields.push(field); }
+  public setFields(fields: string[]){ this.fields = fields; }
   
-  public addGroup(field){ this.group.push(field); }
-  public setGroup(fields){ this.group = fields; }
+  public addGroup(field: string){ this.group.push(field); }
+  public setGroup(fields: string[]){ this.group = fields; }
 
   public addHaving(condition){ this.having.push(condition); }
   public setHaving(condition){ this.having = condition; }
