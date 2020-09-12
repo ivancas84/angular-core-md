@@ -21,12 +21,6 @@ export class InputSelectComponent implements  OnInit {
 
   options$: Observable<Array<any>>;
 
-  options: any;
-  
-  disabled: boolean = true;
-
-  protected subscriptions = new Subscription();
-
   constructor( public dd: DataDefinitionService ) { }
 
   ngOnInit(): void {
