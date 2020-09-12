@@ -223,8 +223,8 @@ export class DataDefinitionService {
         rows => this.storage.setItem(key, rows)
       )      
     );
-    
   }
+  
   public upload(entity: string = "file", data: FormData) {
     /**
      * @param entity: Permite clasificar el procesamiento que debe darse a un archivo. 
