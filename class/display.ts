@@ -20,18 +20,39 @@ export class Display {
    * El servidor limita siempre la cantidad de elementos (size) a 100
    * Si se desea un valor mayor debe definirse explicitamente en el servidor
    */
+  
+  /**
+   * Atributos para consultas avanzadas
+   */
+  protected fields: Array<string> = []; 
+  protected group: Array<string> = [];
+  protected having: Array<any> = [];
 
   public getSize(){ return this.size }
   public getPage(){ return this.page }
   public getOrder(){ return this.order }
   public getCondition(){ return this.condition }
   public getParams(){ return this.params }
-  
+
+  public getFields(){ return this.fields }
+  public getGroup(){ return this.group }
+  public getHaving(){ return this.having }
+
   public setSize(size: number) { this.size = size; }
   public setPage(page: number) { this.page = page; }
+
   public addCondition(condition){ this.condition.push(condition); }
   public setCondition(condition){ this.condition = condition; }
   
+  public addField(field){ this.fields.push(field); }
+  public setFields(fields){ this.fields = fields; }
+  
+  public addGroup(field){ this.group.push(field); }
+  public setGroup(fields){ this.group = fields; }
+
+  public addHaving(condition){ this.having.push(condition); }
+  public setHaving(condition){ this.having = condition; }
+
   public describe(){
     let ret = {};
     if(this.size || (this.size === 0)) ret["size"] = this.size;
@@ -39,6 +60,10 @@ export class Display {
     if(!isEmptyObject(this.order)) ret["order"] = this.order;
     if(this.condition.length) ret["condition"] = this.condition;
     if(!isEmptyObject(this.params)) ret["params"] = this.params;
+    if(this.fields.length) ret["fields"] = this.fields;
+    if(this.group.length) ret["group"] = this.group;
+    if(this.having.length) ret["having"] = this.having;
+    
     return ret;
   }
 
