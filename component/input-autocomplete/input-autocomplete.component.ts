@@ -15,9 +15,8 @@ import { Display } from '../../class/display';
 })
 export class InputAutocompleteComponent implements  OnInit, DoCheck {
   /**
-   * Componente de administración de fieldset. Características:
-   *   El formulario y los datos son definidos en componente principal  
-   *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
+   * Input autocomplete reutilizable
+   * Define un input independiente para facilitar la incorporacion de funcionalidad adicional (validación de seteo, clear, etc)
    */
 
   @Input() field: FormControl;
