@@ -24,8 +24,6 @@ export class DataDefinitionService {
     protected parser: ParserService,
   ) { }
 
-  isSync(key, sync): boolean { return (!sync || !(key in sync) || sync[key]) ? true : false; }
-
   all (entity: string, display: Display = null): Observable<any> {
     let key = entity + ".all" + JSON.stringify(display.describe());
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
