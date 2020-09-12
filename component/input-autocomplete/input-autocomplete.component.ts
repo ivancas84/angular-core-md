@@ -1,11 +1,8 @@
-import { Input, OnInit, Component, OnChanges, SimpleChanges, DoCheck} from '@angular/core';
-import { FormGroup, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { Input, OnInit, Component, DoCheck, OnDestroy} from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Observable, Subscription, of } from 'rxjs';
-import { Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { SessionStorageService } from '../../service/storage/session-storage.service';
-import { fastClone } from '../../function/fast-clone';
-import { first, map, startWith, mergeMap, debounceTime, distinctUntilChanged, tap, catchError } from 'rxjs/operators';
+import { first, map, startWith, mergeMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { Display } from '../../class/display';
 
 
@@ -13,11 +10,10 @@ import { Display } from '../../class/display';
   selector: 'core-input-autocomplete',
   templateUrl: './input-autocomplete.component.html',
 })
-export class InputAutocompleteComponent implements  OnInit, DoCheck {
+export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   /**
-   * Componente de administración de fieldset. Características:
-   *   El formulario y los datos son definidos en componente principal  
-   *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
+   * Input autocomplete reutilizable
+   * Define un input independiente para facilitar la incorporacion de funcionalidad adicional (validación de seteo, clear, etc)
    */
 
   @Input() field: FormControl;
@@ -25,10 +21,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
   @Input() title?: string;
   load$: Observable<any>;
 
-
   searchControl: FormControl = new FormControl();
-  searchFailed: boolean = false;
-  disabled: boolean = true;
 
   protected subscriptions = new Subscription();
 
@@ -56,6 +49,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
         }
       }),
       debounceTime(300),
+
       distinctUntilChanged(),
       mergeMap(value => {
         if (typeof value == "string" ) return this._filter(value)
@@ -82,7 +76,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
   }
   
   initValue(value){
-    this.dd.getOrNull(this.entityName, value).pipe(first()).subscribe(
+    var s =this.dd.getOrNull(this.entityName, value).pipe(first()).subscribe(
       row => {
         if(row) { 
           this.searchControl.setValue(row);
@@ -93,6 +87,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
         }
       }
     );
+    this.subscriptions.add(s);
   }
 
   private _filter(value: string): Observable<any> {
@@ -106,5 +101,6 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck {
     return (value && value.id) ? this.dd.label(this.entityName, value.id) : value;
   }
   
+  ngOnDestroy () { this.subscriptions.unsubscribe() }
 
 }

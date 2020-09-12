@@ -24,8 +24,6 @@ export class DataDefinitionService {
     protected parser: ParserService,
   ) { }
 
-  isSync(key, sync): boolean { return (!sync || !(key in sync) || sync[key]) ? true : false; }
-
   all (entity: string, display: Display = null): Observable<any> {
     let key = entity + ".all" + JSON.stringify(display.describe());
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
@@ -215,6 +213,18 @@ export class DataDefinitionService {
     return this.http.post<any>(url, jsonParams, HTTP_OPTIONS);
   }
 
+  public advanced (entity: string, display: Display = null): Observable<any> {
+    let key = entity + ".advanced" + JSON.stringify(display.describe());
+    if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
+
+    let url = API_URL + entity + '/advanced'
+    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(
+      tap(
+        rows => this.storage.setItem(key, rows)
+      )      
+    );
+  }
+  
   public upload(entity: string = "file", data: FormData) {
     /**
      * @param entity: Permite clasificar el procesamiento que debe darse a un archivo. 
