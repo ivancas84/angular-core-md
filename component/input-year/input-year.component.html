@@ -1,0 +1,17 @@
+<mat-form-field>
+  <mat-label>{{title}}</mat-label>
+  <input matInput [matDatepicker]="fieldPicker" [formControl]="field" placeholder="{{placeholder}}">
+  <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
+  <mat-datepicker-toggle matSuffix (click)="field.setValue(null)">
+    <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+  </mat-datepicker-toggle>
+  <mat-datepicker #fieldPicker
+                  startView="multi-year"
+                  (yearSelected)="chosenYearHandler($event,fieldPicker)"
+  ></mat-datepicker>
+  <mat-error *ngIf="field.hasError('matDatepickerParse')">El formato es incorrecto</mat-error>  
+  <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
+  <mat-error *ngIf="field.hasError('notUnique')">
+    El valor ya se encuentra utilizado: <a routerLink="/{{adminRoute}}" [queryParams]="adminParams">Cargar</a>    
+  </mat-error>
+</mat-form-field>
