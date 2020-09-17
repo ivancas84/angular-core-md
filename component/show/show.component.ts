@@ -34,7 +34,6 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
 
    load$: Observable<any>;
    load: boolean = false;
-   loadDisplay: boolean = false;
 
    //display: Display;
   //data: any;
@@ -55,7 +54,6 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
           this.load = false;
           var display = this.initDisplay(queryParams);
           this.display$.next(display);
-          this.loadDisplay = true;
         }
       ),
       mergeMap(

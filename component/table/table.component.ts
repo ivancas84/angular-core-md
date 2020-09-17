@@ -28,6 +28,7 @@ export abstract class TableComponent implements OnInit {
    * atributo para suscribirme en el template
    */
 
+  display: Display = null;
   length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
@@ -49,6 +50,7 @@ export abstract class TableComponent implements OnInit {
       tap(length => { this.length = length }),
       mergeMap(() => { return this.initData() }),
       map(data => {
+        this.display = this.display$.value;
         this.dataSource = data;
         if(!this.length) this.length = this.dataSource.length;
         return true;
@@ -68,9 +70,9 @@ export abstract class TableComponent implements OnInit {
   }
 
   onChangePage($event: PageEvent){
-    this.display$.value.setPage($event.pageIndex+1);
-    this.display$.value.setSize($event.pageSize);
-    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
+    this.display.setPage($event.pageIndex+1);
+    this.display.setSize($event.pageSize);
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
   }
 
   serverSort(sort: Sort): boolean{
@@ -80,10 +82,10 @@ export abstract class TableComponent implements OnInit {
      * @return true si se efectuo ordenamiento en el servidor
      *         false si no se efectuo ordenamiento en el servidor
      */
-    if(this.length && this.display$ && this.display$.value && this.dataSource.length < this.length){
-      this.display$.value.setOrderByKeys([sort.active]);
+    if(this.length && this.display && this.dataSource.length < this.length){
+      this.display.setOrderByKeys([sort.active]);
       //this.display$.value.setPage(1);
-      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
+      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
       return true;
     }
 
@@ -91,7 +93,7 @@ export abstract class TableComponent implements OnInit {
   }
 
   onChangeSort(sort: Sort) {
-    this.display$.value.setPage(1);
+    this.display.setPage(1);
     //if(this.paginator) this.paginator.pageIndex = 0;
 
     if(this.serverSort(sort)) return;
