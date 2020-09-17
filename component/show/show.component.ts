@@ -1,7 +1,7 @@
 import { OnInit, OnDestroy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject, BehaviorSubject, Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { ReplaySubject, BehaviorSubject, Subscription, forkJoin, of, Observable } from 'rxjs';
+import { first, map, mergeMap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 
@@ -32,6 +32,14 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
    * Se define como BehaviorSubject para facilitar el acceso al valor actual evitando suscribirse continuamente
    */
 
+   load$: Observable<any>;
+   load: boolean = false;
+   loadDisplay: boolean = false;
+
+   //display: Display;
+  //data: any;
+  //collectionSize: number;
+
   protected subscriptions = new Subscription();
 
   constructor(
@@ -41,6 +49,35 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.load$ = this.route.queryParams.pipe(
+      map(
+        queryParams => {
+          this.load = false;
+          var display = this.initDisplay(queryParams);
+          this.display$.next(display);
+          this.loadDisplay = true;
+        }
+      ),
+      mergeMap(
+        () => {
+          return this.initCount();
+        }
+      ),
+      mergeMap(
+        count => {
+          this.collectionSize$.next(count);
+          return this.initData(count)
+        }
+      ),
+      map(
+        data => {
+          this.data$.next(data);
+          this.load = true;
+          return true;
+        }
+      )
+    );     
+    /*
     var s = this.route.queryParams.subscribe(
       queryParams => {
         this.initDisplay(queryParams);
@@ -48,16 +85,25 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
         this.initData();
       }
     );     
-    this.subscriptions.add(s); 
+    this.subscriptions.add(s);*/ 
   }
-   
-  initDisplay(params: { [x: string]: any; }): void {
+
+  initCount() {
+    return this.dd.count(this.entityName, this.display$.value)
+  }
+
+  initData(count){
+    if(!count) return of([]); 
+    return this.dd.all(this.entityName, this.display$.value); 
+  }
+
+  initDisplay(params: { [x: string]: any; }) {
     let display = new Display();
     display.setSize(100);
     display.setParamsByQueryParams(params);
-    this.display$.next(display);
+    return display;
   }
-  
+  /*
   initCount(){ 
     this.dd.count(this.entityName, this.display$.value).pipe(first()).subscribe(
       count => { this.collectionSize$.next(count); }
@@ -67,8 +113,8 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
   initData(){ 
     this.dd.all(this.entityName, this.display$.value).pipe(first()).subscribe(
       rows => { this.data$.next(rows); }
-    ); 
-  }
+    );
+  */
 
   ngOnDestroy () { this.subscriptions.unsubscribe() }
 
