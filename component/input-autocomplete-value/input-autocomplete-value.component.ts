@@ -50,6 +50,7 @@ export class InputAutocompleteValueComponent implements OnInit {
     var display = new Display();
     display.addField(this.fieldName)    
     display.addCondition([this.fieldName,"=~",value]);
+    display.setOrderByKeys([this.fieldName]);
     return this.dd.advanced(this.entityName, display).pipe(
       map(
         rows => arrayColumn(rows, this.fieldName)

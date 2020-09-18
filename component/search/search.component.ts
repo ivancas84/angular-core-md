@@ -64,6 +64,7 @@ export abstract class SearchComponent {
           if(this.searchForm.get("condition")) display.setConditionByFilters(this.searchForm.get("condition").value);    
           if(this.searchForm.get("params")) display.setParams(this.searchForm.get("params").value);    
           if(this.searchForm.get("order")) { display.setOrderByElement(this.searchForm.get("order").value); }    
+          display.setPage(1);
           this.searchPanel.close();
           this.search(display);
         }

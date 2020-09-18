@@ -1,9 +1,9 @@
 import { Input, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { Observable, BehaviorSubject, ReplaySubject, of, forkJoin, concat, merge } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
-import { first, map } from 'rxjs/operators';
+import { combineAll, first, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { compare } from '@function/compare';
@@ -21,11 +21,14 @@ export abstract class TableComponent implements OnInit {
 
   @Input() data$: Observable<any>; 
   @Input() display$?: BehaviorSubject<Display>;
-  @Input() collectionSize$?: BehaviorSubject<number>;
+  @Input() collectionSize$?: Observable<any>;
  
-  load$: Observable<any>;
-  loadLength$: Observable<any>;
+  load$: Observable<any>; 
+  /**
+   * atributo para suscribirme en el template
+   */
 
+  display: Display = null;
   length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
@@ -41,31 +44,35 @@ export abstract class TableComponent implements OnInit {
     protected router: Router,
   ) {}
 
+  
   ngOnInit(): void {
-    this.load$ = this.data$.pipe(
-      map(
-        data => {
-          this.dataSource = data;
-          return true;
-        }
-      )
-    )
+    this.load$ = this.initLength().pipe(
+      tap(length => { this.length = length }),
+      mergeMap(() => { return this.initData() }),
+      map(data => {
+        this.display = this.display$.value;
+        this.dataSource = data;
+        if(!this.length) this.length = this.dataSource.length;
+        return true;
+      })
+    );
+  }
 
-    if(this.collectionSize$){
-    this.loadLength$ = this.collectionSize$.pipe(
-      map(
-        length => {
-          this.length = length;
-          return true;
-        }
-      )
-    )
-    }
+  initData(){
+    return this.data$;
+  }
+
+  initLength(){
+    return of({}).pipe(switchMap(() => {
+      if (this.collectionSize$) return this.collectionSize$;
+      return of(0);
+    }));
   }
 
   onChangePage($event: PageEvent){
-    this.display$.value.setPage($event.pageIndex+1);
-    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
+    this.display.setPage($event.pageIndex+1);
+    this.display.setSize($event.pageSize);
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
   }
 
   serverSort(sort: Sort): boolean{
@@ -75,10 +82,10 @@ export abstract class TableComponent implements OnInit {
      * @return true si se efectuo ordenamiento en el servidor
      *         false si no se efectuo ordenamiento en el servidor
      */
-    if(this.length && this.display$ && this.display$.value && this.dataSource.length < this.length){
-      this.display$.value.setOrderByKeys([sort.active]);
-      this.display$.value.setPage(1);
-      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display$.value.encodeURI());  
+    if(this.length && this.display && this.dataSource.length < this.length){
+      this.display.setOrderByKeys([sort.active]);
+      //this.display$.value.setPage(1);
+      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
       return true;
     }
 
@@ -86,7 +93,8 @@ export abstract class TableComponent implements OnInit {
   }
 
   onChangeSort(sort: Sort) {
-    if(this.paginator) this.paginator.pageIndex = 0;
+    this.display.setPage(1);
+    //if(this.paginator) this.paginator.pageIndex = 0;
 
     if(this.serverSort(sort)) return;
 
