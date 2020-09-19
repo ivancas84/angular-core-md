@@ -90,6 +90,7 @@ export class DataDefinitionService {
     return this._getAll(entity, searchIds).pipe(
       map(
         rows_ => {
+
         rows_.forEach(element => {
           let ddi: DataDefinition = this.loader.get(entity);
           ddi.storage(element);
@@ -191,26 +192,10 @@ export class DataDefinitionService {
     );
   }
 
-  persist(entity: string, data: any){
-    /**
-     * Datos a ser procesados.
-     * Retorna array con los ids persistidos.
-     */
-    let url = API_URL + entity + '/persist'
-
-    return this.http.post<any>(url, JSON.stringify(data), HTTP_OPTIONS).pipe(
-      map(
-        response => {
-          return response;
-        }
-      )
-    )
-  }
-
-  base (entity: string, data: any = null): Observable<any> {
+  public post(url: string, entity: string,  data: any = null):  Observable<any> {
     var jsonParams = JSON.stringify(data);
-    let url = API_URL + entity + '/base'
-    return this.http.post<any>(url, jsonParams, HTTP_OPTIONS);
+    let url_ = API_URL + entity + '/'+url;
+    return this.http.post<any>(url_, jsonParams, HTTP_OPTIONS);
   }
 
   public advanced (entity: string, display: Display = null): Observable<any> {

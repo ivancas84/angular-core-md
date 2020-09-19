@@ -104,6 +104,17 @@ export class ValidatorsService {
     };
   }
 
+  furtherError(entityName: string): AsyncValidatorFn {
+    return (control: FormControl): Observable<ValidationErrors | null> => {
+      return timer(1000).pipe(
+        mergeMap(()=> {
+          return this.dd.post("further_error", entityName, control.value);
+        }
+      ))  
+    }
+  }
+
+
   uniqueMultiple(entity: string, fields:Array<string>): AsyncValidatorFn {
     /**
      * Validar unicidad a traves de varios campos.
