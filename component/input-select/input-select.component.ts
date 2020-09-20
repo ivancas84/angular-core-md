@@ -24,6 +24,7 @@ export class InputSelectComponent implements  OnInit {
   constructor( public dd: DataDefinitionService ) { }
 
   ngOnInit(): void {
+    console.log(this.entityName);
     if(!this.title) this.title = this.entityName;
     this.options$ = this.dd.all(this.entityName, new Display)
   }

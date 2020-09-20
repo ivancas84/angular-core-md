@@ -164,7 +164,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array de logs)"
      */
-    return this.dd.persist(this.entityName, this.serverData())
+    return this.dd.post("persist", this.entityName, this.serverData())
   }
 
   onSubmit(): void {
