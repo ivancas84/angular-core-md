@@ -193,7 +193,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         },
         error => { 
           console.log(error);
-          const dialogRef = this.dialog.open(DialogAlertComponent, {
+          this.dialog.open(DialogAlertComponent, {
             data: {title: "Error", message: error.error}
           });
           this.isSubmitted = false;
