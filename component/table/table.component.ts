@@ -46,11 +46,15 @@ export abstract class TableComponent implements OnInit {
 
   
   ngOnInit(): void {
+    /**
+     * @todo conviene reemplazar display? por un observable y utilizar un forkJoin?
+     */
     this.load$ = this.initLength().pipe(
       tap(length => { this.length = length }),
       mergeMap(() => { return this.initData() }),
       map(data => {
-        this.display = this.display$.value;
+        
+        if(this.display$) this.display = this.display$.value;
         this.dataSource = data;
         if(!this.length) this.length = this.dataSource.length;
         return true;
@@ -83,6 +87,7 @@ export abstract class TableComponent implements OnInit {
      *         false si no se efectuo ordenamiento en el servidor
      */
     if(this.length && this.display && this.dataSource.length < this.length){
+      this.display.setPage(1);
       this.display.setOrderByKeys([sort.active]);
       //this.display$.value.setPage(1);
       this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
@@ -93,8 +98,7 @@ export abstract class TableComponent implements OnInit {
   }
 
   onChangeSort(sort: Sort) {
-    this.display.setPage(1);
-    //if(this.paginator) this.paginator.pageIndex = 0;
+    if(this.paginator) this.paginator.pageIndex = 0;
 
     if(this.serverSort(sort)) return;
 
