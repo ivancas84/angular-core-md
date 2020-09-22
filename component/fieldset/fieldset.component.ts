@@ -83,7 +83,7 @@ export abstract class FieldsetComponent implements  OnInit  {
         response => {
           if(this.formValues) {
             var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
-            (d) ? this.fieldset.patchValue(d) : this.fieldset.reset();
+            (d) ? this.fieldset.reset(d) : this.fieldset.reset();
             this.formValues = null;
           } else {
             this.initValues(response);
@@ -98,7 +98,7 @@ export abstract class FieldsetComponent implements  OnInit  {
 
   initValues(response: {[key:string]: any} = {}){
     if(!response) {
-      this.fieldset.patchValue(this.defaultValues);
+      this.fieldset.reset(this.defaultValues);
     } else {
       var res = fastClone(response);
       for(var key in this.defaultValues){
@@ -106,7 +106,7 @@ export abstract class FieldsetComponent implements  OnInit  {
           if(!res.hasOwnProperty(key)) res[key] = this.defaultValues[key];
         }
       }
-      this.fieldset.patchValue(res) 
+      this.fieldset.reset(res) 
     }
   }
  
