@@ -21,7 +21,7 @@ export abstract class SearchComponent {
   /**
    * Busqueda a traves de condicion
    * implementacion opcional mediante componente SearchCondition
-   * No conviene utilizar ReplaySubject (como el padre?)
+   * display$ al ser definida por elementos asincronicos se considera observable
    */ 
 
   searchForm: FormGroup = this.fb.group({});
