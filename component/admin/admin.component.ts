@@ -71,7 +71,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   ) {}
   
   ngAfterViewInit(): void {
-    this.removeStorage();
+    this.storage.removeItemsPrefix(emptyUrl(this.router.url));
     /**
      * Si no se incluye, nunca se limpia el formulario 
      * Puede resultar confuso cuando se asignan otros parametros a la url
@@ -127,18 +127,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
 
   }
 
-  removeStorage(){ 
-    /**
-     * Eliminar datos del storage
-     * Se elimina la ruta actual y las variantes de la ruta actual
-     * Las variantes corresponden a aquellas url que tienen la misma ruta pero diferentes parametros
-     */
-    var route = this.router.url;
-    var index = this.router.url.indexOf('?');
-    if (index != -1) route = this.router.url.substring(0, index);
-    this.storage.removeItemsPrefix(route);
-  }
-
   back() { this.location.back(); }
 
   delete() { 
@@ -184,11 +172,9 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     } else {
       var s = this.persist().pipe(first()).subscribe(
         response => {
+          this.storage.removeItemsContains(".");
           this.storage.removeItemsPersisted(response["detail"]);
-          this.removeStorage();
-          /**
-           * al recargar puede que se modifique la url, es necesario limpiar el storage para que no queden antiguas referencias a la url anterior
-           */
+          this.storage.removeItemsPrefix(emptyUrl(this.router.url));
           this.reload(response);
         },
         error => { 
