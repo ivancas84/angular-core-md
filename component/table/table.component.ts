@@ -20,12 +20,24 @@ import { fastClone } from '@function/fast-clone';
 export abstract class TableComponent implements OnInit {
 
   @Input() data$: Observable<any>; 
+  /**
+   * Datos que seran utilizados para visualizar o inicializar datos a mostrar
+   */
+
   @Input() display$?: Observable<Display>;
+  /**
+   * Busqueda susceptible de ser modificada por ordenamiento o paginacion
+   * @todo ¿es necesario que sea un Observable?
+   */
+  
   @Input() collectionSize$?: Observable<number>;
- 
+  /**
+   * Cantidad total de elementos, puede ser mayor que los datos a visualizar
+   */
+
   load$: Observable<any>; 
   /**
-   * atributo para suscribirme en el template
+   * atributo para suscribirme en el template e incializar
    */
 
   display: Display;
@@ -47,7 +59,9 @@ export abstract class TableComponent implements OnInit {
   
   ngOnInit(): void {
     /**
-     * @todo conviene reemplazar display? por un observable y utilizar un forkJoin?
+     * @todo estoy dependiendo de la longitud? y si cambia data$ no se vuelve a inicializar
+     * intente utilizar un forkjoin pero no me anduvo
+     * conviene reemplazar display?
      */
     this.load$ = this.initLength().pipe(
       tap(length => { this.length = length }),
