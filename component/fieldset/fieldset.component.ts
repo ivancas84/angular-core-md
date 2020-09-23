@@ -1,4 +1,4 @@
-import { Input, OnInit, Component} from '@angular/core';
+import { Input, OnInit, Component, AfterViewInit} from '@angular/core';
 import { FormGroup, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import {ErrorStateMatcher} from '@angular/material/core';
   selector: 'app-fieldset',
   template: '',
 })
-export abstract class FieldsetComponent implements  OnInit {
+export abstract class FieldsetComponent implements  OnInit  {
   /**
    * Componente de administración de fieldset. Características:
    *   El formulario y los datos son definidos en componente principal  
@@ -61,26 +61,23 @@ export abstract class FieldsetComponent implements  OnInit {
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
     this.initForm();
-    this.initOptions();
     this.initData();
   }
+
 
   initForm(): void {
     this.fieldset = this.formGroup();
     this.form.addControl(this.entityName, this.fieldset);
   }
 
-  initOptions(): void {
-    /**
-     * sobrescribir si el formulario tiene opciones
-     */
-  }
-
   initData(): void {
     /**
-     * No suscribirse desde el template!
-     * Puede disparar errores ExpressionChanged... no deseados (por ejemplo en la validacion inicial)
-     * Al suscribirse desde el template se cambia el Lifehook cycle ?
+     * @todo no me suscribo desde el template porque dispara errores ExpressionChanged
+     * Un posible problema es que inicializo en null y despues asigno el valor a traves de reset o patchValue
+     * Habria que ver si se puede efectuar todo el proceso de inicializacion del formulario y asignacion de valores en un mismo observable
+     * Al suscribirse directamente en el ts no dispara los errores, se carga primero el formulario y despues se asigna el valor
+     * Puede haber inconvenientes si se desea acceder al valueChanges en los subcomponentes,
+     * la asignacion de datos iniciales no sera considerada como valueChange (se puede solucionar de la misma forma suscribiendose en el ts)
      */  
       var s = this.data$.subscribe(
         response => {
@@ -109,8 +106,6 @@ export abstract class FieldsetComponent implements  OnInit {
           if(!res.hasOwnProperty(key)) res[key] = this.defaultValues[key];
         }
       }
-      console.log("datos resultantes initValues")
-      console.log(res);
       this.fieldset.reset(res) 
     }
   }

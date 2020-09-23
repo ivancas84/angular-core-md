@@ -7,7 +7,7 @@ import { Location } from '@angular/common';
 import { emptyUrl } from '../../function/empty-url.function';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { isEmptyObject } from '../../function/is-empty-object.function';
-import { OnInit, AfterViewInit, Component } from '@angular/core';
+import { OnInit, AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
 import { markAllAsDirty } from '../../function/mark-all-as-dirty';
 import { logValidationErrors } from '../../function/log-validation-errors';
 import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
@@ -18,6 +18,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'core-admin',
   template: '',
+changeDetection: ChangeDetectionStrategy.OnPush
+
+
 })
 export abstract class AdminComponent implements OnInit, AfterViewInit {
 /**
@@ -190,7 +193,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         },
         error => { 
           console.log(error);
-          const dialogRef = this.dialog.open(DialogAlertComponent, {
+          this.dialog.open(DialogAlertComponent, {
             data: {title: "Error", message: error.error}
           });
           this.isSubmitted = false;

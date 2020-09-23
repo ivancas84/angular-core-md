@@ -20,15 +20,15 @@ import { fastClone } from '@function/fast-clone';
 export abstract class TableComponent implements OnInit {
 
   @Input() data$: Observable<any>; 
-  @Input() display$?: BehaviorSubject<Display>;
-  @Input() collectionSize$?: Observable<any>;
+  @Input() display$?: Observable<Display>;
+  @Input() collectionSize$?: Observable<number>;
  
   load$: Observable<any>; 
   /**
    * atributo para suscribirme en el template
    */
 
-  display: Display = null;
+  display: Display;
   length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
@@ -46,11 +46,17 @@ export abstract class TableComponent implements OnInit {
 
   
   ngOnInit(): void {
+    /**
+     * @todo conviene reemplazar display? por un observable y utilizar un forkJoin?
+     */
     this.load$ = this.initLength().pipe(
       tap(length => { this.length = length }),
-      mergeMap(() => { return this.initData() }),
+      mergeMap(() => { return this.display$ }),
+      mergeMap(display => { 
+        this.display = display;
+        return this.initData() 
+      }),
       map(data => {
-        this.display = this.display$.value;
         this.dataSource = data;
         if(!this.length) this.length = this.dataSource.length;
         return true;
@@ -69,6 +75,13 @@ export abstract class TableComponent implements OnInit {
     }));
   }
 
+  initDisplay(){
+    return of({}).pipe(switchMap(() => {
+      if (this.display$) return this.display$;
+      return of(null);
+    }));
+  }
+
   onChangePage($event: PageEvent){
     this.display.setPage($event.pageIndex+1);
     this.display.setSize($event.pageSize);
@@ -83,6 +96,7 @@ export abstract class TableComponent implements OnInit {
      *         false si no se efectuo ordenamiento en el servidor
      */
     if(this.length && this.display && this.dataSource.length < this.length){
+      this.display.setPage(1);
       this.display.setOrderByKeys([sort.active]);
       //this.display$.value.setPage(1);
       this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
@@ -93,8 +107,7 @@ export abstract class TableComponent implements OnInit {
   }
 
   onChangeSort(sort: Sort) {
-    this.display.setPage(1);
-    //if(this.paginator) this.paginator.pageIndex = 0;
+    if(this.paginator) this.paginator.pageIndex = 0;
 
     if(this.serverSort(sort)) return;
 
