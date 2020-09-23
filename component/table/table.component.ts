@@ -20,15 +20,15 @@ import { fastClone } from '@function/fast-clone';
 export abstract class TableComponent implements OnInit {
 
   @Input() data$: Observable<any>; 
-  @Input() display$?: BehaviorSubject<Display>;
-  @Input() collectionSize$?: Observable<any>;
+  @Input() display$?: Observable<Display>;
+  @Input() collectionSize$?: Observable<number>;
  
   load$: Observable<any>; 
   /**
    * atributo para suscribirme en el template
    */
 
-  display: Display = null;
+  display: Display;
   length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
@@ -51,10 +51,12 @@ export abstract class TableComponent implements OnInit {
      */
     this.load$ = this.initLength().pipe(
       tap(length => { this.length = length }),
-      mergeMap(() => { return this.initData() }),
+      mergeMap(() => { return this.display$ }),
+      mergeMap(display => { 
+        this.display = display;
+        return this.initData() 
+      }),
       map(data => {
-        
-        if(this.display$) this.display = this.display$.value;
         this.dataSource = data;
         if(!this.length) this.length = this.dataSource.length;
         return true;
@@ -70,6 +72,13 @@ export abstract class TableComponent implements OnInit {
     return of({}).pipe(switchMap(() => {
       if (this.collectionSize$) return this.collectionSize$;
       return of(0);
+    }));
+  }
+
+  initDisplay(){
+    return of({}).pipe(switchMap(() => {
+      if (this.display$) return this.display$;
+      return of(null);
     }));
   }
 
