@@ -30,6 +30,7 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
   display$: BehaviorSubject<Display> = new BehaviorSubject(null);
   /**
    * Se define como BehaviorSubject para facilitar el acceso al valor actual evitando suscribirse continuamente
+   * Se defibe como Observable porque es definida a traves de elementos asincronicos y puede variar su valor
    */
 
    load$: Observable<any>;
