@@ -1,6 +1,6 @@
 import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { Display } from '@class/display';
 
@@ -18,6 +18,7 @@ export class InputSelectComponent implements  OnInit {
   @Input() field: FormControl;
   @Input() entityName: string;
   @Input() title?: string;
+  @Input() multiple?: boolean = false;
 
   options$: Observable<Array<any>>;
 

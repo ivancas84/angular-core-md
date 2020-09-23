@@ -24,10 +24,9 @@ export abstract class TableComponent implements OnInit {
    * Datos que seran utilizados para visualizar o inicializar datos a mostrar
    */
 
-  @Input() display$?: Observable<Display>;
+  @Input() display?: Display;
   /**
    * Busqueda susceptible de ser modificada por ordenamiento o paginacion
-   * @todo ¿es necesario que sea un Observable?
    */
   
   @Input() collectionSize$?: Observable<number>;
@@ -40,7 +39,7 @@ export abstract class TableComponent implements OnInit {
    * atributo para suscribirme en el template e incializar
    */
 
-  display: Display;
+  //display: Display;
   length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
@@ -65,9 +64,7 @@ export abstract class TableComponent implements OnInit {
      */
     this.load$ = this.initLength().pipe(
       tap(length => { this.length = length }),
-      mergeMap(() => { return this.display$ }),
-      mergeMap(display => { 
-        this.display = display;
+      mergeMap(() => { 
         return this.initData() 
       }),
       map(data => {
@@ -89,12 +86,6 @@ export abstract class TableComponent implements OnInit {
     }));
   }
 
-  initDisplay(){
-    return of({}).pipe(switchMap(() => {
-      if (this.display$) return this.display$;
-      return of(null);
-    }));
-  }
 
   onChangePage($event: PageEvent){
     this.display.setPage($event.pageIndex+1);

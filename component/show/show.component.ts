@@ -33,10 +33,11 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
    * Se defibe como Observable porque es definida a traves de elementos asincronicos y puede variar su valor
    */
 
-   load$: Observable<any>;
-   load: boolean = false;
+   display: Display;
 
-   //display: Display;
+   load$: Observable<any>;
+   //load: boolean = false;
+
   //data: any;
   //collectionSize: number;
 
@@ -52,7 +53,7 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
     this.load$ = this.route.queryParams.pipe(
       map(
         queryParams => {
-          this.load = false;
+          //this.load = false;
           var display = this.initDisplay(queryParams);
           this.display$.next(display);
         }
@@ -71,7 +72,7 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
       map(
         data => {
           this.data$.next(data);
-          this.load = true;
+          //this.load = true;
           return true;
         }
       )
@@ -100,6 +101,7 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
     let display = new Display();
     display.setSize(100);
     display.setParamsByQueryParams(params);
+    this.display = display;
     return display;
   }
   /*
