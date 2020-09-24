@@ -59,6 +59,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
 
   protected subscriptions = new Subscription();
    
+  params: any;
+
   constructor(
     protected fb: FormBuilder, 
     protected route: ActivatedRoute, 
@@ -99,7 +101,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      * Puede generar errores "ExpressionChanged"
      */
     var s = this.route.queryParams.subscribe(
-      params => { this.setData(params); },
+      params => { 
+        this.setParams(params);
+        this.setData()
+      },
       error => { 
         this.snackBar.open(JSON.stringify(error), "X"); 
       }
@@ -107,16 +112,18 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.subscriptions.add(s);
   }
 
-  setData(params: any): void {
-    if(isEmptyObject(params)) {
+  setParams(params: any){ this.params = params; }
+
+  setData(): void {
+    if(isEmptyObject(this.params)) {
       this.data$.next(null);
       return;
     } 
 
-    this.dd.uniqueOrNull(this.entityName, params).pipe(first()).subscribe(
+    this.dd.uniqueOrNull(this.entityName, this.params).pipe(first()).subscribe(
       response => {
         if (response) this.data$.next(response);
-        else this.data$.next(params);
+        else this.data$.next(this.params);
       },
       error => { 
         this.dialog.open(DialogAlertComponent, {
@@ -141,12 +148,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      */
     let route = emptyUrl(this.router.url);
     if(route != this.router.url) this.router.navigateByUrl('/' + route);
-    else this.setData(this.route.snapshot.queryParams)
+    else this.setData()
     
   }
 
   reset(): void{
-    this.setData(this.route.snapshot.queryParams)
+    this.setData()
   }
   
   persist(): Observable<any> {
@@ -196,7 +203,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      */
     let route = emptyUrl(this.router.url) + "?id="+response["id"];
     if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
-    else this.setData(this.route.snapshot.queryParams);
+    else this.setData();
     this.snackBar.open("Registro realizado", "X");
     this.isSubmitted = false;
   }
