@@ -1,8 +1,8 @@
 import { Input, OnInit, Component, DoCheck } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { getControlName } from '@function/get-control-name';
-import { Observable, of } from 'rxjs';
-import { startWith, tap, debounceTime, distinctUntilChanged, mergeMap, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'core-input-timepicker',
