@@ -8,7 +8,7 @@ import {ErrorStateMatcher} from '@angular/material/core';
 
 
 @Component({
-  selector: 'app-fieldset',
+  selector: 'core-fieldset',
   template: '',
 })
 export abstract class FieldsetComponent implements  OnInit  {
