@@ -45,11 +45,8 @@ export class InputTimepickerComponent implements OnInit, DoCheck {
 
     this.searchControl.valueChanges.subscribe(
         value => {
-          console.log(value);
-          if((!value || value instanceof Date) && value != this.field.value){
-            console.log("estoy");
-            this.field.setValue(value);
-          }
+          if((!value || value instanceof Date) 
+          && value != this.field.value) this.field.setValue(value);
         }
     );
     
