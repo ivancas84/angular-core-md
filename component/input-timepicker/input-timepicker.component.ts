@@ -32,6 +32,11 @@ export class InputTimepickerComponent implements OnInit, DoCheck {
 
   load$: Observable<any>;
 
+  value: Date;
+  /**
+   * Valor local para evitar error ExpressionChangedAfterItHasBeenCheckedError
+   */
+
   ngDoCheck(): void {
     if(this.field.errors && !this.searchControl.errors) this.searchControl.setErrors(this.field.getError);
     if(this.field.dirty && !this.searchControl.dirty) this.searchControl.markAsDirty();
@@ -44,10 +49,18 @@ export class InputTimepickerComponent implements OnInit, DoCheck {
     this.searchControl.setValidators(this.field.validator)
 
     this.searchControl.valueChanges.subscribe(
-        value => {
-          if((!value || value instanceof Date) 
-          && value != this.field.value) this.field.setValue(value);
+      value => {
+        if(!value) this.field.setValue(value)
+        else if((value instanceof Date) && 
+        (
+          !(this.value instanceof Date)
+          || ((this.value instanceof Date) && (value.getTime() != this.value.getTime()))
+        )          
+        ) {
+          this.field.setValue(value);
+          this.value = value;
         }
+      }
     );
     
     this.load$ = this.field.valueChanges.pipe(
@@ -55,11 +68,16 @@ export class InputTimepickerComponent implements OnInit, DoCheck {
       map(
         value => {
           if(value && !(value instanceof Date)) {
-            value = new Date(value);
-            this.field.setValue(value);
+            this.value = new Date(value);
+            //this.field.setValue(value); 
+            /** 
+             * Esta expresion comentada da error ExpressionChangedAfterItHasBeenCheckedError, 
+             * Se implementó this.value para evitar ese error
+             * Toda esta logica es necesario porque la libreria utilizada no soporte strings como valores iniciales
+             */
           }
-          if(value != this.searchControl.value){
-            this.searchControl.setValue(value)
+          if(this.value != this.searchControl.value){
+            this.searchControl.setValue(this.value)
           }
           return true;
         }
