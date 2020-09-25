@@ -90,7 +90,6 @@ export class DataDefinitionService {
     return this._getAll(entity, searchIds).pipe(
       map(
         rows_ => {
-
         rows_.forEach(element => {
           let ddi: DataDefinition = this.loader.get(entity);
           ddi.storage(element);

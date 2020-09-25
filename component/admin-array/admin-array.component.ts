@@ -58,8 +58,13 @@ export abstract class AdminArrayComponent extends AdminComponent {
 
     this.dd.getAll(this.entityName, this.params).pipe(first()).subscribe(
       response => {
-        if (response) this.data$.next(response);
-        else this.data$.next([]);
+        var filtered = response.filter(function (el) { return el != null; });
+        /** 
+         * Debido a la constante manipulacion de ids 
+         * Sucede que se consultan ids eliminados
+         * por lo tanto debe filtrarse la respuestaantes de cargar
+         */
+        this.data$.next(filtered);
       },
       error => { 
         this.dialog.open(DialogAlertComponent, {
