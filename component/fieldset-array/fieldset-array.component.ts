@@ -73,7 +73,10 @@ export abstract class FieldsetArrayComponent implements  OnInit  {
     this.fieldset.push(fg); 
   }
 
-  remove(index) { this.fieldset.removeAt(index); }
+  remove(index) { 
+    if(!this.fieldset.controls[index].get("id").value) this.fieldset.removeAt(index); 
+    else this.fieldset.controls[index].get("_delete").setValue(true);
+  }
 
   initData(): void {
     /**
