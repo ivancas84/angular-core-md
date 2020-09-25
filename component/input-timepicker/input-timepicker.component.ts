@@ -67,17 +67,15 @@ export class InputTimepickerComponent implements OnInit, DoCheck {
       startWith(this.field.value),
       map(
         value => {
-          if(value && !(value instanceof Date)) {
-            this.value = new Date(value);
-            //this.field.setValue(value); 
-            /** 
-             * Esta expresion comentada da error ExpressionChangedAfterItHasBeenCheckedError, 
-             * Se implementó this.value para evitar ese error
-             * Toda esta logica es necesario porque la libreria utilizada no soporte strings como valores iniciales
-             */
-          }
-          if(this.value != this.searchControl.value){
-            this.searchControl.setValue(this.value)
+          /** 
+           * Se implementa logica y atributo this.value adicional para evitar error expressionchangedafterithasbeencheckederror
+           * Toda esta logica es necesario porque la libreria utilizada no soporte strings como valores iniciales
+           */
+          if(value && !(value instanceof Date)) { value = new Date(value); }
+          this.value = value;
+          if(((!this.value || !this.searchControl.value) && (this.value != this.searchControl.value))
+          || ((this.value instanceof Date) && (this.searchControl.value instanceof Date) && (this.value.getTime() != this.searchControl.value.getTime()))){
+            this.searchControl.setValue(this.value);
           }
           return true;
         }
