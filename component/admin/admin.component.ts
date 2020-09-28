@@ -1,5 +1,5 @@
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ReplaySubject, Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { first } from 'rxjs/operators';
@@ -38,10 +38,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
    * Entidad principal
    */
   
-  data$:ReplaySubject<any> = new ReplaySubject();
+  data$:BehaviorSubject<any> = new BehaviorSubject(false);
   /**
    * Datos principales
-   * Se define como ReplaySubject porque puede recibir valores nuevos que deben ser asignados con metodo .next
+   * Se define como BehaviorSubject porque puede recibir valores nuevos que deben ser asignados con metodo .next
    * No se utiliza BehaviorSubject para evitar procesamiento adicional con el valor null
    * null es un dato valido para data$ significa que no esta definido por lo que los subcomponentes inicializaran como si estuviera vacio
    * Se podria usar BehaviorSubject y manejar diferentes alternativas para indicar si esta o no definido, por ejemplo null o false
