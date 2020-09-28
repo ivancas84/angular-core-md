@@ -69,19 +69,19 @@ export abstract class TableComponent implements OnInit {
       response => {
         this.length = response[0];
         this.dataSource = response[1];
-        this.load=false;
+        this.load=true;
         return true;
       }
     ));
   }
 
   initData(){
-    this.load=true;
+    this.load=false;
     return this.data$;
   }
 
   initLength(){
-    this.load=true;
+    this.load=false;
 
     return of({}).pipe(switchMap(() => {
       if (this.collectionSize$) return this.collectionSize$;
