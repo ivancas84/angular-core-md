@@ -1,5 +1,5 @@
 import { Input, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable, BehaviorSubject, ReplaySubject, of, forkJoin, concat, merge } from 'rxjs';
+import { Observable, BehaviorSubject, of, forkJoin, concat, merge, combineLatest } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
@@ -39,6 +39,11 @@ export abstract class TableComponent implements OnInit {
    * atributo para suscribirme en el template e incializar
    */
 
+  load: boolean;
+  /**
+   * Atributo auxiliar para visualizar la barra de progreso
+   */
+
   //display: Display;
   length: number;
   displayedColumns: string[];
@@ -57,29 +62,27 @@ export abstract class TableComponent implements OnInit {
 
   
   ngOnInit(): void {
-    /**
-     * @todo estoy dependiendo de la longitud? y si cambia data$ no se vuelve a inicializar
-     * intente utilizar un forkjoin pero no me anduvo
-     * conviene reemplazar display?
-     */
-    this.load$ = this.initLength().pipe(
-      tap(length => { this.length = length }),
-      mergeMap(() => { 
-        return this.initData() 
-      }),
-      map(data => {
-        this.dataSource = data;
-        if(!this.length) this.length = this.dataSource.length;
+    this.load$ = combineLatest([
+       this.initLength(),
+       this.initData()]
+    ).pipe(map(
+      response => {
+        this.length = response[0];
+        this.dataSource = response[1];
+        this.load=false;
         return true;
-      })
-    );
+      }
+    ));
   }
 
   initData(){
+    this.load=true;
     return this.data$;
   }
 
   initLength(){
+    this.load=true;
+
     return of({}).pipe(switchMap(() => {
       if (this.collectionSize$) return this.collectionSize$;
       return of(0);
