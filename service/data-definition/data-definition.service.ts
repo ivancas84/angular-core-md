@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { tap, map, mergeMap } from 'rxjs/operators';
+import { tap, map, mergeMap, share, first } from 'rxjs/operators';
 
 import { API_URL, HTTP_OPTIONS } from '../../../app.config';
 import { SessionStorageService } from '../storage/session-storage.service';
@@ -29,7 +29,7 @@ export class DataDefinitionService {
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
 
     let url = API_URL + entity + '/all'
-    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(
+    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(first(),
       tap(
         rows => {
           this.storage.setItem(key, rows);
@@ -49,7 +49,7 @@ export class DataDefinitionService {
 
     let url = API_URL + entity + '/count'
 
-    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(
+    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(first(),
       tap( res => this.storage.setItem(key, res) )
     );
   }
@@ -61,7 +61,7 @@ export class DataDefinitionService {
     if(!ids.length) return of([]);
 
     let url: string = API_URL + entity + '/get_all';
-    return this.http.post<any>(url, ids, HTTP_OPTIONS);
+    return this.http.post<any>(url, ids, HTTP_OPTIONS).pipe(first());
   }
 
   getAll (entity: string, ids: Array<string | number>): Observable<any> { 
@@ -133,7 +133,7 @@ export class DataDefinitionService {
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
 
     let url = API_URL + entity + '/ids'
-    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(
+    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(first(),
       map(
         ids => {
           this.storage.setItem(key, ids);
@@ -179,7 +179,7 @@ export class DataDefinitionService {
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
 
     let url = API_URL + entity + '/unique'
-    return this.http.post<any>(url, params, HTTP_OPTIONS).pipe(
+    return this.http.post<any>(url, params, HTTP_OPTIONS).pipe(first(),
       map(
         row => {
           this.storage.setItem(key, row);
@@ -194,7 +194,7 @@ export class DataDefinitionService {
   public post(url: string, entity: string,  data: any = null):  Observable<any> {
     var jsonParams = JSON.stringify(data);
     let url_ = API_URL + entity + '/'+url;
-    return this.http.post<any>(url_, jsonParams, HTTP_OPTIONS);
+    return this.http.post<any>(url_, jsonParams, HTTP_OPTIONS).pipe(first());
   }
 
   public advanced (entity: string, display: Display = null): Observable<any> {
@@ -202,7 +202,7 @@ export class DataDefinitionService {
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key));
 
     let url = API_URL + entity + '/advanced'
-    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(
+    return this.http.post<any>(url, display.describe(), HTTP_OPTIONS).pipe(first(),
       tap(
         rows => this.storage.setItem(key, rows)
       )      
@@ -216,6 +216,6 @@ export class DataDefinitionService {
      *   Otros tipos de procesamiento pueden ser "Image", o si es un procesamiento particular algun nombre personalizado, por ejemplo "Info"
      */
     let url = API_URL + entity + '/upload';
-    return this.http.post<any>(url, data);
+    return this.http.post<any>(url, data).pipe(first());
   }
 }
