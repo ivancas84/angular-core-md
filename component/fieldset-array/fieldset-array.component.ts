@@ -1,10 +1,11 @@
 import { Input, OnInit, Component, AfterViewInit} from '@angular/core';
 import { FormGroup, FormControl, FormGroupDirective, NgForm, FormBuilder, FormArray } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { fastClone } from '../../function/fast-clone';
 import {ErrorStateMatcher} from '@angular/material/core';
+import { switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -57,7 +58,20 @@ export abstract class FieldsetArrayComponent implements  OnInit  {
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
     this.initForm();
-    this.initData();
+    var s = this.initData().subscribe(
+      response => {
+        this.initValues(response);
+      }
+    );
+    this.subscriptions.add(s);
+    /**
+     * @todo no me suscribo desde el template porque dispara errores ExpressionChangedAfterIfCheckedValue
+     * Un posible problema es que inicializo en null y despues asigno el valor a traves de reset o patchValue
+     * Habria que ver si se puede efectuar todo el proceso de inicializacion del formulario y asignacion de valores en un mismo observable
+     * Al suscribirse directamente en el ts no dispara los errores, se carga primero el formulario y despues se asigna el valor
+     * Puede haber inconvenientes si se desea acceder al valueChanges en los subcomponentes,
+     * la asignacion de datos iniciales no sera considerada como valueChange (se puede solucionar de la misma forma suscribiendose en el ts)
+     */
   }
 
   initForm(): void {
@@ -66,6 +80,9 @@ export abstract class FieldsetArrayComponent implements  OnInit  {
   }
 
   fg(index) { return this.fieldset.controls[index]; }
+  /**
+   * Metodo utilizado para indicar el formGroup en el template
+   */
   
   add() {
     var fg = this.formGroup();
@@ -78,27 +95,23 @@ export abstract class FieldsetArrayComponent implements  OnInit  {
     else this.fieldset.controls[index].get("_delete").setValue(true);
   }
 
-  initData(): void {
+
+  initData(): Observable<any> {
+    return of({}).pipe(switchMap(() => {
+      if (this.formValues) {
+        var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
+        this.formValues = null;
+        return d;
+      }
+      return this.data();
+    }));
+  }
+
+  data(): Observable<any> {
     /**
-     * @todo no me suscribo desde el template porque dispara errores ExpressionChanged
-     * Un posible problema es que inicializo en null y despues asigno el valor a traves de reset o patchValue
-     * Habria que ver si se puede efectuar todo el proceso de inicializacion del formulario y asignacion de valores en un mismo observable
-     * Al suscribirse directamente en el ts no dispara los errores, se carga primero el formulario y despues se asigna el valor
-     * Puede haber inconvenientes si se desea acceder al valueChanges en los subcomponentes,
-     * la asignacion de datos iniciales no sera considerada como valueChange (se puede solucionar de la misma forma suscribiendose en el ts)
+     * Metodo independiente para facilitar reimplementacion
      */
-    if(this.formValues) {
-      var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
-      if(d) this.initValues(d);
-      this.formValues = null;
-    } else {
-      var s = this.data$.subscribe(
-        response => {
-          this.initValues(response);
-        }
-      );
-      this.subscriptions.add(s);
-    }
+    return this.data$;
   }
 
   initValues(response: {[key:string]: any}[] = []){

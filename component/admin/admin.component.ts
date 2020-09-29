@@ -18,9 +18,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'core-admin',
   template: '',
-changeDetection: ChangeDetectionStrategy.OnPush
-
-
 })
 export abstract class AdminComponent implements OnInit, AfterViewInit {
 /**
