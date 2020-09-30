@@ -23,7 +23,9 @@ export abstract class FieldsetArrayFkComponent extends FieldsetArrayComponent  {
    */
 
   readonly fkName: string;
-  
+  readonly fkEntityName?: string;
+  fkValue: string;
+
   constructor(
     protected router: Router, 
     protected storage: SessionStorageService, 
@@ -39,11 +41,19 @@ export abstract class FieldsetArrayFkComponent extends FieldsetArrayComponent  {
       mergeMap(
         response => {          
           var display = new Display();
+          this.fkValue = response;
           display.addParam(this.fkName, response);
           return this.dd.all(this.entityName, display);
         }
       )
     );
+  }
+
+  add() {
+    var fg = this.formGroup();
+    fg.reset(this.defaultValues); 
+    if(fg.controls.hasOwnProperty(this.fkName)) fg.get(this.fkName).setValue(this.fkValue);
+    this.fieldset.push(fg);
   }
  
 }
