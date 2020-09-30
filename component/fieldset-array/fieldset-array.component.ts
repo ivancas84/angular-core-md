@@ -101,7 +101,7 @@ export abstract class FieldsetArrayComponent implements  OnInit  {
       if (this.formValues) {
         var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
         this.formValues = null;
-        return d;
+        return of(d);
       }
       return this.data();
     }));
