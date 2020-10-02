@@ -25,9 +25,9 @@ export class ValidatorsService {
     return null;
   }
 
-  static notIncludes(searchValue): ValidatorFn {
+  static notIncludes(searchValue: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if(typeof control.value != "string") return null;
+      if (typeof control.value != "string") return null;
       return (control.value.includes(searchValue, 0)) ? {pattern:true} : null;
     }
   }
