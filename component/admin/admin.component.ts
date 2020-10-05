@@ -18,9 +18,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'core-admin',
   template: '',
-changeDetection: ChangeDetectionStrategy.OnPush
-
-
 })
 export abstract class AdminComponent implements OnInit, AfterViewInit {
 /**
@@ -169,32 +166,38 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.isSubmitted = true;
     
     if (!this.adminForm.valid) {
-      markAllAsDirty(this.adminForm);
-      logValidationErrors(this.adminForm);
-      const dialogRef = this.dialog.open(DialogAlertComponent, {
-        data: {title: "Error", message: "El formulario posee errores."}
-      });
-      this.isSubmitted = false;
-
+      this.cancelSubmit();
     } else {
-      var s = this.persist().pipe(first()).subscribe(
-        response => {
-          this.storage.removeItemsContains(".");
-          this.storage.removeItemsPersisted(response["detail"]);
-          this.storage.removeItemsPrefix(emptyUrl(this.router.url));
-          this.reload(response);
-        },
-        error => { 
-          console.log(error);
-          this.dialog.open(DialogAlertComponent, {
-            data: {title: "Error", message: error.error}
-          });
-          this.isSubmitted = false;
-    
-        }
-      );
-      this.subscriptions.add(s);
+      this.submit();
     }
+  }
+
+  cancelSubmit(){
+    markAllAsDirty(this.adminForm);
+    logValidationErrors(this.adminForm);
+    const dialogRef = this.dialog.open(DialogAlertComponent, {
+      data: {title: "Error", message: "El formulario posee errores."}
+    });
+    this.isSubmitted = false;
+  }
+
+  submit(){
+    var s = this.persist().subscribe(
+      response => {
+        this.storage.removeItemsContains(".");
+        this.storage.removeItemsPersisted(response["detail"]);
+        this.storage.removeItemsPrefix(emptyUrl(this.router.url));
+        this.reload(response);
+      },
+      error => { 
+        console.log(error);
+        this.dialog.open(DialogAlertComponent, {
+          data: {title: "Error", message: error.error}
+        });
+        this.isSubmitted = false;
+      }
+    );
+    this.subscriptions.add(s);
   }
 
   reload(response){

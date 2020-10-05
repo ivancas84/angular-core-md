@@ -25,6 +25,13 @@ export class ValidatorsService {
     return null;
   }
 
+  static notIncludes(searchValue: string): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (typeof control.value != "string") return null;
+      return (control.value.includes(searchValue, 0)) ? {pattern:true} : null;
+    }
+  }
+
   static email(): ValidatorFn {
     return Validators.pattern("[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}");
   }
