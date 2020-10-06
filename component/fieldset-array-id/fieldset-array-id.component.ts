@@ -1,30 +1,28 @@
 import { Input, OnInit, Component, AfterViewInit} from '@angular/core';
 import { FormGroup, FormControl, FormGroupDirective, NgForm, FormBuilder, FormArray } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
-import { fastClone } from '../../function/fast-clone';
-import {ErrorStateMatcher} from '@angular/material/core';
 import { FieldsetArrayComponent } from '@component/fieldset-array/fieldset-array.component';
 import { mergeMap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 
 
 @Component({
-  selector: 'core-fieldset-array-fk',
+  selector: 'core-fieldset-array-id',
   template: '',
 })
-export abstract class FieldsetArrayFkComponent extends FieldsetArrayComponent  {
+export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
   /**
-   * Variante del FieldsetArrayComponent que inicializa los datos a partir del valor de una fk
+   * Variante del FieldsetArrayComponent que inicializa los datos a partir del valor de un identificador
+   * El identificador habitualmente es una fk, pero no es estrictamente necesario
    */
 
-  readonly fkName: string;
-  readonly fkEntityName?: string;
-  fkValue: string;
+  readonly idName: string; //Nombre del identificador
+  readonly idEntityName?: string; //Nombre de la entidad asociada al identificador
+  idValue: string; //Valor del identificador
 
   constructor(
     protected router: Router, 
@@ -39,10 +37,10 @@ export abstract class FieldsetArrayFkComponent extends FieldsetArrayComponent  {
   data(): Observable<any> {
     return this.data$.pipe(
       mergeMap(
-        response => {          
+        response => {                    
           var display = new Display();
-          this.fkValue = response;
-          display.addParam(this.fkName, response);
+          this.idValue = response;
+          display.addParam(this.idName, response);
           return this.dd.all(this.entityName, display);
         }
       )
@@ -52,7 +50,7 @@ export abstract class FieldsetArrayFkComponent extends FieldsetArrayComponent  {
   add() {
     var fg = this.formGroup();
     fg.reset(this.defaultValues); 
-    if(fg.controls.hasOwnProperty(this.fkName)) fg.get(this.fkName).setValue(this.fkValue);
+    if(fg.controls.hasOwnProperty(this.idName)) fg.get(this.idName).setValue(this.idValue);
     this.fieldset.push(fg);
   }
  
