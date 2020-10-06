@@ -34,6 +34,7 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
    */
 
    display: Display;
+   params: { [x: string]: any; }
 
    load$: Observable<any>;
    load: boolean = false;
@@ -54,7 +55,8 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
       switchMap(
         queryParams => {
           this.load = false;
-          this.initDisplay(queryParams);
+          this.params = queryParams;       
+          this.initDisplay();
 
           return this.initData().pipe(
             map(
@@ -101,10 +103,10 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
     return this.dd.all(this.entityName, this.display);
   }
 
-  initDisplay(params: { [x: string]: any; }) {
+  initDisplay() {
     this.display = new Display();
     this.display.setSize(100);
-    this.display.setParamsByQueryParams(params);
+    this.display.setParamsByQueryParams(this.params);
     this.display$.next(this.display); //@todo reemplazar uso de display$ por display
   }
 
