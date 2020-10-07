@@ -76,11 +76,11 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
      * Se define un metodo independiente para definir la cantidad total y los datos a mostrar
      * Facilita la cancelacion de la cantidad
      */
-    return this.setCount().pipe(
+    return this.count().pipe(
       switchMap(
         count => {
           this.collectionSize$.next(count)
-          return this.setData().pipe(
+          return this.data().pipe(
             tap(
               data => {
                 this.data$.next(data);
@@ -92,11 +92,11 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
     )
   } 
 
-  setCount() {
+  count(): Observable<any> {
     return this.dd.count(this.entityName, this.display);
   }
 
-  setData(){
+  data(): Observable<any>{
     /**
      * Conviene no pasar como parametro el valor de collectionSize$
      * puede que se desee que este valor sea opcional al sobrescribir el metodo
