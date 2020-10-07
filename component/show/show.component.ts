@@ -1,7 +1,7 @@
 import { OnInit, OnDestroy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription, of, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 
@@ -60,7 +60,9 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
 
           return this.initData().pipe(
             map(
-              () => {return this.load = true;}
+              () => {
+                return this.load = true;              
+              }
             )
           )
         }
@@ -69,7 +71,7 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
   }
 
 
-  initData(){
+  initData(): Observable<any>{
     /**
      * Se define un metodo independiente para definir la cantidad total y los datos a mostrar
      * Facilita la cancelacion de la cantidad
@@ -79,9 +81,9 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
         count => {
           this.collectionSize$.next(count)
           return this.setData().pipe(
-            map(
+            tap(
               data => {
-                this.data$.next(data);                
+                this.data$.next(data);
               }
             )
           )
