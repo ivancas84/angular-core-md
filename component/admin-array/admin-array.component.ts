@@ -19,9 +19,6 @@ import { AdminComponent } from '@component/admin/admin.component';
 @Component({
   selector: 'core-admin-array',
   template: '',
-changeDetection: ChangeDetectionStrategy.OnPush
-
-
 })
 export abstract class AdminArrayComponent extends AdminComponent {
 /**
