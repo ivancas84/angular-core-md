@@ -9,6 +9,12 @@ import { Display } from '../../class/display';
 @Component({
   selector: 'core-input-autocomplete',
   templateUrl: './input-autocomplete.component.html',
+  styles:[`
+  .inline {
+    display: inline-flex;
+    align-items: center;
+  }
+  `],
 })
 export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   /**
@@ -20,6 +26,10 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   @Input() entityName: string;
   @Input() title?: string;
   load$: Observable<any>;
+  @Input() adminRoute: string;
+  /**
+   * Interfaz de administracion para cuando se carga un valor unico
+   */
 
   searchControl: FormControl = new FormControl();
 
@@ -35,6 +45,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
     if(this.field.errors && !this.searchControl.errors) this.searchControl.setErrors(this.field.getError);
     if(this.field.dirty && !this.searchControl.dirty) this.searchControl.markAsDirty();
   }
+  
 
   ngOnInit(): void {
     if(!this.title) this.title = this.entityName;
