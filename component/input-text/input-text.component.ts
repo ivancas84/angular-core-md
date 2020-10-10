@@ -6,33 +6,18 @@ import { getControlName } from '@function/get-control-name';
   selector: 'core-input-text',
   templateUrl: './input-text.component.html',
 })
-export class InputTextComponent implements OnInit {
+export class InputTextComponent {
   @Input() field: FormControl;
   @Input() title?: string;
   @Input() placeholder?: string = "";
+  @Input() uniqueRoute?: string; //Ruta de administracion para valor unico (si no se define no se activa enlace)
  
-  adminRoute:string;
-  /**
-   * Interfaz de administracion para cuando se carga un valor unico
-   * @todo puede ser un Input y dar la posibilidad de indicar la interfaz de administración
-   */
-
-  fieldName:string;
-  /**
-   * Nombre del campo, utilizado como filtro para cargar la interfaz de administracion
-   */
-
-  ngOnInit(): void {
-    this.fieldName = getControlName(this.field);
-    this.adminRoute = getControlName(this.field.parent);
-  }
- 
-  get adminParams() {
+  get uniqueParams() {
     /**
      * Definir parametros de administracion si se ingresa un valor unico
      */
     let queryParams = {};
-    queryParams[this.fieldName] = this.field.value;
+    queryParams[getControlName(this.field)] = this.field.value;
     return queryParams;
   }
   

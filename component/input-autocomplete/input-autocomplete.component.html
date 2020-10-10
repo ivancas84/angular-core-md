@@ -9,7 +9,9 @@
     <mat-icon>clear</mat-icon>
   </button>
   <mat-error *ngIf="searchControl.hasError('required')">Debe completar valor</mat-error>
-
+  <mat-error *ngIf="searchControl.hasError('notUnique')">
+    El valor ya se encuentra utilizado <a mat-icon-button *ngIf="uniqueRoute" routerLink="/{{uniqueRoute}}" [queryParams]="uniqueParams"><mat-icon>link</mat-icon></a>
+  </mat-error>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
     <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
       <core-label [id]="option.id" [entityName]="entityName"></core-label>

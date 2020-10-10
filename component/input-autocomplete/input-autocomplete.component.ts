@@ -4,6 +4,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { first, map, startWith, mergeMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { Display } from '../../class/display';
+import { getControlName } from '@function/get-control-name';
 
 
 @Component({
@@ -25,12 +26,10 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   @Input() field: FormControl;
   @Input() entityName: string;
   @Input() title?: string;
-  load$: Observable<any>;
-  @Input() adminRoute: string;
-  /**
-   * Interfaz de administracion para cuando se carga un valor unico
-   */
+  @Input() adminRoute?: string; //Ruta opcional de administracion para la clave foranea (si no se define no se activa el enlace)
+  @Input() uniqueRoute?: string; //Ruta opcional de administracion para valor unico (si no se define no se activa el enlace)
 
+  load$: Observable<any>;
   searchControl: FormControl = new FormControl();
 
   protected subscriptions = new Subscription();
@@ -46,6 +45,14 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
     if(this.field.dirty && !this.searchControl.dirty) this.searchControl.markAsDirty();
   }
   
+  get uniqueParams() {
+    /**
+     * Definir parametros de administracion si se ingresa un valor unico
+     */
+    let queryParams = {};    
+    queryParams[getControlName(this.field)] = this.field.value;
+    return queryParams;
+  }
 
   ngOnInit(): void {
     if(!this.title) this.title = this.entityName;
