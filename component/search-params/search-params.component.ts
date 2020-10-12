@@ -21,7 +21,8 @@ export abstract class SearchParamsComponent implements OnInit {
 
   @Input() display$: Observable<Display>;
   /**
-   * Datos iniciales
+   * Datos de busqueda iniciales
+   * Display, al ser definido por elementos asincronicos, se considera observable
    */
   
   load$: Observable<{[key: string]: string}>;

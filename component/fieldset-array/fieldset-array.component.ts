@@ -1,17 +1,18 @@
-import { Input, OnInit, Component} from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Input, OnInit, Component, AfterViewInit} from '@angular/core';
+import { FormGroup, FormControl, FormGroupDirective, NgForm, FormBuilder, FormArray } from '@angular/forms';
 import { Observable, of, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { fastClone } from '../../function/fast-clone';
+import {ErrorStateMatcher} from '@angular/material/core';
 import { switchMap } from 'rxjs/operators';
 
 
 @Component({
-  selector: 'core-fieldset',
+  selector: 'core-fieldset-array',
   template: '',
 })
-export abstract class FieldsetComponent implements  OnInit  {
+export abstract class FieldsetArrayComponent implements  OnInit  {
   /**
    * Componente de administración de fieldset. Características:
    *   El formulario y los datos son definidos en componente principal  
@@ -34,16 +35,12 @@ export abstract class FieldsetComponent implements  OnInit  {
    * Utilizado solo para identificar el fieldset
    */
   
-  fieldset: FormGroup; 
+  fieldset: FormArray; 
   /**
    * fieldset
    */
 
   protected subscriptions = new Subscription();
-  /**
-   * las subscripciones son almacenadas para desuscribirse (solucion temporal al bug de Angular)
-   * @todo En versiones posteriores de angular, eliminar el atributo subscriptions y su uso
-   */
 
   readonly defaultValues: {[key:string]: any} = {};
 
@@ -54,7 +51,7 @@ export abstract class FieldsetComponent implements  OnInit  {
 
   abstract formGroup();
 
-  formValues =this.storage.getItem(this.router.url);
+  formValues = this.storage.getItem(this.router.url);
 
   ngOnInit() {    
     /**
@@ -78,9 +75,26 @@ export abstract class FieldsetComponent implements  OnInit  {
   }
 
   initForm(): void {
-    this.fieldset = this.formGroup();
+    this.fieldset = new FormArray([]); //secretLairs as an empty FormArray
     this.form.addControl(this.entityName, this.fieldset);
   }
+
+  fg(index) { return this.fieldset.controls[index]; }
+  /**
+   * Metodo utilizado para indicar el formGroup en el template
+   */
+  
+  add() {
+    var fg = this.formGroup();
+    fg.reset(this.defaultValues); 
+    this.fieldset.push(fg); 
+  }
+
+  remove(index) { 
+    if(!this.fieldset.controls[index].get("id").value) this.fieldset.removeAt(index); 
+    else this.fieldset.controls[index].get("_delete").setValue(true);
+  }
+
 
   initData(): Observable<any> {
     return of({}).pipe(switchMap(() => {
@@ -100,18 +114,13 @@ export abstract class FieldsetComponent implements  OnInit  {
     return this.data$;
   }
 
-  initValues(response: {[key:string]: any} = {}){
-    if(!response) {
-      this.fieldset.reset(this.defaultValues);
-    } else {
-      var res = fastClone(response);
-      for(var key in this.defaultValues){
-        if(this.defaultValues.hasOwnProperty(key)){
-          if(!res.hasOwnProperty(key)) res[key] = this.defaultValues[key];
-        }
-      }
-      this.fieldset.reset(res) 
+  initValues(response: {[key:string]: any}[] = []){
+    this.fieldset.controls.length = 0; //inicializar
+    for(var i = 0; i < response.length; i++){
+      this.add();
+      var res = fastClone(response[i]);
+      this.fieldset.controls[i].reset(res);
     }
   }
-
+ 
 }

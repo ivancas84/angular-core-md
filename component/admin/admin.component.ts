@@ -1,5 +1,5 @@
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { ReplaySubject, Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { first } from 'rxjs/operators';
@@ -18,9 +18,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'core-admin',
   template: '',
-changeDetection: ChangeDetectionStrategy.OnPush
-
-
 })
 export abstract class AdminComponent implements OnInit, AfterViewInit {
 /**
@@ -38,10 +35,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
    * Entidad principal
    */
   
-  data$:ReplaySubject<any> = new ReplaySubject();
+  data$:BehaviorSubject<any> = new BehaviorSubject(false);
   /**
    * Datos principales
-   * Se define como ReplaySubject porque puede recibir valores nuevos que deben ser asignados con metodo .next
+   * Se define como BehaviorSubject porque puede recibir valores nuevos que deben ser asignados con metodo .next
    * No se utiliza BehaviorSubject para evitar procesamiento adicional con el valor null
    * null es un dato valido para data$ significa que no esta definido por lo que los subcomponentes inicializaran como si estuviera vacio
    * Se podria usar BehaviorSubject y manejar diferentes alternativas para indicar si esta o no definido, por ejemplo null o false
@@ -59,6 +56,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
 
   protected subscriptions = new Subscription();
    
+  params: any;
+
   constructor(
     protected fb: FormBuilder, 
     protected route: ActivatedRoute, 
@@ -71,7 +70,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   ) {}
   
   ngAfterViewInit(): void {
-    this.removeStorage();
+    this.storage.removeItemsPrefix(emptyUrl(this.router.url));
     /**
      * Si no se incluye, nunca se limpia el formulario 
      * Puede resultar confuso cuando se asignan otros parametros a la url
@@ -99,7 +98,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      * Puede generar errores "ExpressionChanged"
      */
     var s = this.route.queryParams.subscribe(
-      params => { this.setData(params); },
+      params => { 
+        this.setParams(params);
+        this.setData()
+      },
       error => { 
         this.snackBar.open(JSON.stringify(error), "X"); 
       }
@@ -107,16 +109,18 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.subscriptions.add(s);
   }
 
-  setData(params: any): void {
-    if(isEmptyObject(params)) {
+  setParams(params: any){ this.params = params; }
+
+  setData(): void {
+    if(isEmptyObject(this.params)) {
       this.data$.next(null);
       return;
     } 
 
-    this.dd.uniqueOrNull(this.entityName, params).pipe(first()).subscribe(
+    this.dd.uniqueOrNull(this.entityName, this.params).pipe(first()).subscribe(
       response => {
         if (response) this.data$.next(response);
-        else this.data$.next(params);
+        else this.data$.next(this.params);
       },
       error => { 
         this.dialog.open(DialogAlertComponent, {
@@ -125,18 +129,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       }
     ); 
 
-  }
-
-  removeStorage(){ 
-    /**
-     * Eliminar datos del storage
-     * Se elimina la ruta actual y las variantes de la ruta actual
-     * Las variantes corresponden a aquellas url que tienen la misma ruta pero diferentes parametros
-     */
-    var route = this.router.url;
-    var index = this.router.url.indexOf('?');
-    if (index != -1) route = this.router.url.substring(0, index);
-    this.storage.removeItemsPrefix(route);
   }
 
   back() { this.location.back(); }
@@ -153,12 +145,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      */
     let route = emptyUrl(this.router.url);
     if(route != this.router.url) this.router.navigateByUrl('/' + route);
-    else this.setData(this.route.snapshot.queryParams)
+    else this.setData()
     
   }
 
   reset(): void{
-    this.setData(this.route.snapshot.queryParams)
+    this.setData()
   }
   
   persist(): Observable<any> {
@@ -174,34 +166,38 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.isSubmitted = true;
     
     if (!this.adminForm.valid) {
-      markAllAsDirty(this.adminForm);
-      logValidationErrors(this.adminForm);
-      const dialogRef = this.dialog.open(DialogAlertComponent, {
-        data: {title: "Error", message: "El formulario posee errores."}
-      });
-      this.isSubmitted = false;
-
+      this.cancelSubmit();
     } else {
-      var s = this.persist().pipe(first()).subscribe(
-        response => {
-          this.storage.removeItemsPersisted(response["detail"]);
-          this.removeStorage();
-          /**
-           * al recargar puede que se modifique la url, es necesario limpiar el storage para que no queden antiguas referencias a la url anterior
-           */
-          this.reload(response);
-        },
-        error => { 
-          console.log(error);
-          this.dialog.open(DialogAlertComponent, {
-            data: {title: "Error", message: error.error}
-          });
-          this.isSubmitted = false;
-    
-        }
-      );
-      this.subscriptions.add(s);
+      this.submit();
     }
+  }
+
+  cancelSubmit(){
+    markAllAsDirty(this.adminForm);
+    logValidationErrors(this.adminForm);
+    const dialogRef = this.dialog.open(DialogAlertComponent, {
+      data: {title: "Error", message: "El formulario posee errores."}
+    });
+    this.isSubmitted = false;
+  }
+
+  submit(){
+    var s = this.persist().subscribe(
+      response => {
+        this.storage.removeItemsContains(".");
+        this.storage.removeItemsPersisted(response["detail"]);
+        this.storage.removeItemsPrefix(emptyUrl(this.router.url));
+        this.reload(response);
+      },
+      error => { 
+        console.log(error);
+        this.dialog.open(DialogAlertComponent, {
+          data: {title: "Error", message: error.error}
+        });
+        this.isSubmitted = false;
+      }
+    );
+    this.subscriptions.add(s);
   }
 
   reload(response){
@@ -210,7 +206,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      */
     let route = emptyUrl(this.router.url) + "?id="+response["id"];
     if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
-    else this.setData(this.route.snapshot.queryParams);
+    else this.setData();
     this.snackBar.open("Registro realizado", "X");
     this.isSubmitted = false;
   }

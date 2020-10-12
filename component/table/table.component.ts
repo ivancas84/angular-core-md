@@ -1,5 +1,5 @@
 import { Input, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable, BehaviorSubject, ReplaySubject, of, forkJoin, concat, merge } from 'rxjs';
+import { Observable, BehaviorSubject, of, forkJoin, concat, merge, combineLatest } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
@@ -20,15 +20,31 @@ import { fastClone } from '@function/fast-clone';
 export abstract class TableComponent implements OnInit {
 
   @Input() data$: Observable<any>; 
-  @Input() display$?: Observable<Display>;
-  @Input() collectionSize$?: Observable<number>;
- 
-  load$: Observable<any>; 
   /**
-   * atributo para suscribirme en el template
+   * Datos que seran utilizados para visualizar o inicializar datos a mostrar
    */
 
-  display: Display;
+  @Input() display?: Display;
+  /**
+   * Busqueda susceptible de ser modificada por ordenamiento o paginacion
+   */
+  
+  @Input() collectionSize$?: Observable<number>;
+  /**
+   * Cantidad total de elementos, puede ser mayor que los datos a visualizar
+   */
+
+  load$: Observable<any>; 
+  /**
+   * atributo para suscribirme en el template e incializar
+   */
+
+  load: boolean;
+  /**
+   * Atributo auxiliar para visualizar la barra de progreso
+   */
+
+  //display: Display;
   length: number;
   displayedColumns: string[];
   dataSource: { [index: string]: any }[] = [];
@@ -46,41 +62,33 @@ export abstract class TableComponent implements OnInit {
 
   
   ngOnInit(): void {
-    /**
-     * @todo conviene reemplazar display? por un observable y utilizar un forkJoin?
-     */
-    this.load$ = this.initLength().pipe(
-      tap(length => { this.length = length }),
-      mergeMap(() => { return this.display$ }),
-      mergeMap(display => { 
-        this.display = display;
-        return this.initData() 
-      }),
-      map(data => {
-        this.dataSource = data;
-        if(!this.length) this.length = this.dataSource.length;
+    this.load$ = combineLatest([
+       this.initLength(),
+       this.initData()]
+    ).pipe(map(
+      response => {
+        this.length = response[0];
+        this.dataSource = response[1];
+        this.load=true;
         return true;
-      })
-    );
+      }
+    ));
   }
 
   initData(){
+    this.load=false;
     return this.data$;
   }
 
   initLength(){
+    this.load=false;
+
     return of({}).pipe(switchMap(() => {
       if (this.collectionSize$) return this.collectionSize$;
       return of(0);
     }));
   }
 
-  initDisplay(){
-    return of({}).pipe(switchMap(() => {
-      if (this.display$) return this.display$;
-      return of(null);
-    }));
-  }
 
   onChangePage($event: PageEvent){
     this.display.setPage($event.pageIndex+1);

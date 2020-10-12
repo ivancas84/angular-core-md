@@ -3,9 +3,9 @@
   <input matInput [formControl]="field" placeholder="{{placeholder}}">
   <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
   <mat-error *ngIf="field.hasError('notUnique')">
-    El valor ya se encuentra utilizado: <a *ngIf="uniqueRoute" routerLink="/{{uniqueRoute}}" [queryParams]="uniqueParams">Cargar</a>    
+    El valor ya se encuentra utilizado: <a routerLink="/{{adminRoute}}" [queryParams]="adminParams">Cargar</a>    
   </mat-error>
-  <mat-error *ngIf="field.hasError('pattern')">El formato es incorrecto</mat-error>
+  <mat-error *ngIf="field.hasError('pattern')">Ingrese solo números</mat-error>
   <mat-error *ngIf="field.hasError('maxlength')">Supera el máximo permitido</mat-error>
   <mat-error *ngIf="field.hasError('minlength')">Inferior al mínimo permitido</mat-error>
 </mat-form-field>
