@@ -31,7 +31,6 @@ export class InputAutocompleteValueComponent implements OnInit {
   ngOnInit(): void {
     if(!this.title) this.title = this.fieldName;
 
-    console.log("test");
     this.filteredOptions = this.field.valueChanges.pipe(
       startWith(""),
       debounceTime(300),
@@ -51,7 +50,7 @@ export class InputAutocompleteValueComponent implements OnInit {
     display.addField(this.fieldName)    
     display.addCondition([this.fieldName,"=~",value]);
     display.setOrderByKeys([this.fieldName]);
-    return this.dd.advanced(this.entityName, display).pipe(
+    return this.dd.post("advanced", this.entityName, display).pipe(
       map(
         rows => arrayColumn(rows, this.fieldName)
       )

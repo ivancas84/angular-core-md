@@ -31,7 +31,7 @@ export class InputSelectValueComponent implements OnInit {
     let display  = new Display();
     display.setFields([this.fieldName]);
     display.setOrderByKeys([this.fieldName]);
-    this.options$ = this.dd.advanced(this.entityName, display).pipe(
+    this.options$ = this.dd.post("advanced", this.entityName, display).pipe(
       map(
         rows => arrayColumn(rows, this.fieldName)
       )

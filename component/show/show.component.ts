@@ -93,7 +93,7 @@ export abstract class ShowComponent implements OnInit, OnDestroy {
   } 
 
   count(): Observable<any> {
-    return this.dd.count(this.entityName, this.display);
+    return this.dd.post("count", this.entityName, this.display);
   }
 
   data(): Observable<any>{
