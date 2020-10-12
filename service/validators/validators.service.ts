@@ -100,7 +100,7 @@ export class ValidatorsService {
 
       return timer(1000).pipe(
         mergeMap(()=> {
-        return this.dd.idOrNull(entityName, display).pipe(
+        return this.dd.id(entityName, display).pipe(
           map(
             id => {
               return (id && (id != control.parent.get("id").value)) ? { notUnique: true } : null
@@ -142,7 +142,7 @@ export class ValidatorsService {
           let display: Display = new Display;
           display.setCondition(filters);
 
-          return this.dd.idOrNull(entity, display).pipe(
+          return this.dd.id(entity, display).pipe(
             map(
               id => {
                 return (id && (id != control.get("id").value)) ? { notUnique: id } : null;
