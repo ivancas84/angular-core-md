@@ -2,9 +2,10 @@ import { Input, OnInit, Component, DoCheck, OnDestroy} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription, of } from 'rxjs';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { first, map, startWith, mergeMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { first, map, startWith, mergeMap, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
 import { Display } from '../../class/display';
 import { getControlName } from '@function/get-control-name';
+import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
 
 
 @Component({
@@ -21,6 +22,13 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   /**
    * Input autocomplete reutilizable
    * Define un input independiente para facilitar la incorporacion de funcionalidad adicional (validación de seteo, clear, etc)
+   * 
+   * @todo
+   * Existe un atributo displayFn que podria utilizarse para visualizar el label en el template
+   * pero no funciona correctamente con Observables
+   * Actualmente se utilizan dos inputs en el template uno para visualizar el label una vez seleccionado
+   * y otro para visualizar el input y autocomplete si no se encuentra seleccionado
+   * En versiones posteriores, una vez que displayFn permita Observables, se puede reimplementar esta funcionalidad
    */
 
   @Input() field: FormControl;
@@ -28,6 +36,12 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   @Input() title?: string;
   @Input() adminRoute?: string; //Ruta opcional de administracion para la clave foranea (si no se define no se activa el enlace)
   @Input() uniqueRoute?: string; //Ruta opcional de administracion para valor unico (si no se define no se activa el enlace)
+  
+  public label: string = null;
+  /**
+   * Atributo para visualizar el label
+   * En versiones posteriores puede reemplazarse por displayFn cuando acepte Observables
+   */
 
   load$: Observable<any>;
   searchControl: FormControl = new FormControl();
@@ -38,6 +52,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
 
   constructor(
     public dd: DataDefinitionService, 
+    public ddl: DataDefinitionLabelService,
   ) { }
 
   ngDoCheck(): void {
@@ -80,16 +95,26 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
 
     this.load$ = this.field.valueChanges.pipe(
       startWith(this.field.value),
-      map(
+      tap(
         value => {
           if(!this.searchControl.value
           || (typeof this.searchControl.value != "string" 
               && this.searchControl.value.id != value)){
             this.initValue(value);
           }
-          return true;
         }
       ),
+      switchMap(
+        value => {
+          return this.ddl.label(this.entityName, value)
+        }
+      ),
+      map(
+        label => {
+          this.label = label;
+          return true;
+        }
+      )
     );
   }
   
@@ -113,10 +138,6 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
     var display = new Display();
     display.addCondition(["_label","=~",value]);
     return this.dd.all(this.entityName, display);
-  }
-
-  displayFn = value => {
-    return (value && value.id) ? this.dd.label(this.entityName, value.id) : value;
   }
   
   ngOnDestroy () { this.subscriptions.unsubscribe() }

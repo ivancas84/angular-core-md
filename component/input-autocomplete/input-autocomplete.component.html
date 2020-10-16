@@ -1,7 +1,8 @@
 <mat-form-field *ngIf="load$ | async">
   <mat-label>{{title}}</mat-label>
 
-  <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
+  <input disabled *ngIf="label" type="text" matInput value="{{label}}">
+  <input *ngIf="!label" type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
   <span matPrefix>
     <a *ngIf="adminRoute" routerLink="/{{adminRoute}}" [queryParams]="{id:field.value}" mat-icon-button matPreffix><mat-icon>edit</mat-icon></a>
   </span>
@@ -12,7 +13,7 @@
   <mat-error *ngIf="searchControl.hasError('notUnique')">
     El valor ya se encuentra utilizado <a mat-icon-button *ngIf="uniqueRoute" routerLink="/{{uniqueRoute}}" [queryParams]="uniqueParams"><mat-icon>link</mat-icon></a>
   </mat-error>
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+  <mat-autocomplete #auto="matAutocomplete">
     <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
       <core-label [id]="option.id" [entityName]="entityName"></core-label>
     </mat-option>

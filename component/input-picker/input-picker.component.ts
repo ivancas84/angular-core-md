@@ -38,7 +38,7 @@ export abstract class InputPickerComponent implements  OnInit, OnDestroy {
 
 
   initValue(value){
-    this.dd.getOrNull(this.entityName, value).pipe(first()).subscribe(
+    this.dd.get(this.entityName, value).pipe(first()).subscribe(
       row => {
         if(row) { 
           this.form.reset(row);
@@ -81,7 +81,7 @@ export abstract class InputPickerComponent implements  OnInit, OnDestroy {
       display.addParam(key, this.form.value[key]);
     }
     this.field.markAsPending();
-    this.dd.idOrNull(this.entityName, display).pipe(first()).subscribe(
+    this.dd.id(this.entityName, display).pipe(first()).subscribe(
       (res) => {
         this.field.setValue(res);
         this.field.markAsDirty();
