@@ -53,9 +53,7 @@ export class InputSearchGoComponent implements  OnInit {
     return this.dd.all(this.entityName, display);
   }
 
-  displayFn = value => {
-    return (value && value.id) ? this.dd.label(this.entityName, value.id) : value;
-  }
+  
   
 
 }

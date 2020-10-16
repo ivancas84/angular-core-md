@@ -46,9 +46,8 @@ export class Parser {
 
   //@param format (default Y-m-d)
   //  "d/m/Y",
-  //  "NgbDateStruct": Retorna un objeto {day:number, month:number, year:number}, inspirado en el datepicker de bootstrap
-  static dateFormat(value: Date, format: string = null): any {
-    if(!(value instanceof Date)) return null;
+  static dateFormat(value:any, format: string = null): any {
+    value = new Date(value);
 
     //se asigna un numero a las variables porque sino tira error en compliacion: ubsequent variable declarations must have the same type
     switch(format){
@@ -60,12 +59,8 @@ export class Parser {
         var dd  = value.getDate().toString();
         return (dd[1]?dd:"0"+dd[0]) + "/" + (mm[1]?mm:"0"+mm[0]) + "/" + yyyy;
 
-
-      case "NgbDateStruct":
-        var yyyy2 = value.getFullYear();
-        var mm2 = value.getMonth()+1;
-        var dd2  = value.getDate();
-        return {day:dd2, month:mm2, year:yyyy2};
+      case "Y":
+        return value.getFullYear().toString();
 
       default:
         var yyyy3 = value.getFullYear().toString();
@@ -106,10 +101,8 @@ export class Parser {
 
   //@param format (default h:i)
   //  "d/m/Y",
-  //  "NgbTimeStruct": Retorna un objeto {hour:number, minute:number}, inspirado en el datepicker de bootstrap
-  static timeFormat(value: Date, format: string = null): any {
-    if(!(value instanceof Date)) return null;
-
+  static timeFormat(value: any, format: string = null): any {
+    value = new Date(value);
 
     //se asigna un numero a las variables porque sino tira error en compliacion: ubsequent variable declarations must have the same type
     switch(format){

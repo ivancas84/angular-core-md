@@ -114,19 +114,6 @@ export class DataDefinitionService {
     )
   }
 
-  label (entity: string, id: string|number): Observable<any> {
-    if(!id) return of(null);
-    var display = new Display();
-    display.setFields(["label"]);
-    display.setParams({id:id});
-    return this.post("advanced", entity, display).pipe(
-      map(rows => {
-        return (rows.length != 1) ? null : rows[0]["label"];
-      })
-    )
-  }
-
-
   id (entity: string,  display: Display): Observable<any> {
     return this.post("ids", entity, display).pipe(
       map(rows => {

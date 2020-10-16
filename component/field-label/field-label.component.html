@@ -1,0 +1,5 @@
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
+
+<span *ngIf="label; else loading">{{label}}</span>

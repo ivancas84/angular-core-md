@@ -1,5 +1,5 @@
 import { Component, Input, SimpleChanges, OnChanges} from '@angular/core';
-import { DataDefinitionService } from '@service/data-definition/data-definition.service';
+import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -12,13 +12,13 @@ export class LabelComponent implements OnChanges {
   @Input() id: string;
   label: any;
 
-  constructor(private dd: DataDefinitionService) { }
+  constructor(private ddl: DataDefinitionLabelService) { }
   
   ngOnChanges(changes: SimpleChanges){
     if( changes['id'] && changes['id'].previousValue != changes['id'].currentValue ) {
       if(!changes['id'].currentValue) this.label = null;
       else {
-        this.dd.label(this.entityName, this.id).pipe(first()).subscribe(
+        this.ddl.label(this.entityName, this.id).pipe(first()).subscribe(
           (label:string) => {this.label = label;}
         );
       }
