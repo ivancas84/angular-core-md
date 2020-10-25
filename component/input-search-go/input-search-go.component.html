@@ -1,11 +1,11 @@
 <mat-form-field>
   <mat-label>{{title}}</mat-label>
 
-  <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
+  <input  type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto" >
 
-  <mat-autocomplete #auto="matAutocomplete">
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
     <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-      <core-label [id]="option.id" [entityName]="entityName"></core-label>
+      {{option.label}}
     </mat-option>
   </mat-autocomplete>
   
