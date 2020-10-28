@@ -51,10 +51,6 @@ export abstract class TableComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  /**
-   * Se necesita un atributo para poder aplicar ordenamiento en el cliente de los datos
-   */
-
   progress = false;
   constructor(
     protected router: Router,

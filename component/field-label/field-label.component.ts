@@ -13,7 +13,7 @@ export class FieldLabelComponent implements OnChanges {
   @Input() join: string = " ";
   label: string;
 
-  constructor(private dd: DataDefinitionService) { }
+  constructor(protected dd: DataDefinitionService) { }
   
   ngOnChanges(changes: SimpleChanges){
     if( changes['id'] && changes['id'].previousValue != changes['id'].currentValue ) {
