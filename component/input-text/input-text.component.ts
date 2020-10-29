@@ -11,7 +11,8 @@ export class InputTextComponent {
   @Input() title?: string;
   @Input() placeholder?: string = "";
   @Input() uniqueRoute?: string; //Ruta de administracion para valor unico (si no se define no se activa enlace)
- 
+  @Input() type?: string = "text";
+  
   get uniqueParams() {
     /**
      * Definir parametros de administracion si se ingresa un valor unico
