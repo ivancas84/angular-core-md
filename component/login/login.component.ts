@@ -7,6 +7,10 @@ import { Subscription } from 'rxjs';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
+import { CookieService } from 'ngx-cookie-service';
+import { JwtHelperService } from "@auth0/angular-jwt";
+import { AuthService } from '@service/auth/auth.service';
+
 
 @Component({
   selector: 'app-login',
@@ -21,9 +25,9 @@ export class LoginComponent {
     protected fb: FormBuilder, 
     protected dd: DataDefinitionService, 
     protected dialog: MatDialog,
-    protected snackBar: MatSnackBar
-  ) {
-  }
+    protected snackBar: MatSnackBar,
+    protected auth: AuthService,
+  ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -37,8 +41,11 @@ export class LoginComponent {
   }
 
   reload(response){
+    this.auth.login(response["jwt"]);
+
+
     /**
-     * Recargar una vez persistido
+     * Redireccionar a login efectuado
      */
     this.snackBar.open("Login realizado", "X");
   }
