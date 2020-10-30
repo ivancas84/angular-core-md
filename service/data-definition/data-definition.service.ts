@@ -12,10 +12,6 @@ import { CookieService } from 'ngx-cookie-service';
   providedIn: 'root'
 })
 export class DataDefinitionService {
-  headers: any = {
-    'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-  }
-
   constructor(
     protected http: HttpClient, 
     protected storage: SessionStorageService, 
@@ -23,20 +19,19 @@ export class DataDefinitionService {
     protected cookie: CookieService
   ) { }
 
-  get httpOptions() {
-    //if(this.cookie.get("jwt")) this.headers["Authorization"] = "Bearer " + this.cookie.get("jwt");
-    return {
-      headers: new HttpHeaders(this.headers)
-    };
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
+    })
   }
 
-  get authorization(): string {
+  get jwt(): string {
     return (this.cookie.get("jwt")) ? "?jwt=" + this.cookie.get("jwt") : "";
   }
   
   _post(api: string, entity: string, data: any = null):  Observable<any> {
     var jsonParams = (data instanceof Display) ? data.describe() : data;
-    let url_ = API_URL + entity + '/'+ api + this.authorization;
+    let url_ = API_URL + entity + '/'+ api + this.jwt;
     return this.http.post<any>(url_, jsonParams, this.httpOptions);
   }
 
@@ -145,7 +140,7 @@ export class DataDefinitionService {
      *   "File" es el procesamiento por defecto.
      *   Otros tipos de procesamiento pueden ser "Image", o si es un procesamiento particular algun nombre personalizado, por ejemplo "Info"
      */
-    let url = API_URL + entity + '/upload' + this.authorization;
+    let url = API_URL + entity + '/upload' + this.jwt;
     return this.http.post<any>(url, data, this.httpOptions).pipe(first());
   }
 
