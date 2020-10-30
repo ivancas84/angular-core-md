@@ -1,28 +1,39 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, map, first, switchMap } from 'rxjs/operators';
-import { API_URL, HTTP_OPTIONS } from '../../../app.config';
+import { API_URL } from '../../../app.config';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Display } from '@class/display';
 import { DataDefinitionStorageService } from '@service/data-definition-storage.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataDefinitionService {
+  headers: any = {
+    'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
+  }
 
   constructor(
     protected http: HttpClient, 
     protected storage: SessionStorageService, 
     protected dds: DataDefinitionStorageService,
+    protected cookie: CookieService
   ) { }
 
+  get httpOptions() {
+    if(this.cookie.get("jwt")) this.headers["Authorization"] = "Bearer " + this.cookie.get("jwt");
+    return {
+      headers: new HttpHeaders(this.headers)
+    };
+  }
   
   _post(api: string, entity: string, data: any = null):  Observable<any> {
     var jsonParams = (data instanceof Display) ? data.describe() : data;
     let url_ = API_URL + entity + '/'+api;
-    return this.http.post<any>(url_, jsonParams, HTTP_OPTIONS);
+    return this.http.post<any>(url_, jsonParams, this.httpOptions);
   }
 
   post(api: string, entity: string, data: any = null):  Observable<any> {    
@@ -131,7 +142,7 @@ export class DataDefinitionService {
      *   Otros tipos de procesamiento pueden ser "Image", o si es un procesamiento particular algun nombre personalizado, por ejemplo "Info"
      */
     let url = API_URL + entity + '/upload';
-    return this.http.post<any>(url, data).pipe(first());
+    return this.http.post<any>(url, data, this.httpOptions).pipe(first());
   }
 
 }
