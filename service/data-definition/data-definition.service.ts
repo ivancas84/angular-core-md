@@ -24,15 +24,19 @@ export class DataDefinitionService {
   ) { }
 
   get httpOptions() {
-    if(this.cookie.get("jwt")) this.headers["Authorization"] = "Bearer " + this.cookie.get("jwt");
+    //if(this.cookie.get("jwt")) this.headers["Authorization"] = "Bearer " + this.cookie.get("jwt");
     return {
       headers: new HttpHeaders(this.headers)
     };
   }
+
+  get authorization(): string {
+    return (this.cookie.get("jwt")) ? "?jwt=" + this.cookie.get("jwt") : "";
+  }
   
   _post(api: string, entity: string, data: any = null):  Observable<any> {
     var jsonParams = (data instanceof Display) ? data.describe() : data;
-    let url_ = API_URL + entity + '/'+api;
+    let url_ = API_URL + entity + '/'+ api + this.authorization;
     return this.http.post<any>(url_, jsonParams, this.httpOptions);
   }
 
@@ -141,7 +145,7 @@ export class DataDefinitionService {
      *   "File" es el procesamiento por defecto.
      *   Otros tipos de procesamiento pueden ser "Image", o si es un procesamiento particular algun nombre personalizado, por ejemplo "Info"
      */
-    let url = API_URL + entity + '/upload';
+    let url = API_URL + entity + '/upload' + this.authorization;
     return this.http.post<any>(url, data, this.httpOptions).pipe(first());
   }
 
