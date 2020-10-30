@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { CookieService } from 'ngx-cookie-service';
-import { BehaviorSubject, of } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable({
   providedIn: 'root'
