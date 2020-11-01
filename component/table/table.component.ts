@@ -19,9 +19,12 @@ import { fastClone } from '@function/fast-clone';
 })
 export abstract class TableComponent implements OnInit {
 
-  @Input() data$: Observable<any>; 
+  @Input() data: { [index: string]: any }[] = []; 
   /**
    * Datos que seran utilizados para visualizar o inicializar datos a mostrar
+   * Conviene que sea un observable para facilitar el encadenamiento con otro Observable
+   * Se puede encadenar con otro observable para redefinir los datos
+   * Los datos a visualizar resultantes seran cargados en el atributo "displayedColumns"
    */
 
   @Input() display?: Display;
@@ -29,25 +32,14 @@ export abstract class TableComponent implements OnInit {
    * Busqueda susceptible de ser modificada por ordenamiento o paginacion
    */
   
-  @Input() collectionSize$?: Observable<number>;
+  @Input() length?: number;
   /**
    * Cantidad total de elementos, puede ser mayor que los datos a visualizar
    */
 
-  load$: Observable<any>; 
-  /**
-   * atributo para suscribirme en el template e incializar
-   */
-
-  load: boolean;
-  /**
-   * Atributo auxiliar para visualizar la barra de progreso
-   */
-
-  //display: Display;
-  length: number;
+  
   displayedColumns: string[];
-  dataSource: { [index: string]: any }[] = [];
+  
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -58,34 +50,9 @@ export abstract class TableComponent implements OnInit {
 
   
   ngOnInit(): void {
-    this.load$ = combineLatest([
-       this.initLength(),
-       this.initData()]
-    ).pipe(map(
-      response => {
-        this.length = response[0];
-        this.dataSource = response[1];
-        this.load=true;
-        return true;
-      }
-    ));
+    if(!this.length) this.length = this.data.length;    
   }
-
-  initData(){
-    this.load=false;
-    return this.data$;
-  }
-
-  initLength(){
-    this.load=false;
-
-    return of({}).pipe(switchMap(() => {
-      if (this.collectionSize$) return this.collectionSize$;
-      return of(0);
-    }));
-  }
-
-
+  
   onChangePage($event: PageEvent){
     this.display.setPage($event.pageIndex+1);
     this.display.setSize($event.pageSize);
@@ -99,7 +66,7 @@ export abstract class TableComponent implements OnInit {
      * @return true si se efectuo ordenamiento en el servidor
      *         false si no se efectuo ordenamiento en el servidor
      */
-    if(this.length && this.display && this.dataSource.length < this.length){
+    if(this.length && this.display && this.data.length < this.length){
       this.display.setPage(1);
       this.display.setOrderByKeys([sort.active]);
       //this.display$.value.setPage(1);
@@ -115,13 +82,13 @@ export abstract class TableComponent implements OnInit {
 
     if(this.serverSort(sort)) return;
 
-    const data = this.dataSource.slice();
+    const data = this.data.slice();
     if (!sort.active || sort.direction === '') {
-      this.dataSource = data;
+      this.data = data;
       return;
     }
 
-    this.dataSource = data.sort((a, b) => {
+    this.data = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       return compare(a[sort.active],b[sort.active], isAsc);
     });

@@ -17,7 +17,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 })
 export abstract class SearchComponent {
 
-  @Input() display$: Observable<Display>;
+  @Input() display: Display;
   /**
    * Busqueda a traves de condicion
    * implementacion opcional mediante componente SearchCondition
@@ -59,21 +59,17 @@ export abstract class SearchComponent {
       });
       this.isSubmitted = false;
     } else {
-      this.display$.pipe(first()).subscribe(
-        display => {
-          if(this.searchForm.get("condition")) display.setConditionByFilters(this.searchForm.get("condition").value);    
-          if(this.searchForm.get("params")) display.setParams(this.searchForm.get("params").value);    
-          if(this.searchForm.get("order")) { display.setOrderByElement(this.searchForm.get("order").value); }    
-          display.setPage(1);
-          this.searchPanel.close();
-          this.search(display);
-        }
-      );
+      if(this.searchForm.get("condition")) this.display.setConditionByFilters(this.searchForm.get("condition").value);    
+      if(this.searchForm.get("params")) this.display.setParams(this.searchForm.get("params").value);    
+      if(this.searchForm.get("order")) { this.display.setOrderByElement(this.searchForm.get("order").value); }    
+      this.display.setPage(1);
+      this.searchPanel.close();
+      this.search();
     }
   }
   
-  search(display: Display): void {
+  search(): void {
     /** Metodo independiente para facilitar reimplementacion */
-    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
   }
 }

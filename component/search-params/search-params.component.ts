@@ -19,7 +19,7 @@ export abstract class SearchParamsComponent implements OnInit {
    * Formulario
    */
 
-  @Input() display$: Observable<Display>;
+  @Input() display: Display;
   /**
    * Datos de busqueda iniciales
    * Display, al ser definido por elementos asincronicos, se considera observable
@@ -63,14 +63,7 @@ export abstract class SearchParamsComponent implements OnInit {
      * Los valores por defecto se definen en el componente principal que utiliza el formulario de busqueda
      * Puede resultar necesario inicializar valores que seran posteriormente accedidos desde el storage
      */
-    
-    this.load$ = this.display$.pipe(map(
-      display => {
-        if(!isEmptyObject(display.getParams())) { this.fieldset.reset(display.getParams()) }
-        return display.getParams()
-      }
-    ));
-    
+    if(!isEmptyObject(this.display.getParams())) { this.fieldset.reset(this.display.getParams()) }
   }
  
 }
