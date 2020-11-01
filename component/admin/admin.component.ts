@@ -1,8 +1,8 @@
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Subscription, Observable, BehaviorSubject } from 'rxjs';
+import { Subscription, Observable, BehaviorSubject, of, empty } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { first } from 'rxjs/operators';
+import { first, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { emptyUrl } from '../../function/empty-url.function';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
@@ -14,6 +14,7 @@ import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
 
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { fastClone } from '@function/fast-clone';
 
 @Component({
   selector: 'core-admin',
@@ -24,39 +25,23 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
  * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
  */
 
-  adminForm: FormGroup = this.fb.group({});
+  adminForm: FormGroup = this.fb.group({}); //formulario principal
   /**
-   * Formulario principal
    * Se asignaran dinamicamente los formgroups correspondientes a fieldsets
    */
 
-  readonly entityName: string;
-  /**
-   * Entidad principal
-   */
-  
-  data$:BehaviorSubject<any> = new BehaviorSubject(false);
-  /**
-   * Datos principales
-   * Se define como BehaviorSubject porque puede recibir valores nuevos que deben ser asignados con metodo .next
-   * No se utiliza BehaviorSubject para evitar procesamiento adicional con el valor null
-   * null es un dato valido para data$ significa que no esta definido por lo que los subcomponentes inicializaran como si estuviera vacio
-   * Se podria usar BehaviorSubject y manejar diferentes alternativas para indicar si esta o no definido, por ejemplo null o false
-   */
+  readonly entityName: string; //entidad principal
+  display$:BehaviorSubject<any> = new BehaviorSubject(null); //parametros de consulta
+  data: any; //datos principales
 
-  isDeletable: boolean = false;
-  /**
-   * Flag para habilitar/deshabilitar boton eliminar
-   */
+  isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
+  isSubmitted: boolean = false; //Flag para habilitar/deshabilitar boton aceptar
 
-  isSubmitted: boolean = false;
-  /**
-   * Flag para habilitar/deshabilitar boton aceptar
-   */
-
-  protected subscriptions = new Subscription();
-   
-  params: any;
+  params: any; //parametros
+  loadParams$: Observable<any>; //carga de parametros
+  loadDisplay$: Observable<any>; //carga de display
+  load: boolean; //atributo auxiliar para mostrar barra de progreso
+  protected subscriptions = new Subscription(); //suscripciones en el ts
 
   constructor(
     protected fb: FormBuilder, 
@@ -79,7 +64,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.storageValueChanges();
-    this.initData();   
+    this.loadParams();   
+    this.loadDisplay();
   }
 
   storageValueChanges() {
@@ -92,43 +78,66 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.subscriptions.add(s);
   }
 
-  initData(){
+  loadParams(){
     /**
      * No realizar la suscripcion en el template (cambia el Lifecycle)! 
      * Puede generar errores "ExpressionChanged"
      */
-    var s = this.route.queryParams.subscribe(
-      params => { 
-        this.setParams(params);
-        this.setData()
-      },
-      error => { 
-        this.snackBar.open(JSON.stringify(error), "X"); 
-      }
+    this.loadParams$ = this.route.queryParams.pipe(
+      map(
+        params => { 
+          this.initParams(params);
+          this.initDisplay()
+        },
+        error => { 
+          this.snackBar.open(JSON.stringify(error), "X"); 
+        }
+      ), 
+      map(
+        () => {return true;}
+      )
     )
-    this.subscriptions.add(s);
   }
 
-  setParams(params: any){ this.params = params; }
+  loadDisplay(){
+    this.loadDisplay$ = this.display$.pipe(
+      switchMap(
+        () => {
+          this.load = false;
+          return this.initData();
+        }
+      ),
+      map(
+        data => {
+          this.data = data;
+          return this.load = true;
+        }
+      )
+    )
+  }
 
-  setData(): void {
-    if(isEmptyObject(this.params)) {
-      this.data$.next(null);
-      return;
-    } 
+  initParams(params: any){ this.params = params; }
 
-    this.dd.unique(this.entityName, this.params).pipe(first()).subscribe(
-      response => {
-        if (response) this.data$.next(response);
-        else this.data$.next(this.params);
-      },
-      error => { 
-        this.dialog.open(DialogAlertComponent, {
-          data: {title: "Error", message: error.error}
-        });
-      }
-    ); 
+  initDisplay(){
+    this.display$.next(this.params);
+  }
 
+  initData(): Observable<any> {
+    return of({}).pipe(
+      switchMap(() => {
+        if(isEmptyObject(this.display$.value)) return of (null);
+        else return this.dd.unique(this.entityName, this.display$.value)
+      }),
+      map(
+        data => {
+          if(!isEmptyObject(data)) return data;
+          return fastClone(this.display$.value)
+          /**
+           * Se retorna un clone para posibilitar el cambio y el uso de ngOnChanges si se requiere
+           */
+        }
+      )
+    );
   }
 
   back() { this.location.back(); }
@@ -145,12 +154,13 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      */
     let route = emptyUrl(this.router.url);
     if(route != this.router.url) this.router.navigateByUrl('/' + route);
-    else this.setData()
+    else this.display$.next(this.display$.value);
     
   }
 
   reset(): void{
-    this.setData()
+    //this.storage.removeItemsPrefix(emptyUrl(this.router.url));
+    this.display$.next(this.display$.value);
   }
   
   persist(): Observable<any> {
@@ -190,7 +200,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         this.reload(response);
       },
       error => { 
-        console.log(error);
         this.dialog.open(DialogAlertComponent, {
           data: {title: "Error", message: error.error}
         });
@@ -206,7 +215,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      */
     let route = emptyUrl(this.router.url) + "?id="+response["id"];
     if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
-    else this.setData();
+    else this.display$.next(this.display$.value);
     this.snackBar.open("Registro realizado", "X");
     this.isSubmitted = false;
   }
