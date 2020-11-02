@@ -2,7 +2,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription, Observable, BehaviorSubject, of, empty } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { first, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { emptyUrl } from '../../function/empty-url.function';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
@@ -40,7 +40,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   params: any; //parametros
   loadParams$: Observable<any>; //carga de parametros
   loadDisplay$: Observable<any>; //carga de display
-  load: boolean; //atributo auxiliar para mostrar barra de progreso
   protected subscriptions = new Subscription(); //suscripciones en el ts
 
   constructor(
@@ -103,14 +102,13 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.loadDisplay$ = this.display$.pipe(
       switchMap(
         () => {
-          this.load = false;
           return this.initData();
         }
       ),
       map(
         data => {
           this.data = data;
-          return this.load = true;
+          return true;
         }
       )
     )
@@ -197,6 +195,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         this.storage.removeItemsContains(".");
         this.storage.removeItemsPersisted(response["detail"]);
         this.storage.removeItemsPrefix(emptyUrl(this.router.url));
+        this.snackBar.open("Registro realizado", "X");
+        
         this.reload(response);
       },
       error => { 
@@ -216,7 +216,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     let route = emptyUrl(this.router.url) + "?id="+response["id"];
     if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
     else this.display$.next(this.display$.value);
-    this.snackBar.open("Registro realizado", "X");
     this.isSubmitted = false;
   }
 
