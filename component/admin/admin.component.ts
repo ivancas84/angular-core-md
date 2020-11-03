@@ -62,12 +62,16 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.storageValueChanges();
-    this.loadParams();   
+    this.loadStorage();
+    this.loadParams();  
     this.loadDisplay();
   }
 
-  storageValueChanges() {
+  loadStorage() {
+    /**
+     * Me suscribo directamente en el ts
+     * Con esto me aseguro que se suscribe inicialmente y no ensucio el HTML
+     */
     var s = this.adminForm.valueChanges.subscribe (
       formValues => { this.storage.setItem(this.router.url, formValues); },
       error => { 
@@ -84,9 +88,9 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      */
     this.loadParams$ = this.route.queryParams.pipe(
       map(
-        params => { 
-          this.initParams(params);
-          this.initDisplay()
+        queryParams => { 
+          var params = this.initParams(queryParams);
+          this.initDisplay(params)
         },
         error => { 
           this.snackBar.open(JSON.stringify(error), "X"); 
@@ -99,7 +103,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   loadDisplay(){
-    this.loadDisplay$ = this.display$.pipe(
+    /**
+     * Se define como observable y se suscribe en el template
+     * con esto me aseguro de que me suscribo luego de inicializados los parametros
+     * Si me suscribo directamente en el template, se suscribe dos veces, uno en null y otro con el valor del parametro
+     */
+    this.loadDisplay$ =  this.display$.pipe(
       switchMap(
         () => {
           return this.initData();
@@ -114,11 +123,9 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     )
   }
 
-  initParams(params: any){ this.params = params; }
+  initParams(params: any){ return params; }
 
-  initDisplay(){
-    this.display$.next(this.params);
-  }
+  initDisplay(params){ this.display$.next(params);  }
 
   initData(): Observable<any> {
     return of({}).pipe(
@@ -192,11 +199,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   submit(){
     var s = this.persist().subscribe(
       response => {
-        this.storage.removeItemsContains(".");
-        this.storage.removeItemsPersisted(response["detail"]);
-        this.storage.removeItemsPrefix(emptyUrl(this.router.url));
         this.snackBar.open("Registro realizado", "X");
-        
+        this.removeStorage(response);
         this.reload(response);
       },
       error => { 
@@ -207,6 +211,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       }
     );
     this.subscriptions.add(s);
+  }
+
+  removeStorage(response){
+    this.storage.removeItemsContains(".");
+    this.storage.removeItemsPersisted(response["detail"]);
+    this.storage.removeItemsPrefix(emptyUrl(this.router.url));
   }
 
   reload(response){

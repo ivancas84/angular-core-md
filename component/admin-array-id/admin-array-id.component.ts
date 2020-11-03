@@ -1,5 +1,5 @@
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Subscription, Observable, BehaviorSubject } from 'rxjs';
+import { Subscription, Observable, BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { first } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AdminComponent } from '@component/admin/admin.component';
 import { ValidatorsService } from '@service/validators/validators.service';
+import { fastClone } from '@function/fast-clone';
 
 @Component({
   selector: 'core-admin-array-id',
@@ -47,17 +48,19 @@ export abstract class AdminArrayIdComponent extends AdminComponent {
     super(fb, route, router, location, dd, storage, dialog, snackBar);
   }
 
-  setParams(params: any){
-    if(params.hasOwnProperty("id") && params["id"]) {
-      this.params = params;
+  initParams(params: any){
+    if(params.hasOwnProperty("id") && params["id"]) {      
       this.adminForm.get("id").setValue(params["id"]);
+      return params;
     } else {
       this.snackBar.open("Error de parametros", "X"); 
+      throw new Error("Error de parametros");
     }
   }
 
-  setData(): void {
-    this.data$.next(this.params["id"]);
+  initData(): Observable<any> {
+    console.log(this.display$.value);
+    return of(fastClone(this.display$.value));
   }
 
   persist(): Observable<any> {
@@ -68,8 +71,7 @@ export abstract class AdminArrayIdComponent extends AdminComponent {
     /**
      * Recargar una vez persistido
      */
-    this.setData();
-    this.snackBar.open("Registro realizado", "X");
+    this.display$.next(this.display$.value);
     this.isSubmitted = false;
   }
 

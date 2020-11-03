@@ -13,7 +13,7 @@ export abstract class ShowComponent implements OnInit {
 
   readonly entityName: string; //Nombre de la entidad principal
   data: any; //datos principales
-  length: number; //longitud total de los datos a mostrar
+  length: number = null; //longitud total de los datos a mostrar
   display: Display; //Parametros de visualizacion
   params: { [x: string]: any; } //Parametros del componente
   load$: Observable<any>; //Disparador de observables
@@ -29,12 +29,15 @@ export abstract class ShowComponent implements OnInit {
       tap(
         queryParams => {
           this.load = false;
-          this.params = queryParams;
-          this.initDisplay();          
+          var params = this.initParams(queryParams);
+          this.initDisplay(params);          
         }
       ),
       switchMap(
-        () => this.initInfo()
+        () => this.initLength()
+      ),
+      switchMap(
+        () => this.initData()
       ),
       map(
         ()=> {return this.load = true}
@@ -42,24 +45,31 @@ export abstract class ShowComponent implements OnInit {
     );
   }
 
-  initDisplay() {
+  initParams(params: any){ return params; }
+
+  initDisplay(params) {
     this.display = new Display();
     this.display.setSize(100);
-    this.display.setParamsByQueryParams(this.params);
+    this.display.setParamsByQueryParams(params);
   }
 
-  initInfo(): Observable<any>{
+  initLength(): Observable<any> {
     /**
-     * Se define un metodo independiente para definir la cantidad total y los datos a mostrar
-     * La definición de la cantidad y el total se realizan conjuntamente para facilitar la reimplementacion
-     * en ocasiones la cantidad depende de los datos, 
-     * en ocasiones para definir los datos se tiene en cuenta la cantidad (sin cantidad los datos seran nulos)
+     * Si no se desea procesar la longitud, retornar valor false return of(false)
      */
-    return this.initLength().pipe(
+    return this.dd.post("count", this.entityName, this.display).pipe(
+      tap(
+        count => { this.length = count; }
+      )
+    );
+  }
+
+  initData(): Observable<any>{
+    return of({}).pipe(
       switchMap(
-        count => {
-          this.length = count;
-          return this.initData()
+        () => {
+          if(!this.length && this.length !== null) return of([]); 
+          return this.dd.all(this.entityName, this.display);
         }
       ),
       tap(
@@ -68,15 +78,7 @@ export abstract class ShowComponent implements OnInit {
         }
       )
     )
-  } 
 
-  initLength(): Observable<any> {
-    return this.dd.post("count", this.entityName, this.display);
-  }
-
-  initData(): Observable<any>{
-    if(!this.length) return of([]); 
-    return this.dd.all(this.entityName, this.display);
   }
 
 }

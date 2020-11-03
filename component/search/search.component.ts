@@ -1,4 +1,4 @@
-import { Input, Component, ViewChild } from '@angular/core';
+import { Input, Component, ViewChild, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -42,6 +42,7 @@ export abstract class SearchComponent {
     protected router: Router,
     protected dialog: MatDialog,
   ) {}
+
 
 
   onSubmit(): void {
