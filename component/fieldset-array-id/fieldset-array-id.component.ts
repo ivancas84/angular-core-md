@@ -1,9 +1,9 @@
 import { Component, SimpleChanges} from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { FieldsetArrayComponent } from '@component/fieldset-array/fieldset-array.component';
-import { map, mergeMap, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,7 +24,8 @@ export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
   load$: Observable<any>; //suscripcion desde el template
   data$: BehaviorSubject<any> = new BehaviorSubject(null); //facilitar encadenamiento de observables
   dataSource: any; //auxiliar de data
-  
+  protected subscriptions = new Subscription(); //suscripciones en el ts
+
   constructor(
     protected router: Router, 
     protected storage: SessionStorageService, 
@@ -44,31 +45,40 @@ export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
   ngOnInit(): void {
     //@todo habria que chequear primero el storage y despues consultar los datos
     this.initForm();
-    this.load$ = this.data$.pipe(
+
+    var s = this.data$.pipe(
       switchMap(
         data => { 
+          
           this.idValue = data;
-          return this.getData();
+          return this.initData();
         }
       ),
-      map(
+    ).subscribe(
         data => {
           this.dataSource = data;
-          var d = this.initData();
-          this.initValues(d);
-          return true;
+          var d = this.initFormValues();
+          this.setFormValues(d);
         }
-      )
     )
+    this.subscriptions.add(s);
+
+    /**
+     * @todo Si bien no tiene mucho sentido, se realiza la subscripcion en el ts 
+     * en vez del template para evitar errores ExpressionChangedAfterItHasBeenCheckedError.
+     * Los errores ExpressionChangedAfterItHasBeenCheckedError 
+     * ocurren cuando se retorna a la pagina,
+     * no suceden cuando se carga por primera vez.
+     */
   }
 
-  getData(): Observable<any>{
+  initData(): Observable<any>{
     var display = new Display();
     display.addParam(this.idName, this.idValue);
     return this.dd.all(this.entityName, display);
   }
 
-  initData(): any {
+  initFormValues(): any {
     if (this.formValues) {
       var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
       this.formValues = null;

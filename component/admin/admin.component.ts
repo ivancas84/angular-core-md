@@ -57,7 +57,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
     /**
      * Si no se incluye, nunca se limpia el formulario 
-     * Puede resultar confuso cuando se asignan otros parametros a la url
+     * Si se asignan otros parametros a la url quedan todas las alternativas de una misma interface
+     * en la cache, pudiendo resultar confuso para el que lo utiliza
+     * de esta forma cada vez que se asigna a una interfaz inicialmente se borra la cache
+     * si el usuario realiza una modificacion se carga nuevamente la cache
+     * al rutear a una interface diferente y volver se carga el valor de la cache y nuevamente se borra
+     * logrando el comportamiento deseado
      */
   }
 

@@ -48,9 +48,12 @@ export abstract class AdminArrayIdComponent extends AdminComponent {
     super(fb, route, router, location, dd, storage, dialog, snackBar);
   }
 
+ 
+
   initParams(params: any){
-    if(params.hasOwnProperty("id") && params["id"]) {      
+    if(params.hasOwnProperty("id") && params["id"]) {  
       this.adminForm.get("id").setValue(params["id"]);
+      this.storage.removeItemsPrefix(emptyUrl(this.router.url)); //debe eliminarse el storage porque fue asignado el id
       return params;
     } else {
       this.snackBar.open("Error de parametros", "X"); 
@@ -59,7 +62,6 @@ export abstract class AdminArrayIdComponent extends AdminComponent {
   }
 
   initData(): Observable<any> {
-    console.log(this.display$.value);
     return of(fastClone(this.display$.value));
   }
 

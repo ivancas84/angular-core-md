@@ -34,8 +34,8 @@ export abstract class FieldsetArrayComponent implements OnInit  {
 
   ngOnChanges(changes: SimpleChanges): void {    
     if(!changes["data"].isFirstChange()){ //el firstChange es tratado en el ngOnInit
-      var data = this.initData();
-      this.initValues(data);
+      var formValues = this.initFormValues();
+      this.setFormValues(formValues);
     }
   }
   
@@ -44,8 +44,8 @@ export abstract class FieldsetArrayComponent implements OnInit  {
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
     this.initForm();
-    var data = this.initData();
-    this.initValues(data);
+    var data = this.initFormValues();
+    this.setFormValues(data);
   }
 
   initForm(): void {
@@ -69,7 +69,7 @@ export abstract class FieldsetArrayComponent implements OnInit  {
     else this.fieldset.controls[index].get("_delete").setValue(true);
   }
 
-  initData(): any {
+  initFormValues(): any {
     if (this.formValues) {
       var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
       this.formValues = null;
@@ -78,7 +78,7 @@ export abstract class FieldsetArrayComponent implements OnInit  {
     return this.data;
   }
 
-  initValues(response: {[key:string]: any}[] = []){
+  setFormValues(response: {[key:string]: any}[] = []){
     this.fieldset.controls.length = 0; //inicializar
     for(var i = 0; i < response.length; i++){
       this.add();
