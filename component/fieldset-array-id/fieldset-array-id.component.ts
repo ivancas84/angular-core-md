@@ -1,10 +1,9 @@
-import { Input, OnInit, Component, AfterViewInit, SimpleChanges} from '@angular/core';
-import { FormGroup, FormControl, FormGroupDirective, NgForm, FormBuilder, FormArray } from '@angular/forms';
+import { Component, SimpleChanges} from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { FieldsetArrayComponent } from '@component/fieldset-array/fieldset-array.component';
-import { mergeMap, switchMap } from 'rxjs/operators';
+import { map, mergeMap, switchMap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,13 +18,12 @@ export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
    * El identificador habitualmente es una fk, pero no es estrictamente necesario
    */
 
-  readonly idName: string; //Nombre del identificador
-  readonly idEntityName?: string; //Nombre de la entidad asociada al identificador
-  idValue: string; //Valor del identificador
-  load$: Observable<any>;
-  load: boolean;
-  data$: BehaviorSubject<any> = new BehaviorSubject(null);
-  dataSource: any;
+  readonly idName: string; //nombre del identificador
+  readonly idEntityName?: string; //nombre de la entidad asociada al identificador
+  idValue: string; //valor del identificador
+  load$: Observable<any>; //suscripcion desde el template
+  data$: BehaviorSubject<any> = new BehaviorSubject(null); //facilitar encadenamiento de observables
+  dataSource: any; //auxiliar de data
   
   constructor(
     protected router: Router, 
@@ -44,24 +42,39 @@ export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
   }
 
   ngOnInit(): void {
+    //@todo habria que chequear primero el storage y despues consultar los datos
     this.initForm();
     this.load$ = this.data$.pipe(
       switchMap(
         data => { 
-          var display = new Display();
           this.idValue = data;
-          display.addParam(this.idName, this.idValue);
-          return this.dd.all(this.entityName, display);
+          return this.getData();
         }
       ),
       map(
         data => {
+          this.dataSource = data;
           var d = this.initData();
           this.initValues(d);
           return true;
         }
       )
     )
+  }
+
+  getData(): Observable<any>{
+    var display = new Display();
+    display.addParam(this.idName, this.idValue);
+    return this.dd.all(this.entityName, display);
+  }
+
+  initData(): any {
+    if (this.formValues) {
+      var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
+      this.formValues = null;
+      return d;
+    }
+    return this.dataSource;
   }
 
   add() {
