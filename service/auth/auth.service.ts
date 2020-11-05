@@ -37,6 +37,7 @@ export class AuthService {
   public hasPermission(permissions: string[]): boolean{
     if(!this.isAuthenticated()) return false;
     var scope:string[] = this.jwtHelper.decodeToken(this.jwt)["scope"];
+    if(!scope.length) return false;
     
     for(var p in permissions){
       for(var s in scope){
