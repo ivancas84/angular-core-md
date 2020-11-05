@@ -7,13 +7,12 @@ import { Subscription } from 'rxjs';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
-import { CookieService } from 'ngx-cookie-service';
-import { JwtHelperService } from "@auth0/angular-jwt";
+import { Router } from '@angular/router';
 import { AuthService } from '@service/auth/auth.service';
 
 
 @Component({
-  selector: 'app-login',
+  selector: 'core-login',
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
@@ -27,6 +26,7 @@ export class LoginComponent {
     protected dialog: MatDialog,
     protected snackBar: MatSnackBar,
     protected auth: AuthService,
+    protected router: Router,
   ) {}
 
   ngOnInit() {
@@ -42,12 +42,8 @@ export class LoginComponent {
 
   reload(response){
     this.auth.login(response["jwt"]);
-
-
-    /**
-     * Redireccionar a login efectuado
-     */
     this.snackBar.open("Login realizado", "X");
+    this.router.navigate(['/login-success']);
   }
 
   onSubmit(): void {
