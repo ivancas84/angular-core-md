@@ -25,7 +25,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
  * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
  */
 
-  adminForm: FormGroup = this.fb.group({}); //formulario principal
+  adminForm: FormGroup;
   /**
    * Se asignaran dinamicamente los formgroups correspondientes a fieldsets
    */
@@ -67,9 +67,14 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.initForm();
     this.loadStorage();
     this.loadParams();  
     this.loadDisplay();
+  }
+
+  initForm(){
+    this.adminForm = this.fb.group({}); //formulario principal
   }
 
   loadStorage() {
@@ -121,6 +126,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       ),
       map(
         data => {
+          console.log(data);
           this.data = data;
           return true;
         }

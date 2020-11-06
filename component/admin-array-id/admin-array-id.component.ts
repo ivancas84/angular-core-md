@@ -1,21 +1,7 @@
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Subscription, Observable, BehaviorSubject, of } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { first } from 'rxjs/operators';
-import { Location } from '@angular/common';
+import { Observable, of } from 'rxjs';
 import { emptyUrl } from '../../function/empty-url.function';
-import { SessionStorageService } from '../../service/storage/session-storage.service';
-import { isEmptyObject } from '../../function/is-empty-object.function';
-import { OnInit, AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
-import { markAllAsDirty } from '../../function/mark-all-as-dirty';
-import { logValidationErrors } from '../../function/log-validation-errors';
-import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
-
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component } from '@angular/core';
 import { AdminComponent } from '@component/admin/admin.component';
-import { ValidatorsService } from '@service/validators/validators.service';
 import { fastClone } from '@function/fast-clone';
 
 @Component({
@@ -27,33 +13,14 @@ export abstract class AdminArrayIdComponent extends AdminComponent {
  * Variante del formulario de administracion que recibe obligatoriamente un identificador
  * y lo transfiere a sus componentes anidados
  * El identificador no necesariamente debe ser el id de la entidad, puede ser algun campo unico
+ * Puede resultar util en el submit agregar this.adminForm.addControl(this.idName, this.display$.value);
+
  */
-
-  adminForm: FormGroup = this.fb.group({
-    id: ['', Validators.required ],
-  });
-
-  constructor(
-    protected fb: FormBuilder, 
-    protected route: ActivatedRoute, 
-    protected router: Router, 
-    protected location: Location, 
-    protected dd: DataDefinitionService, 
-    protected storage: SessionStorageService, 
-    protected dialog: MatDialog,
-    protected snackBar: MatSnackBar,
-
-    protected validators: ValidatorsService,
-  ) {
-    super(fb, route, router, location, dd, storage, dialog, snackBar);
-  }
-
+  
+  readonly idName: string; //nombre del identificador
  
-
   initParams(params: any){
-    if(params.hasOwnProperty("id") && params["id"]) {  
-      this.adminForm.get("id").setValue(params["id"]);
-      this.storage.removeItemsPrefix(emptyUrl(this.router.url)); //debe eliminarse el storage porque fue asignado el id
+    if(params.hasOwnProperty(this.idName) && params[this.idName]) {  
       return params;
     } else {
       this.snackBar.open("Error de parametros", "X"); 
@@ -76,5 +43,15 @@ export abstract class AdminArrayIdComponent extends AdminComponent {
     this.display$.next(this.display$.value);
     this.isSubmitted = false;
   }
+
+  /*serverData() { 
+    /**
+     * se deja como referencia si se desea sobrescribir
+     * puede ser util incluir el valor del parametro
+     *
+    this.adminForm.addControl(this.idName, this.display$.value);
+    return this.adminForm.value
+  }*/
+  
 
 }

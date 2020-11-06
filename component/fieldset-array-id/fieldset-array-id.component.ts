@@ -1,7 +1,7 @@
 import { Component, SimpleChanges} from '@angular/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { SessionStorageService } from '../../service/storage/session-storage.service';
+import { SessionStorageService } from '@service/storage/session-storage.service';
 import { FieldsetArrayComponent } from '@component/fieldset-array/fieldset-array.component';
 import { switchMap } from 'rxjs/operators';
 import { Display } from '@class/display';
@@ -21,7 +21,6 @@ export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
   readonly idName: string; //nombre del identificador
   readonly idEntityName?: string; //nombre de la entidad asociada al identificador
   idValue: string; //valor del identificador
-  load$: Observable<any>; //suscripcion desde el template
   data$: BehaviorSubject<any> = new BehaviorSubject(null); //facilitar encadenamiento de observables
   dataSource: any; //auxiliar de data
   protected subscriptions = new Subscription(); //suscripciones en el ts
@@ -37,6 +36,10 @@ export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    /**
+     * Recibe un objeto desde el cual se obtendra el valor para realizar las consultas
+     * Habitualmente se identifica el valor con data["idName"]
+     */
     if( changes['data'] && changes['data'].previousValue != changes['data'].currentValue ) {    
         this.data$.next(changes['data'].currentValue);
     }
@@ -49,8 +52,7 @@ export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
     var s = this.data$.pipe(
       switchMap(
         data => { 
-          
-          this.idValue = data;
+          this.idValue = data[this.idName];
           return this.initData();
         }
       ),
