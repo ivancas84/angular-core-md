@@ -1,7 +1,7 @@
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { emptyUrl } from '../../function/empty-url.function';
-import { isEmptyObject } from '../../function/is-empty-object.function';
+import { emptyUrl } from '@function/empty-url.function';
+import { isEmptyObject } from '@function/is-empty-object.function';
 import { Component } from '@angular/core';
 import { AdminComponent } from '@component/admin/admin.component';
 import { fastClone } from '@function/fast-clone';

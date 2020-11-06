@@ -1,5 +1,5 @@
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { Subscription, Observable, BehaviorSubject, of, empty } from 'rxjs';
+import { Subscription, Observable, BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { map, switchMap } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { Location } from '@angular/common';
 import { emptyUrl } from '../../function/empty-url.function';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { isEmptyObject } from '../../function/is-empty-object.function';
-import { OnInit, AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
+import { OnInit, AfterViewInit, Component } from '@angular/core';
 import { markAllAsDirty } from '../../function/mark-all-as-dirty';
 import { logValidationErrors } from '../../function/log-validation-errors';
 import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
@@ -25,7 +25,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
  * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
  */
 
-  adminForm: FormGroup;
+  adminForm: FormGroup = this.fb.group({}); //formulario principal
   /**
    * Se asignaran dinamicamente los formgroups correspondientes a fieldsets
    */
@@ -67,14 +67,9 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.initForm();
     this.loadStorage();
     this.loadParams();  
     this.loadDisplay();
-  }
-
-  initForm(){
-    this.adminForm = this.fb.group({}); //formulario principal
   }
 
   loadStorage() {

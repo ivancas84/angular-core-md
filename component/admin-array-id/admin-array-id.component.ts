@@ -1,5 +1,4 @@
 import { Observable, of } from 'rxjs';
-import { emptyUrl } from '../../function/empty-url.function';
 import { Component } from '@angular/core';
 import { AdminComponent } from '@component/admin/admin.component';
 import { fastClone } from '@function/fast-clone';
@@ -12,9 +11,7 @@ export abstract class AdminArrayIdComponent extends AdminComponent {
 /**
  * Variante del formulario de administracion que recibe obligatoriamente un identificador
  * y lo transfiere a sus componentes anidados
- * El identificador no necesariamente debe ser el id de la entidad, puede ser algun campo unico
- * Puede resultar util en el submit agregar this.adminForm.addControl(this.idName, this.display$.value);
-
+ * El identificador no necesariamente debe ser el id
  */
   
   readonly idName: string; //nombre del identificador
@@ -52,6 +49,5 @@ export abstract class AdminArrayIdComponent extends AdminComponent {
     this.adminForm.addControl(this.idName, this.display$.value);
     return this.adminForm.value
   }*/
-  
 
 }
