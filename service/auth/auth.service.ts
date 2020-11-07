@@ -34,6 +34,11 @@ export class AuthService {
     return !this.jwtHelper.isTokenExpired(this.jwt);
   }
 
+  public getToken(){
+    if(!this.isAuthenticated()) return false;
+    return this.jwtHelper.decodeToken(this.jwt);
+  }
+
   public hasPermission(permissions: string[]): boolean{
     if(!this.isAuthenticated()) return false;
     var scope:string[] = this.jwtHelper.decodeToken(this.jwt)["scope"];
