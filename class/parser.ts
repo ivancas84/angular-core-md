@@ -1,17 +1,8 @@
-import { Injectable } from '@angular/core';
+import { MONTH_NAMES } from '@config/core/const/MONTH_NAMES';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ParserService {
+export class Parser {
 
-  readonly MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  readonly MONTH_NAMES_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-
-
-  constructor() { }
-
-  date(value: string): Date {
+  static date(value: string): Date {
     if(!value) return null;
 
     switch(value){
@@ -31,7 +22,7 @@ export class ParserService {
     }
   }
 
-  time(value: string): Date {
+  static time(value: string): Date {
     if(!value) return null;
 
     switch(value){
@@ -55,13 +46,12 @@ export class ParserService {
 
   //@param format (default Y-m-d)
   //  "d/m/Y",
-  //  "NgbDateStruct": Retorna un objeto {day:number, month:number, year:number}, inspirado en el datepicker de bootstrap
-  dateFormat(value: Date, format: string = null): any {
-    if(!(value instanceof Date)) return null;
+  static dateFormat(value:any, format: string = null): any {
+    value = new Date(value);
 
     //se asigna un numero a las variables porque sino tira error en compliacion: ubsequent variable declarations must have the same type
     switch(format){
-      case "F": return this.MONTH_NAMES[value.getMonth()];
+      case "F": return MONTH_NAMES[value.getMonth()];
 
       case "d/m/Y":
         var yyyy = value.getFullYear().toString();
@@ -69,12 +59,8 @@ export class ParserService {
         var dd  = value.getDate().toString();
         return (dd[1]?dd:"0"+dd[0]) + "/" + (mm[1]?mm:"0"+mm[0]) + "/" + yyyy;
 
-
-      case "NgbDateStruct":
-        var yyyy2 = value.getFullYear();
-        var mm2 = value.getMonth()+1;
-        var dd2  = value.getDate();
-        return {day:dd2, month:mm2, year:yyyy2};
+      case "Y":
+        return value.getFullYear().toString();
 
       default:
         var yyyy3 = value.getFullYear().toString();
@@ -85,7 +71,7 @@ export class ParserService {
   }
 
 
-  timestamp(value: string): Date {
+  static timestamp(value: string): Date {
     let date: Date = null;
     let time_ = null;
     let time = null;
@@ -115,10 +101,8 @@ export class ParserService {
 
   //@param format (default h:i)
   //  "d/m/Y",
-  //  "NgbTimeStruct": Retorna un objeto {hour:number, minute:number}, inspirado en el datepicker de bootstrap
-  timeFormat(value: Date, format: string = null): any {
-    if(!(value instanceof Date)) return null;
-
+  static timeFormat(value: any, format: string = null): any {
+    value = new Date(value);
 
     //se asigna un numero a las variables porque sino tira error en compliacion: ubsequent variable declarations must have the same type
     switch(format){
@@ -133,7 +117,7 @@ export class ParserService {
   //@param format (default Y-m-d)
   //  "d/m/Y",
   //  "NgbDateTimeStruct": Retorna un objeto compuesto {day:number, month:number, year:number} {hour:number, minute:number}, inspirado en el datepicker y timepicker de bootstrap
-  timestampFormat(value: Date, format: string = null): any {
+  static timestampFormat(value: Date, format: string = null): any {
     if(!(value instanceof Date)) return null;
 
     //se asigna un numero a las variables porque sino tira error en compliacion: ubsequent variable declarations must have the same type

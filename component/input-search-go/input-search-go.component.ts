@@ -1,10 +1,11 @@
 import { Input, OnInit, Component} from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription, of, ReplaySubject, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { startWith, mergeMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { startWith, mergeMap, debounceTime, distinctUntilChanged, switchMap, tap, map } from 'rxjs/operators';
 import { Display } from '../../class/display';
+import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
 
 @Component({
   selector: 'app-input-search-go',
@@ -26,11 +27,20 @@ export class InputSearchGoComponent implements  OnInit {
 
   filteredOptions: Observable<Array<{[key:string]: any}>>;
 
+  label: string;
+  load$;
+
   constructor(
     protected dd: DataDefinitionService,
     protected router: Router, 
+    protected ddl: DataDefinitionLabelService
   ) { }
 
+
+  displayFn(value): string {
+    return value && value.label ? value.label : '';
+  }
+  
   ngOnInit(): void {
     this.filteredOptions = this.searchControl.valueChanges.pipe(
       startWith(""),
@@ -38,7 +48,8 @@ export class InputSearchGoComponent implements  OnInit {
       distinctUntilChanged(),
       mergeMap(value => {
         if (typeof value == "string" ) return this._filter(value)
-        else {
+        else {          
+         
           this.router.navigate([this.route],{queryParams: {id:value.id}});
           return of([])
         }
@@ -49,13 +60,13 @@ export class InputSearchGoComponent implements  OnInit {
   private _filter(value: string): Observable<any> {
     if(value === "") return of([]);
     var display = new Display();
+    display.addField("id")
+    display.addField("label")
     display.addCondition(["_label_search","=~",value]);
-    return this.dd.all(this.entityName, display);
+    return this.dd.post("advanced",this.entityName, display);
   }
 
-  displayFn = value => {
-    return (value && value.id) ? this.dd.label(this.entityName, value.id) : value;
-  }
+  
   
 
 }

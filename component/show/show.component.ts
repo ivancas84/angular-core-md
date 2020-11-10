@@ -1,6 +1,6 @@
-import { OnInit, OnDestroy, Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Subscription, of, Observable } from 'rxjs';
+import { OnInit, Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { of, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
@@ -9,109 +9,76 @@ import { DataDefinitionService } from '@service/data-definition/data-definition.
   selector: 'core-show',
   template: '',
 })
-export abstract class ShowComponent implements OnInit, OnDestroy {
+export abstract class ShowComponent implements OnInit {
 
-  readonly entityName: string;
-  /**
-   * Nombre de la entidad principal
-   */
-
-  data$: BehaviorSubject<any> = new BehaviorSubject([]);
-  /**
-   * Datos principales
-   */
-
-  collectionSize$: BehaviorSubject<number> = new BehaviorSubject(0);
-  /**
-   * tamanio de la consulta
-   * se hace coincidir el nombre con el paginador de ng-bootstrap
-   */
-
-  display$: BehaviorSubject<Display> = new BehaviorSubject(null);
-  /**
-   * @todo reemplazar valor asincronico por sincronico
-   * Se define por elementos asincronicos, es necesario que sea asincronico?
-   */
-
-   display: Display;
-   params: { [x: string]: any; }
-
-   load$: Observable<any>;
-   load: boolean = false;
-   /**
-    * Atributo auxiliar necesario para visualizar la barra de carga
-    */
-
-  protected subscriptions = new Subscription();
+  readonly entityName: string; //Nombre de la entidad principal
+  data: any; //datos principales
+  length: number = null; //longitud total de los datos a mostrar
+  display: Display; //Parametros de visualizacion
+  params: { [x: string]: any; } //Parametros del componente
+  load$: Observable<any>; //Disparador de observables
+  load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
 
   constructor(
     protected dd: DataDefinitionService, 
     protected route: ActivatedRoute, 
-    protected router: Router,
   ) {}
 
   ngOnInit(): void {
     this.load$ = this.route.queryParams.pipe(
-      switchMap(
+      tap(
         queryParams => {
           this.load = false;
-          this.params = queryParams;       
-          this.initDisplay();
-
-          return this.initData().pipe(
-            map(
-              () => {
-                return this.load = true;              
-              }
-            )
-          )
+          var params = this.initParams(queryParams);
+          this.initDisplay(params);          
         }
+      ),
+      switchMap(
+        () => this.initLength()
+      ),
+      switchMap(
+        () => this.initData()
+      ),
+      map(
+        ()=> {return this.load = true}
       )
     );
   }
 
+  initParams(params: any){ return params; }
+
+  initDisplay(params) {
+    this.display = new Display();
+    this.display.setSize(100);
+    this.display.setParamsByQueryParams(params);
+  }
+
+  initLength(): Observable<any> {
+    /**
+     * Si no se desea procesar la longitud, retornar valor false return of(false)
+     */
+    return this.dd.post("count", this.entityName, this.display).pipe(
+      tap(
+        count => { this.length = count; }
+      )
+    );
+  }
 
   initData(): Observable<any>{
-    /**
-     * Se define un metodo independiente para definir la cantidad total y los datos a mostrar
-     * Facilita la cancelacion de la cantidad
-     */
-    return this.count().pipe(
+    return of({}).pipe(
       switchMap(
-        count => {
-          this.collectionSize$.next(count)
-          return this.data().pipe(
-            tap(
-              data => {
-                this.data$.next(data);
-              }
-            )
-          )
+        () => {
+          if(!this.length && this.length !== null) return of([]); 
+          return this.dd.all(this.entityName, this.display);
+        }
+      ),
+      tap(
+        data => {
+          this.data = data;
         }
       )
     )
-  } 
 
-  count(): Observable<any> {
-    return this.dd.post("count", this.entityName, this.display);
   }
-
-  data(): Observable<any>{
-    /**
-     * Conviene no pasar como parametro el valor de collectionSize$
-     * puede que se desee que este valor sea opcional al sobrescribir el metodo
-     */
-    if(!this.collectionSize$.value) return of([]); 
-    return this.dd.all(this.entityName, this.display);
-  }
-
-  initDisplay() {
-    this.display = new Display();
-    this.display.setSize(100);
-    this.display.setParamsByQueryParams(this.params);
-    this.display$.next(this.display); //@todo reemplazar uso de display$ por display
-  }
-
-  ngOnDestroy () { this.subscriptions.unsubscribe() }
 
 }
