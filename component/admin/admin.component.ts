@@ -121,7 +121,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       ),
       map(
         data => {
-          console.log(data);
           this.data = data;
           return true;
         }
