@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, map, first, switchMap } from 'rxjs/operators';
-import { API_URL } from '../../../app.config';
+import { API_URL, HTTP_OPTIONS } from '../../../app.config';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Display } from '@class/display';
 import { DataDefinitionStorageService } from '@service/data-definition-storage.service';
@@ -19,19 +19,12 @@ export class DataDefinitionService {
     protected cookie: CookieService
   ) { }
 
-  /*httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-    })
-  }*/
-
   
 
-  get httpOptions() {
+  httpOptions(contentType: boolean = true) {
     //@todo autenticar token antes de enviar?
-    var headers = {
-      'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-    }
+    var headers = {};
+    if(contentType) headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     if(this.cookie.get("jwt")) headers["Authorization"] = "Bearer " + this.cookie.get("jwt");
     
     var opt = {
@@ -41,9 +34,8 @@ export class DataDefinitionService {
     //Si no es posible leer el Authorization header desde el servidor, enviarlo como parametro
     //if(this.cookie.get("jwt")) opt["params"] = new HttpParams().set("jwt",this.cookie.get("jwt"))
     
-    return opt;
-      
-    
+    return opt;      
+
   }
 
 
@@ -52,7 +44,7 @@ export class DataDefinitionService {
   _post(api: string, entity: string, data: any = null):  Observable<any> {
     var jsonParams = (data instanceof Display) ? data.describe() : data;
     let url_ = API_URL + entity + '/'+ api;
-    return this.http.post<any>(url_, jsonParams, this.httpOptions);
+    return this.http.post<any>(url_, jsonParams, this.httpOptions());
   }
 
   post(api: string, entity: string, data: any = null):  Observable<any> {    
@@ -161,7 +153,7 @@ export class DataDefinitionService {
      *   Otros tipos de procesamiento pueden ser "Image", o si es un procesamiento particular algun nombre personalizado, por ejemplo "Info"
      */
     let url = API_URL + entity + '/upload';
-    return this.http.post<any>(url, data, this.httpOptions).pipe(first());
+    return this.http.post<any>(url, data, this.httpOptions(false)).pipe(first());
   }
 
 }
