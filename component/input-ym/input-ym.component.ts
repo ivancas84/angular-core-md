@@ -48,8 +48,8 @@ export class InputYmComponent implements OnInit {
    */
 
   ngOnInit(): void {
-    this.fieldName = getControlName(this.field);
-    this.adminRoute = getControlName(this.field.parent);
+    this.fieldName = getControlName(this.field); //deprecated?
+    this.adminRoute = getControlName(this.field.parent); //deprecated? comparar con otros ejemplos
   }
  
   get adminParams() {
