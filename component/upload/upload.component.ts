@@ -13,8 +13,11 @@ import { Location } from '@angular/common';
 })
 export abstract class UploadComponent {
   /**
-   * Comportamiento basico para subir archivos
-   * A través del atributo entityName se define el controlador de procesamiento del archivo idea es subir un archivo que sera procesado en un controlador
+   * Comportamiento basico para subir archivos para ser procesados
+   * A través del atributo entityName se define el controlador de procesamiento del archivo
+   * La idea es subir un archivo que sera procesado en un controlador,
+   * no se debe confundir con el Input Upload cuyo proposito es subir el archivo 
+   * y asignarlo como valor fk de una entidad
    */
 
   uploadForm: FormGroup = this.fb.group(
@@ -68,8 +71,9 @@ export abstract class UploadComponent {
      * @return FormData
      */
 
-    const file = this.file.value._files[0];
     const formData = new FormData();
+    const file = this.file.value._files[0];
+
     formData.append("file", file);
     return formData;
   }
