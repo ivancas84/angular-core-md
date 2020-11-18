@@ -204,9 +204,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   submit(){
     var s = this.persist().subscribe(
       response => {
-        this.snackBar.open("Registro realizado", "X");
-        this.removeStorage(response);
-        this.reload(response);
+        this.submitted(response)        
       },
       error => { 
         this.dialog.open(DialogAlertComponent, {
@@ -218,6 +216,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.subscriptions.add(s);
   }
 
+  submitted(response){
+    this.snackBar.open("Registro realizado", "X");
+    this.removeStorage(response);
+    this.reload(response);
+  }
+  
   removeStorage(response){
     this.storage.removeItemsContains(".");
     this.storage.removeItemsPersisted(response["detail"]);
