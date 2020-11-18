@@ -6,6 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { Location } from '@angular/common';
+import { logValidationErrors } from '@function/log-validation-errors';
+import { markAllAsDirty } from '@function/mark-all-as-dirty';
 
 @Component({
   selector: 'core-upload',
@@ -84,10 +86,9 @@ export abstract class UploadComponent {
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array con la informacion del archivo)"
      */    
-    this.dd.upload(this.entityName, this.formData()).subscribe(
+    var s = this.dd.upload(this.entityName, this.formData()).subscribe(
       (res) => {
-        this.response = res;
-        this.snackBar.open("Archivo subido", "X");
+        this.submitted(res);        
       },
       (err) => {
         this.isSubmitted = false;  
@@ -96,6 +97,12 @@ export abstract class UploadComponent {
         });
       }
     );
+    this.subscriptions.add(s);
+  }
+
+  submitted(response){
+    this.response = response;
+    this.snackBar.open("Archivo subido", "X");
   }
 
   reset(): void{
@@ -106,14 +113,19 @@ export abstract class UploadComponent {
     this.isSubmitted = true;
     
     if (!this.uploadForm.valid) {
-      const dialogRef = this.dialog.open(DialogAlertComponent, {
-        data: {title: "Error", message: "El formulario posee errores."}
-      });
-      this.isSubmitted = false;
-
+      this.cancelSubmit();
     } else {
       this.upload();
     }
+  }
+
+  cancelSubmit(){
+    markAllAsDirty(this.uploadForm);
+    logValidationErrors(this.uploadForm);
+    const dialogRef = this.dialog.open(DialogAlertComponent, {
+      data: {title: "Error", message: "El formulario posee errores."}
+    });
+    this.isSubmitted = false;
   }
 
   ngOnDestroy () { this.subscriptions.unsubscribe() }
