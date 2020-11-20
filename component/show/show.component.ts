@@ -14,7 +14,7 @@ export abstract class ShowComponent implements OnInit {
   readonly entityName: string; //Nombre de la entidad principal
   data: any; //datos principales
   length: number = null; //longitud total de los datos a mostrar
-  display: Display; //Parametros de visualizacion
+  display: Display; //parametros de visualizacion
   params: { [x: string]: any; } //Parametros del componente
   load$: Observable<any>; //Disparador de observables
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
@@ -29,8 +29,8 @@ export abstract class ShowComponent implements OnInit {
       tap(
         queryParams => {
           this.load = false;
-          var params = this.initParams(queryParams);
-          this.initDisplay(params);          
+          this.params = this.initParams(queryParams);
+          this.initDisplay();          
         }
       ),
       switchMap(
@@ -47,10 +47,10 @@ export abstract class ShowComponent implements OnInit {
 
   initParams(params: any){ return params; }
 
-  initDisplay(params) {
+  initDisplay() {
     this.display = new Display();
     this.display.setSize(100);
-    this.display.setParamsByQueryParams(params);
+    this.display.setParamsByQueryParams(this.params);
   }
 
   initLength(): Observable<any> {
@@ -65,6 +65,12 @@ export abstract class ShowComponent implements OnInit {
   }
 
   initData(): Observable<any>{
+    /**
+     * Dependiendo de las caracteristicas de la interfaz,
+     * puede sobrescribirse omitiendo el uso de display,
+     * y directamente utilizar params.
+     * Si se utiliza search considerar que tambien esta configurado con display.
+     */
     return of({}).pipe(
       switchMap(
         () => {
