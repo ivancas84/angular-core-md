@@ -8,6 +8,7 @@ import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { compare } from '@function/compare';
 import { fastClone } from '@function/fast-clone';
+import { naturalCompare } from '@function/natural-compare';
 
 @Component({
   selector: 'core-table',
@@ -50,6 +51,7 @@ export abstract class TableComponent implements OnInit {
 
   
   ngOnInit(): void {
+    console.log(this.data);
     if(!this.length) this.length = this.data.length;    
   }
   
@@ -74,6 +76,7 @@ export abstract class TableComponent implements OnInit {
       return true;
     }
 
+    console.log("serverSort false");
     return false;
   }
 
@@ -88,9 +91,10 @@ export abstract class TableComponent implements OnInit {
       return;
     }
 
-    this.data = data.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      return compare(a[sort.active],b[sort.active], isAsc);
+    data.sort((a, b) => {    
+      return (sort.direction === 'asc') ? naturalCompare(a[sort.active],b[sort.active]) : naturalCompare(b[sort.active],a[sort.active])
     });
+
+    this.data = data;
   }
 }
