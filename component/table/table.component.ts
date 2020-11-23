@@ -51,7 +51,6 @@ export abstract class TableComponent implements OnInit {
 
   
   ngOnInit(): void {
-    console.log(this.data);
     if(!this.length) this.length = this.data.length;    
   }
   
@@ -76,7 +75,6 @@ export abstract class TableComponent implements OnInit {
       return true;
     }
 
-    console.log("serverSort false");
     return false;
   }
 
@@ -86,6 +84,7 @@ export abstract class TableComponent implements OnInit {
     if(this.serverSort(sort)) return;
 
     const data = this.data.slice();
+
     if (!sort.active || sort.direction === '') {
       this.data = data;
       return;
