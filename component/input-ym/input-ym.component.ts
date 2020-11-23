@@ -78,6 +78,9 @@ export class InputYmComponent implements OnInit {
     datepicker.close();
   }
 
-  
+  clear(){
+    this.field.setValue(null);
+    this.field.markAsDirty();
+  }
   
 }
