@@ -33,6 +33,7 @@ export class Display {
   public getOrder(){ return this.order }
   public getCondition(){ return this.condition }
   public getParams(){ return this.params }
+  public getParam(key){ return this.params.hasOwnProperty(key) ?  this.params[key]:null; }
 
   public getFields(){ return this.fields }
   public getGroup(){ return this.group }
