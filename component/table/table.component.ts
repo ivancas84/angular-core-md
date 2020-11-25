@@ -45,6 +45,7 @@ export abstract class TableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   progress = false;
+  
   constructor(
     protected router: Router,
   ) {}
