@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, ViewChild } from '@angular/core';
+import { Input, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, BehaviorSubject, of, forkJoin, concat, merge, combineLatest } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
@@ -10,6 +10,10 @@ import { compare } from '@function/compare';
 import { fastClone } from '@function/fast-clone';
 import { naturalCompare } from '@function/natural-compare';
 
+declare function copyFormatted(html): any;
+declare function printHtml(html): any;
+
+
 @Component({
   selector: 'core-table',
   template: '',
@@ -20,37 +24,17 @@ import { naturalCompare } from '@function/natural-compare';
 })
 export abstract class TableComponent implements OnInit {
 
-  @Input() data: { [index: string]: any }[] = []; 
-  /**
-   * Datos que seran utilizados para visualizar o inicializar datos a mostrar
-   * Conviene que sea un observable para facilitar el encadenamiento con otro Observable
-   * Se puede encadenar con otro observable para redefinir los datos
-   * Los datos a visualizar resultantes seran cargados en el atributo "displayedColumns"
-   */
+  @Input() data: { [index: string]: any }[] = []; //datos principales
+  @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
+  @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
+  displayedColumns: string[]; //columnas a visualizar
+  @ViewChild(MatPaginator) paginator: MatPaginator; //paginacion
+  @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
 
-  @Input() display?: Display;
-  /**
-   * Busqueda susceptible de ser modificada por ordenamiento o paginacion
-   */
-  
-  @Input() length?: number;
-  /**
-   * Cantidad total de elementos, puede ser mayor que los datos a visualizar
-   */
-
-  
-  displayedColumns: string[];
-  
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  progress = false;
-  
   constructor(
     protected router: Router,
   ) {}
 
-  
   ngOnInit(): void {
     if(!this.length) this.length = this.data.length;    
   }
@@ -68,15 +52,11 @@ export abstract class TableComponent implements OnInit {
      * @return true si se efectuo ordenamiento en el servidor
      *         false si no se efectuo ordenamiento en el servidor
      */
-    if(this.length && this.display && this.data.length < this.length){
-      this.display.setPage(1);
-      this.display.setOrderByKeys([sort.active]);
-      //this.display$.value.setPage(1);
-      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
-      return true;
-    }
-
-    return false;
+    if(!this.length || !this.display || this.data.length >= this.length) return false;
+    this.display.setPage(1);
+    this.display.setOrderByKeys([sort.active]);
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
+    return true;
   }
 
   onChangeSort(sort: Sort) {
@@ -96,5 +76,13 @@ export abstract class TableComponent implements OnInit {
     });
 
     this.data = data;
+  }
+ 
+  copyContent(): void {
+    if(this.content) copyFormatted(this.content.nativeElement.innerHTML);
+  }
+
+  printContent(): void {
+    if(this.content) printHtml(this.content.nativeElement.innerHTML);
   }
 }
