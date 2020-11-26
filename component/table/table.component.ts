@@ -30,6 +30,7 @@ export abstract class TableComponent implements OnInit {
   displayedColumns: string[]; //columnas a visualizar
   @ViewChild(MatPaginator) paginator: MatPaginator; //paginacion
   @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
+  //footer: { [index: string]: any }[] = []; //footer
 
   constructor(
     protected router: Router,
@@ -37,6 +38,7 @@ export abstract class TableComponent implements OnInit {
 
   ngOnInit(): void {
     if(!this.length) this.length = this.data.length;    
+    //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
   
   onChangePage($event: PageEvent){
