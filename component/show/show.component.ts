@@ -49,7 +49,7 @@ export abstract class ShowComponent implements OnInit {
 
   initDisplay() {
     this.display = new Display();
-    this.display.setSize(0);
+    this.display.setSize(100);
     this.display.setParamsByQueryParams(this.params);
   }
 
