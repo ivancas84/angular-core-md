@@ -18,8 +18,9 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
 
   @Input() form: FormGroup; //formulario padre
   @Input() data: any; //datos del formulario
+  @Input() entityName: string; //entidad principal del componente
   fieldset: FormGroup; //fieldset
-  readonly entityName: string; //entidad principal del componente
+  
   /**
    * Utilizado para identificar el fieldset
    */
