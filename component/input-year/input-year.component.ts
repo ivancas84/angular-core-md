@@ -15,7 +15,9 @@ import { Y_FORMATS } from 'app/core/const/Y_FORMATS';
       display: inline-block;
   }
   `],
-  providers: [{
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]

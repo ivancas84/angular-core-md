@@ -15,7 +15,9 @@ import { getControlName } from '@function/get-control-name';
       display: inline-block;
   }
   `],
-  providers: [{
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
