@@ -42,14 +42,14 @@ export class DataDefinitionService {
 
   
   _post(api: string, entity: string, data: any = null):  Observable<any> {
-    var jsonParams = (data instanceof Display) ? data.describe() : data;
+    var params = (data instanceof Display) ? data.describe() : data;
     let url_ = API_URL + entity + '/'+ api;
-    return this.http.post<any>(url_, jsonParams, this.httpOptions());
+    return this.http.post<any>(url_, params, this.httpOptions()).pipe(first());
   }
 
   post(api: string, entity: string, data: any = null):  Observable<any> {    
-    var jsonParams = (data instanceof Display) ? data.describe() : data;
-    let key = entity + "." + api + JSON.stringify(jsonParams);
+    var params = (data instanceof Display) ? data.describe() : data;
+    let key = entity + "." + api + JSON.stringify(params);
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key))
 
     return this._post(api, entity, data).pipe(tap(
