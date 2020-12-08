@@ -195,7 +195,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   cancelSubmit(){
     markAllAsDirty(this.adminForm);
     logValidationErrors(this.adminForm);
-    const dialogRef = this.dialog.open(DialogAlertComponent, {
+    this.dialog.open(DialogAlertComponent, {
       data: {title: "Error", message: "El formulario posee errores."}
     });
     this.isSubmitted = false;
