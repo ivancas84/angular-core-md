@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, map, first, switchMap } from 'rxjs/operators';
-import { API_URL, HTTP_OPTIONS } from '../../../app.config';
+import { API_URL} from '../../../app.config';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Display } from '@class/display';
 import { DataDefinitionStorageService } from '@service/data-definition-storage.service';
