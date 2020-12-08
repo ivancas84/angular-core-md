@@ -1,9 +1,11 @@
 import { OnInit, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of, Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 
 @Component({
   selector: 'core-show',
@@ -22,6 +24,7 @@ export abstract class ShowComponent implements OnInit {
   constructor(
     protected dd: DataDefinitionService, 
     protected route: ActivatedRoute, 
+    protected dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +61,14 @@ export abstract class ShowComponent implements OnInit {
      * Si no se desea procesar la longitud, retornar valor false return of(false)
      */
     return this.dd.post("count", this.entityName, this.display).pipe(
+      catchError(
+        (error) => {
+          this.dialog.open(DialogAlertComponent, {
+            data: {title: "Error", message: error.error}
+          })
+         return of(null);
+        }
+      ),    
       tap(
         count => { this.length = count; }
       )
@@ -76,15 +87,14 @@ export abstract class ShowComponent implements OnInit {
         () => {
           if(!this.length && this.length !== null) return of([]); 
           return this.dd.all(this.entityName, this.display);
-        }
+        },
       ),
       tap(
         data => {
           this.data = data;
         }
-      )
+      ),      
     )
-
   }
 
 }
