@@ -40,7 +40,7 @@ export abstract class DetailComponent implements OnInit {
     this.load$ = this.route.queryParams.pipe(
       tap(
         queryParams => { 
-          this.load = false;
+          this.load = false; 
           this.initParams(queryParams);
           this.initDisplay()
         },
@@ -54,15 +54,15 @@ export abstract class DetailComponent implements OnInit {
         () => this.initData()
       ), 
       map(
-        () => {return this.load = true;}
+        data => {
+          this.data = data;
+          return this.load = true;}
       )
     )
   }
 
   initDisplay() {
-    this.display = new Display();
-    this.display.setSize(100);
-    this.display.setParamsByQueryParams(this.params);
+    this.display = this.params;
   }
 
   initParams(params: any){ this.params = params; }
