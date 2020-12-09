@@ -32,6 +32,9 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
 
   readonly entityName: string; //entidad principal
   display$:BehaviorSubject<any> = new BehaviorSubject(null); //parametros de consulta
+  /**
+   * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
+   */
   data: any; //datos principales
 
   isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar

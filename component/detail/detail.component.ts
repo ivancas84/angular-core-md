@@ -1,13 +1,14 @@
 import { Subscription, Observable, BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { isEmptyObject } from '../../function/is-empty-object.function';
 import { OnInit,  Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { fastClone } from '@function/fast-clone';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
+import { Display } from '@class/display';
 
 @Component({
   selector: 'core-detail',
@@ -19,11 +20,12 @@ export abstract class DetailComponent implements OnInit {
  */
 
   readonly entityName: string; //entidad principal
-  display$:BehaviorSubject<any> = new BehaviorSubject(null); //parametros de consulta
+  params:any; //parametros de vista
+  display:Display; //parametros de consulta
   data: any; //datos principales
 
-  loadParams$: Observable<any>; //carga de parametros
-  loadDisplay$: Observable<any>; //carga de display
+  load$: Observable<any>; //carga de parametros
+  load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
   protected subscriptions = new Subscription(); //suscripciones en el ts
 
   constructor(
@@ -35,68 +37,46 @@ export abstract class DetailComponent implements OnInit {
   
   
   ngOnInit() {
-    this.loadParams();  
-    this.loadDisplay();
-  }
-
-  loadParams(){
-    /**
-     * No realizar la suscripcion en el template (cambia el Lifecycle)! 
-     * Puede generar errores "ExpressionChanged"
-     */
-    this.loadParams$ = this.route.queryParams.pipe(
-      map(
+    this.load$ = this.route.queryParams.pipe(
+      tap(
         queryParams => { 
-          var params = this.initParams(queryParams);
-          this.initDisplay(params)
+          this.load = false;
+          this.initParams(queryParams);
+          this.initDisplay()
         },
         error => { 
           this.dialog.open(DialogAlertComponent, {
             data: {title: "Error", message:error.error}
           });
         }
+      ),
+      switchMap(
+        () => this.initData()
       ), 
       map(
-        () => {return true;}
+        () => {return this.load = true;}
       )
     )
   }
 
-  loadDisplay(){
-    /**
-     * Se define como observable y se suscribe en el template
-     * con esto me aseguro de que me suscribo luego de inicializados los parametros
-     * Si me suscribo directamente en el template, se suscribe dos veces, uno en null y otro con el valor del parametro
-     */
-    this.loadDisplay$ =  this.display$.pipe(
-      switchMap(
-        () => {
-          return this.initData();
-        }
-      ),
-      map(
-        data => {
-          this.data = data;
-          return true;
-        }
-      )
-    )
+  initDisplay() {
+    this.display = new Display();
+    this.display.setSize(100);
+    this.display.setParamsByQueryParams(this.params);
   }
 
-  initParams(params: any){ return params; }
-
-  initDisplay(params){ this.display$.next(params);  }
+  initParams(params: any){ this.params = params; }
 
   initData(): Observable<any> {
     return of({}).pipe(
       switchMap(() => {
-        if(isEmptyObject(this.display$.value)) return of (null);
-        else return this.dd.unique(this.entityName, this.display$.value)
+        if(isEmptyObject(this.display)) return of (null);
+        else return this.dd.unique(this.entityName, this.display)
       }),
       map(
         data => {
           if(!isEmptyObject(data)) return data;
-          return fastClone(this.display$.value)
+          return fastClone(this.display)
           /**
            * Se retorna un clone para posibilitar el cambio y el uso de ngOnChanges si se requiere
            */
