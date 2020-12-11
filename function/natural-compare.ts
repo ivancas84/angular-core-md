@@ -1,6 +1,8 @@
 export function naturalCompare(a, b) {
   var ax = [], bx = [];
 
+  if(!a) a = ""; //evitar error toString in null
+  if(!b) b = ""; //evitar error toString in null
   a.toString().replace(/(\d+)|(\D+)/g, function(_, $1, $2) { ax.push([$1 || Infinity, $2 || ""]) });
   b.toString().replace(/(\d+)|(\D+)/g, function(_, $1, $2) { bx.push([$1 || Infinity, $2 || ""]) });
   
