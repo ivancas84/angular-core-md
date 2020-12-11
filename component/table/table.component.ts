@@ -24,20 +24,25 @@ declare function printHtml(html): any;
 })
 export abstract class TableComponent implements OnInit {
 
-  @Input() data: { [index: string]: any }[] = []; //datos principales
+  @Input() data: { [index: string]: any }[] = []; //datos recibidos
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
   @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
   displayedColumns: string[]; //columnas a visualizar
   @ViewChild(MatPaginator) paginator: MatPaginator; //paginacion
   @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
-  //footer: { [index: string]: any }[] = []; //footer
+  //footer: { [index: string]: any }[] = []; //
+  dataSource:  { [index: string]: any }[] = []; //datos a visualizar
+  /**
+   * los datos a visualizar se separan de los datos recibidos para facilitar la reimplementacion
+   */
 
   constructor(
     protected router: Router,
   ) {}
 
   ngOnInit(): void {
-    if(!this.length) this.length = this.data.length;    
+    this.dataSource = this.data;
+    if(!this.length) this.length = this.dataSource.length;    
     //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
   
@@ -54,7 +59,7 @@ export abstract class TableComponent implements OnInit {
      * @return true si se efectuo ordenamiento en el servidor
      *         false si no se efectuo ordenamiento en el servidor
      */
-    if(!this.length || !this.display || this.data.length >= this.length) return false;
+    if(!this.length || !this.display || this.dataSource.length >= this.length) return false;
     this.display.setPage(1);
     this.display.setOrderByKeys([sort.active]);
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
@@ -66,10 +71,10 @@ export abstract class TableComponent implements OnInit {
 
     if(this.serverSort(sort)) return;
 
-    const data = this.data.slice();
+    const data = this.dataSource.slice();
 
     if (!sort.active || sort.direction === '') {
-      this.data = data;
+      this.dataSource = data;
       return;
     }
 
@@ -77,7 +82,7 @@ export abstract class TableComponent implements OnInit {
       return (sort.direction === 'asc') ? naturalCompare(a[sort.active],b[sort.active]) : naturalCompare(b[sort.active],a[sort.active])
     });
 
-    this.data = data;
+    this.dataSource = data;
   }
  
   copyContent(): void {

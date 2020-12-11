@@ -30,8 +30,7 @@ export abstract class TableDefinableComponent extends TableComponent implements 
   ngOnChanges(changes: SimpleChanges): void {
     if( changes['data'] && changes['data'].previousValue != changes['data'].currentValue ) {  
     console.log(changes)
-
-        this.data$.next(changes['data'].currentValue);
+      this.data$.next(changes['data'].currentValue);
     }
   }
 
