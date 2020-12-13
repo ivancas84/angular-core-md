@@ -2,8 +2,6 @@ import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { TableComponent } from '@component/table/table.component';
-import { Router } from '@angular/router';
-import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 
 @Component({
   selector: 'core-table-definable',
@@ -22,14 +20,9 @@ export abstract class TableDefinableComponent extends TableComponent implements 
   data$: BehaviorSubject<any> = new BehaviorSubject(null);
   dataSource: any;
 
-  constructor(
-    protected router: Router,
-    protected dd: DataDefinitionService
-  ) { super(router); }
   
   ngOnChanges(changes: SimpleChanges): void {
     if( changes['data'] && changes['data'].previousValue != changes['data'].currentValue ) {  
-    console.log(changes)
       this.data$.next(changes['data'].currentValue);
     }
   }
@@ -38,14 +31,12 @@ export abstract class TableDefinableComponent extends TableComponent implements 
     this.load$ = this.data$.pipe(  
       switchMap(
         data => {
-          console.log(data);
           this.load = false;
           return this.initData(data);
         }
       ),
       map(
         data => {
-          console.log(data);
           this.dataSource = data;
           return this.load = true;
         }
@@ -53,8 +44,9 @@ export abstract class TableDefinableComponent extends TableComponent implements 
     )
   }
 
-  initData(data): Observable<any>{
+  initData(data): Observable<{ [index: string]: any }[]>{
     return of(data);
   }
+
 
 }
