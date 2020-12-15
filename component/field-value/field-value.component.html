@@ -1,0 +1,5 @@
+<div [ngSwitch]="type">
+  <div *ngSwitchCase="'date'">{{value | toDate | date:format}}</div>
+  <div *ngSwitchDefault>{{value}}</div>
+</div>
+

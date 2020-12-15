@@ -1,0 +1,6 @@
+<div *ngIf="config.routerLink">
+  <a [routerLink]="'/'+config.routerLink" [queryParams]="{id:data[config.queryParamField]}" ><core-field-value [type]="config.type" [value]="data[config.field]" [format]="config.format"></core-field-value></a>
+</div>
+<div *ngIf="!config.routerLink">
+  <core-field-value [type]="config.type" [value]="data[config.field]" [format]="config.format"></core-field-value>
+</div>          
