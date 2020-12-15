@@ -43,20 +43,13 @@ export abstract class DetailComponent implements OnInit {
           this.load = false; 
           this.initParams(queryParams);
           this.initDisplay()
-        },
-        error => { 
-          this.dialog.open(DialogAlertComponent, {
-            data: {title: "Error", message:error.error}
-          });
         }
       ),
       switchMap(
         () => this.initData()
       ), 
       map(
-        data => {
-          this.data = data;
-          return this.load = true;}
+        () => { return this.load = true;}
       )
     )
   }
@@ -75,8 +68,8 @@ export abstract class DetailComponent implements OnInit {
       }),
       map(
         data => {
-          if(!isEmptyObject(data)) return data;
-          return fastClone(this.display)
+          this.data = (!isEmptyObject(data)) ? data : fastClone(this.display)
+          return this.data
           /**
            * Se retorna un clone para posibilitar el cambio y el uso de ngOnChanges si se requiere
            */
