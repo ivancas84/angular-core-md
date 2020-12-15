@@ -13,7 +13,8 @@ import { TableComponent } from '@component/table/table.component';
 })
 export abstract class TableDefinableComponent extends TableComponent implements OnChanges, OnInit {
   /**
-   * Facilita la reimplementación de datos
+   * Tiene el mismo comportamiento que el Table pero con codigo adicional para facilitar la reimplementacion de datos en caso de que sea necesario
+   * Este componente no deberia ser utilizado, los datos deberian definirse en un componente padre se deja como referencia
    */
   load$: Observable<any>;
   load: boolean;
@@ -27,7 +28,7 @@ export abstract class TableDefinableComponent extends TableComponent implements 
     }
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {  
     this.load$ = this.data$.pipe(  
       switchMap(
         data => {
