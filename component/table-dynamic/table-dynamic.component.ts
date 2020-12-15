@@ -1,63 +1,31 @@
 import { Input, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
-import { map } from 'rxjs/operators';
-import { MatPaginator } from '@angular/material/paginator';
-import { Sort, MatSort } from '@angular/material/sort';
-import { compare } from '@function/compare';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { FieldConfig } from '@class/field-config';
+import { TableComponent } from '@component/table/table.component';
 
 @Component({
-  selector: 'core-dynamic-table',
-  templateUrl: './dynamic-table.component.html',
+  selector: 'core-table-dynamic',
+  templateUrl: './table-dynamic.component.html',
   styles:[`
   .mat-card-content { overflow-x: auto; }
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export class TableDynamicComponent implements OnInit {
-
-  @Input() data$: Observable<any>; 
-  @Input() displayedColumns: { [index: string]: any }[];
+export class TableDynamicComponent extends TableComponent implements OnInit {
   /**
-   * name: "nombre del field"
-   * type: "tipo del field"
-   * options: "dependiendo del tipo, puede recibir opciones adicionales"
-   * ejemplo: {name:"fecha",type:"datetime","options":{format:"mediumDate",timezone:"undefined",locale:"undefined"}}
-   */ 
-  @Input() title: string = "";
- 
-  load$: Observable<any>;
-
-  dataSource = new MatTableDataSource<{ [index: string]: any }>([]);
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatTable) table: MatTable<any>;
-
-  /**
-   * Se necesita un atributo para poder aplicar ordenamiento en el cliente de los datos
+   * Tabla dinamica
    */
-
-  progress = false;
-  constructor(
-    protected router: Router,
-  ) {}
-
+  @Input() infoColumns: FieldConfig[];
+  @Input() title: string; //titulo del componente
+  @Input() matSortActive: string; //indicar el ordenamiento inicial
+  @Input() matSortDirection: string ="asc";
+     
   ngOnInit(): void {
-     this.data$.subscribe(
-        data => {
-          this.dataSource.data = data;
-          //this.table.renderRows();
-          return true;
-        }
-      )
+    this.displayedColumns = [];
+    for(var i in this.infoColumns) this.displayedColumns.push(this.infoColumns[i].field);
+
+    this.dataSource = this.data;
+    if(!this.length) this.length = this.dataSource.length;    
+    //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
-
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
+  
 }
