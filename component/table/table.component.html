@@ -6,7 +6,7 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content #content>
-    <table mat-table [dataSource]="data" matSort matSortDisableClear (matSortChange)="onChangeSort($event)" class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort matSortDisableClear (matSortChange)="onChangeSort($event)" class="mat-elevation-z8">
 
       <ng-container matColumnDef="campo">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Campo </th>

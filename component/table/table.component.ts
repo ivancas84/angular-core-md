@@ -23,7 +23,9 @@ declare function printHtml(html): any;
   `],
 })
 export abstract class TableComponent implements OnInit {
-
+  /**
+   * Elementos de uso habitual para una tabla
+   */
   @Input() data: { [index: string]: any }[] = []; //datos recibidos
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
   @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
@@ -34,6 +36,7 @@ export abstract class TableComponent implements OnInit {
   dataSource:  { [index: string]: any }[] = []; //datos a visualizar
   /**
    * los datos a visualizar se separan de los datos recibidos para facilitar la reimplementacion
+   * si no se define display o length no se muestra la paginacion
    */
 
   constructor(
