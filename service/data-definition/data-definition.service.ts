@@ -7,6 +7,8 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
 import { Display } from '@class/display';
 import { DataDefinitionStorageService } from '@service/data-definition-storage.service';
 import { CookieService } from 'ngx-cookie-service';
+import { arrayClean } from '@function/array-clean';
+import { arrayUnique } from '@function/array-unique';
 
 @Injectable({
   providedIn: 'root'
@@ -96,6 +98,9 @@ export class DataDefinitionService {
      *   Se recorre el resultado de la consulta comparando el id de "rows_" con el id de ids para obtener la posicion corresopndiente
      *   Se carga el resultado de rows_ en la posicion correspondiente
      */
+
+    ids = arrayUnique(arrayClean(ids));
+    
     let rows: Array<{ [index: string]: boolean|string|number }> = new Array(ids.length);
 
     let searchIds: Array<string | number> = new Array();

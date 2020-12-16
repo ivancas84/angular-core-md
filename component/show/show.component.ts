@@ -86,7 +86,7 @@ export abstract class ShowComponent implements OnInit {
       switchMap(
         () => {
           if(!this.length && this.length !== null) return of([]); 
-          return this.dd.all(this.entityName, this.display);
+          return this.queryData();
         },
       ),
       tap(
@@ -95,6 +95,10 @@ export abstract class ShowComponent implements OnInit {
         }
       ),      
     )
+  }
+
+  queryData(): Observable<any>{
+    return this.dd.all(this.entityName, this.display);
   }
 
 }

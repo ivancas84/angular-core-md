@@ -23,7 +23,6 @@ export class TableDynamicComponent extends TableComponent implements OnInit {
     this.displayedColumns = [];
     for(var i in this.infoColumns) this.displayedColumns.push(this.infoColumns[i].field);
 
-    this.dataSource = this.data;
     if(!this.length) this.length = this.dataSource.length;    
     //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
   }

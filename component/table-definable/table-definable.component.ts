@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { TableComponent } from '@component/table/table.component';
@@ -16,10 +16,10 @@ export abstract class TableDefinableComponent extends TableComponent implements 
    * Tiene el mismo comportamiento que el Table pero con codigo adicional para facilitar la reimplementacion de datos en caso de que sea necesario
    * Este componente no deberia ser utilizado, los datos deberian definirse en un componente padre se deja como referencia
    */
+  @Input() data: { [index: string]: any }[] = []; //datos recibidos
   load$: Observable<any>;
   load: boolean;
   data$: BehaviorSubject<any> = new BehaviorSubject(null);
-  dataSource: any;
 
   
   ngOnChanges(changes: SimpleChanges): void {

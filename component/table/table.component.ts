@@ -26,14 +26,14 @@ export abstract class TableComponent implements OnInit {
   /**
    * Elementos de uso habitual para una tabla
    */
-  @Input() data: { [index: string]: any }[] = []; //datos recibidos
+  @Input() dataSource: { [index: string]: any }[] = []; //datos recibidos que seran visualizados
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
   @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
   displayedColumns: string[]; //columnas a visualizar
   @ViewChild(MatPaginator) paginator: MatPaginator; //paginacion
   @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
   //footer: { [index: string]: any }[] = []; //
-  dataSource:  { [index: string]: any }[] = []; //datos a visualizar
+
   /**
    * los datos a visualizar se separan de los datos recibidos para facilitar la reimplementacion
    * si no se define display o length no se muestra la paginacion
@@ -44,7 +44,6 @@ export abstract class TableComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.dataSource = this.data;
     if(!this.length) this.length = this.dataSource.length;    
     //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
