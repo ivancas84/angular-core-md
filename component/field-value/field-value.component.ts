@@ -9,4 +9,6 @@ export class FieldValueComponent {
   @Input() type: string;  
   @Input() value: any;
   @Input() format?: string;
+  @Input() entityName?: string;
+
 }

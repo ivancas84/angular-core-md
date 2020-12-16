@@ -1,5 +1,8 @@
 <div [ngSwitch]="type">
   <div *ngSwitchCase="'date'">{{value | toDate | date:format}}</div>
+  <div *ngSwitchCase="'si_no'">{{value | siNo}}</div>
+  <div *ngSwitchCase="'summary'">{{value | summary}}</div>
+  <div *ngSwitchCase="'label'"><core-label *ngIf="value" [id]="value" [entityName]="entityName"></core-label></div>
   <div *ngSwitchDefault>{{value}}</div>
 </div>
 
