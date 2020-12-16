@@ -1,8 +1,9 @@
 
-export class FieldConfig {
-  field: string; //nombre del field
+export interface FieldConfig {
+  field: string; //nombre del field  
   label: string; //etiqueta del field
-  type: string = "string"; //tipo
+  type?: string; //tipo
+  entityName?: string; //nombre de la entidad de referencia
   format?: string; //formato
   routerLink?: string; //enlace
   queryParamField?: string; //valor utilizado para el enlace
