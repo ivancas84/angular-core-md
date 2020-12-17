@@ -15,7 +15,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     data: { [index: string]: any }[], 
     fieldName: string, 
     entityName: string, 
-    fields: { [index: string]: string }
+    fields: { [index: string]: any }
   ): Observable<{ [index: string]: any }[]>{
     var ids = arrayColumn(data, fieldName);
     return this.getAll(entityName, ids).pipe(
@@ -25,7 +25,15 @@ export class DataDefinitionToolService extends DataDefinitionService{
             for(var j = 0; j < response.length; j++){
               if(data[i][fieldName] == response[j]["id"]) {
                 for(var f in fields){
-                  if(fields.hasOwnProperty(f)) data[i][f] = response[j][fields[f]];
+                  if(fields.hasOwnProperty(f)) {                    
+                    if(Array.isArray(fields[f])) {
+                      var d = [];
+                      for(var k = 0; k < fields[f].length; k++) d.push(response[j][fields[f][k]])
+                      data[i][f] = d.join(", ");
+                    } else {
+                      data[i][f] = response[j][fields[f]];
+                    }
+                  }
                 }
                 continue;
               }
