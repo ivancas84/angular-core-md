@@ -7,6 +7,7 @@ export interface FieldConfig {
   format?: string; //formato
   routerLink?: string; //enlace
   queryParamField?: string; //valor utilizado para el enlace
+  sortDisabled?:boolean; //deshabilitar ordenamiento
   /**
    * ejemplo: {name:"fecha",type:"date", format:"mediumDate",routerLink:"comision-detail",queryParamField:"comision"}
    */ 
