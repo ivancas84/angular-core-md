@@ -1,5 +1,5 @@
 
-export interface FieldConfig {
+export interface FieldView {
   field: string; //nombre del field  
   label: string; //etiqueta del field
   type?: string; //tipo

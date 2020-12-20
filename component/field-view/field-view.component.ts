@@ -1,5 +1,5 @@
 import { Component, Input} from '@angular/core';
-import { FieldConfig } from '@class/field-config';
+import { FieldView } from '@class/field-view';
 
 @Component({
   selector: 'core-field-view',
@@ -7,6 +7,6 @@ import { FieldConfig } from '@class/field-config';
 })
 export class FieldViewComponent {
   
-  @Input() config: FieldConfig;
+  @Input() config: FieldView;
   @Input() data: { [index: string]: any };
 }

@@ -1,5 +1,5 @@
 import { Input, Component, OnInit, ViewChild } from '@angular/core';
-import { FieldConfig } from '@class/field-config';
+import { FieldView } from '@class/field-view';
 import { TableComponent } from '@component/table/table.component';
 
 @Component({
@@ -14,7 +14,7 @@ export class TableDynamicComponent extends TableComponent implements OnInit {
   /**
    * Tabla dinamica
    */
-  @Input() infoColumns: FieldConfig[];
+  @Input() infoColumns: FieldView[];
   @Input() title: string; //titulo del componente
   @Input() matSortActive: string; //indicar el ordenamiento inicial
   @Input() matSortDirection: string ="asc";
