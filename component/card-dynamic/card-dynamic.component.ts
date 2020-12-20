@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FieldConfig } from '@class/field-config';
 import { CardComponent } from '@component/card/card.component';
 
@@ -9,8 +9,12 @@ import { CardComponent } from '@component/card/card.component';
     .item { padding:10px; border: 1px solid #E6E6FA; }
   `]
 })
-export class CardDynamicComponent extends CardComponent {
+export class CardDynamicComponent extends CardComponent implements OnChanges{
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+  }
  
-  @Input() infoColumns: FieldConfig[];
+ 
+  @Input() fields: FieldConfig[];
   @Input() title: string; //titulo del componente
 }

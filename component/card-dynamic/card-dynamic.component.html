@@ -1,9 +1,14 @@
 <mat-card>
   <mat-card-header>
-    {{title}} <button mat-mini-fab color="primary" (click)="copyContent()"><mat-icon>content_copy</mat-icon></button>
-    <button mat-mini-fab color="primary" (click)="printContent()"><mat-icon>print</mat-icon></button>
+    <mat-card-title>
+      {{title}} <button mat-mini-fab color="primary" (click)="copyContent()"><mat-icon>content_copy</mat-icon></button>
+      <button mat-mini-fab color="primary" (click)="printContent()"><mat-icon>print</mat-icon></button>
+    </mat-card-title>
   </mat-card-header>
   <mat-card-content fxLayout="row wrap" #content>
-    <div *ngFor="let config of infoFields" class="item" [fxFlex]="config.widthXs" [fxFlex.lt-md]="config.widthMd" fxFlex.xs="100%"><strong>{{config.label}}</strong><br><core-field-view [config]="config" [data]="data"></core-field-view></div>
+    <div class="item" *ngFor="let field of fields" [fxFlex]="field.widthXs" [fxFlex.lt-md]="field.widthMd" fxFlex.xs="100%">
+      <div><strong>{{field.label}}</strong></div>
+      <core-field-view [config]="field" [data]="data"></core-field-view>  
+    </div>
   </mat-card-content>
 </mat-card>
