@@ -1,0 +1,11 @@
+<div [ngSwitch]="fieldControl.type">
+  <core-input-date *ngSwitchCase="'date'" [field]="field" [title]="fieldControl.label"></core-input-date>
+  <core-input-timepicker *ngSwitchCase="'time'" [field]="field" [title]="fieldControl.label"></core-input-timepicker>
+  <core-input-year *ngSwitchCase="'year'" [field]="field" [title]="fieldControl.label"></core-input-year>  
+  <core-input-textarea *ngSwitchCase="'textarea'" [field]="field" [title]="fieldControl.label"></core-input-textarea>
+  <core-input-checkbox *ngSwitchCase="'checkbox'" [field]="field" [title]="fieldControl.label"></core-input-checkbox>
+  <core-input-select-param *ngSwitchCase="'select_param'" [field]="field" [title]="fieldControl.label" [options]="fieldControl.options"></core-input-select-param>
+  <core-input-select *ngSwitchCase="'select'" [field]="field" [title]="fieldControl.label" [entityName]="fieldControl.entityName"></core-input-select>
+  <core-input-autocomplete *ngSwitchCase="'autocomplete'" [field]="field" [title]="fieldControl.label" [entityName]="fieldControl.entityName"></core-input-autocomplete>
+  <core-input-text *ngSwitchCase="'default'" [field]="field" [title]="fieldControl.label"></core-input-text>
+</div>
