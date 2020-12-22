@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FieldView } from '@class/field-view';
+import { FieldConfig } from '@class/field-config';
 import { CardComponent } from '@component/card/card.component';
 
 @Component({
@@ -10,6 +10,6 @@ import { CardComponent } from '@component/card/card.component';
   `]
 })
 export class CardDynamicComponent extends CardComponent {
-  @Input() fields: FieldView[];
+  @Input() fieldsConfig: FieldConfig[];
   @Input() title: string; //titulo del componente
 }

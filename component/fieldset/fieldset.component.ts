@@ -24,7 +24,7 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
   /**
    * Utilizado para identificar el fieldset
    */
-  readonly defaultValues: {[key:string]: any} = {};
+  defaultValues: {[key:string]: any} = {};
   formValues =this.storage.getItem(this.router.url);
 
   constructor(
@@ -44,13 +44,14 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
     /**
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
+    
     this.initForm();
     var data = this.initData();
     var values = this.initValues(data);
     this.resetForm(values);
   }
 
-  abstract formGroup();
+  formGroup() { return new FormGroup({}); }
 
   initForm(): void {
     this.fieldset = this.formGroup();
