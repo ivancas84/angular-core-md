@@ -5,7 +5,14 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">
-    <div class="item" *ngFor="let fieldControl of fieldsControlFilter" [fxFlex]="fieldControl.widthXs" [fxFlex.lt-md]="fieldControl.widthMd" fxFlex.xs="100%">
+    <div *ngFor="let fieldControl of fieldsControlFilter" 
+         class="item" 
+         [fxFlex.xs]="fieldControl.widthXs" 
+         [fxFlex.sm]="fieldControl.widthSm" 
+         [fxFlex.md]="fieldControl.widthMd" 
+         [fxFlex.lg]="fieldControl.widthLg" 
+         [fxFlex.xl]="fieldControl.widthXl" 
+    >
       <core-field-input [fieldControl]="fieldControl" [field]="fieldset.controls[fieldControl.field]"></core-field-input>  
     </div>
   </mat-card-content>

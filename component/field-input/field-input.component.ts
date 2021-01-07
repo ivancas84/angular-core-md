@@ -1,6 +1,5 @@
 import { OnInit } from '@angular/core';
 import { Component, Input} from '@angular/core';
-import { FieldConfig } from '@class/field-config';
 import { FieldControl } from '@class/field-control';
 
 @Component({

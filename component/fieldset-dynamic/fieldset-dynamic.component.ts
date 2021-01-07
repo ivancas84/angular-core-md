@@ -1,18 +1,18 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FieldConfig } from '@class/field-config';
 import { FieldControl } from '@class/field-control';
 import { FieldsetComponent } from '@component/fieldset/fieldset.component';
 import { arrayColumn } from '@function/array-column';
 import { arrayCombine } from '@function/array-combine';
-import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
-import { ValidatorsService } from '@service/validators/validators.service';
 
 @Component({
   selector: 'core-fieldset-dynamic',
   templateUrl: './fieldset-dynamic.component.html',
+  styles:[`
+    .item { padding:10px;  }
+  `]
 })
 export class FieldsetDynamicComponent extends FieldsetComponent {
   
@@ -51,8 +51,7 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
     this.fieldsControlFilter = this.fieldsControl.filter(fc => fc.type != 'hidden');
-    
-    this.defaultValues = arrayCombine(arrayColumn(this.fieldsControl,"field"),arrayColumn(this.fieldsControl,"field"));
+    this.defaultValues = arrayCombine(arrayColumn(this.fieldsControl,"field"),arrayColumn(this.fieldsControl,"default"));
     super.ngOnInit();
 
   }

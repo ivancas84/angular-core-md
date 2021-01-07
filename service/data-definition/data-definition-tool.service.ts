@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
 import { arrayUnique } from '@function/array-unique';
+import { fastClone } from '@function/fast-clone';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
@@ -25,6 +26,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
             for(var j = 0; j < response.length; j++){
               if(data[i][fieldName] == response[j]["id"]) {
                 for(var f in fields){
+                  
                   if(fields.hasOwnProperty(f)) {                    
                     if(Array.isArray(fields[f])) {
                       var d = [];
@@ -45,6 +47,37 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
+  getColumnData(
+    data: { [index: string]: any }[], 
+    fieldName: string, 
+    entityName: string, 
+    fields: { [index: string]: any }
+  ): Observable<{ [index: string]: any }[]>{
+    return this.get(entityName, data[fieldName]).pipe(
+      map(
+        response => {
+          if(data[fieldName] == response["id"]) {
+            for(var f in fields){
+                  
+              if(fields.hasOwnProperty(f)) {                    
+                if(Array.isArray(fields[f])) {
+                  var d = [];
+                  for(var k = 0; k < fields[f].length; k++) d.push(response[fields[f][k]])
+                  data[f] = d.join(", ");
+                } else {
+                  data[f] = response[fields[f]];
+                }
+              }
+            }
+          }
+          return data;
+          
+        }
+      )
+    );  
+  }
+
+  
   advancedColumnData(
     data: { [index: string]: any }[], 
     fieldName: string, 
@@ -53,8 +86,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
   ): Observable<{ [index: string]: any }[]>{
     var ids = arrayColumn(data, fieldName);
     var display = new Display();
-    if(!fields.hasOwnProperty("id")) fields["id"]="id"; //siempre debe existir el id para comparar el resultado
-    display.setFields(Object.values(fields));
+    var fields_ = fastClone(fields); //auxiliar de fields para incluir el id
+    if(!fields_.hasOwnProperty("id")) fields_["id"]="id"; //siempre debe existir el id para comparar el resultado
+    display.setFields(Object.values(fields_));
     display.addCondition(["id","=",ids]);
     return this.post("advanced",entityName, display).pipe(
       map(

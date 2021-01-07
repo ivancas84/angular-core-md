@@ -1,15 +1,29 @@
 
 export class FieldConfig {
-  field: string; //nombre del field  
-  label: string; //etiqueta del field
+  field: string; //nombre
+  label: string; //etiqueta
   type?: string = "default"; //tipo
-  entityName?: string; //nombre de la entidad de referencia
+  entityName?: string; //nombre entidad de referencia
   format?: string; //formato
   routerLink?: string; //enlace
-  queryParamField?: string; //valor utilizado para el enlace
+  queryParamField?: string; //valor enlace
   sortDisabled?:boolean; //deshabilitar ordenamiento
-  widthXs?:string = "25%";
-  widthMd?:string = "50%";
+
+  widthXs?:string = "100%"; //screen and (max-width: 599px)
+  widthSm?:string = "50%"; //screen and (min-width: 600px) and (max-width: 959px)
+  widthMd?:string; //screen and (min-width: 960px) and (max-width: 1279px)
+  widthLg?:string; //screen and (min-width: 1280px) and (max-width: 1919px)
+  widthXl?:string; //screen and (min-width: 1920px) and (max-width: 5000px)
+  widthLtSm?:string; //screen and (max-width: 599px)
+  widthLtMd?:string; //screen and (max-width: 959px)
+  widthLtLg?:string; //screen and (max-width: 1279px)
+  widthLtXl?:string; //screen and (max-width: 1919px)
+  widthGtXs?:string; //screen and (min-width: 600px)
+  widthGtSm?:string = "25%"; //screen and (min-width: 960px)
+  widthGtMd?:string; //screen and (min-width: 1280px)
+  widthGtLg?:string; //screen and (min-width: 1920px)
+
+
   /**
    * ejemplo: {name:"fecha",type:"date", format:"mediumDate",routerLink:"comision-detail",queryParamField:"comision"}
    */ 
