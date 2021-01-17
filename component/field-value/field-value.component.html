@@ -3,6 +3,7 @@
   <div *ngSwitchCase="'si_no'">{{value | siNo}}</div>
   <div *ngSwitchCase="'summary'">{{value | summary}}</div>
   <div *ngSwitchCase="'label'"><core-label *ngIf="value" [id]="value" [entityName]="entityName"></core-label></div>
+  <!--div *ngSwitchCase="'field_label'"><core-field-label *ngIf="value" [id]="value" [entityName]="entityName"></core-field-label></div-->
   <div *ngSwitchDefault>{{value}}</div>
 </div>
 

@@ -1,0 +1,5 @@
+
+<div *ngIf="_id && element.fieldNames.length">
+  <core-field-label [entityName]="element.entityName" [id]="_id" [fieldNames]="element.fieldNames" [join]="element.join"></core-field-label>
+</div>
+<core-field-tree *ngIf="_id && _tree" [tree]="_tree" [id]="_id"></core-field-tree>
