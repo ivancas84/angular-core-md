@@ -6,7 +6,6 @@ import { FieldConfig } from '@class/field-config';
   templateUrl: './field-view.component.html',
 })
 export class FieldViewComponent {
-  
   @Input() fieldConfig: FieldConfig;
   @Input() data: { [index: string]: any };
 }

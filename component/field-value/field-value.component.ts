@@ -1,4 +1,5 @@
 import { Component, Input} from '@angular/core';
+import { FieldConfig } from '@class/field-config';
 
 @Component({
   selector: 'core-field-value',
@@ -6,9 +7,7 @@ import { Component, Input} from '@angular/core';
 })
 export class FieldValueComponent {
   
-  @Input() type: string;  
   @Input() value: any;
-  @Input() format?: string;
-  @Input() entityName?: string;
+  @Input() fieldConfig: FieldConfig;
 
 }

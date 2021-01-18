@@ -1,9 +1,9 @@
-<div [ngSwitch]="type">
-  <div *ngSwitchCase="'date'">{{value | toDate | date:format}}</div>
+<div [ngSwitch]="fieldConfig.type">
+  <div *ngSwitchCase="'date'">{{value | toDate | date:fieldConfig.format}}</div>
   <div *ngSwitchCase="'si_no'">{{value | siNo}}</div>
   <div *ngSwitchCase="'summary'">{{value | summary}}</div>
-  <div *ngSwitchCase="'label'"><core-label *ngIf="value" [id]="value" [entityName]="entityName"></core-label></div>
-  <!--div *ngSwitchCase="'field_label'"><core-field-label *ngIf="value" [id]="value" [entityName]="entityName"></core-field-label></div-->
+  <div *ngSwitchCase="'label'"><core-label *ngIf="value" [id]="value" [entityName]="fieldConfig.entityName"></core-label></div>
+  <div *ngSwitchCase="'tree'"><core-field-tree *ngIf="value" [id]="value" [tree]="fieldConfig.tree"></core-field-tree></div>
   <div *ngSwitchDefault>{{value}}</div>
 </div>
 

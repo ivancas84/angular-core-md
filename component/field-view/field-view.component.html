@@ -1,8 +1,8 @@
 <div *ngIf="fieldConfig.routerLink">
   <a [routerLink]="'/'+fieldConfig.routerLink" [queryParams]="{id:data[fieldConfig.queryParamField]}">
-    <core-field-value [type]="fieldConfig.type" [value]="data[fieldConfig.field]" [format]="fieldConfig.format" [entityName]="fieldConfig.entityName"></core-field-value>
+    <core-field-value [value]="data[fieldConfig.field]" [fieldConfig]="fieldConfig"></core-field-value>
   </a>
 </div>
 <div *ngIf="!fieldConfig.routerLink">
-  <core-field-value [type]="fieldConfig.type" [value]="data[fieldConfig.field]" [format]="fieldConfig.format" [entityName]="fieldConfig.entityName"></core-field-value>
+  <core-field-value [value]="data[fieldConfig.field]" [fieldConfig]="fieldConfig"></core-field-value>
 </div>          
