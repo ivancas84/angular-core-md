@@ -22,8 +22,7 @@ export class TableDynamicComponent extends TableComponent implements OnInit {
     this.opt = new TableDynamicOptions(this.options);
     for(var i in this.fieldsConfig) this.displayedColumns.push(this.fieldsConfig[i].field)
 
-    if(!this.length) this.length = this.dataSource.length
-    //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
+    super.ngOnInit();
   }
   
 }

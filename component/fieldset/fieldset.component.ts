@@ -1,6 +1,5 @@
 import { Input, OnInit, Component, OnChanges, SimpleChanges} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { fastClone } from '../../function/fast-clone';
