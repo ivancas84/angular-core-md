@@ -1,13 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FieldControl } from '@class/field-control';
 import { SearchParamsComponent } from '@component/search-params/search-params.component';
-import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
-  selector: 'core-fieldset-dynamic',
-  templateUrl: './fieldset-dynamic.component.html',
+  selector: 'core-search-params-dynamic',
+  templateUrl: './search-params-dynamic.component.html',
   styles:[`
     .item { padding:10px;  }
   `]
@@ -18,14 +16,6 @@ export class SearchParamsDynamicComponent extends SearchParamsComponent {
 
   fieldsControlFilter: FieldControl[]; //fields filtrados
 
-  constructor(
-    protected fb: FormBuilder, 
-    protected router: Router, 
-    protected storage: SessionStorageService 
-  ) {
-    super(fb);
-  }
-  
   formGroup() {
     let fg: FormGroup = this.fb.group({});
     for(var i = 0; i < this.fieldsControl.length; i++){
@@ -35,6 +25,15 @@ export class SearchParamsDynamicComponent extends SearchParamsComponent {
       )
     }      
     return fg;
+  }
+
+  ngOnInit() {    
+    /**
+     * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
+     */
+    this.fieldsControlFilter = this.fieldsControl.filter(fc => fc.type != 'hidden');
+    super.ngOnInit();
+
   }
 
 }
