@@ -119,7 +119,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   }
   
   initValue(value){
-    var s =this.dd.get(this.entityName, value).pipe(first()).subscribe(
+    var s =this.dd.get(this.entityName, value).subscribe(
       row => {
         if(row) { 
           this.searchControl.setValue(row);

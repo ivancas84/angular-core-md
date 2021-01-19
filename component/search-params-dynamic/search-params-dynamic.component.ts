@@ -7,7 +7,7 @@ import { SearchParamsComponent } from '@component/search-params/search-params.co
   selector: 'core-search-params-dynamic',
   templateUrl: './search-params-dynamic.component.html',
   styles:[`
-    .item { padding:10px;  }
+    .item { padding:0px 10px;  }
   `]
 })
 export class SearchParamsDynamicComponent extends SearchParamsComponent {

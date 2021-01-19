@@ -1,6 +1,5 @@
 export class SearchDynamicOptions {
-  searchAll: boolean = true; //activar/desactivar busqueda general
-  searchParams: boolean = false; //activar/desactivar busqueda parametros
+  searchParams: boolean = true; //activar/desactivar busqueda parametros
   searchCondition: boolean = false; //activar/desactivar busqueda condiciones
   searchOrder: boolean = false; //activar/desactivar ordenamiento
   

@@ -1,7 +1,7 @@
 import { FieldConfig } from "./field-config";
 
 export class FieldControl extends FieldConfig {
-  options?: any;
+  options?: any = null;
   validators?: any[];
   asyncValidators?: any[];
   default?: any = null; //valor por defecto

@@ -14,7 +14,7 @@ export class InputSelectCheckboxComponent implements OnInit {
    */
 
   @Input() field: FormControl;
-  @Input() options: any[] = ["Sí", "No"];
+  @Input() options: any[] = null;
   /**
    * El primer valor sera transformado al string "true"
    * El segundo a "false"
@@ -24,6 +24,7 @@ export class InputSelectCheckboxComponent implements OnInit {
   constructor( public dd: DataDefinitionService ) { }
 
   ngOnInit(): void {
+    if(!this.options) this.options = ["Sí", "No"]; 
     if(!this.title) this.title = "Seleccione";
   }
 

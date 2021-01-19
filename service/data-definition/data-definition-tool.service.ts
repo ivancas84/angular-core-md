@@ -3,7 +3,7 @@ import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
 import { arrayUnique } from '@function/array-unique';
 import { fastClone } from '@function/fast-clone';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
 
@@ -53,9 +53,14 @@ export class DataDefinitionToolService extends DataDefinitionService{
     entityName: string, 
     fields: { [index: string]: any }
   ): Observable<{ [index: string]: any }[]>{
+    if(!data[fieldName]){
+      for(var f in fields) data[f] = null;
+      return of(data);
+    }
     return this.get(entityName, data[fieldName]).pipe(
       map(
         response => {
+          if(!response) return null
           if(data[fieldName] == response["id"]) {
             for(var f in fields){
                   
@@ -84,7 +89,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     entityName: string, 
     fields: { [index: string]: string } //no deben ser funciones de agregacion
   ): Observable<{ [index: string]: any }[]>{
-    var ids = arrayColumn(data, fieldName);
+    var ids = arrayColumn(data, fieldName).filter(function (el) { return el != null; });
     var display = new Display();
     var fields_ = fastClone(fields); //auxiliar de fields para incluir el id
     if(!fields_.hasOwnProperty("id")) fields_["id"]="id"; //siempre debe existir el id para comparar el resultado
