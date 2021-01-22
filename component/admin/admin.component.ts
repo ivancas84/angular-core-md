@@ -23,6 +23,9 @@ import { fastClone } from '@function/fast-clone';
 export abstract class AdminComponent implements OnInit, AfterViewInit {
 /**
  * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
+ * En el caso de que se utilice el template general formado por componentes dinamicos deberan definirse en los siguientes atributos adicionales:
+ *   title: string; Titulo que sera enviado al fieldset dinamico
+ *   fieldsControl: FieldControl[] Configuracion de fields
  */
 
   adminForm: FormGroup = this.fb.group({}); //formulario principal
