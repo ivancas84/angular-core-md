@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FieldControl } from '@class/field-control';
+import { FieldsetDynamicOptions } from '@class/fieldset-dynamic-options';
 import { FieldsetComponent } from '@component/fieldset/fieldset.component';
 import { arrayColumn } from '@function/array-column';
 import { arrayCombine } from '@function/array-combine';
@@ -11,7 +12,7 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
   selector: 'core-fieldset-dynamic',
   templateUrl: './fieldset-dynamic.component.html',
   styles:[`
-    .item { padding:10px;  }
+    .item { padding:0px 10px;  }
   `]
 })
 export class FieldsetDynamicComponent extends FieldsetComponent {
@@ -24,6 +25,7 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
 
   @Input() fieldsControl: FieldControl[]; //fields
   @Input() title: string; //titulo del componente
+  @Input() options: FieldsetDynamicOptions = new FieldsetDynamicOptions()
 
   fieldsControlFilter: FieldControl[]; //fields filtrados
 
@@ -40,7 +42,15 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
     for(var i = 0; i < this.fieldsControl.length; i++){
       fg.addControl(
         this.fieldsControl[i].field, 
-        new FormControl(null, this.fieldsControl[i].validators)
+        new FormControl(
+          {
+            value:null,
+            disabled:this.fieldsControl[i].disabled
+          }, 
+          {
+            validators:this.fieldsControl[i].validators,
+            asyncValidators:this.fieldsControl[i].asyncValidators,
+          })
       )
     }      
     return fg;
