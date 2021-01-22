@@ -6,9 +6,10 @@ import { DataDefinitionService } from '../../service/data-definition/data-defini
 import { startWith, mergeMap, debounceTime, distinctUntilChanged, switchMap, tap, map } from 'rxjs/operators';
 import { Display } from '../../class/display';
 import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
+import { emptyUrl } from '@function/empty-url.function';
 
 @Component({
-  selector: 'app-input-search-go',
+  selector: 'core-input-search-go',
   templateUrl: './input-search-go.component.html',
 })
 export class InputSearchGoComponent implements  OnInit {
@@ -18,7 +19,7 @@ export class InputSearchGoComponent implements  OnInit {
 
   @Input() entityName: string;
   @Input() title?: string = "Buscar";
-  @Input() route: string;
+  @Input() route: string = emptyUrl(this.router.url);
 
   searchControl: FormControl = new FormControl();
   searchFailed: boolean = false;
