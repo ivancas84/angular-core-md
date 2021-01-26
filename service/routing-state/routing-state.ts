@@ -28,4 +28,22 @@ export class RoutingState {
   public getPreviousUrl(): string {
     return this.history[this.history.length - 2] || '/index';
   }
+
+  redirectTo(uri:string){
+    /**
+     * Efectua un reload pero ruteando, primero a la raiz y luego a la uri especificada
+     */
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+    this.router.navigateByUrl(uri));
+ }
+
+  reloadCurrentRoute() {
+    /**
+     * Efectua un reload pero ruteando, primero a la raiz y luego a la url actual
+     */
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+        this.router.navigate([currentUrl]);
+    });
+  }
 }
