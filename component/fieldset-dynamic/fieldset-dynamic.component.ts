@@ -50,7 +50,8 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
           {
             validators:this.fieldsControl[i].validators,
             asyncValidators:this.fieldsControl[i].asyncValidators,
-          })
+          }
+        )
       )
     }      
     return fg;

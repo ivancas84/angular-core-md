@@ -2,7 +2,7 @@ import { FieldTreeElement } from "./field-tree-element";
 
 export class FieldConfig {
   field: string //nombre
-  label: string //etiqueta
+  label?: string = null //etiqueta
   type?: string = "default" //tipo
   /**
    * date, si_no, summary, label, field_label, tree
@@ -24,7 +24,11 @@ export class FieldConfig {
         }),
    */
 
-  
+  width?:string; //ancho del contenedor
+
+  /**
+   * ancho de flex
+   */
   widthXs?:string = "100%" //screen and (max-width: 599px)
   widthSm?:string = "50%" //screen and (min-width: 600px) and (max-width: 959px)
   widthMd?:string //screen and (min-width: 960px) and (max-width: 1279px)
