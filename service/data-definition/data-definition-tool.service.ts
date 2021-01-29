@@ -26,7 +26,6 @@ export class DataDefinitionToolService extends DataDefinitionService{
             for(var j = 0; j < response.length; j++){
               if(data[i][fieldName] == response[j]["id"]) {
                 for(var f in fields){
-                  
                   if(fields.hasOwnProperty(f)) {                    
                     if(Array.isArray(fields[f])) {
                       var d = [];

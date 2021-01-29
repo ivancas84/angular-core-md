@@ -20,7 +20,7 @@ export abstract class SearchParamsComponent implements OnInit {
 
   abstract formGroup();
 
-  ngOnInit() {    
+  ngOnInit() {  
     this.initForm();
     this.initData();
   }
