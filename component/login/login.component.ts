@@ -40,8 +40,7 @@ export class LoginComponent {
     });
   }
 
-  reload(response){
-    this.auth.login(response["jwt"]);
+  reload(){
     this.snackBar.open("Login realizado", "X");
     this.router.navigate(['/login-success']);
   }
@@ -68,7 +67,8 @@ export class LoginComponent {
   submit(){
     var s = this.dd.post("login", "user", this.form.value).subscribe(
       response => {
-        this.reload(response);
+        this.auth.login(response["jwt"]);
+        this.reload();
       },
       error => { 
         console.log(error);
