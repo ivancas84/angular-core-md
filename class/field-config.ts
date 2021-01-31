@@ -12,9 +12,9 @@ export class FieldConfig {
   routerLink?: string //enlace
   queryParamField?: string //valor enlace
   sortDisabled?:boolean //deshabilitar ordenamiento
-  tree?:FieldTreeElement
+  tree?:FieldTreeElement //utilizar cuando type = tree
   /**
-   * Ejemplo:
+   * Ejemplo: Prestar atencion al elemento fkName, hace referencia a la hoja padre
    * tree:
         new FieldTreeElement({entityName:"comision", fieldNames:["division"],
           tree: [
