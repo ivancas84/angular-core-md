@@ -6,7 +6,7 @@ export class TableDynamicOptions {
   sortActive: string = null;
   sortDirection: string = "asc";
 
-  constructor(attributes: any) {
+  constructor(attributes: any = {}) {
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]

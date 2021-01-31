@@ -1,5 +1,6 @@
 import { OnInit } from '@angular/core';
 import { Component, Input} from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { FieldControl } from '@class/field-control';
 
 @Component({
@@ -8,7 +9,6 @@ import { FieldControl } from '@class/field-control';
 })
 export class FieldInputComponent {
   
-  
   @Input() fieldControl: FieldControl;
-  @Input() field: { [index: string]: any };
+  @Input() field: FormControl;
 }

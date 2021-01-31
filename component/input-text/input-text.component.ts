@@ -7,11 +7,12 @@ import { getControlName } from '@function/get-control-name';
   templateUrl: './input-text.component.html',
 })
 export class InputTextComponent {
-  @Input() field: FormControl;
-  @Input() title?: string;
-  @Input() placeholder?: string = "";
-  @Input() uniqueRoute?: string; //Ruta de administracion para valor unico (si no se define no se activa enlace)
-  @Input() type?: string = "text";
+  @Input() field: FormControl
+  @Input() title?: string
+  @Input() placeholder?: string = ""
+  @Input() uniqueRoute?: string //Ruta de administracion para valor unico (si no se define no se activa enlace)
+  @Input() type?: string = "text"
+  @Input() width?: string = null
   
   get uniqueParams() {
     /**

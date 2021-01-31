@@ -1,0 +1,42 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title fxFlex="auto">
+      {{title}}    
+    </mat-card-title>
+    <!--core-input-search-go *ngIf="options.inputSearchGo" fxFlex="auto" [entityName]="entityName"></core-input-search-go-->
+  </mat-card-header>
+  <mat-card-content>
+    <div  *ngFor="let row of fieldset.controls; let i=index" [formGroup]="fg(i)">
+      <div fxLayout="row wrap" *ngIf="!_delete(i).value">
+        <div fxLayout="row wrap" fxFlex="90%">
+          <div *ngFor="let fieldControl of fieldsControlFilter" 
+          class="item" 
+          [fxFlex.xs]="fieldControl.widthXs" 
+          [fxFlex.sm]="fieldControl.widthSm" 
+          [fxFlex.md]="fieldControl.widthMd" 
+          [fxFlex.lg]="fieldControl.widthLg" 
+          [fxFlex.xl]="fieldControl.widthXl" 
+          [fxFlex.lt-sm]="fieldControl.widthLtSm"
+          [fxFlex.lt-md]="fieldControl.widthLtMd"
+          [fxFlex.lt-lg]="fieldControl.widthLtLg"
+          [fxFlex.lt-xl]="fieldControl.widthLtXl"
+          [fxFlex.gt-xs]="fieldControl.widthGtXs"
+          [fxFlex.gt-sm]="fieldControl.widthGtSm" 
+          [fxFlex.gt-md]="fieldControl.widthGtMd" 
+          [fxFlex.gt-lg]="fieldControl.widthGtLg" 
+        >
+            <core-field-input [fieldControl]="fieldControl" [field]="fg(i).controls[fieldControl.field]"></core-field-input>  
+          </div>
+        </div>
+
+        <div fxFlex="10%">
+          <button mat-mini-fab color="warn" (click)="remove(i)" type="button"><mat-icon>delete</mat-icon></button>
+        </div>
+      </div>
+
+      <div *ngIf="!_delete(i).value"><mat-divider></mat-divider><br></div>
+    </div>
+    <button mat-mini-fab color="primary" (click)="add()" type="button"><mat-icon>add</mat-icon></button>
+
+  </mat-card-content>
+</mat-card>

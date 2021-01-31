@@ -3,25 +3,26 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { FieldControl } from '@class/field-control';
 import { FieldsetDynamicOptions } from '@class/fieldset-dynamic-options';
+import { FieldsetArrayComponent } from '@component/fieldset-array/fieldset-array.component';
 import { FieldsetComponent } from '@component/fieldset/fieldset.component';
 import { arrayColumn } from '@function/array-column';
 import { arrayCombine } from '@function/array-combine';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
-  selector: 'core-fieldset-dynamic',
-  templateUrl: './fieldset-dynamic.component.html',
+  selector: 'core-fieldset-array-dynamic',
+  templateUrl: './fieldset-array-dynamic.component.html',
   styles:[`
     .item { padding:0px 10px;  }
   `]
 })
-export class FieldsetDynamicComponent extends FieldsetComponent {
-  
+export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent {
   /**
-   * Componente de administración de fieldset. Características:
-   *   El formulario y los datos son definidos en componente principal  
-   *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
-   */
+   * Componente dinamico de administración de fieldset array
+   * La estructura por defecto del componente de implementacion
+   * es la misma que para FieldsetDynamicComponent,
+   * simplemente se debe cambiar la superclase
+   **/
 
   @Input() fieldsControl: FieldControl[]; //fields
   @Input() title: string; //titulo del componente
@@ -50,20 +51,20 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
           {
             validators:this.fieldsControl[i].validators,
             asyncValidators:this.fieldsControl[i].asyncValidators,
-          }
-        )
+          })
       )
+      fg.addControl("_delete",new FormControl(null))
+      
     }      
     return fg;
   }
 
+  _delete(index: number) { return this.fieldset.at(index).get('_delete')}
+
+
   ngOnInit() {    
-    /**
-     * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
-     */
     this.fieldsControlFilter = this.fieldsControl.filter(fc => fc.type != 'hidden');
     this.defaultValues = arrayCombine(arrayColumn(this.fieldsControl,"field"),arrayColumn(this.fieldsControl,"default"));
     super.ngOnInit();
-
   }
 }

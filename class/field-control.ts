@@ -7,6 +7,7 @@ export class FieldControl extends FieldConfig {
   default?: any = null; //valor por defecto
   adminRoute?: string = null;
   uniqueRoute?: string = null;
+  disabled?: boolean = false;
 
   constructor(attributes: any) {
     super(attributes);

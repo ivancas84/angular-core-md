@@ -14,12 +14,10 @@ import { TableComponent } from '@component/table/table.component';
 export class TableDynamicComponent extends TableComponent implements OnInit {
   @Input() fieldsConfig: FieldConfig[]
   @Input() title: string //titulo del componente
-  @Input() options: any = {}
-  opt: TableDynamicOptions;
+  @Input() options: TableDynamicOptions = new TableDynamicOptions()
      
   ngOnInit(): void {
     this.displayedColumns = []
-    this.opt = new TableDynamicOptions(this.options);
     for(var i in this.fieldsConfig) this.displayedColumns.push(this.fieldsConfig[i].field)
 
     super.ngOnInit();
