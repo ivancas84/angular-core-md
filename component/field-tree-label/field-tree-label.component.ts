@@ -19,6 +19,10 @@ export class FieldTreeLabelComponent implements OnChanges {
   _fieldName: string;
 
   constructor(private dd: DataDefinitionService) { }
+  /**
+   * Obsoleto utilizar field-tree
+   * @param changes 
+   */
   
 
   ngOnChanges(changes: SimpleChanges){

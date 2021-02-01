@@ -10,7 +10,10 @@ import { Observable } from 'rxjs';
   templateUrl: './field-tree.component.html',
 })
 export class FieldTreeComponent implements OnInit {
-  
+  /**
+   * Recorrer arbol de relaciones
+   * imprimir los campos indicados
+   */
   @Input() tree: FieldTreeElement;
   @Input() id: string; //id inicial de consulta
   data$: Observable<any>

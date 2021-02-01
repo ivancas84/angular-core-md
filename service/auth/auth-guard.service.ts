@@ -17,7 +17,6 @@ export class AuthGuardService implements CanActivate {
     else if(this.auth.isAuthenticated()) {
       var token = this.auth.getToken();
       var view = (token && token.hasOwnProperty("view")) ? token["view"] : [];
-      console.log(token["view"])
       if(!view.includes(route.routeConfig.path)){
         this.router.navigate(['login']);
         return false;
