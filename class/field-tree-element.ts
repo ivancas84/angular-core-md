@@ -1,7 +1,7 @@
 export class FieldTreeElement {
-  entityName: string = null
+  entityName: string = null //entidad principal
   fkName: string = null //fk utilizada para la relacion
-  fieldNames: string[] = null
+  fieldNames: string[] = []
   join: string = " "
   prefix: string = ""
   suffix: string = ""
@@ -14,4 +14,20 @@ export class FieldTreeElement {
       }
     }
   }
+
+  /**
+   * Ejemplo planificacion u:u_ plan
+   * planificacionTree = new FieldTreeElement({
+   * entityName:"planificacion",
+   * fkName:"plan",
+   * tree:[
+   *   new FieldTreeElement({
+   *     entityName:"plan",
+   *     fieldNames:["orientacion","distribucion_horaria"],
+   *     join:" - "
+   *   })
+   * ]
+  })
+   */
+
 }
