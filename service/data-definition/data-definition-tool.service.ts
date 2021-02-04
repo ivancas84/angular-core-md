@@ -90,7 +90,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
                     }
                   }
                 }
-                continue;
+                break;
               }
             }
           }
@@ -144,7 +144,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
                     }
                   }
                 }
-                continue;
+                break;
               }
             }
           }
@@ -264,7 +264,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
                 for(var f in fields){
                   if(fields.hasOwnProperty(f)) data[i][f] = response[j][fields[f]];
                 }
-                continue;
+                break;
               }
             }
           }
