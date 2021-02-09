@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
-import { arrayUnique } from '@function/array-unique';
 import { fastClone } from '@function/fast-clone';
 import { recursiveData } from '@function/recursive-data';
 import { Observable, of } from 'rxjs';
@@ -12,12 +11,51 @@ import { DataDefinitionService } from './data-definition.service';
   providedIn: 'root'
 })
 export class DataDefinitionToolService extends DataDefinitionService{
-  getTree(
-    tree:string[], 
-    data: { [index: string]: any } | { [index: string]: any }[],
-    method:string,
-    params:any = null
+  
+  protected initFields(
+    data: { [index: string]: any },
+    fields:{ [index: string]: string },
   ){
+    for(var f in fields){
+      if(fields.hasOwnProperty(f)) data[f] = null; //inicializar en null
+    }
+  }
+
+  protected assignFields(
+    data: { [index: string]: any }, 
+    response: { [index: string]: any }, 
+    fields:{ [index: string]: string }, 
+    join: string
+  ){
+    /**
+     * Asociar respuesta a datos
+     * Al trabajar por referencia se reflejan los datos en los parametros
+     */
+    for(var f in fields){
+      if(fields.hasOwnProperty(f)) {                    
+        if(Array.isArray(fields[f])) {
+          var d = [];
+          for(var k = 0; k < fields[f].length; k++) d.push(response[fields[f][k]])
+          data[f] = d.join(join);
+        } else {
+          data[f] = response[fields[f]];
+        }
+      }
+    }
+  }
+
+  getTree(
+    tree:string[], //arbol ["identificador1","identificador2",...]
+    data: { [index: string]: any } | { [index: string]: any }[], //datos
+    method:string, //nombre del metodo a ejecutar
+    params:any = null //objeto con parametros de method 
+  ){
+    /**
+     * Recorrer arbol y ejecutar metodo indicado
+     * Utiliza funcion externa "recursiveData" para obtener la hoja indicada del parametro "tree" en "data"
+     * Ejecuta metodo indicado en parametro "method" con parametros indicados en parametro "params"
+     * Los valores se asignan al resultado de "recursiveData" y se reflejan en "data" ya que js trabaja por referencia
+     */
     switch(method){
       case "getAllColumnDataUm":
         return this.getAllColumnDataUm(recursiveData(tree, data),params["fkName"],params["entityName"]).pipe(map(
@@ -68,28 +106,19 @@ export class DataDefinitionToolService extends DataDefinitionService{
      */
     if(!data.length) return of([]);
     var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; });
-    if(!ids.length) return of(data);
+    if(!ids.length) {
+      for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
+      return of(data);
+    }
     return this.getAll(entityName, ids).pipe(
       map(
         response => {
           if(!response.length) return data;
           for(var i = 0; i < data.length; i++){
-            for(var f in fields){
-              if(fields.hasOwnProperty(f)) data[i][f] = null; //inicializar en null
-            }
+            this.initFields(data[i],fields);
             for(var j = 0; j < response.length; j++){
               if(data[i][fkName] == response[j]["id"]) {
-                for(var f in fields){
-                  if(fields.hasOwnProperty(f)) {                    
-                    if(Array.isArray(fields[f])) {
-                      var d = [];
-                      for(var k = 0; k < fields[f].length; k++) d.push(response[j][fields[f][k]])
-                      data[i][f] = d.join(join);
-                    } else {
-                      data[i][f] = response[j][fields[f]];
-                    }
-                  }
-                }
+                this.assignFields(data[i],response[j],fields,join)
                 break;
               }
             }
@@ -133,17 +162,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
             for(var j = 0; j < response.length; j++){
               if(data[i][fieldNameData] == response[j][fieldNameResponse]) {
-                for(var f in fields){
-                  if(fields.hasOwnProperty(f)) {                    
-                    if(Array.isArray(fields[f])) {
-                      var d = [];
-                      for(var k = 0; k < fields[f].length; k++) d.push(response[j][fields[f][k]])
-                      data[i][f] = d.join(join);
-                    } else {
-                      data[i][f] = response[j][fields[f]];
-                    }
-                  }
-                }
+                this.assignFields(data[i],response[j],fields,join)
                 break;
               }
             }
@@ -196,7 +215,8 @@ export class DataDefinitionToolService extends DataDefinitionService{
     data: { [index: string]: any }[], 
     fieldName: string, 
     entityName: string, 
-    fields: { [index: string]: any }
+    fields: { [index: string]: any },
+    join:string=", "
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fieldName]" para obtener "response" 
@@ -212,19 +232,8 @@ export class DataDefinitionToolService extends DataDefinitionService{
       map(
         response => {
           if(!response) return data;
-          for(var f in fields){
-            if(fields.hasOwnProperty(f)) {                    
-              if(Array.isArray(fields[f])) {
-                var d = [];
-                for(var k = 0; k < fields[f].length; k++) d.push(response[fields[f][k]])
-                data[f] = d.join(", ");
-              } else {
-                data[f] = response[fields[f]];
-              }
-            }
-          }
+          this.assignFields(data,response,fields,join)
           return data;
-          
         }
       )
     );  
@@ -297,6 +306,10 @@ export class DataDefinitionToolService extends DataDefinitionService{
      */
 
     var ids = arrayColumn(data, "id")
+    if(!ids.length) {
+      for(var i = 0; i < data.length; i++) this.initFields(data[i],fieldsResponse);
+      return of(data);
+    } 
     var display = new Display();
     display.setSize(0);
     display.setFields(fields);
@@ -306,19 +319,10 @@ export class DataDefinitionToolService extends DataDefinitionService{
       map(
         response => {
           for(var i = 0; i < data.length; i++){
+            this.initFields(data[i],fieldsResponse);
             for(var j = 0; j < response.length; j++){
               if(data[i]["id"] == response[j][fieldName]) {
-                for(var f in fieldsResponse){
-                  if(fieldsResponse.hasOwnProperty(f)) {
-                    if(Array.isArray(fieldsResponse[f])) {
-                      var d = [];
-                      for(var k = 0; k < fieldsResponse[f].length; k++) d.push(response[j][fields[f][k]])
-                      data[i][f] = d.join(join);
-                    } else {
-                      data[i][f] = response[j][fieldsResponse[f]];
-                    }
-                  }
-                }
+                this.assignFields(data[i],response[j],fieldsResponse,join)
                 break;
               }
             }
