@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { FieldViewOptions } from '@class/field-view-options';
 import { CardComponent } from '@component/card/card.component';
-import { FieldViewOptions } from '@component/field-view/field-view.component';
 
 @Component({
   selector: 'core-card-dynamic',

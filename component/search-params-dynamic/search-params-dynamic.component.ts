@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FieldViewOptions } from '@component/field-view/field-view.component';
+import { FieldViewOptions } from '@class/field-view-options';
 import { SearchParamsComponent } from '@component/search-params/search-params.component';
 
 @Component({

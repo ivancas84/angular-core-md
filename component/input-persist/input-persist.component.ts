@@ -1,27 +1,28 @@
 import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FieldViewOptions } from '@component/field-view/field-view.component';
+import { FieldViewOptions } from '@class/field-view-options';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, mergeMap, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'core-input-value',
-  templateUrl: './input-value.component.html',
+  selector: 'core-input-persist',
+  templateUrl: './input-persist.component.html',
 })
-export class InputValueComponent implements OnInit {
+export class InputPersistComponent implements OnInit {
   /**
    * Define un form control a partir de un valor y otros parametros
    * Realiza una persistencia directa
    * Por defecto utiliza la api persist_unique
-   * @todo Nombre sugerido, input-persist
+   * Cumple una funcion similar a field-view-aux,
+   * pero no se puede generalizar tanto ya que el @input params es muy variable
    */
   /**
    * @example
-   * <core-input-value [fieldViewOptions]="viatico" [entityName]="'viatico'" [value]="row.viatico"
-   * [params]="{organo:display.getParam('organo'), periodo:display.getParam('periodo'), departamento_judicial:row.id}"></core-input-value>
+   * <core-input-persist [fieldViewOptions]="viatico" [entityName]="'viatico'" [value]="row.viatico"
+   * [params]="{organo:display.getParam('organo'), periodo:display.getParam('periodo'), departamento_judicial:row.id}"></core-input-persist>
    *   viatico: FieldViewOptions = new FieldViewOptions({
    *     field:"valor", width:"100px", 
    *     validators: [Validators.pattern('^-?[0-9]+(\\.[0-9]{1,2})?$'),
@@ -29,16 +30,10 @@ export class InputValueComponent implements OnInit {
    *     Validators.min(-99999999999999999.99)]
    *   });
    */  
-  @Input() entityName: string
-  /**
-   * Puede no ser el mismo valor que fieldViewOptions.entityName
-   * @todo En que casos puede no ser el mismo valor?
-   * por eso se define de forma independiente 
-   **/
   @Input() value: any
   @Input() fieldViewOptions: FieldViewOptions
-  @Input() params?: { [index: string]: any } = {}
-  @Input() persistApi: string = "persist_unique"
+  @Input() params?: { [index: string]: any } = {} //parametros para identificar univocamente el campo que se debe persistir
+  @Input() api: string = "persist_unique" //api de persistencia
 
   field: FormControl;
   load$: Observable<any>;
@@ -75,7 +70,7 @@ export class InputValueComponent implements OnInit {
             return of(true)
           }
           this.params[this.fieldViewOptions.field] = value;
-          return this.dd._post(this.persistApi, this.entityName, this.params).pipe(
+          return this.dd._post(this.api, this.fieldViewOptions.entityName, this.params).pipe(
             tap(
               response => {
                 this.snackBar.open("Se ha registrado " + this.value, "X");

@@ -1,10 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FieldViewOptions } from '@component/field-view/field-view.component';
+import { FieldViewOptions } from '@class/field-view-options';
 import { FieldsetDynamicOptions } from '@class/fieldset-dynamic-options';
 import { FieldsetArrayComponent } from '@component/fieldset-array/fieldset-array.component';
-import { FieldsetComponent } from '@component/fieldset/fieldset.component';
 import { arrayColumn } from '@function/array-column';
 import { arrayCombine } from '@function/array-combine';
 import { SessionStorageService } from '@service/storage/session-storage.service';

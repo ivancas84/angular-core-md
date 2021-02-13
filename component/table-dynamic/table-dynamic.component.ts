@@ -1,5 +1,5 @@
 import { Input, Component, OnInit, ViewChild } from '@angular/core';
-import { FieldViewOptions } from '@component/field-view/field-view.component';
+import { FieldViewOptions } from '@class/field-view-options';
 import { TableDynamicOptions } from '@class/table-dynamic-options';
 import { TableComponent } from '@component/table/table.component';
 

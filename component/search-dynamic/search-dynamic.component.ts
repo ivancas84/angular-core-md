@@ -1,5 +1,5 @@
 import { Input, Component, OnInit } from '@angular/core';
-import { FieldViewOptions } from '@component/field-view/field-view.component';
+import { FieldViewOptions } from '@class/field-view-options';
 import { SearchDynamicOptions } from '@class/search-dynamic-options';
 import { SearchComponent } from '@component/search/search.component';
 
