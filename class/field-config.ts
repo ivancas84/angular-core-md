@@ -1,6 +1,10 @@
 import { FieldTreeElement } from "./field-tree-element";
 
 export class FieldConfig {
+  /**
+   * Opciones de FieldView
+   * @todo Renombrar por FieldViewOptions y mover a FieldViewComponent
+   */
   field: string //nombre
   label?: string = null //etiqueta
   type?: string = "default" //tipo
