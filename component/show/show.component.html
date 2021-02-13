@@ -4,6 +4,6 @@
 
 <div *ngIf="(load$ | async); else loading">
   <mat-progress-bar *ngIf="!load" mode="indeterminate"></mat-progress-bar>
-  <core-search-dynamic [display]="display" [fieldsControlSp]="fieldsControlSp"></core-search-dynamic>
-  <core-table-dynamic [dataSource]="data" [length]="length" [display]="display" [fieldsConfig]="fieldsConfig"></core-table-dynamic>
+  <core-search-dynamic [display]="display" [fieldsViewOptionsSp]="fieldsViewOptionsSp"></core-search-dynamic>
+  <core-table-dynamic [dataSource]="data" [length]="length" [display]="display" [fieldsViewOptions]="fieldsViewOptions"></core-table-dynamic>
 </div>

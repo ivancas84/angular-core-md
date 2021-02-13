@@ -9,23 +9,23 @@
     <div  *ngFor="let row of fieldset.controls; let i=index" [formGroup]="fg(i)">
       <div fxLayout="row wrap" *ngIf="!_delete(i).value">
         <div fxLayout="row wrap" fxFlex="90%">
-          <div *ngFor="let fieldControl of fieldsControlFilter" 
+          <div *ngFor="let fieldViewOptions of fieldsViewOptionsFilter" 
           class="item" 
-          [fxFlex.xs]="fieldControl.widthXs" 
-          [fxFlex.sm]="fieldControl.widthSm" 
-          [fxFlex.md]="fieldControl.widthMd" 
-          [fxFlex.lg]="fieldControl.widthLg" 
-          [fxFlex.xl]="fieldControl.widthXl" 
-          [fxFlex.lt-sm]="fieldControl.widthLtSm"
-          [fxFlex.lt-md]="fieldControl.widthLtMd"
-          [fxFlex.lt-lg]="fieldControl.widthLtLg"
-          [fxFlex.lt-xl]="fieldControl.widthLtXl"
-          [fxFlex.gt-xs]="fieldControl.widthGtXs"
-          [fxFlex.gt-sm]="fieldControl.widthGtSm" 
-          [fxFlex.gt-md]="fieldControl.widthGtMd" 
-          [fxFlex.gt-lg]="fieldControl.widthGtLg" 
+          [fxFlex.xs]="fieldViewOptions.widthXs" 
+          [fxFlex.sm]="fieldViewOptions.widthSm" 
+          [fxFlex.md]="fieldViewOptions.widthMd" 
+          [fxFlex.lg]="fieldViewOptions.widthLg" 
+          [fxFlex.xl]="fieldViewOptions.widthXl" 
+          [fxFlex.lt-sm]="fieldViewOptions.widthLtSm"
+          [fxFlex.lt-md]="fieldViewOptions.widthLtMd"
+          [fxFlex.lt-lg]="fieldViewOptions.widthLtLg"
+          [fxFlex.lt-xl]="fieldViewOptions.widthLtXl"
+          [fxFlex.gt-xs]="fieldViewOptions.widthGtXs"
+          [fxFlex.gt-sm]="fieldViewOptions.widthGtSm" 
+          [fxFlex.gt-md]="fieldViewOptions.widthGtMd" 
+          [fxFlex.gt-lg]="fieldViewOptions.widthGtLg" 
         >
-            <core-field-input [fieldControl]="fieldControl" [field]="fg(i).controls[fieldControl.field]"></core-field-input>  
+            <core-field-value [fieldViewOptions]="fieldViewOptions" [field]="fg(i).controls[fieldViewOptions.field]"></core-field-value>  
           </div>
         </div>
 

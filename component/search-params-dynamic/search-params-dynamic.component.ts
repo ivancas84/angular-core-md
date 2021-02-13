@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FieldControl } from '@class/field-control';
+import { FieldViewOptions } from '@component/field-view/field-view.component';
 import { SearchParamsComponent } from '@component/search-params/search-params.component';
 
 @Component({
@@ -12,16 +12,16 @@ import { SearchParamsComponent } from '@component/search-params/search-params.co
 })
 export class SearchParamsDynamicComponent extends SearchParamsComponent {
   
-  @Input() fieldsControl: FieldControl[]; //fields
+  @Input() fieldsViewOptions: FieldViewOptions[]; //fields
 
-  fieldsControlFilter: FieldControl[]; //fields filtrados
+  fieldsViewOptionsFilter: FieldViewOptions[]; //fields filtrados
 
   formGroup() {
     let fg: FormGroup = this.fb.group({});
-    for(var i = 0; i < this.fieldsControl.length; i++){
+    for(var i = 0; i < this.fieldsViewOptions.length; i++){
       fg.addControl(
-        this.fieldsControl[i].field, 
-        new FormControl(null, this.fieldsControl[i].validators)
+        this.fieldsViewOptions[i].field, 
+        new FormControl(null, this.fieldsViewOptions[i].validators)
       )
     }      
     return fg;
@@ -31,7 +31,7 @@ export class SearchParamsDynamicComponent extends SearchParamsComponent {
     /**
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
-    this.fieldsControlFilter = this.fieldsControl.filter(fc => fc.type != 'hidden');
+    this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type != 'hidden');
     super.ngOnInit();
 
   }

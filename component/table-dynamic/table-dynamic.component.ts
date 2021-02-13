@@ -1,5 +1,5 @@
 import { Input, Component, OnInit, ViewChild } from '@angular/core';
-import { FieldConfig } from '@class/field-config';
+import { FieldViewOptions } from '@component/field-view/field-view.component';
 import { TableDynamicOptions } from '@class/table-dynamic-options';
 import { TableComponent } from '@component/table/table.component';
 
@@ -12,13 +12,13 @@ import { TableComponent } from '@component/table/table.component';
   `],
 })
 export class TableDynamicComponent extends TableComponent implements OnInit {
-  @Input() fieldsConfig: FieldConfig[]
+  @Input() fieldsViewOptions: FieldViewOptions[]
   @Input() title: string //titulo del componente
   @Input() options: TableDynamicOptions = new TableDynamicOptions()
      
   ngOnInit(): void {
     this.displayedColumns = []
-    for(var i in this.fieldsConfig) this.displayedColumns.push(this.fieldsConfig[i].field)
+    for(var i in this.fieldsViewOptions) this.displayedColumns.push(this.fieldsViewOptions[i].field)
 
     super.ngOnInit();
   }

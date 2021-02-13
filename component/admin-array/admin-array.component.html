@@ -4,7 +4,7 @@
 
 <form *ngIf="(loadParams$ | async); else loading" [formGroup]="adminForm" (ngSubmit)="onSubmit()" novalidate autocomplete="off">
   <div *ngIf="(loadDisplay$ | async); else loading">  
-    <core-fieldset-array-dynamic [entityName]="entityName" [form]="adminForm" [fieldsControl]="fieldsControl" [data]="data" [title]="'Sucursal'"></core-fieldset-array-dynamic>
+    <core-fieldset-array-dynamic [entityName]="entityName" [form]="adminForm" [fieldsViewOptions]="fieldsViewOptions" [data]="data" [title]="'Sucursal'"></core-fieldset-array-dynamic>
     <button mat-raised-button [disabled]="adminForm.pending || isSubmitted" type="submit" color="primary">Aceptar</button>&nbsp;
     <button mat-mini-fab color="accent" type="button"  (click)="back()"><mat-icon>keyboard_backspace</mat-icon></button>
     <button mat-mini-fab color="accent" type="button" (click)="reset()"><mat-icon>clear_all</mat-icon></button>

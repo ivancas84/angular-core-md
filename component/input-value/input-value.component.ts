@@ -1,7 +1,7 @@
 import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FieldControl } from '@class/field-control';
+import { FieldViewOptions } from '@component/field-view/field-view.component';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Observable, of, Subscription } from 'rxjs';
@@ -20,9 +20,9 @@ export class InputValueComponent implements OnInit {
    */
   /**
    * @example
-   * <core-input-value [fieldControl]="viatico" [entityName]="'viatico'" [value]="row.viatico"
+   * <core-input-value [fieldViewOptions]="viatico" [entityName]="'viatico'" [value]="row.viatico"
    * [params]="{organo:display.getParam('organo'), periodo:display.getParam('periodo'), departamento_judicial:row.id}"></core-input-value>
-   *   viatico: FieldControl = new FieldControl({
+   *   viatico: FieldViewOptions = new FieldViewOptions({
    *     field:"valor", width:"100px", 
    *     validators: [Validators.pattern('^-?[0-9]+(\\.[0-9]{1,2})?$'),
    *     Validators.max(99999999999999999.99),
@@ -31,12 +31,12 @@ export class InputValueComponent implements OnInit {
    */  
   @Input() entityName: string
   /**
-   * Puede no ser el mismo valor que fieldControl.entityName
+   * Puede no ser el mismo valor que fieldViewOptions.entityName
    * @todo En que casos puede no ser el mismo valor?
    * por eso se define de forma independiente 
    **/
   @Input() value: any
-  @Input() fieldControl: FieldControl
+  @Input() fieldViewOptions: FieldViewOptions
   @Input() params?: { [index: string]: any } = {}
   @Input() persistApi: string = "persist_unique"
 
@@ -53,11 +53,11 @@ export class InputValueComponent implements OnInit {
     this.field = new FormControl(
       {
         value:this.value,
-        disabled:this.fieldControl.disabled
+        disabled:this.fieldViewOptions.disabled
       }, 
       {
-        validators:this.fieldControl.validators,
-        asyncValidators:this.fieldControl.asyncValidators,
+        validators:this.fieldViewOptions.validators,
+        asyncValidators:this.fieldViewOptions.asyncValidators,
       }
     );
 
@@ -74,7 +74,7 @@ export class InputValueComponent implements OnInit {
             this.snackBar.open("Valor incorrecto " + this.value, "X");
             return of(true)
           }
-          this.params[this.fieldControl.field] = value;
+          this.params[this.fieldViewOptions.field] = value;
           return this.dd._post(this.persistApi, this.entityName, this.params).pipe(
             tap(
               response => {

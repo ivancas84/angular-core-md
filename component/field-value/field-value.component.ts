@@ -1,5 +1,5 @@
 import { Component, Input} from '@angular/core';
-import { FieldConfig } from '@class/field-config';
+import { FieldViewOptions } from '@component/field-view/field-view.component';
 
 @Component({
   selector: 'core-field-value',
@@ -7,7 +7,7 @@ import { FieldConfig } from '@class/field-config';
 })
 export class FieldValueComponent {
   
-  @Input() value: any;
-  @Input() fieldConfig: FieldConfig;
+  @Input() field: any; //dependiendo del valor a mostrar puede ser un FieldControl o cualquier otro valor
+  @Input() fieldViewOptions: FieldViewOptions;
 
 }

@@ -1,5 +1,5 @@
 import { Input, Component, OnInit } from '@angular/core';
-import { FieldControl } from '@class/field-control';
+import { FieldViewOptions } from '@component/field-view/field-view.component';
 import { SearchDynamicOptions } from '@class/search-dynamic-options';
 import { SearchComponent } from '@component/search/search.component';
 
@@ -10,8 +10,8 @@ import { SearchComponent } from '@component/search/search.component';
 export class SearchDynamicComponent extends SearchComponent implements OnInit {
   @Input() options: { [index: string]: any } = {}
   @Input() title: string = "Opciones"
-  @Input() fieldsControlSp?: FieldControl[] = []; //fields control search params
-  @Input() fieldsControlSc?: FieldControl[] = []; //fields control search condition
+  @Input() fieldsViewOptionsSp?: FieldViewOptions[] = []; //fields control search params
+  @Input() fieldsViewOptionsSc?: FieldViewOptions[] = []; //fields control search condition
   
   opt: SearchDynamicOptions;
      

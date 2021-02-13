@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FieldControl } from '@class/field-control';
+import { FieldViewOptions } from '@component/field-view/field-view.component';
 import { FieldsetDynamicOptions } from '@class/fieldset-dynamic-options';
 import { FieldsetArrayComponent } from '@component/fieldset-array/fieldset-array.component';
 import { FieldsetComponent } from '@component/fieldset/fieldset.component';
@@ -24,11 +24,11 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent {
    * simplemente se debe cambiar la superclase
    **/
 
-  @Input() fieldsControl: FieldControl[]; //fields
+  @Input() fieldsViewOptions: FieldViewOptions[]; //fields
   @Input() title: string; //titulo del componente
   @Input() options: FieldsetDynamicOptions = new FieldsetDynamicOptions()
 
-  fieldsControlFilter: FieldControl[]; //fields filtrados
+  fieldsViewOptionsFilter: FieldViewOptions[]; //fields filtrados
 
   constructor(
     protected fb: FormBuilder, 
@@ -40,17 +40,17 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent {
   
   formGroup() {
     let fg: FormGroup = this.fb.group({});
-    for(var i = 0; i < this.fieldsControl.length; i++){
+    for(var i = 0; i < this.fieldsViewOptions.length; i++){
       fg.addControl(
-        this.fieldsControl[i].field, 
+        this.fieldsViewOptions[i].field, 
         new FormControl(
           {
             value:null,
-            disabled:this.fieldsControl[i].disabled
+            disabled:this.fieldsViewOptions[i].disabled
           }, 
           {
-            validators:this.fieldsControl[i].validators,
-            asyncValidators:this.fieldsControl[i].asyncValidators,
+            validators:this.fieldsViewOptions[i].validators,
+            asyncValidators:this.fieldsViewOptions[i].asyncValidators,
           })
       )
       fg.addControl("_delete",new FormControl(null))
@@ -63,8 +63,8 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent {
 
 
   ngOnInit() {    
-    this.fieldsControlFilter = this.fieldsControl.filter(fc => fc.type != 'hidden');
-    this.defaultValues = arrayCombine(arrayColumn(this.fieldsControl,"field"),arrayColumn(this.fieldsControl,"default"));
+    this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type != 'hidden');
+    this.defaultValues = arrayCombine(arrayColumn(this.fieldsViewOptions,"field"),arrayColumn(this.fieldsViewOptions,"default"));
     super.ngOnInit();
   }
 }

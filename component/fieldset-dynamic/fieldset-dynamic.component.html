@@ -6,23 +6,23 @@
     <core-input-search-go *ngIf="options.inputSearchGo" fxFlex="auto" [entityName]="entityName"></core-input-search-go>
   </mat-card-header>
   <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">
-    <div *ngFor="let fieldControl of fieldsControlFilter" 
+    <div *ngFor="let fieldViewOptions of fieldsViewOptionsFilter" 
          class="item" 
-         [fxFlex.xs]="fieldControl.widthXs" 
-         [fxFlex.sm]="fieldControl.widthSm" 
-         [fxFlex.md]="fieldControl.widthMd" 
-         [fxFlex.lg]="fieldControl.widthLg" 
-         [fxFlex.xl]="fieldControl.widthXl" 
-         [fxFlex.lt-sm]="fieldControl.widthLtSm"
-         [fxFlex.lt-md]="fieldControl.widthLtMd"
-         [fxFlex.lt-lg]="fieldControl.widthLtLg"
-         [fxFlex.lt-xl]="fieldControl.widthLtXl"
-         [fxFlex.gt-xs]="fieldControl.widthGtXs"
-         [fxFlex.gt-sm]="fieldControl.widthGtSm" 
-         [fxFlex.gt-md]="fieldControl.widthGtMd" 
-         [fxFlex.gt-lg]="fieldControl.widthGtLg" 
+         [fxFlex.xs]="fieldViewOptions.widthXs" 
+         [fxFlex.sm]="fieldViewOptions.widthSm" 
+         [fxFlex.md]="fieldViewOptions.widthMd" 
+         [fxFlex.lg]="fieldViewOptions.widthLg" 
+         [fxFlex.xl]="fieldViewOptions.widthXl" 
+         [fxFlex.lt-sm]="fieldViewOptions.widthLtSm"
+         [fxFlex.lt-md]="fieldViewOptions.widthLtMd"
+         [fxFlex.lt-lg]="fieldViewOptions.widthLtLg"
+         [fxFlex.lt-xl]="fieldViewOptions.widthLtXl"
+         [fxFlex.gt-xs]="fieldViewOptions.widthGtXs"
+         [fxFlex.gt-sm]="fieldViewOptions.widthGtSm" 
+         [fxFlex.gt-md]="fieldViewOptions.widthGtMd" 
+         [fxFlex.gt-lg]="fieldViewOptions.widthGtLg" 
     >
-      <core-field-input [fieldControl]="fieldControl" [field]="fieldset.controls[fieldControl.field]"></core-field-input>  
+      <core-field-value [fieldViewOptions]="fieldViewOptions" [field]="fieldset.controls[fieldViewOptions.field]"></core-field-value>  
     </div>
   </mat-card-content>
 </mat-card>
