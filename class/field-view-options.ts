@@ -12,7 +12,7 @@ export class FieldViewOptions {
     label?: string = null //etiqueta campo
 
 
-    aux: RouterLinkOptions | InputPersistOptions = null; //opciones para field-view-aux
+    aux?: RouterLinkOptions | InputPersistOptions = null; //opciones para field-view-aux
   
     type?: string = "default" //tipo
     /**
