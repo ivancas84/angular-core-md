@@ -19,7 +19,7 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header> {{fvo.label}} </th>
         </ng-template>
         
-        <td mat-cell *matCellDef="let row"> 
+        <td mat-cell *matCellDef="let row">
           <core-field-view-aux [fieldViewOptions]="fvo" [data]="row"></core-field-view-aux>          
         </td>
       </ng-container>
