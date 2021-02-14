@@ -3,7 +3,7 @@
     <a *ngSwitchCase="'router_link'" [routerLink]="'/'+fieldViewOptions.aux.path" [queryParams]="params">
       <core-field-view [field]="data[fieldViewOptions.field]" [fieldViewOptions]="fieldViewOptions"></core-field-view>
     </a>
-    <core-input-persist *ngSwitchCase="'input-persist'" 
+    <core-input-persist *ngSwitchCase="'input_persist'" 
                         [value]="data[fieldViewOptions.field]" 
                         [fieldViewOptions]="fieldViewOptions" 
                         [params]="params"

@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import { FieldViewOptions } from '@class/field-view-options';
 import { fastClone } from '@function/fast-clone';
-
+ 
 @Component({
-  selector: 'core-field-view-aux-aux',
+  selector: 'core-field-view-aux',
   templateUrl: './field-view-aux.component.html',
 })
 export class FieldViewAuxComponent implements OnChanges {
@@ -29,15 +29,16 @@ export class FieldViewAuxComponent implements OnChanges {
   params: any = null;
 
   ngOnChanges(changes: SimpleChanges): void {
+
     /**
      * Se realiza una traduccion del atributo fieldViewOptions.aux.params que contienen [[key]]
      */
-    if( changes['data'] && this.fieldViewOptions.aux && this.fieldViewOptions.aux.params ) {
+    if( changes["data"] && this.fieldViewOptions.aux && this.fieldViewOptions.aux.params ) {
       this.params = fastClone(this.fieldViewOptions.aux.params);
       for(var i in this.params){
         if(this.params.hasOwnProperty(i)){
-          var key = this.params[i].match(/\[\[(.*?)\]\]/)[1]
-          if(key) this.params[i] = this.data[key];
+          var key = this.params[i].match(/\{\{(.*?)\}\}/)
+          if(key) this.params[i] = this.data[key[1]];
         }
       }
       
