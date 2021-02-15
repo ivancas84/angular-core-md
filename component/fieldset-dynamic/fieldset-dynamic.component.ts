@@ -63,10 +63,6 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
 
   ngOnInit() {    
     this.defaultValues = arrayCombine(arrayColumn(this.fieldsViewOptions,"field"),arrayColumn(this.fieldsViewOptions,"default"));
-    /**
-     * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
-     */
-    
     this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type.id != 'hidden');
     super.ngOnInit();
 
