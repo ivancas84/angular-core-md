@@ -23,11 +23,15 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
    *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
    */
 
-  @Input() fieldsViewOptions: FieldViewOptions[]; //fields
+  @Input() fieldsViewOptions: FieldViewOptions[]; //opciones de campos
   @Input() title: string; //titulo del componente
-  @Input() options: FieldsetDynamicOptions = new FieldsetDynamicOptions()
+  @Input() options: FieldsetDynamicOptions = new FieldsetDynamicOptions() //opciones de la interfaz
 
-  fieldsViewOptionsFilter: FieldViewOptions[]; //fields filtrados
+  fieldsViewOptionsFilter: FieldViewOptions[]; //filtro de opciones de campos
+  /**
+   * Es necesario filtrar los campos con opciones particulares, por ejemplo "hidden" 
+   * para no incluirlas en el template
+   */
 
   constructor(
     protected fb: FormBuilder, 
@@ -58,11 +62,12 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
   }
 
   ngOnInit() {    
+    this.defaultValues = arrayCombine(arrayColumn(this.fieldsViewOptions,"field"),arrayColumn(this.fieldsViewOptions,"default"));
     /**
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
+    
     this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type.id != 'hidden');
-    this.defaultValues = arrayCombine(arrayColumn(this.fieldsViewOptions,"field"),arrayColumn(this.fieldsViewOptions,"default"));
     super.ngOnInit();
 
   }
