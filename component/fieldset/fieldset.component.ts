@@ -18,8 +18,13 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
   @Input() form: FormGroup; //formulario padre
   @Input() data: any; //datos del formulario
   @Input() entityName: string; //entidad principal del componente
+  @Input() id?: string = this.entityName; //identificacion del fieldset
   /**
-   * Utilizado, entre otras cosas, para identificar el fieldset
+   * Para el caso de que se utilicen relaciones, 
+   * la identificacion debe hacerse considerando los nombres de alias.
+   * Por ejemplo, si la entidad principal es "toma", y se crea un fieldset para "docente",
+   * entonces id = "doc-docente".
+   * La api interpretara el valor de la relacion y seguira el orden correspondiente de persistencia
    */
   
   fieldset: FormGroup; //fieldset
@@ -54,12 +59,12 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
 
   initForm(): void {
     this.fieldset = this.formGroup();
-    this.form.addControl(this.entityName, this.fieldset);
+    this.form.addControl(this.id, this.fieldset);
   }
 
   initData(): any {
     if (this.formValues) {
-      var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
+      var d = this.formValues.hasOwnProperty(this.id)? this.formValues[this.id] : null;
       this.formValues = null;
       return d;
     }
