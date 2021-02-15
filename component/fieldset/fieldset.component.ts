@@ -18,13 +18,17 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
   @Input() form: FormGroup; //formulario padre
   @Input() data: any; //datos del formulario
   @Input() entityName: string; //entidad principal del componente
-  fieldset: FormGroup; //fieldset
-  
   /**
-   * Utilizado para identificar el fieldset
+   * Utilizado, entre otras cosas, para identificar el fieldset
    */
+  
+  fieldset: FormGroup; //fieldset
   defaultValues: {[key:string]: any} = {};
-  formValues =this.storage.getItem(this.router.url);
+  formValues = this.storage.getItem(this.router.url);
+  /**
+   * Al inicializar el formulario, en el padre se borran los valores del storage, 
+   * por eso deben consultarte los valores del storage previamente
+   */
 
   constructor(
     protected router: Router, 
@@ -40,10 +44,6 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
   }
 
   ngOnInit() {    
-    /**
-     * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
-     */
-    
     this.initForm();
     var data = this.initData();
     var values = this.initValues(data);
