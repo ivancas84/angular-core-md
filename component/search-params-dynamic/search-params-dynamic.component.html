@@ -2,12 +2,12 @@
   <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">
     <div *ngFor="let fieldViewOptions of fieldsViewOptionsFilter" 
          class="item" 
-         [fxFlex.xs]="fieldViewOptions.widthXs" 
-         [fxFlex.sm]="fieldViewOptions.widthSm" 
-         [fxFlex.md]="fieldViewOptions.widthMd" 
-         [fxFlex.lg]="fieldViewOptions.widthLg" 
-         [fxFlex.xl]="fieldViewOptions.widthXl" 
-         [fxFlex.gt-sm]="fieldViewOptions.widthGtSm" 
+         [fxFlex.xs]="fieldViewOptions.width.xs" 
+         [fxFlex.sm]="fieldViewOptions.width.sm" 
+         [fxFlex.md]="fieldViewOptions.width.md" 
+         [fxFlex.lg]="fieldViewOptions.width.lg" 
+         [fxFlex.xl]="fieldViewOptions.width.xl" 
+         [fxFlex.gt-sm]="fieldViewOptions.width.gtSm" 
     >
       <core-field-view [fieldViewOptions]="fieldViewOptions" [field]="fieldset.controls[fieldViewOptions.field]"></core-field-view>  
     </div>

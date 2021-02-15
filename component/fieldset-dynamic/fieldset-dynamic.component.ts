@@ -45,11 +45,11 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
         new FormControl(
           {
             value:null,
-            disabled:this.fieldsViewOptions[i].disabled
+            disabled:this.fieldsViewOptions[i].control.disabled
           }, 
           {
-            validators:this.fieldsViewOptions[i].validators,
-            asyncValidators:this.fieldsViewOptions[i].asyncValidators,
+            validators:this.fieldsViewOptions[i].control.validators,
+            asyncValidators:this.fieldsViewOptions[i].control.asyncValidators,
           }
         )
       )
@@ -61,7 +61,7 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
     /**
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
-    this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type != 'hidden');
+    this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type.id != 'hidden');
     this.defaultValues = arrayCombine(arrayColumn(this.fieldsViewOptions,"field"),arrayColumn(this.fieldsViewOptions,"default"));
     super.ngOnInit();
 

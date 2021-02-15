@@ -48,11 +48,11 @@ export class InputPersistComponent implements OnInit {
     this.field = new FormControl(
       {
         value:this.value,
-        disabled:this.fieldViewOptions.disabled
+        disabled:this.fieldViewOptions.control.disabled
       }, 
       {
-        validators:this.fieldViewOptions.validators,
-        asyncValidators:this.fieldViewOptions.asyncValidators,
+        validators:this.fieldViewOptions.control.validators,
+        asyncValidators:this.fieldViewOptions.control.asyncValidators,
       }
     );
 

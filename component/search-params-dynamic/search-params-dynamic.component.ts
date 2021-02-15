@@ -21,7 +21,7 @@ export class SearchParamsDynamicComponent extends SearchParamsComponent {
     for(var i = 0; i < this.fieldsViewOptions.length; i++){
       fg.addControl(
         this.fieldsViewOptions[i].field, 
-        new FormControl(null, this.fieldsViewOptions[i].validators)
+        new FormControl(null, this.fieldsViewOptions[i].control.validators)
       )
     }      
     return fg;
@@ -31,7 +31,7 @@ export class SearchParamsDynamicComponent extends SearchParamsComponent {
     /**
      * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
      */
-    this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type != 'hidden');
+    this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type.id != 'hidden');
     super.ngOnInit();
 
   }

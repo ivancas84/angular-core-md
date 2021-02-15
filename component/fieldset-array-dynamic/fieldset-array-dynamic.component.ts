@@ -45,11 +45,11 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent {
         new FormControl(
           {
             value:null,
-            disabled:this.fieldsViewOptions[i].disabled
+            disabled:this.fieldsViewOptions[i].control.disabled
           }, 
           {
-            validators:this.fieldsViewOptions[i].validators,
-            asyncValidators:this.fieldsViewOptions[i].asyncValidators,
+            validators:this.fieldsViewOptions[i].control.validators,
+            asyncValidators:this.fieldsViewOptions[i].control.asyncValidators,
           })
       )
       fg.addControl("_delete",new FormControl(null))
@@ -62,7 +62,7 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent {
 
 
   ngOnInit() {    
-    this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type != 'hidden');
+    this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type.id != 'hidden');
     this.defaultValues = arrayCombine(arrayColumn(this.fieldsViewOptions,"field"),arrayColumn(this.fieldsViewOptions,"default"));
     super.ngOnInit();
   }
