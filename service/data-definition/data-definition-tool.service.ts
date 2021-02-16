@@ -81,8 +81,6 @@ export class DataDefinitionToolService extends DataDefinitionService{
           params["fieldName"],
           params["entityName"],
           params["fields"],
-          params["fieldsResponse"],
-          join
         ).pipe(map(
           () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
         ))
@@ -287,12 +285,10 @@ export class DataDefinitionToolService extends DataDefinitionService{
     data: { [index: string]: any }[], 
     fieldName: string, 
     entityName: string, 
-    fields: string[], //utilizar solo funciones de agregacion
-    fieldsResponse: { [index: string]: string }, //el resultado de las funciones de agregacion reciben un nombre diferente al atributo fields 
-    join: string = ", " 
+    fields: { [index: string]: string }, //utilizar solo funciones de agregacion
   ): Observable<{ [index: string]: any }[]>{
     /**
-     * Consulta avanzada de relaciones directas
+     * Consulta avanzada de relaciones con agrupamiento
      * Define "ids" filtra el campo "id" del parametro "data"
      * Define "display.fields", asigna el parametro fields
      * Define "display.group", asigna el parametro fieldName
@@ -302,14 +298,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Si data[i]["id"] == response[j][fieldName] almacena en data los campos indicados en parametro "fieldsResponse"
      * "fieldsResponse" es un objeto de la forma {nombre_identificacion:nombre_field}
      * si "nombre_field" es un array realiza un join utilizando el parametro "join"
-     * 
+     * A diferencia de las consultas no avanzadas, se especifican los fields directamente en la consulta y se retornan dichos fields que seran asignados
+     * Tiene la ventaja de que se reducen los parametros, pero como desventaja no utilizan el storage para las entities.
      */
 
     var ids = arrayColumn(data, "id")
-    if(!ids.length) {
-      for(var i = 0; i < data.length; i++) this.initFields(data[i],fieldsResponse);
-      return of(data);
-    } 
+    for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
+    if(!ids.length) return of(data);
     var display = new Display();
     display.setSize(0);
     display.setFields(fields);
@@ -319,10 +314,11 @@ export class DataDefinitionToolService extends DataDefinitionService{
       map(
         response => {
           for(var i = 0; i < data.length; i++){
-            this.initFields(data[i],fieldsResponse);
             for(var j = 0; j < response.length; j++){
               if(data[i]["id"] == response[j][fieldName]) {
-                this.assignFields(data[i],response[j],fieldsResponse,join)
+                for(var f in fields){
+                  if(fields.hasOwnProperty(f)) data[i][f] = response[j][f];
+                }
                 break;
               }
             }
