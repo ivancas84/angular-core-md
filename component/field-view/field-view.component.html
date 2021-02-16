@@ -1,0 +1,20 @@
+<div [ngSwitch]="fieldViewOptions.type.id">
+  <core-input-date *ngSwitchCase="'input_date'" [field]="field" [title]="fieldViewOptions.label"></core-input-date>
+  <core-input-timepicker *ngSwitchCase="'input_time'" [field]="field" [title]="fieldViewOptions.label"></core-input-timepicker>
+  <core-input-year *ngSwitchCase="'input_year'" [field]="field" [title]="fieldViewOptions.label"></core-input-year>  
+  <core-input-textarea *ngSwitchCase="'textarea'" [field]="field" [title]="fieldViewOptions.label"></core-input-textarea>
+  <core-input-checkbox *ngSwitchCase="'input_checkbox'" [field]="field" [title]="fieldViewOptions.label"></core-input-checkbox>
+  <core-input-select-param *ngSwitchCase="'input_select_param'" [field]="field" [title]="fieldViewOptions.label" [options]="fieldViewOptions.type.options"></core-input-select-param>
+  <core-input-select *ngSwitchCase="'input_select'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName"></core-input-select>
+  <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" [field]="field" [title]="fieldViewOptions.label" [options]="fieldViewOptions.type.options"></core-input-select-checkbox>
+  <core-input-autocomplete *ngSwitchCase="'input_autocomplete'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName" [adminRoute]="fieldViewOptions.type.adminRoute"></core-input-autocomplete>
+  <core-input-text *ngSwitchCase="'input_text'" [field]="field" [title]="fieldViewOptions.label" [uniqueRoute]="fieldViewOptions.type.uniqueRoute" [width]="fieldViewOptions.type.width"></core-input-text>
+
+  <div *ngSwitchCase="'date'">{{field | toDate | date:fieldViewOptions.type.format}}</div>
+  <div *ngSwitchCase="'yes_no'">{{field | siNo}}</div>
+  <div *ngSwitchCase="'summary'">{{field | summary}}</div>
+  <div *ngSwitchCase="'label'"><core-label *ngIf="field" [id]="field" [entityName]="fieldViewOptions.type.entityName"></core-label></div>
+  <div *ngSwitchCase="'tree'"><core-field-tree *ngIf="field" [id]="field" [tree]="fieldViewOptions.type.tree"></core-field-tree></div>
+  <div *ngSwitchDefault>{{field}}</div>
+</div>
+

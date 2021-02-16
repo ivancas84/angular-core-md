@@ -17,13 +17,18 @@ export abstract class FieldsetArrayComponent implements OnInit  {
 
   @Input() form: FormGroup; //formulario padre
   @Input() data: any; //datos del formulario
-  fieldset: FormArray; //fieldset
-  readonly entityName: string; //entidad principal del componente  
-   /*
+  @Input() entityName: string; //entidad principal del componente  
+  /*
    * Utilizado para identificar el fieldset
    */
-  readonly defaultValues: {[key:string]: any} = {};
+
+  fieldset: FormArray; //fieldset
+  defaultValues: {[key:string]: any} = {};
   formValues = this.storage.getItem(this.router.url);
+  /**
+   * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
+   * @todo Analizar, por que es necesario blanquear los valores del storage al inicializar?
+   */
 
   constructor(
     protected router: Router, 
@@ -39,10 +44,7 @@ export abstract class FieldsetArrayComponent implements OnInit  {
     }
   }
   
-  ngOnInit() {    
-    /**
-     * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
-     */
+  ngOnInit() {
     this.initForm();
     var data = this.initFormValues();
     this.setFormValues(data);
@@ -72,7 +74,7 @@ export abstract class FieldsetArrayComponent implements OnInit  {
   initFormValues(): any {
     if (this.formValues) {
       var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
-      this.formValues = null;
+      this.formValues = null; //@todo analizar si es necesario inicializar formValues
       return d;
     }
     return this.data;

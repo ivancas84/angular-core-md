@@ -9,9 +9,8 @@ import { DataDefinitionService } from '@service/data-definition/data-definition.
 })
 export class FieldTreeLabelComponent implements OnChanges {
   
-  @Input() tree: any;
-  @Input() entityName: string;
-  @Input() id: string;
+  @Input() tree: any; //Arbol de entidades {fieldName:entityName, ...}
+  @Input() id: string; //id inicial de consulta
   @Input() fieldNames: string[];
   @Input() join: string = " ";
   _tree: any
@@ -20,24 +19,28 @@ export class FieldTreeLabelComponent implements OnChanges {
   _fieldName: string;
 
   constructor(private dd: DataDefinitionService) { }
+  /**
+   * Obsoleto utilizar field-tree
+   * @param changes 
+   */
   
 
   ngOnChanges(changes: SimpleChanges){
     if( changes['tree'] ) {
       this._tree=fastClone(changes['tree'].currentValue);
-      for(var k in this._tree) {
-        this._entityName = this._tree[k];
-        this._fieldName = k;
-        delete this._tree;
-        break;
-      }
+
       if(isEmptyObject(this._tree)) this._tree = null;
+      else {
+        this._fieldName = Object.keys(this._tree)[0];
+        this._entityName = this._tree[this._fieldName]; //returns 'someVal'
+        delete this._tree[this._fieldName];
+      }
     }
   
     if( changes['id'] && changes['id'].previousValue != changes['id'].currentValue && this._entityName && this._fieldName) {
       if(!changes['id'].currentValue) this._id = null;
       else {
-        this.dd.get(this.entityName, this.id).subscribe(
+        this.dd.get(this._entityName, this.id).subscribe(
           (row) => {
             this._id = row[this._fieldName];
           }

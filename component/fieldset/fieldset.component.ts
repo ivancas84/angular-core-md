@@ -1,6 +1,5 @@
 import { Input, OnInit, Component, OnChanges, SimpleChanges} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
 import { fastClone } from '../../function/fast-clone';
@@ -18,13 +17,23 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
 
   @Input() form: FormGroup; //formulario padre
   @Input() data: any; //datos del formulario
-  fieldset: FormGroup; //fieldset
-  readonly entityName: string; //entidad principal del componente
+  @Input() entityName: string = null; //entidad principal del componente
+  @Input() fieldsetId?: string = null; //identificacion del fieldset
   /**
-   * Utilizado para identificar el fieldset
+   * Para el caso de que se utilicen relaciones, 
+   * la identificacion debe hacerse considerando los nombres de alias.
+   * Por ejemplo, si la entidad principal es "toma", y se crea un fieldset para "docente",
+   * entonces id = "doc-docente".
+   * La api interpretara el valor de la relacion y seguira el orden correspondiente de persistencia
    */
-  readonly defaultValues: {[key:string]: any} = {};
-  formValues =this.storage.getItem(this.router.url);
+  
+  fieldset: FormGroup; //fieldset
+  defaultValues: {[key:string]: any} = {};
+  formValues = this.storage.getItem(this.router.url);
+  /**
+   * Al inicializar el formulario, en el padre se borran los valores del storage, 
+   * por eso deben consultarte los valores del storage previamente
+   */
 
   constructor(
     protected router: Router, 
@@ -40,25 +49,23 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
   }
 
   ngOnInit() {    
-    /**
-     * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
-     */
+    if(!this.fieldsetId) this.fieldsetId = this.entityName; 
     this.initForm();
     var data = this.initData();
     var values = this.initValues(data);
     this.resetForm(values);
   }
 
-  abstract formGroup();
+  formGroup() { return new FormGroup({}); }
 
   initForm(): void {
     this.fieldset = this.formGroup();
-    this.form.addControl(this.entityName, this.fieldset);
+    this.form.addControl(this.fieldsetId, this.fieldset);
   }
 
   initData(): any {
     if (this.formValues) {
-      var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
+      var d = this.formValues.hasOwnProperty(this.fieldsetId)? this.formValues[this.fieldsetId] : null;
       this.formValues = null;
       return d;
     }

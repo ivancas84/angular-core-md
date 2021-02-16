@@ -2,7 +2,8 @@
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>
 
-<div *ngIf="(load$ | async) && load; else loading">
-  <!-- app-example-search [display$]="display$"></app-example-search -->
-  <!-- app-example-table *ngIf="load; else loading" [data$]="data$" [collectionSize$]="collectionSize$" [display]="display"></app-example-table -->
+<div *ngIf="(load$ | async); else loading">
+  <mat-progress-bar *ngIf="!load" mode="indeterminate"></mat-progress-bar>
+  <core-search-dynamic [display]="display" [fieldsViewOptionsSp]="fieldsViewOptionsSp"></core-search-dynamic>
+  <core-table-dynamic [dataSource]="data" [length]="length" [display]="display" [fieldsViewOptions]="fieldsViewOptions"></core-table-dynamic>
 </div>

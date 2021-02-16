@@ -43,7 +43,7 @@ export class InputUploadComponent implements OnInit {
   }
 
   initValue(value){
-    this.dd.getOrNull("file", value).pipe(first()).subscribe(
+    this.dd.get("file", value).subscribe(
       row => {
         if(row) {
           this.file = row;

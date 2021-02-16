@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, ViewChild } from '@angular/core';
+import { Input, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, BehaviorSubject, of, forkJoin, concat, merge, combineLatest } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
@@ -8,6 +8,11 @@ import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { compare } from '@function/compare';
 import { fastClone } from '@function/fast-clone';
+import { naturalCompare } from '@function/natural-compare';
+
+declare function copyFormatted(html): any;
+declare function printHtml(html): any;
+
 
 @Component({
   selector: 'core-table',
@@ -18,39 +23,29 @@ import { fastClone } from '@function/fast-clone';
   `],
 })
 export abstract class TableComponent implements OnInit {
-
-  @Input() data: { [index: string]: any }[] = []; 
   /**
-   * Datos que seran utilizados para visualizar o inicializar datos a mostrar
-   * Conviene que sea un observable para facilitar el encadenamiento con otro Observable
-   * Se puede encadenar con otro observable para redefinir los datos
-   * Los datos a visualizar resultantes seran cargados en el atributo "displayedColumns"
+   * Elementos de uso habitual para una tabla
+   */
+  @Input() dataSource: { [index: string]: any }[] = []; //datos recibidos que seran visualizados
+  @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
+  @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
+  displayedColumns: string[]; //columnas a visualizar
+  @ViewChild(MatPaginator) paginator: MatPaginator; //paginacion
+  @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
+  //footer: { [index: string]: any }[] = []; //
+
+  /**
+   * los datos a visualizar se separan de los datos recibidos para facilitar la reimplementacion
+   * si no se define display o length no se muestra la paginacion
    */
 
-  @Input() display?: Display;
-  /**
-   * Busqueda susceptible de ser modificada por ordenamiento o paginacion
-   */
-  
-  @Input() length?: number;
-  /**
-   * Cantidad total de elementos, puede ser mayor que los datos a visualizar
-   */
-
-  
-  displayedColumns: string[];
-  
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  progress = false;
   constructor(
     protected router: Router,
   ) {}
 
-  
   ngOnInit(): void {
-    if(!this.length) this.length = this.data.length;    
+    if(!this.length) this.length = this.dataSource.length;    
+    //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
   
   onChangePage($event: PageEvent){
@@ -66,15 +61,11 @@ export abstract class TableComponent implements OnInit {
      * @return true si se efectuo ordenamiento en el servidor
      *         false si no se efectuo ordenamiento en el servidor
      */
-    if(this.length && this.display && this.data.length < this.length){
-      this.display.setPage(1);
-      this.display.setOrderByKeys([sort.active]);
-      //this.display$.value.setPage(1);
-      this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
-      return true;
-    }
-
-    return false;
+    if(!this.length || !this.display || this.dataSource.length >= this.length) return false;
+    this.display.setPage(1);
+    this.display.setOrderByKeys([sort.active]);
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
+    return true;
   }
 
   onChangeSort(sort: Sort) {
@@ -82,15 +73,25 @@ export abstract class TableComponent implements OnInit {
 
     if(this.serverSort(sort)) return;
 
-    const data = this.data.slice();
+    const data = this.dataSource.slice();
+
     if (!sort.active || sort.direction === '') {
-      this.data = data;
+      this.dataSource = data;
       return;
     }
 
-    this.data = data.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      return compare(a[sort.active],b[sort.active], isAsc);
+    data.sort((a, b) => {    
+      return (sort.direction === 'asc') ? naturalCompare(a[sort.active],b[sort.active]) : naturalCompare(b[sort.active],a[sort.active])
     });
+
+    this.dataSource = data;
+  }
+ 
+  copyContent(): void {
+    if(this.content) copyFormatted(this.content.nativeElement.innerHTML);
+  }
+
+  printContent(): void {
+    if(this.content) printHtml(this.content.nativeElement.innerHTML);
   }
 }

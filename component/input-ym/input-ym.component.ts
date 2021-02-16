@@ -15,7 +15,9 @@ import { getControlName } from '@function/get-control-name';
       display: inline-block;
   }
   `],
-  providers: [{
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
@@ -48,8 +50,8 @@ export class InputYmComponent implements OnInit {
    */
 
   ngOnInit(): void {
-    this.fieldName = getControlName(this.field);
-    this.adminRoute = getControlName(this.field.parent);
+    this.fieldName = getControlName(this.field); //deprecated?
+    this.adminRoute = getControlName(this.field.parent); //deprecated? comparar con otros ejemplos
   }
  
   get adminParams() {
@@ -78,6 +80,9 @@ export class InputYmComponent implements OnInit {
     datepicker.close();
   }
 
-  
+  clear(){
+    this.field.setValue(null);
+    this.field.markAsDirty();
+  }
   
 }

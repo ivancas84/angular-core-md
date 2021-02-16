@@ -1,5 +1,5 @@
-<mat-form-field>
-  <mat-label>{{title}}</mat-label>
+<mat-form-field [style.width]="width"> 
+  <mat-label *ngIf="title">{{title}}</mat-label>
   <input matInput [type]="type" [formControl]="field" placeholder="{{placeholder}}">
   <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
   <mat-error *ngIf="field.hasError('notUnique')">

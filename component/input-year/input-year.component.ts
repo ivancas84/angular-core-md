@@ -15,7 +15,9 @@ import { Y_FORMATS } from 'app/core/const/Y_FORMATS';
       display: inline-block;
   }
   `],
-  providers: [{
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    {
       provide: DateAdapter,
       useClass: MomentDateAdapter,
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
@@ -68,7 +70,7 @@ export class InputYearComponent implements OnInit {
      * es conveniente inicializar valor, dependiendo de como se inicialize el valor original puede un string, null o DateTime en vez de un moment()
      */
     ctrlValue.year(normalizedYear.year());
-    
+
     this.field.setValue(ctrlValue);
     datepicker.close();
 

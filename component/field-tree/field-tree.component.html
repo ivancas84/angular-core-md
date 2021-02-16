@@ -1,0 +1,8 @@
+<span *ngIf="data$ | async as data">
+  <span *ngIf="id && tree.fieldNames.length">
+    <span *ngIf="tree.prefix">{{tree.prefix}}</span>
+    <core-field-label [entityName]="tree.entityName" [id]="id" [fieldNames]="tree.fieldNames" [join]="tree.join"></core-field-label>
+    <span *ngIf="tree.suffix">{{tree.suffix}}</span>
+  </span>
+  <core-field-tree *ngFor="let e of tree.tree; let i = index" [id]="data[tree.fkName]" [tree]="e"></core-field-tree>
+</span>

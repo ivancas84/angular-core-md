@@ -20,7 +20,7 @@ export abstract class SearchParamsComponent implements OnInit {
 
   abstract formGroup();
 
-  ngOnInit() {    
+  ngOnInit() {  
     this.initForm();
     this.initData();
   }
@@ -33,7 +33,9 @@ export abstract class SearchParamsComponent implements OnInit {
   initData(): void{    
     /**
      * Inicializar datos
-     * Los valores por defecto se definen en el componente principal que utiliza el formulario de busqueda
+     * Los valores por defecto se definen en el componente principal 
+     * que utiliza el formulario de busqueda
+     * a traves del atributo display
      */
     if(!isEmptyObject(this.display.getParams())) { this.fieldset.reset(this.display.getParams()) }
   }

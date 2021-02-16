@@ -2,7 +2,7 @@
   <mat-label>{{title}}</mat-label>
   <input matInput [matDatepicker]="fieldPicker" [formControl]="field" placeholder="{{placeholder}}">
   <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
-  <mat-datepicker-toggle matSuffix (click)="field.setValue(null)">
+  <mat-datepicker-toggle matSuffix (click)="clear()">
     <mat-icon matDatepickerToggleIcon>clear</mat-icon>
   </mat-datepicker-toggle>
   <mat-datepicker #fieldPicker

@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{title}} <button mat-mini-fab color="primary" (click)="copyContent()"><mat-icon>content_copy</mat-icon></button>
+      <button mat-mini-fab color="primary" (click)="printContent()"><mat-icon>print</mat-icon></button>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content fxLayout="row wrap" #content>
+    <div *ngFor="let fvo of fieldsViewOptions" 
+         class="item"       
+         [fxFlex.xs]="fvo.widthXs"
+         [fxFlex.sm]="fvo.widthSm"
+         [fxFlex.md]="fvo.widthMd"
+         [fxFlex.lg]="fvo.widthLg"
+         [fxFlex.xl]="fvo.widthXl"
+         [fxFlex.lt-sm]="fvo.widthLtSm"
+         [fxFlex.lt-md]="fvo.widthLtMd"
+         [fxFlex.lt-lg]="fvo.widthLtLg"
+         [fxFlex.lt-xl]="fvo.widthLtXl"
+         [fxFlex.gt-xs]="fvo.widthGtXs"
+         [fxFlex.gt-sm]="fvo.widthGtSm"
+         [fxFlex.gt-md]="fvo.widthGtMd"
+         [fxFlex.gt-lg]="fvo.widthGtLg"
+    >
+      <div><strong>{{fvo.label}}</strong></div>
+      <core-field-view-aux [fieldViewOptions]="fvo" [data]="data"></core-field-view-aux>  
+    </div>
+  </mat-card-content>
+</mat-card>

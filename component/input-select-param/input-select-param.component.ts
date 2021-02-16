@@ -2,9 +2,6 @@ import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
-import { Display } from '@class/display';
-import { arrayColumn } from '@function/array-column';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'core-input-select-param',

@@ -23,15 +23,21 @@ import { fastClone } from '@function/fast-clone';
 export abstract class AdminComponent implements OnInit, AfterViewInit {
 /**
  * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
+ * En el caso de que se utilice el template general formado por componentes dinamicos deberan definirse los siguientes atributos adicionales:
+ *   title: string; Titulo del fieldset dinamico
+ *   fieldsViewOptions: FieldViewOptions[] Configuracion de campos
  */
 
   adminForm: FormGroup = this.fb.group({}); //formulario principal
   /**
-   * Se asignaran dinamicamente los formgroups correspondientes a fieldsets
+   * Se asignaran dinamicamente los formGroups correspondientes a fieldsets
    */
 
   readonly entityName: string; //entidad principal
   display$:BehaviorSubject<any> = new BehaviorSubject(null); //parametros de consulta
+  /**
+   * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
+   */
   data: any; //datos principales
 
   isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
@@ -121,7 +127,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
       ),
       map(
         data => {
-          console.log(data);
           this.data = data;
           return true;
         }
@@ -196,7 +201,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   cancelSubmit(){
     markAllAsDirty(this.adminForm);
     logValidationErrors(this.adminForm);
-    const dialogRef = this.dialog.open(DialogAlertComponent, {
+    this.dialog.open(DialogAlertComponent, {
       data: {title: "Error", message: "El formulario posee errores."}
     });
     this.isSubmitted = false;
@@ -205,9 +210,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   submit(){
     var s = this.persist().subscribe(
       response => {
-        this.snackBar.open("Registro realizado", "X");
-        this.removeStorage(response);
-        this.reload(response);
+        this.submitted(response)        
       },
       error => { 
         this.dialog.open(DialogAlertComponent, {
@@ -219,6 +222,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.subscriptions.add(s);
   }
 
+  submitted(response){
+    this.snackBar.open("Registro realizado", "X");
+    this.removeStorage(response);
+    this.reload(response);
+  }
+  
   removeStorage(response){
     this.storage.removeItemsContains(".");
     this.storage.removeItemsPersisted(response["detail"]);

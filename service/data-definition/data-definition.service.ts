@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, map, first, switchMap } from 'rxjs/operators';
-import { API_URL } from '../../../app.config';
+import { API_URL} from '../../../app.config';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Display } from '@class/display';
 import { DataDefinitionStorageService } from '@service/data-definition-storage.service';
 import { CookieService } from 'ngx-cookie-service';
+import { arrayClean } from '@function/array-clean';
+import { arrayUnique } from '@function/array-unique';
 
 @Injectable({
   providedIn: 'root'
@@ -19,19 +21,12 @@ export class DataDefinitionService {
     protected cookie: CookieService
   ) { }
 
-  /*httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-    })
-  }*/
-
   
 
-  get httpOptions() {
+  httpOptions(contentType: boolean = true) {
     //@todo autenticar token antes de enviar?
-    var headers = {
-      'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-    }
+    var headers = {};
+    if(contentType) headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     if(this.cookie.get("jwt")) headers["Authorization"] = "Bearer " + this.cookie.get("jwt");
     
     var opt = {
@@ -41,23 +36,22 @@ export class DataDefinitionService {
     //Si no es posible leer el Authorization header desde el servidor, enviarlo como parametro
     //if(this.cookie.get("jwt")) opt["params"] = new HttpParams().set("jwt",this.cookie.get("jwt"))
     
-    return opt;
-      
-    
+    return opt;      
+
   }
 
 
 
   
   _post(api: string, entity: string, data: any = null):  Observable<any> {
-    var jsonParams = (data instanceof Display) ? data.describe() : data;
+    var params = (data instanceof Display) ? data.describe() : data;
     let url_ = API_URL + entity + '/'+ api;
-    return this.http.post<any>(url_, jsonParams, this.httpOptions);
+    return this.http.post<any>(url_, params, this.httpOptions()).pipe(first());
   }
 
   post(api: string, entity: string, data: any = null):  Observable<any> {    
-    var jsonParams = (data instanceof Display) ? data.describe() : data;
-    let key = entity + "." + api + JSON.stringify(jsonParams);
+    var params = (data instanceof Display) ? data.describe() : data;
+    let key = entity + "." + api + JSON.stringify(params);
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key))
 
     return this._post(api, entity, data).pipe(tap(
@@ -104,6 +98,9 @@ export class DataDefinitionService {
      *   Se recorre el resultado de la consulta comparando el id de "rows_" con el id de ids para obtener la posicion corresopndiente
      *   Se carga el resultado de rows_ en la posicion correspondiente
      */
+
+    ids = arrayUnique(arrayClean(ids));
+    
     let rows: Array<{ [index: string]: boolean|string|number }> = new Array(ids.length);
 
     let searchIds: Array<string | number> = new Array();
@@ -161,7 +158,7 @@ export class DataDefinitionService {
      *   Otros tipos de procesamiento pueden ser "Image", o si es un procesamiento particular algun nombre personalizado, por ejemplo "Info"
      */
     let url = API_URL + entity + '/upload';
-    return this.http.post<any>(url, data, this.httpOptions).pipe(first());
+    return this.http.post<any>(url, data, this.httpOptions(false)).pipe(first());
   }
 
 }
