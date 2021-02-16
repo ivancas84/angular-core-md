@@ -17,8 +17,8 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
 
   @Input() form: FormGroup; //formulario padre
   @Input() data: any; //datos del formulario
-  @Input() entityName: string; //entidad principal del componente
-  @Input() id?: string = this.entityName; //identificacion del fieldset
+  @Input() entityName: string = null; //entidad principal del componente
+  @Input() fieldsetId?: string = null; //identificacion del fieldset
   /**
    * Para el caso de que se utilicen relaciones, 
    * la identificacion debe hacerse considerando los nombres de alias.
@@ -49,6 +49,7 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
   }
 
   ngOnInit() {    
+    if(!this.fieldsetId) this.fieldsetId = this.entityName; 
     this.initForm();
     var data = this.initData();
     var values = this.initValues(data);
@@ -59,12 +60,12 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
 
   initForm(): void {
     this.fieldset = this.formGroup();
-    this.form.addControl(this.id, this.fieldset);
+    this.form.addControl(this.fieldsetId, this.fieldset);
   }
 
   initData(): any {
     if (this.formValues) {
-      var d = this.formValues.hasOwnProperty(this.id)? this.formValues[this.id] : null;
+      var d = this.formValues.hasOwnProperty(this.fieldsetId)? this.formValues[this.fieldsetId] : null;
       this.formValues = null;
       return d;
     }

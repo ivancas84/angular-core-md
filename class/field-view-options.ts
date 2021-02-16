@@ -15,6 +15,8 @@ export class FieldViewOptions {
 
     aux?: RouterLinkOptions | InputPersistOptions = null; //opciones para field-view-aux
   
+    default?:any = null; //valor por defecto (podria considerarse como parte de FieldControlOptions)
+    
     type?: FieldInputCheckboxOptions
       | FieldDefaultOptions
       | FieldTextareaOptions 

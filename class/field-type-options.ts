@@ -37,6 +37,18 @@ export class FieldDefaultOptions {
   }
 }
 
+export class FieldHiddenOptions {
+  id: string = "hidden"
+
+  constructor(attributes: any = {}) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 
 export class FieldInputCheckboxOptions {
   id: string = "input_checkbox"
@@ -63,17 +75,6 @@ export class FieldTextareaOptions {
 }
 
 
-export class FieldInputYearOptions {
-  id: string = "input_year"
-
-  constructor(attributes: any) {
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
-}
 
 
 export class FieldInputTimeOptions  {
@@ -91,6 +92,18 @@ export class FieldInputTimeOptions  {
 
 export class FieldInputDateOptions  {
   id: string = "input_date"
+  
+  constructor(attributes: any = {}) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+export class FieldInputYearOptions  {
+  id: string = "input_year"
   
   constructor(attributes: any = {}) {
     for(var a in attributes){

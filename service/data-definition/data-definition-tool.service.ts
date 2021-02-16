@@ -46,7 +46,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
   getTree(
     tree:string[], //arbol ["identificador1","identificador2",...]
-    data: { [index: string]: any } | { [index: string]: any }[], //datos
+    data: { [index: string]: any }[], //datos
     method:string, //nombre del metodo a ejecutar
     params:any = null //objeto con parametros de method 
   ){
@@ -197,8 +197,8 @@ export class DataDefinitionToolService extends DataDefinitionService{
     return this.all(entityName, display).pipe(
       map(
         response => {
-          if(!response.length) return data;
           for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+          if(!response.length) return data;
           for(var j = 0; j < response.length; j++){
             for(var i = 0; i < data.length; i++) { 
               if(response[j][fkName] == data[i]["id"]) 

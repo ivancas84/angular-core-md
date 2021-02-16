@@ -70,7 +70,7 @@ export class InputYearComponent implements OnInit {
      * es conveniente inicializar valor, dependiendo de como se inicialize el valor original puede un string, null o DateTime en vez de un moment()
      */
     ctrlValue.year(normalizedYear.year());
-    
+
     this.field.setValue(ctrlValue);
     datepicker.close();
 

@@ -17,10 +17,14 @@ export class ValidatorsService {
 
   constructor(protected dd: DataDefinitionService, protected storage: SessionStorageService) {}
 
-  protected checkYear(year: string): ValidationErrors | null {
+  protected checkYear(year: any): ValidationErrors | null {
+    /**
+     * year puede ser un string en formato json de date o Moment
+     */
     if (year) {
-      if(!/^[0-9]+$/.test(year)) return {nonNumeric:true}
-      if(year.length != 4) return {notYear:true}
+      //if(!/^[0-9]+$/.test(year)) return {nonNumeric:true} esta comparacion es erronea, tira eerror para valores de anios correctos
+      //if(year.length != 4) return {notYear:true} esta comparacion es erronea, el anio puede ser transformado a un date y tener una longitud mayor a 4
+      return null;
     }
     return null;
   }
