@@ -14,6 +14,7 @@
   <div *ngSwitchCase="'yes_no'">{{field | siNo}}</div>
   <div *ngSwitchCase="'summary'">{{field | summary}}</div>
   <div *ngSwitchCase="'label'"><core-label *ngIf="field" [id]="field" [entityName]="fieldViewOptions.type.entityName"></core-label></div>
+  <div *ngSwitchCase="'field_label'"><core-field-label *ngIf="field" [id]="field" [entityName]="fieldViewOptions.type.entityName" [fieldNames]="fieldViewOptions.type.fieldNames" [join]="fieldViewOptions.type.join"></core-field-label></div>
   <div *ngSwitchCase="'tree'"><core-field-tree *ngIf="field" [id]="field" [tree]="fieldViewOptions.type.tree"></core-field-tree></div>
   <div *ngSwitchDefault>{{field}}</div>
 </div>
