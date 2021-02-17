@@ -104,16 +104,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
      */
     if(!data.length) return of([]);
     var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; });
-    if(!ids.length) {
-      for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
-      return of(data);
-    }
+    for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
+    if(!ids.length) return of(data);
     return this.getAll(entityName, ids).pipe(
       map(
         response => {
           if(!response.length) return data;
           for(var i = 0; i < data.length; i++){
-            this.initFields(data[i],fields);
             for(var j = 0; j < response.length; j++){
               if(data[i][fkName] == response[j]["id"]) {
                 this.assignFields(data[i],response[j],fields,join)
@@ -145,11 +142,12 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Recorre "data" y "response", compara "data[i][fieldNameData]" con "response[j][fieldNameResponse]" y realiza una asociacion
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
+     * En la medida de lo posible evitar el uso de este metodo ya que no utiliza storage
      */
     if(!data.length) return of([]);
     var ids = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; });
     if(!ids.length) return of(data);
-    return this.post(method,entityName,ids).pipe(
+    return this._post(method,entityName,ids).pipe(
       map(
         response => {
           if(!response.length) return data;
@@ -252,6 +250,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Recorre "data" y "response", compara "data[i][fieldName]" con "response[j][id]" y realiza una asociacion
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * A diferencia de otros metodos "nombre_field" no puede ser un array, debe ser un campo reconocible por la consulta avanzada
+     * En la medida de lo posible evitar el uso de este metodo ya que no almacena cache
      */
     var ids = arrayColumn(data, fieldName).filter(function (el) { return el != null; });
     var display = new Display();
@@ -259,7 +258,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     if(!fields_.hasOwnProperty("id")) fields_["id"]="id"; //siempre debe existir el id para comparar el resultado
     display.setFields(Object.values(fields_));
     display.addCondition(["id","=",ids]);
-    return this.post("advanced",entityName, display).pipe(
+    return this._post("advanced",entityName, display).pipe(
       map(
         response => {
           for(var i = 0; i < data.length; i++){
@@ -300,6 +299,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * si "nombre_field" es un array realiza un join utilizando el parametro "join"
      * A diferencia de las consultas no avanzadas, se especifican los fields directamente en la consulta y se retornan dichos fields que seran asignados
      * Tiene la ventaja de que se reducen los parametros, pero como desventaja no utilizan el storage para las entities.
+     * En la medida de lo posible evitar el uso de este metodo ya que no utiliza storage.
      */
 
     var ids = arrayColumn(data, "id")
@@ -310,7 +310,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     display.setFields(fields);
     display.setGroup([fieldName]);
     display.addCondition([fieldName,"=",ids]);
-    return this.post("advanced",entityName, display).pipe(
+    return this._post("advanced",entityName, display).pipe(
       map(
         response => {
           for(var i = 0; i < data.length; i++){
