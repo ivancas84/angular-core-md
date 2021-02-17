@@ -238,9 +238,24 @@ export class FieldSummaryOptions {
 }
 
 
-export class FieldLabelOptions {
+export class TypeLabelOptions {
   id: string = "label"
   entityName: string
+
+  constructor(attributes: any) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+export class FieldLabelOptions {
+  id: string = "field_label"
+  entityName: string
+  fieldNames: string[]
+  join: string = " ";
 
   constructor(attributes: any) {
     for(var a in attributes){
