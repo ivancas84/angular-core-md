@@ -6,6 +6,7 @@ import { Display } from '@class/display';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 
 @Component({
   selector: 'core-show',
@@ -22,7 +23,7 @@ export abstract class ShowComponent implements OnInit {
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
 
   constructor(
-    protected dd: DataDefinitionService, 
+    protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
   ) {}
