@@ -1,4 +1,4 @@
-import { FieldControlOptions, FieldDateOptions, FieldDefaultOptions, FieldInputAutocompleteOptions, FieldInputCheckboxOptions, FieldInputDateOptions, FieldInputSelectCheckboxOptions, FieldInputSelectOptions, FieldInputSelectParamOptions, FieldInputTextOptions, FieldInputTimeOptions, FieldInputYearOptions, FieldLabelOptions, FieldSummaryOptions, FieldTextareaOptions, FieldYesNoOptions } from "./field-type-options";
+import { FieldControlOptions, FieldDateOptions, FieldDefaultOptions, FieldInputAutocompleteOptions, FieldInputCheckboxOptions, FieldInputDateOptions, FieldInputSelectCheckboxOptions, FieldInputSelectOptions, FieldInputSelectParamOptions, FieldInputTextOptions, FieldInputTimeOptions, FieldInputYearOptions, TypeLabelOptions, FieldSummaryOptions, FieldTextareaOptions, FieldYesNoOptions } from "./field-type-options";
 import { InputPersistOptions, RouterLinkOptions } from "./field-view-aux-options"
 import { FieldWidthOptions } from "./field-width-options";
 
@@ -9,7 +9,14 @@ export class FieldViewOptions {
      * que pueden influir en un aspecto visual
      * se incluyen en esta clase.
      */
-    field: string //nombre campo
+    field: string //nombre campo, 
+    /**
+     * si se utiliza en una tabla o estructura similar 
+     * identifica el dato dentro del objeto, por lo tanto debe ser unico
+     * si se necesitan usar variaciones para el mismo identificador, 
+     * es necesario definir alias adicionales para el mismo valor,
+     * por ejemplo data["nombre"] <=> data["nombre_aux"]
+     */ 
     label?: string = null //etiqueta campo
     entityName?: string = null //nombre de la entidad principal
 
@@ -32,7 +39,7 @@ export class FieldViewOptions {
       | FieldDateOptions 
       | FieldYesNoOptions 
       | FieldSummaryOptions 
-      | FieldLabelOptions = new FieldDefaultOptions()
+      | TypeLabelOptions = new FieldDefaultOptions()
   
     control?: FieldControlOptions = new FieldControlOptions();
     sortDisabled?:boolean //deshabilitar ordenamiento
