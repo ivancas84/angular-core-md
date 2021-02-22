@@ -15,6 +15,8 @@ import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fastClone } from '@function/fast-clone';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
+import { ValidatorsService } from '@service/validators/validators.service';
 
 @Component({
   selector: 'core-admin',
@@ -47,17 +49,20 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   loadParams$: Observable<any>; //carga de parametros
   loadDisplay$: Observable<any>; //carga de display
   protected subscriptions = new Subscription(); //suscripciones en el ts
+  persistApi: string = "persist";
 
   constructor(
     protected fb: FormBuilder, 
     protected route: ActivatedRoute, 
     protected router: Router, 
     protected location: Location, 
-    protected dd: DataDefinitionService, 
-    protected storage: SessionStorageService,
+    protected dd: DataDefinitionToolService, 
+    protected validators: ValidatorsService,
+    protected storage: SessionStorageService, 
     protected dialog: MatDialog,
-    protected snackBar: MatSnackBar,
-  ) {}
+    protected snackBar: MatSnackBar
+  ) { }
+
   
   ngAfterViewInit(): void {
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
@@ -114,11 +119,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   loadDisplay(){
-    /**
-     * Se define como observable y se suscribe en el template
-     * con esto me aseguro de que me suscribo luego de inicializados los parametros
-     * Si me suscribo directamente en el template, se suscribe dos veces, uno en null y otro con el valor del parametro
-     */
     this.loadDisplay$ =  this.display$.pipe(
       switchMap(
         () => {
@@ -142,7 +142,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     return of({}).pipe(
       switchMap(() => {
         if(isEmptyObject(this.display$.value)) return of (null);
-        else return this.dd.unique(this.entityName, this.display$.value)
+        else return this.queryData();
       }),
       map(
         data => {
@@ -154,6 +154,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         }
       )
     );
+  }
+
+  queryData(): Observable<any> {
+    return this.dd.unique(this.entityName, this.display$.value)
   }
 
   back() { this.location.back(); }
@@ -185,7 +189,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array de logs)"
      */
-    return this.dd.post("persist", this.entityName, this.serverData())
+    return this.dd.post(this.persistApi, this.entityName, this.serverData())
   }
 
   onSubmit(): void {
