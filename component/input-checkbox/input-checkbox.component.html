@@ -1,2 +1,2 @@
-<mat-checkbox [formControl]="field">{{title}}</mat-checkbox>
+<mat-checkbox [formControl]="field"><span *ngIf="!titleDisabled">{{title}}</span></mat-checkbox>
 <mat-error *ngIf="field.hasError('error')">Valor no permitido</mat-error>
