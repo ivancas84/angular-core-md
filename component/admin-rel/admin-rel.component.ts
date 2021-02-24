@@ -52,6 +52,28 @@ export abstract class AdminRelComponent extends AdminComponent implements OnInit
       )
     )
   }
+
+  queryData(): Observable<any> {
+    /**
+     * @todo Se necesita una api que permita 
+     * distinguir los valores recibidos e inicializar
+     * todo o una parte del formulario.
+     * Por ejemplo si para alumno se recibe per-id = 10,
+     * deberia inicializarse solo el fieldset de persona 
+     */
+
+    return this.dd.post("unique_id", this.entityName, this.display$.value).pipe(
+      switchMap(
+        id => {
+          return (id) ? this.dd._post("get", this.entityName, id) : of(null);
+          /**
+           * No utilizar el storage: Pueden no estar inicializadas las relaciones y son necesarias
+           */
+        }
+      )
+    )
+  }
+
   
   walkData(tree, response: { [x: string]: any }){
     for(var j = 0; j < this.structure.length; j++){
