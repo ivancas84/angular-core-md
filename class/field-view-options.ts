@@ -18,6 +18,7 @@ export class FieldViewOptions {
      * por ejemplo data["nombre"] <=> data["nombre_aux"]
      */ 
     label?: string = null //etiqueta campo
+    labelDisabled?: boolean = false; //deshabilitar label
     entityName?: string = null //nombre de la entidad principal
 
     aux?: RouterLinkOptions | InputPersistOptions = null; //opciones para field-view-aux
