@@ -1,4 +1,4 @@
-import { Input, OnInit, Component } from '@angular/core';
+import { Input, OnInit, Component, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { getControlName } from '@function/get-control-name';
 
@@ -6,21 +6,27 @@ import { getControlName } from '@function/get-control-name';
   selector: 'core-input-text',
   templateUrl: './input-text.component.html',
 })
-export class InputTextComponent {
+export class InputTextComponent implements OnInit{
+
   @Input() field: FormControl
   @Input() title?: string
   @Input() placeholder?: string = ""
   @Input() uniqueRoute?: string //Ruta de administracion para valor unico (si no se define no se activa enlace)
+  @Input() uniqueParam?: string 
   @Input() type?: string = "text"
   @Input() width?: string = null
   
-  get uniqueParams() {
-    /**
-     * Definir parametros de administracion si se ingresa un valor unico
-     */
-    let queryParams = {};
-    queryParams[getControlName(this.field)] = this.field.value;
-    return queryParams;
-  }
+  queryParams = {};
   
+  ngOnInit(): void {
+    if(!this.uniqueRoute) return;
+    if(!this.uniqueParam) this.uniqueParam = getControlName(this.field)
+    this.field.valueChanges.subscribe(
+      value => {
+        this.queryParams[this.uniqueParam] = value;
+      }
+    )
+
+  }
+
 }
