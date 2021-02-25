@@ -185,7 +185,8 @@ export class FieldInputAutocompleteOptions  {
 export class FieldInputTextOptions  {
   id: string = "input_text" 
   width: string = null //ancho exclusivo del input
-  uniqueRoute: string = null
+  uniqueRoute: string = null;
+  uniqueParam: string = null; //si es null se asignara posteriormente con el nombre del field
 
   constructor(attributes: any = {}) {
     for(var a in attributes){
