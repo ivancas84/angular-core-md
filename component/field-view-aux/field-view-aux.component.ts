@@ -33,6 +33,7 @@ export class FieldViewAuxComponent implements OnChanges {
     /**
      * Se realiza una traduccion del atributo fieldViewOptions.aux.params que contienen [[key]]
      */
+
     if( changes["data"] && this.fieldViewOptions.aux && this.fieldViewOptions.aux.params ) {
       this.params = fastClone(this.fieldViewOptions.aux.params);
       for(var i in this.params){

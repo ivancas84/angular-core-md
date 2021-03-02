@@ -64,7 +64,7 @@ export class InputPersistComponent implements OnInit {
         value => { 
           if(value == this.value) return of(true)
           this.value = value;
-          if(this.value === "") return of(true);
+          //if(this.value === "") return of(true);
           if(this.field.invalid) {
             this.snackBar.open("Valor incorrecto " + this.value, "X");
             return of(true)
