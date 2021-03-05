@@ -5,10 +5,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { TableComponent } from '@component/table/table.component';
+import { emptyUrl } from '@function/empty-url.function';
 import { fastClone } from '@function/fast-clone';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
+import { SessionStorageService } from '@service/storage/session-storage.service';
 import { ValidatorsService } from '@service/validators/validators.service';
 import { Observable, Subscription } from 'rxjs';
 
@@ -27,7 +29,7 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
    * la tabla de administracion se implementa con elementos nativos HTML,
    * para facilitar el recorrido del array de FormGroups 
    * Este componente reune caracteristicas de TableComponent, AdminComponent, AdminArrayComponent
-   * Version 1.0
+   * Version 1.1
    */
   @Input() forms: FormGroup[] = []; //Array de formularios que seran presentados
   /**
@@ -48,7 +50,8 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
     protected validators: ValidatorsService,
     protected dialog: MatDialog,
     protected dd: DataDefinitionToolService, 
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected storage: SessionStorageService
   ) {
     super(router)
   }
@@ -57,26 +60,33 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
     if(changes["dataSource"]){
       this.forms.length = 0; //inicializar
       for(var i = 0; i < this.dataSource.length; i++){
-        this.add();
+        this.addFg();
         var res = fastClone(this.dataSource[i]);
         this.forms[i].reset(res);
       }
     }
-    //throw new Error('Method not implemented.');
   }
   
   abstract formGroup();
 
-  add() {
+  addFg() {
     var fg = this.formGroup();
     fg.reset(this.defaultValues); 
     this.forms.push(fg);
     this.isSubmitted.push(false); 
   }
 
+  add() {
+    this.addFg();
+    this.length++
+    this.display.setSize(this.display.getSize() + 1)
+  }
+
   remove(index) { 
     if(!this.forms[index].get("id").value) this.forms.splice(index, 1); 
     else throw new Error('Method not implemented.');
+    this.display.setSize(this.display.getSize() - 1)
+    this.length--
   }
 
   onSubmit(i){
@@ -114,19 +124,27 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
 
   submitted(i, response){
     this.snackBar.open("Registro realizado", "X");
-    //this.removeStorage(response);
-    this.reload(i, response);
+    this.removeStorage(response);
+    this.reload(i, response["id"]);
   }
 
-  reload(i, response){
+  removeStorage(response){
+    this.storage.removeItemsContains(".");
+    this.storage.removeItemsPersisted(response["detail"]);
+    this.storage.removeItemsPrefix(emptyUrl(this.router.url));
+  }
+
+  reload(i, id){
     /**
      * @todo Recargar valores de la fila i
      */
-    throw new Error("Method not implemented");
-    //let route = emptyUrl(this.router.url) + "?id="+response["id"];
-    //if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
-    //else this.display$.next(this.display$.value);
-    //this.isSubmitted = false;
+    this.dd.get(this.entityName, id).subscribe(
+      row => {
+        this.forms[i].reset(row)
+        this.isSubmitted[i] = false
+        console.log(this.forms[i].value)
+      }
+    )
   }
 
   persist(i): Observable<any> {
