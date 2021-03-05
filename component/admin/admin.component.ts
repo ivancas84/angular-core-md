@@ -1,7 +1,6 @@
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription, Observable, BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { map, switchMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { emptyUrl } from '../../function/empty-url.function';
@@ -45,7 +44,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
   isSubmitted: boolean = false; //Flag para habilitar/deshabilitar boton aceptar
 
-  params: any; //parametros
+  params: { [x: string]: any; } //parametros del componente
   loadParams$: Observable<any>; //carga de parametros
   loadDisplay$: Observable<any>; //carga de display
   protected subscriptions = new Subscription(); //suscripciones en el ts
@@ -105,8 +104,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.loadParams$ = this.route.queryParams.pipe(
       map(
         queryParams => { 
-          var params = this.initParams(queryParams);
-          this.initDisplay(params)
+          this.params = this.initParams(queryParams);
+          this.initDisplay()
         },
         error => { 
           this.snackBar.open(JSON.stringify(error), "X"); 
@@ -119,7 +118,13 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   loadDisplay(){
-    this.loadDisplay$ =  this.display$.pipe(
+    /**
+     * A diferencia de los componentes de visualizacion o similares
+     * Se define un load independiente para el display 
+     * debido a que se puede reasignar directamente el display para reinicializar
+     * por ejemplo al limpiar o resetear el formulario
+     */
+    this.loadDisplay$ = this.display$.pipe(
       switchMap(
         () => {
           return this.initData();
@@ -136,7 +141,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
 
   initParams(params: any){ return params; }
 
-  initDisplay(params){ this.display$.next(params);  }
+  initDisplay(){ this.display$.next(this.params);  }
 
   initData(): Observable<any> {
     return of({}).pipe(

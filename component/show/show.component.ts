@@ -93,6 +93,7 @@ export abstract class ShowComponent implements OnInit {
       tap(
         data => {
           this.data = data;
+
         }
       ),      
     )

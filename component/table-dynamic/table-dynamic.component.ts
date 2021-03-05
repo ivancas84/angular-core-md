@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, ViewChild } from '@angular/core';
+import { Input, Component, OnInit } from '@angular/core';
 import { FieldViewOptions } from '@class/field-view-options';
 import { TableDynamicOptions } from '@class/table-dynamic-options';
 import { TableComponent } from '@component/table/table.component';

@@ -18,9 +18,8 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
 export class FieldsetDynamicComponent extends FieldsetComponent {
   
   /**
-   * Componente de administración de fieldset. Características:
-   *   El formulario y los datos son definidos en componente principal  
-   *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
+   * Componente de administración de fieldset.
+   * El formulario y los datos son definidos en componente principal  
    */
 
   @Input() fieldsViewOptions: FieldViewOptions[]; //opciones de campos
