@@ -25,6 +25,14 @@ export class FieldsetDynamicComponent extends FieldsetComponent {
   @Input() fieldsViewOptions: FieldViewOptions[]; //opciones de campos
   @Input() title: string; //titulo del componente
   @Input() options: FieldsetDynamicOptions = new FieldsetDynamicOptions() //opciones de la interfaz
+  /**
+   * @deprecated Cada opcion de la interfaz debe estar implementada como un atributo independiente
+   */
+  
+  @Input() inputSearchGo: boolean = true;
+  /**
+   * Reemplaza a options
+   */
 
   fieldsViewOptionsFilter: FieldViewOptions[]; //filtro de opciones de campos
   /**
