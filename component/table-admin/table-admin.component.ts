@@ -30,8 +30,11 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
    * para facilitar el recorrido del array de FormGroups 
    * Este componente reune caracteristicas de TableComponent, AdminComponent, AdminArrayComponent
    * Version 1.1
+   * Compatible con TableComponent 1.x
    */
-  @Input() forms: FormGroup[] = []; //Array de formularios que seran presentados
+  
+  readonly entityName: string; //entidad principal
+  forms: FormGroup[] = []; //Array de formularios que seran presentados
   /**
    * Importante! No es un FormArray, es un array de FormGroups
    * Cada fila (FormGroup) del array es tratado de forma independiente
@@ -41,7 +44,6 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
   defaultValues: {[key:string]: any} = {};
   displayedColumns: string[] = ["nombre"]; //columnas a visualizar
   isSubmitted: boolean[] = [];
-  readonly entityName: string; //entidad principal
   protected subscriptions = new Subscription(); //suscripciones en el ts
 
   constructor(

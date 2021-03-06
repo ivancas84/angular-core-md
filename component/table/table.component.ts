@@ -25,6 +25,7 @@ declare function printHtml(html): any;
 export abstract class TableComponent implements OnInit {
   /**
    * Elementos de uso habitual para una tabla
+   * Versión 1
    */
   @Input() dataSource: { [index: string]: any }[] = []; //datos recibidos que seran visualizados
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion

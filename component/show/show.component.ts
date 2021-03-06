@@ -13,6 +13,10 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
   template: '',
 })
 export abstract class ShowComponent implements OnInit {
+  /**
+   * Grilla de visualizacion
+   * Versión 1
+   */
 
   readonly entityName: string; //Nombre de la entidad principal
   data: any; //datos principales
