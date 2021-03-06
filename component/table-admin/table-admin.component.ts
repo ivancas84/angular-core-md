@@ -28,11 +28,15 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
    * A diferencia de las Tablas de visualizacion, 
    * la tabla de administracion se implementa con elementos nativos HTML,
    * para facilitar el recorrido del array de FormGroups 
+   * A diferencia de los componentes habituales de administracion,
+   * TableAdminDynamicComponent define las relaciones y ejecuciones
+   * en el mismo componente
+   *
    * Este componente reune caracteristicas de TableComponent, AdminComponent, AdminArrayComponent
    * Version 1.1
    * Compatible con TableComponent 1.x
    */
-  
+
   readonly entityName: string; //entidad principal
   forms: FormGroup[] = []; //Array de formularios que seran presentados
   /**

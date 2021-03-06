@@ -12,6 +12,10 @@ import { TableComponent } from '@component/table/table.component';
   `],
 })
 export class TableDynamicComponent extends TableComponent implements OnInit {
+  /**
+   * Version 1
+   * Compatible con TableComponent 1.x
+   */
   @Input() fieldsViewOptions: FieldViewOptions[]
   @Input() title: string //titulo del componente
   @Input() options: TableDynamicOptions = new TableDynamicOptions()

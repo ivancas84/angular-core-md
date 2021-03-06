@@ -16,8 +16,10 @@ import { arrayCombine } from '@function/array-combine';
 })
 export class TableAdminDynamicComponent extends TableAdminComponent implements OnInit {
   /**
+   * Grilla de visualizacion y administracion dinamica
+   * 
    * Version 1
-   * Implementado con TableAdminComponent 1.x
+   * Compatible con TableAdminComponent 1.x
    * Copia caracteristicas de FieldsetDynamicComponent 1.x
    */
   
@@ -27,8 +29,8 @@ export class TableAdminDynamicComponent extends TableAdminComponent implements O
   
   fieldsViewOptionsFilter: FieldViewOptions[]; //filtro de opciones de campos
   /**
-   * Es necesario filtrar los campos con opciones particulares, por ejemplo "hidden" 
-   * para no incluirlas en el template
+   * Es necesario filtrar los campos con opciones particulares, 
+   * por ejemplo "hidden" para no incluirlas en el template
    */
 
   ngOnInit(): void {
