@@ -17,10 +17,7 @@ import { arrayCombine } from '@function/array-combine';
 export class TableAdminDynamicComponent extends TableAdminComponent implements OnInit {
   /**
    * Grilla de visualizacion y administracion dinamica
-   * 
-   * Version 1
-   * Compatible con TableAdminComponent 1.x
-   * Copia caracteristicas de FieldsetDynamicComponent 1.x
+   * Copia caracteristicas de TableAdminComponent y FieldsetDynamicComponent
    */
   
   @Input() entityName: string; //entidad principals

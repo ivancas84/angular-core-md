@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
+import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { TableComponent } from '@component/table/table.component';
 import { emptyUrl } from '@function/empty-url.function';
 import { fastClone } from '@function/fast-clone';
@@ -31,10 +32,7 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
    * A diferencia de los componentes habituales de administracion,
    * TableAdminDynamicComponent define las relaciones y ejecuciones
    * en el mismo componente
-   *
    * Este componente reune caracteristicas de TableComponent, AdminComponent, AdminArrayComponent
-   * Version 1.1
-   * Compatible con TableComponent 1.x
    */
 
   readonly entityName: string; //entidad principal
@@ -45,6 +43,7 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
    */
 
   persistApi: string = "persist";
+  deleteApi: string = "delete";
   defaultValues: {[key:string]: any} = {};
   displayedColumns: string[] = ["nombre"]; //columnas a visualizar
   isSubmitted: boolean[] = [];
@@ -63,10 +62,14 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    /**
+     * no se detectan directamente los cambios en el dataSource
+     * es necesario utilizar ngOnChanges y recargar el formulario
+     */
     if(changes["dataSource"]){
       this.forms.length = 0; //inicializar
       for(var i = 0; i < this.dataSource.length; i++){
-        this.addFg();
+        this.add();
         var res = fastClone(this.dataSource[i]);
         this.forms[i].reset(res);
       }
@@ -75,24 +78,29 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
   
   abstract formGroup();
 
-  addFg() {
+  add() {
     var fg = this.formGroup();
     fg.reset(this.defaultValues); 
     this.forms.push(fg);
     this.isSubmitted.push(false); 
   }
 
-  add() {
-    this.addFg();
-    this.length++
-    this.display.setSize(this.display.getSize() + 1)
-  }
 
-  remove(index) { 
-    if(!this.forms[index].get("id").value) this.forms.splice(index, 1); 
-    else throw new Error('Method not implemented.');
-    this.display.setSize(this.display.getSize() - 1)
-    this.length--
+  onRemove(index) { 
+    if(!this.forms[index].get("id").value) {
+      this.forms.splice(index, 1); 
+    }
+    else {
+      const dialogRef = this.dialog.open(DialogConfirmComponent, {
+        data: {title: "Eliminar registro " + index, message: "Está seguro?"}
+      });
+ 
+      var s = dialogRef.afterClosed().subscribe(result => {
+        if(result) this.remove(index)
+      });
+      this.subscriptions.add(s)
+
+    }
   }
 
   onSubmit(i){
@@ -113,16 +121,16 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
     this.isSubmitted[i] = false;
   }
 
-  submit(i){
-    var s = this.persist(i).subscribe(
+  submit(index: number){
+    var s = this.persist(index).subscribe(
       response => {
-        this.submitted(i, response)        
+        this.submitted(index, response);     
       },
       error => { 
         this.dialog.open(DialogAlertComponent, {
           data: {title: "Error", message: error.error}
         });
-        this.isSubmitted[i] = false;
+        this.isSubmitted[index] = false;
       }
     );
     this.subscriptions.add(s);
@@ -130,8 +138,17 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
 
   submitted(i, response){
     this.snackBar.open("Registro realizado", "X");
-    this.removeStorage(response);
     this.reload(i, response["id"]);
+    this.removeStorage(response);
+    this.length++
+  }
+
+  deleted(index, response){
+    this.forms.splice(index, 1); 
+    this.snackBar.open("Registro eliminado", "X");
+    this.removeStorage(response);
+    //this.display.setSize(this.display.getSize() - 1)
+    this.length--
   }
 
   removeStorage(response){
@@ -140,27 +157,51 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
   }
 
-  reload(i, id){
+  reload(index: number, id){
     /**
      * @todo Recargar valores de la fila i
      */
     this.dd.get(this.entityName, id).subscribe(
       row => {
-        this.forms[i].reset(row)
-        this.isSubmitted[i] = false
-        console.log(this.forms[i].value)
+        this.forms[index].reset(row)
+        this.isSubmitted[index] = false
       }
     )
   }
 
-  persist(i): Observable<any> {
+  persist(index: number): Observable<any> {
     /**
      * Persistencia
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array de logs)"
      */
-    return this.dd.post(this.persistApi, this.entityName, this.serverData(i))
+    return this.dd.post(this.persistApi, this.entityName, this.serverData(index))
   }
+
+  remove(index: number) {
+    var s = this.delete(index).subscribe(
+      response => {
+        this.deleted(index, response)        
+      },
+      error => { 
+        this.dialog.open(DialogAlertComponent, {
+          data: {title: "Error", message: error.error}
+        });
+        this.isSubmitted[index] = false;
+      }
+    );
+    this.subscriptions.add(s);
+  }
+
+  delete(index: number): Observable<any> {
+    /**
+     * Eliminacion
+     * Se define un metodo independiente para facilitar la redefinicion
+     * @return "datos de respuesta (habitualmente array de logs)"
+     */
+    return this.dd.post(this.deleteApi, this.entityName, [this.forms[index].get("id").value])
+  }
+
 
   serverData(i) {  
     return this.forms[i].value;
