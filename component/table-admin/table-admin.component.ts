@@ -175,7 +175,7 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array de logs)"
      */
-    return this.dd.post(this.persistApi, this.entityName, this.serverData(index))
+    return this.dd._post(this.persistApi, this.entityName, this.serverData(index))
   }
 
   remove(index: number) {
