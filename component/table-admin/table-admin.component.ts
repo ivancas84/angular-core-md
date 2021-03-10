@@ -40,6 +40,8 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
   /**
    * Importante! No es un FormArray, es un array de FormGroups
    * Cada fila (FormGroup) del array es tratado de forma independiente
+   * @todo reemplazar por FormArray y definir en el formulario padre,
+   * de esta forma se tiene mayor control sobre ciertas operaciones
    */
 
   persistApi: string = "persist";

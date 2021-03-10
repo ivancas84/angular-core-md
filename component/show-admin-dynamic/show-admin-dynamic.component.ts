@@ -19,8 +19,6 @@ export abstract class ShowAdminDynamicComponent extends ShowAdminComponent {
   /**
    * Componente general para las interfaces ShowAdmin 
    * que implementan estructuras dinamicas
-   * Version 1 
-   * Compatible con ShowAdminComponent 1.x
    */
 
   fieldsViewOptions: FieldViewOptions[] = []; //visualizacion

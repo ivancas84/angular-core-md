@@ -15,10 +15,7 @@ export abstract class AdminRelComponent extends AdminComponent implements OnInit
 
   structure:AdminRelStructure[];
   persistApi:string = "persist_rel";
-
-  queryData(): Observable<any> {
-    return this.dd.post("unique_rel", this.entityName, this.display$.value)
-  }
+  queryApi:string = "unique_rel"
 
   serverData() { return this.adminForm.value }
 

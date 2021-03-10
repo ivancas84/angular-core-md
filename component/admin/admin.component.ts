@@ -49,6 +49,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   loadDisplay$: Observable<any>; //carga de display
   protected subscriptions = new Subscription(); //suscripciones en el ts
   persistApi: string = "persist";
+  queryApi: string = "unique";
 
   constructor(
     protected fb: FormBuilder, 
@@ -162,7 +163,10 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   }
 
   queryData(): Observable<any> {
-    return this.dd.unique(this.entityName, this.display$.value)
+    switch(this.queryApi){
+      case "unique": return this.dd.unique(this.entityName, this.display$.value)
+      default:  return this.dd.post(this.queryApi, this.entityName, this.display$.value);
+    }
   }
 
   back() { this.location.back(); }

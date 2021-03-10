@@ -41,7 +41,7 @@ export abstract class TableAdminRelComponent extends TableAdminComponent impleme
     /**
      * @todo Recargar valores de la fila i
      */
-    this.dd._post("unique_rel", this.entityName, id).subscribe(
+    this.dd._post("unique_rel_array", this.entityName, id).subscribe(
       row => {
         this.forms[index].reset(row)
         this.isSubmitted[index] = false
