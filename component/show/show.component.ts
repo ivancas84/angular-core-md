@@ -25,6 +25,7 @@ export abstract class ShowComponent implements OnInit {
   params: { [x: string]: any; } //Parametros del componente
   load$: Observable<any>; //Disparador de observables
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
+  queryApi: string = "all";
 
   constructor(
     protected dd: DataDefinitionToolService, 
@@ -104,7 +105,10 @@ export abstract class ShowComponent implements OnInit {
   }
 
   queryData(): Observable<any>{
-    return this.dd.all(this.entityName, this.display);
+    switch(this.queryApi){
+      case "all": return this.dd.all(this.entityName, this.display);
+      default: return this.dd._post(this.queryApi, this.entityName, this.display);
+    }
   }
 
 }

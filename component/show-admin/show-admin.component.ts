@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ShowComponent } from '@component/show/show.component';
 
 @Component({
@@ -13,6 +13,9 @@ export abstract class ShowAdminComponent extends ShowComponent {
    * Version 1.1
    * Compatible con ShowComponent 1.x
    */
+
+  @Input() queryApi: string = "all";
+
 
 
 }

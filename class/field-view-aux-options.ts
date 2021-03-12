@@ -16,6 +16,12 @@ export class InputPersistOptions {
   id: string = "input_persist"
   params: {} //utilizar {{key}} para identificar valor del conjunto de datos
   api: string = "persist_unique"
+  entityName: string; //entidad correspondiente a la cual se realizara la persistencia
+  fieldName: string; //field correspondiente a entityName al cual se realizara la persistencia
+  /**
+   * No siempre coincide con el field original por eso debe definirse en las opciones del persist
+   */
+
 
   constructor(attributes: any) {
     for(var a in attributes){

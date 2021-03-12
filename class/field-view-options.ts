@@ -19,7 +19,7 @@ export class FieldViewOptions {
      */ 
     label?: string = null //etiqueta campo
     labelDisabled?: boolean = false; //deshabilitar label
-    entityName?: string = null //nombre de la entidad principal
+    //entityName?: string = null //nombre de la entidad principal (@deprecated)
 
     aux?: RouterLinkOptions | InputPersistOptions = null; //opciones para field-view-aux
   

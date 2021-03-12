@@ -44,10 +44,20 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
    * de esta forma se tiene mayor control sobre ciertas operaciones
    */
 
-  persistApi: string = "persist";
+  persistApi: string = "persist"; 
+  /**
+   * Puede utilizarse persist_rel_array
+   * si se desea administrar una entidad y sus relaciones
+   */
+
+  reloadApi: string = "get";
+  /**
+   * Puede utilizarse persist_rel_array
+   * si se desea administrar una entidad y sus relaciones
+   */
+
   deleteApi: string = "delete";
   defaultValues: {[key:string]: any} = {};
-  displayedColumns: string[] = ["nombre"]; //columnas a visualizar
   isSubmitted: boolean[] = [];
   protected subscriptions = new Subscription(); //suscripciones en el ts
 
@@ -163,12 +173,19 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
     /**
      * @todo Recargar valores de la fila i
      */
-    this.dd.get(this.entityName, id).subscribe(
+    this.switchReload(id).subscribe(
       row => {
         this.forms[index].reset(row)
         this.isSubmitted[index] = false
       }
     )
+  }
+
+  switchReload(id): Observable<any>{
+    switch(this.reloadApi){
+      case "get": return this.dd.get(this.entityName, id);
+      default: return this.dd._post("unique_rel_array", this.entityName, id)
+    }
   }
 
   persist(index: number): Observable<any> {

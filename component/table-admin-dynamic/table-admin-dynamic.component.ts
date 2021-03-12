@@ -1,7 +1,6 @@
 import { Input, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FieldViewOptions } from '@class/field-view-options';
-import { TableDynamicOptions } from '@class/table-dynamic-options';
 import { TableAdminComponent } from '@component/table-admin/table-admin.component';
 import { arrayColumn } from '@function/array-column';
 import { arrayCombine } from '@function/array-combine';
@@ -23,7 +22,19 @@ export class TableAdminDynamicComponent extends TableAdminComponent implements O
   @Input() entityName: string; //entidad principals
   @Input() fieldsViewOptions: FieldViewOptions[]
   @Input() title: string //titulo del componente
-  
+  @Input() persistApi: string = "persist"; 
+  /**
+   * Puede utilizarse persist_rel_array
+   * si se desea administrar una entidad y sus relaciones
+   */
+
+  @Input() reloadApi: string = "get";
+  /**
+   * Puede utilizarse persist_rel_array
+   * si se desea administrar una entidad y sus relaciones
+   */
+
+  @Input() deleteApi: string = "delete";
   fieldsViewOptionsFilter: FieldViewOptions[]; //filtro de opciones de campos
   /**
    * Es necesario filtrar los campos con opciones particulares, 
