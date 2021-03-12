@@ -13,7 +13,7 @@ import { FieldViewOptions } from '@class/field-view-options';
 
 @Component({
   selector: 'core-show-admin-dybamic',
-  template: '',
+  templateUrl: './show-admin-dynamic.component.html',
 })
 export abstract class ShowAdminDynamicComponent extends ShowAdminComponent {
   /**
@@ -23,6 +23,19 @@ export abstract class ShowAdminDynamicComponent extends ShowAdminComponent {
 
   fieldsViewOptions: FieldViewOptions[] = []; //visualizacion
   fieldsViewOptionsSp: FieldViewOptions[] = []; //busqueda
+  persistApi: string = "persist"; //persistApi de TableAdmin 
+  /**
+   * Puede utilizarse persist_rel_array
+   * si se desea administrar una entidad y sus relaciones
+   */
+
+  reloadApi: string = "get"; //reloadApi de TableAdmin
+  /**
+   * Puede utilizarse persist_rel_array
+   * si se desea administrar una entidad y sus relaciones
+   */
+
+  deleteApi: string = "delete"; //DeleteApi de TableAdmin
 
   constructor(
     protected dd: DataDefinitionToolService, 
