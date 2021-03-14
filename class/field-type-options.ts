@@ -2,15 +2,15 @@ import { FieldTreeElement } from "./field-tree-element";
 
    
 
-export class FieldControlOptions {
+export class FieldControlOptions { //1.0.1
   id: string = null
   showLabel: boolean = false; //indica si debe mostrarse el label o no
   /**
    * no siempre se puede indicar label = null para esconder el label
    */
 
-  validators?: any[];
-  asyncValidators?: any[];
+  validators: any[] = [];
+  asyncValidators: any[] = [];
   default?: any = null; //valor por defecto
   adminRoute?: string = null;
   uniqueRoute?: string = null;
