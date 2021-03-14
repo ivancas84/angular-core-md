@@ -1,18 +1,14 @@
 import { FieldViewOptions } from "./field-view-options";
 import { FieldsetDynamicOptions } from "./fieldset-dynamic-options";
 
-export class AdminRelStructure {
+export class AdminRelStructure { //v1.0.1
   id:string = null; //identificacion de la relacion
   /**
-   * Para facilitar el armado de las relaciones, 
-   * evitar el recorrido del arbol,
-   * y hacer mas eficiente el calculo:
    * El identificador se define:
-   * 1) Para las relaciones fk, "relacion-fk",
-   * por ejemplo si alumno M:U persona con alumno.persona, entonces "per-persona"
-   * 2) @todo Para las relaciones um, "relacion-tabla.fk", 
-   * por ejemplo si alumno M:U comision y comision U:M curso, entonces "com-comision.curso"
-   * Nota: La cadena de las relaciones U:M puede tener hasta una sola profundidad
+   * 1) Para las relaciones fk se utiliza el alias de la relación, ejemplo per, per_dom
+   * 2) @todo Para las relaciones um se utiliza "alias_relacion-tabla.fk", 
+   * por ejemplo si alumno M:U comision y comision U:M curso, 
+   * entonces "com-comision.curso"
    */
   title?: string = null //titulo del fieldset
   fieldsViewOptions: FieldViewOptions[] = [] //array de FieldViewOptions
