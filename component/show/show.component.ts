@@ -7,6 +7,7 @@ import { DataDefinitionService } from '@service/data-definition/data-definition.
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
+import { DataDefinitionRelArrayService } from '@service/data-definition-rel-array/data-definition-rel-array.service';
 
 @Component({
   selector: 'core-show',
@@ -15,7 +16,6 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
 export abstract class ShowComponent implements OnInit {
   /**
    * Grilla de visualizacion
-   * Versión 1
    */
 
   readonly entityName: string; //Nombre de la entidad principal
@@ -31,6 +31,7 @@ export abstract class ShowComponent implements OnInit {
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
+    protected ddra: DataDefinitionRelArrayService
   ) {}
 
   ngOnInit(): void {
@@ -40,7 +41,7 @@ export abstract class ShowComponent implements OnInit {
           this.load = false;
           this.params = this.initParams(queryParams);
           this.initDisplay();          
-        }
+        },
       ),
       switchMap(
         () => this.initLength()
@@ -107,8 +108,13 @@ export abstract class ShowComponent implements OnInit {
   queryData(): Observable<any>{
     switch(this.queryApi){
       case "all": return this.dd.all(this.entityName, this.display);
+      case "rel_array": return this.relArray()
       default: return this.dd._post(this.queryApi, this.entityName, this.display);
     }
+  }
+
+  relArray(){
+    return this.ddra.main(this.entityName, this.display);
   }
 
 }
