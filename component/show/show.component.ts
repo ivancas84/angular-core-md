@@ -3,17 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Display } from '@class/display';
-import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
-import { DataDefinitionRelArrayService } from '@service/data-definition-rel-array/data-definition-rel-array.service';
 
 @Component({
   selector: 'core-show',
   template: '',
 })
-export abstract class ShowComponent implements OnInit {
+export abstract class ShowComponent implements OnInit { //v1
   /**
    * Grilla de visualizacion
    */
@@ -25,13 +23,12 @@ export abstract class ShowComponent implements OnInit {
   params: { [x: string]: any; } //Parametros del componente
   load$: Observable<any>; //Disparador de observables
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
-  queryApi: string = "all";
+  queryApi: string = "ids";
 
   constructor(
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
-    protected ddra: DataDefinitionRelArrayService
   ) {}
 
   ngOnInit(): void {
@@ -106,15 +103,13 @@ export abstract class ShowComponent implements OnInit {
   }
 
   queryData(): Observable<any>{
-    switch(this.queryApi){
-      case "all": return this.dd.all(this.entityName, this.display);
-      case "rel_array": return this.relArray()
-      default: return this.dd._post(this.queryApi, this.entityName, this.display);
-    }
-  }
-
-  relArray(){
-    return this.ddra.main(this.entityName, this.display);
+    return this.dd.post(this.queryApi, this.entityName, this.display).pipe(
+      switchMap(
+        ids => {
+          return this.dd.getAll(this.entityName, ids);
+        }
+      )
+    )
   }
 
 }
