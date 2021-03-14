@@ -2,7 +2,7 @@ import { FieldControlOptions, FieldDateOptions, FieldDefaultOptions, FieldInputA
 import { InputPersistOptions, RouterLinkOptions } from "./field-view-aux-options"
 import { FieldWidthOptions } from "./field-width-options";
 
-export class FieldViewOptions {
+export class FieldViewOptions { //v1
     /**
      * Opciones de FieldView.
      * Todas las caracteristicas de los fields 

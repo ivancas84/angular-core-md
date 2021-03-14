@@ -11,7 +11,7 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
   selector: 'core-show',
   template: '',
 })
-export abstract class ShowComponent implements OnInit { //v1
+export abstract class ShowComponent implements OnInit {
   /**
    * Grilla de visualizacion
    */

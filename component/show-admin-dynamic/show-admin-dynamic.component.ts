@@ -5,13 +5,12 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
 import { ShowComponent } from '@component/show/show.component';
 import { ValidatorsService } from '@service/validators/validators.service';
 import { FieldViewOptions } from '@class/field-view-options';
-import { DataDefinitionRelArrayService } from '@service/data-definition-rel-array/data-definition-rel-array.service';
 
 @Component({
-  selector: 'core-show-admin-dybamic',
+  selector: 'core-show-admin-dynamic',
   templateUrl: './show-admin-dynamic.component.html',
 })
-export abstract class ShowAdminDynamicComponent extends ShowComponent {
+export abstract class ShowAdminDynamicComponent extends ShowComponent { //v1
   /**
    * Componente general para las interfaces ShowAdmin 
    * que implementan estructuras dinamicas
@@ -37,10 +36,9 @@ export abstract class ShowAdminDynamicComponent extends ShowComponent {
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
-    protected ddra: DataDefinitionRelArrayService,
     protected validators: ValidatorsService, //los atributos fieldViewOptions y fieldViewOptionsFiters utilizar validadores
     ) {
-    super(dd,route,dialog, ddra)
+    super(dd,route,dialog)
   }
 
 

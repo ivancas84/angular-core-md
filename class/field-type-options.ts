@@ -2,7 +2,7 @@ import { FieldTreeElement } from "./field-tree-element";
 
    
 
-export class FieldControlOptions { //1.0.1
+export class FieldControlOptions { //v1
   id: string = null
   showLabel: boolean = false; //indica si debe mostrarse el label o no
   /**
