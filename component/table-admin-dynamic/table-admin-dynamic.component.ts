@@ -1,9 +1,10 @@
-import { Input, Component, OnInit } from '@angular/core';
+import { Input, Component, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FieldViewOptions } from '@class/field-view-options';
 import { TableAdminComponent } from '@component/table-admin/table-admin.component';
 import { arrayColumn } from '@function/array-column';
 import { arrayCombine } from '@function/array-combine';
+import { fastClone } from '@function/fast-clone';
 
 @Component({
   selector: 'core-table-admin-dynamic',
@@ -13,7 +14,7 @@ import { arrayCombine } from '@function/array-combine';
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export class TableAdminDynamicComponent extends TableAdminComponent implements OnInit {
+export class TableAdminDynamicComponent extends TableAdminComponent implements OnInit { //1
   /**
    * Grilla de visualizacion y administracion dinamica
    * Copia caracteristicas de TableAdminComponent y FieldsetDynamicComponent
@@ -66,5 +67,6 @@ export class TableAdminDynamicComponent extends TableAdminComponent implements O
     }      
     return fg;
   }
- 
+
+  
 }
