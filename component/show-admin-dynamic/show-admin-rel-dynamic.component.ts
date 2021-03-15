@@ -21,19 +21,16 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
-    protected validators: ValidatorsService, //los atributos fieldViewOptions y fieldViewOptionsFiters utilizar validadores
+    protected validators: ValidatorsService,
     protected ddra: DataDefinitionRelArrayService
   ) {
     super(dd,route,dialog, validators)
   }
   
+  persistApi: string = "persist_rel_array"; //persistApi de TableAdmin 
   reloadApi: string = "unique_rel_array"; //reloadApi de TableAdmin
-  /**
-   * Puede utilizarse unique_rel_array
-   * si se desea administrar una entidad y sus relaciones
-   */
 
-   queryData(): Observable<any>{
+  queryData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display).pipe(
       switchMap(
         ids => {
