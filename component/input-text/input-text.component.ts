@@ -15,6 +15,11 @@ export class InputTextComponent implements OnInit{
   @Input() uniqueParam?: string 
   @Input() type?: string = "text"
   @Input() width?: string = null
+  /**
+   * Ancho exclusivo del input
+   * se aplica al contenedor utilizando [style.width]="width"
+   * Debe indicarse la unidad de medida, ej "100%", "100px"
+   */
   
   queryParams = {};
   
