@@ -14,7 +14,7 @@ export class RouterLinkOptions {
 
 export class InputPersistOptions {
   id: string = "input_persist"
-  params: {} //utilizar {{key}} para identificar valor del conjunto de datos
+  params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
   api: string = "persist_unique"
   entityName: string; //entidad correspondiente a la cual se realizara la persistencia
   fieldName: string; //field correspondiente a entityName al cual se realizara la persistencia
