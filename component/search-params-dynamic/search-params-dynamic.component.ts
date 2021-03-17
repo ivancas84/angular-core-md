@@ -21,7 +21,10 @@ export class SearchParamsDynamicComponent extends SearchParamsComponent {
     for(var i = 0; i < this.fieldsViewOptions.length; i++){
       fg.addControl(
         this.fieldsViewOptions[i].field, 
-        new FormControl(null, this.fieldsViewOptions[i].control.validators)
+        new FormControl(
+          {value:null, disabled:this.fieldsViewOptions[i].control.disabled}, 
+          this.fieldsViewOptions[i].control.validators
+        )
       )
     }      
     return fg;
