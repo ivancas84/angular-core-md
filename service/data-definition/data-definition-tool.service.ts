@@ -10,7 +10,7 @@ import { DataDefinitionService } from './data-definition.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{
+export class DataDefinitionToolService extends DataDefinitionService{ //2
   
   protected initFields(
     data: { [index: string]: any },
@@ -58,7 +58,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      */
     switch(method){
       case "getAllColumnDataUm":
-        return this.getAllColumnDataUm(recursiveData(tree, data),params["fkName"],params["entityName"]).pipe(map(
+        return this.getAllColumnDataUm(recursiveData(tree, data),params["fieldName"], params["fkName"],params["entityName"]).pipe(map(
           () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
         ));
       case "getPostAllColumnData":
@@ -171,12 +171,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
   
   getAllColumnDataUm(
     data: { [index: string]: any }[], 
-    fkName: string, //fkName para entityName
+    fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
+    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
     entityName: string, 
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta relaciones um de un conjunto de datos
-     * Define un conjunto de identificadores "ids", filtrando del parametro "data" el campo "id"
+     * Define un conjunto de identificadores "ids", filtrando del parametro "data" el campo "fieldName"
      * Consulta todos los campos del parametro "entityName" utilizando el parametro "fkName" "(fkName = ids)"
      * Recorre "data" y "response", compara "data[i][fkName]" con "response[j][id]" y realiza un push de cada coincidencia
      * los elementos coincidentes se almacenan en data[i][fkName+"_"]
@@ -185,7 +186,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * como elemento de un array
      */
     if(!data.length) return of([]);
-    var ids = arrayColumn(data, "id");
+    var ids = arrayColumn(data, fieldName);
     if(!ids.length) return of(data);
     var display = new Display();
     display.setSize(0);
