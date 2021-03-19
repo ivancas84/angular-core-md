@@ -31,7 +31,7 @@ export class FieldViewAuxComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
 
     /**
-     * Se realiza una traduccion del atributo fieldViewOptions.aux.params que contienen [[key]]
+     * Se realiza una traduccion del atributo fieldViewOptions.aux.params que contienen {{key}}
      */
 
     if( changes["data"] && this.fieldViewOptions.aux && this.fieldViewOptions.aux.params ) {
