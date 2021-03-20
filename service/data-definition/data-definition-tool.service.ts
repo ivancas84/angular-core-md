@@ -10,7 +10,7 @@ import { DataDefinitionService } from './data-definition.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{ //2
+export class DataDefinitionToolService extends DataDefinitionService{ //2.1
   
   protected initFields(
     data: { [index: string]: any },
@@ -194,11 +194,72 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2
     return this.all(entityName, display).pipe(
       map(
         response => {
+          console.log(response);
           for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
           if(!response.length) return data;
           for(var j = 0; j < response.length; j++){
             for(var i = 0; i < data.length; i++) { 
-              if(response[j][fkName] == data[i]["id"]) 
+              if(response[j][fkName] == data[i][fieldName]) 
+                data[i]["_"+entityName].push(response[j]);
+            }
+          }
+          return data;
+        }
+      )
+    );  
+  }
+
+  selectColumnDataUm(
+    data: { [index: string]: any }[], 
+    fields: { [index: string]: string }, //fields a consultar (no deben ser funciones de agregacion)
+    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
+    entityName: string,
+    fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
+  ): Observable<{ [index: string]: any }[]>{
+    /**
+     * Consulta avanzada de relaciones um de un conjunto de datos
+     * 
+     * Define un conjunto de identificadores "ids", 
+     * filtrando del parametro "data" el campo "fieldName"
+     * 
+     * Consulta los campos "fields" de la entidad "entityName"
+     * filtrando por "fkName" "(fkName = ids)"
+     * 
+     * Recorre "data" y "response", 
+     * compara "data[i][fkName]" con "response[j][fieldName]" 
+     * y realiza un push de cada coincidencia
+     * los elementos coincidentes se almacenan en data[i]["_"+fkName]
+     * 
+     * Al no ser una "asociacion" no hace falta filtrar datos, 
+     * directamente se almacena todo el cada resultado 
+     * como elemento de un array
+     * 
+     * Se utiliza la nomenclartura "_"+fkName para diferenciarla de fkName+"_" 
+     * utilizada para almacenar un json de la relacion de datos consultada
+     * 
+     * Siempre que se pueda utilizar el metodo getAllColumnDataUm,
+     * ya que implementa storage 
+     */
+    if(!data.length) return of([]);
+
+    for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+
+    var ids = arrayColumn(data, fieldName);
+    if(!ids.length) return of(data);
+
+    fields[fieldName]=fieldName; //siempre debe existir el fieldName para comparar el resultado
+
+    var display = new Display();
+    display.setSize(0);
+    display.setFields(fields);
+    display.addParam(fkName,ids);
+    return this._post("advanced",entityName, display).pipe(
+      map(
+        response => {
+          if(!response.length) return data;
+          for(var j = 0; j < response.length; j++){
+            for(var i = 0; i < data.length; i++) { 
+              if(response[j][fkName] == data[i][fieldName]) 
                 data[i]["_"+entityName].push(response[j]);
             }
           }
