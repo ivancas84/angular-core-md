@@ -1,7 +1,7 @@
-export class RouterLinkOptions {
+export class RouterLinkOptions { //1.1
   id: string = "router_link"
   path: string = null
-  params: {}; //utilizar {{key}} para identificar valor del conjunto de datos
+  params: {} = {id:"{{id}}"}; //utilizar {{key}} para identificar valor del conjunto de datos
 
   constructor(attributes: any) {
     for(var a in attributes){
