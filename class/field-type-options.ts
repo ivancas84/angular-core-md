@@ -65,7 +65,7 @@ export class FieldInputCheckboxOptions { //1
 export class FieldTextareaOptions { //1
   id: string = "textarea"
 
-  constructor(attributes: any) {
+  constructor(attributes: any = {}) {
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
