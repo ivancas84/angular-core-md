@@ -6,34 +6,33 @@ import { getControlName } from '@function/get-control-name';
   selector: 'core-input-textarea',
   templateUrl: './input-textarea.component.html',
 })
-export class InputTextareaComponent implements OnInit {
+export class InputTextareaComponent implements OnInit { //2
   @Input() field: FormControl;
   @Input() title?: string;
   @Input() placeholder?: string = "";
- 
-  adminRoute:string;
+  @Input() uniqueRoute?: string //Ruta de administracion para valor unico
   /**
-   * Interfaz de administracion para cuando se carga un valor unico
-   * @todo puede ser un Input y dar la posibilidad de indicar la interfaz de administración
+   * si no se define no se activa enlace
    */
 
-  fieldName:string;
+  @Input() uniqueParam?: string 
   /**
-   * Nombre del campo, utilizado como filtro para cargar la interfaz de administracion
+   * Por defecto se utiliza el metodo getControlName para definir el nombre
+   *  getControlName funciona solo si tiene padre
    */
+
+  queryParams = {};
 
   ngOnInit(): void {
-    this.fieldName = getControlName(this.field);
-    this.adminRoute = getControlName(this.field.parent);
-  }
- 
-  get adminParams() {
-    /**
-     * Definir parametros de administracion si se ingresa un valor unico
-     */
-    let queryParams = {};
-    queryParams[this.fieldName] = this.field.value;
-    return queryParams;
+      if(!this.uniqueRoute) return;
+      if(!this.uniqueParam) this.uniqueParam = getControlName(this.field)
+      if(this.uniqueParam) this.field.valueChanges.subscribe(
+        value => {
+          this.queryParams[this.uniqueParam] = value;
+        }
+      )
+  
+
   }
   
 }

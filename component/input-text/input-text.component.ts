@@ -13,6 +13,11 @@ export class InputTextComponent implements OnInit{
   @Input() placeholder?: string = ""
   @Input() uniqueRoute?: string //Ruta de administracion para valor unico (si no se define no se activa enlace)
   @Input() uniqueParam?: string 
+  /**
+   * Por defecto se utiliza el metodo getControlName para definir el nombre
+   *  getControlName funciona solo si tiene padre
+   */
+  
   @Input() type?: string = "text"
   @Input() width?: string = null
   /**
@@ -26,7 +31,7 @@ export class InputTextComponent implements OnInit{
   ngOnInit(): void {
     if(!this.uniqueRoute) return;
     if(!this.uniqueParam) this.uniqueParam = getControlName(this.field)
-    this.field.valueChanges.subscribe(
+    if(this.uniqueParam) this.field.valueChanges.subscribe(
       value => {
         this.queryParams[this.uniqueParam] = value;
       }
