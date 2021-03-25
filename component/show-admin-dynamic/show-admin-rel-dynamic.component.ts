@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { isEmptyObject } from '@function/is-empty-object.function';
 import { DataDefinitionRelArrayService } from '@service/data-definition-rel-array/data-definition-rel-array.service';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { ValidatorsService } from '@service/validators/validators.service';
@@ -12,7 +13,7 @@ import { ShowAdminDynamicComponent } from './show-admin-dynamic.component';
   selector: 'core-show-admin-rel-dynamic',
   templateUrl: './show-admin-dynamic.component.html',
 })
-export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicComponent { //v1
+export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicComponent { //1.1
   /**
    * Variante de ShowAdminDynamic para utilizar campos de relaciones
    */
@@ -34,7 +35,15 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
     return this.dd.post("ids", this.entityName, this.display).pipe(
       switchMap(
         ids => {
-          return this.ddra.main(this.entityName, ids);
+          var fields = {};
+          for(var i = 0; i < this.fieldsViewOptions.length; i++){
+            var f = this.fieldsViewOptions[i].field;
+            if(f.includes("-")){
+              var n = f.indexOf("-");
+              fields[f]= f.substring(n+1)
+            }
+          }
+          return (isEmptyObject(fields)) ? this.dd.getAll(this.entityName, ids) : this.ddra.getAll(this.entityName, ids, fields);
         }
       )
     )
