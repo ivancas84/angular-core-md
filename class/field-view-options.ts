@@ -11,11 +11,16 @@ export class FieldViewOptions { //v1
      */
     field: string //nombre campo, 
     /**
-     * si se utiliza en una tabla o estructura similar 
-     * identifica el dato dentro del objeto, por lo tanto debe ser unico
-     * si se necesitan usar variaciones para el mismo identificador, 
+     * Si se utiliza en una tabla o estructura similar 
+     * identifica el dato dentro del objeto, por lo tanto debe ser unico.
+     * 
+     * Si se necesitan usar variaciones para el mismo identificador, 
      * es necesario definir alias adicionales para el mismo valor,
      * por ejemplo data["nombre"] <=> data["nombre_aux"]
+     * 
+     * En una estructura tabular identifica tambien el ordenamiento
+     * Prestar especial atencion al valor que se indica ya que puede 
+     * aplicarse ordenamiento en el cliente o en el servidor
      */ 
     label?: string = null //etiqueta campo
     labelDisabled?: boolean = false; //deshabilitar label
