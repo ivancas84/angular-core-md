@@ -10,7 +10,7 @@ import { SearchParamsComponent } from '@component/search-params/search-params.co
     .item { padding:0px 10px;  }
   `]
 })
-export class SearchParamsDynamicComponent extends SearchParamsComponent {
+export class SearchParamsDynamicComponent extends SearchParamsComponent { //2
   
   @Input() fieldsViewOptions: FieldViewOptions[]; //fields
 
