@@ -4,8 +4,8 @@
       <mat-panel-title>{{title}}</mat-panel-title>
     </mat-expansion-panel-header>
     <form [formGroup]="searchForm" novalidate (ngSubmit)="onSubmit()">       
-      <!--core-search-all *ngIf="opt.searchAll" [form]="searchForm" [display]="display"></core-search-all-->
-      <core-search-params-dynamic *ngIf="opt.searchParams" [form]="searchForm" [display]="display" [fieldsViewOptions]="fieldsViewOptionsSp"></core-search-params-dynamic>
+      <!--core-search-all *ngIf="searchAll" [form]="searchForm" [display]="display"></core-search-all-->
+      <core-search-params-dynamic *ngIf="searchParams" [form]="searchForm" [display]="display" [fieldsViewOptions]="fieldsViewOptionsSp"></core-search-params-dynamic>
 
       <!--app-alumno-search-params [form]="searchForm" [display]="display"></app-alumno-search-params-->
       <!--app-alumno-search-condition [form]="searchForm" [display]="display"></app-alumno-search-condition-->
