@@ -7,7 +7,7 @@ import { Display } from '@class/display';
   selector: 'core-search-params',
   template: '',
 })
-export abstract class SearchParamsComponent implements OnInit {
+export abstract class SearchParamsComponent implements OnInit { //1.1
   /**
    * Componente anidado para definir busqueda a traves de parametros 
    */
@@ -20,24 +20,16 @@ export abstract class SearchParamsComponent implements OnInit {
 
   abstract formGroup();
 
-  ngOnInit() {  
-    this.initForm();
-    this.initData();
-  }
-
-  initForm(): void{
-    this.fieldset = this.formGroup();
-    this.form.addControl("params", this.fieldset);
-  }
-
-  initData(): void{    
+  ngOnInit() {
     /**
      * Inicializar datos
      * Los valores por defecto se definen en el componente principal 
      * que utiliza el formulario de busqueda
      * a traves del atributo display
-     */
+     */  
+    this.fieldset = this.formGroup();
     if(!isEmptyObject(this.display.getParams())) { this.fieldset.reset(this.display.getParams()) }
+    this.form.addControl("params", this.fieldset);
   }
  
 }
