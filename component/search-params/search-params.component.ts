@@ -23,9 +23,7 @@ export abstract class SearchParamsComponent implements OnInit { //1.1
   ngOnInit() {
     /**
      * Inicializar datos
-     * Los valores por defecto se definen en el componente principal 
-     * que utiliza el formulario de busqueda
-     * a traves del atributo display
+     * Los valores por defecto se definen en el componente principal que utiliza el formulario de busqueda a traves del atributo display
      */  
     this.fieldset = this.formGroup();
     if(!isEmptyObject(this.display.getParams())) { this.fieldset.reset(this.display.getParams()) }
