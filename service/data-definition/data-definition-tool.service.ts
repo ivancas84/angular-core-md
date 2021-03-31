@@ -138,7 +138,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.2
     /**
      * Consulta de relaciones directas para metodos no habituales
      * Procedimiento similar a getAllColumnData
-     * Define un array de identificadores "ids" a partir de los parametros "data[fkName]"
+     * Define un array de identificadores "ids" a partir de los parametros "data[fieldNameData]"
      * Consulta todos los campos del parametro "entityName" utilizando "ids" y parametro "method" para obtener "response"
      * Recorre "data" y "response", compara "data[i][fieldNameData]" con "response[j][fieldNameResponse]" y realiza una asociacion
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
