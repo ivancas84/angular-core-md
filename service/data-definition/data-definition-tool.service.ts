@@ -10,7 +10,7 @@ import { DataDefinitionService } from './data-definition.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{ //2.1
+export class DataDefinitionToolService extends DataDefinitionService{ //2.2
   
   protected initFields(
     data: { [index: string]: any },
@@ -87,12 +87,13 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.1
     }
   }
 
-  getAllColumnData(
+  getAllColumnData( //1.1
     data: { [index: string]: any }[], 
     fkName: string, 
     entityName: string, 
     fields: { [index: string]: any },
-    join: string = ", "
+    join: string = ", ",
+    fieldName = "id",
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta de relaciones directas
@@ -112,7 +113,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.1
           if(!response.length) return data;
           for(var i = 0; i < data.length; i++){
             for(var j = 0; j < response.length; j++){
-              if(data[i][fkName] == response[j]["id"]) {
+              if(data[i][fkName] == response[j][fieldName]) {
                 this.assignFields(data[i],response[j],fields,join)
                 break;
               }
