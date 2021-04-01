@@ -6,7 +6,7 @@
   <span matPrefix>
     <a *ngIf="adminRoute" routerLink="/{{adminRoute}}" [queryParams]="{id:field.value}" mat-icon-button matPreffix><mat-icon>edit</mat-icon></a>
   </span>
-  <button type="button" mat-icon-button matSuffix (click)="field.setValue(null)">
+  <button *ngIf="!field.disabled" type="button" mat-icon-button matSuffix (click)="field.setValue(null)">
     <mat-icon>clear</mat-icon>
   </button>
   <mat-error *ngIf="searchControl.hasError('required')">Debe completar valor</mat-error>
