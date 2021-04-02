@@ -1,7 +1,9 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>
-      {{title}}
+      {{title}} <span *ngIf="titleLoad$ | async as t">
+        <core-label [id]="t['value']" [entityName]="t['entity_name']"></core-label>
+      </span>
     </mat-card-title>
   </mat-card-header>
   <mat-card-content #content> 
