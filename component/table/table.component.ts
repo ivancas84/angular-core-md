@@ -9,6 +9,7 @@ import { Sort } from '@angular/material/sort';
 import { compare } from '@function/compare';
 import { fastClone } from '@function/fast-clone';
 import { naturalCompare } from '@function/natural-compare';
+import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 
 declare function copyFormatted(html): any;
 declare function printHtml(html): any;
@@ -22,7 +23,7 @@ declare function printHtml(html): any;
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export abstract class TableComponent implements OnInit {
+export abstract class TableComponent implements OnInit { //2
   /**
    * Elementos de uso habitual para una tabla
    * Versión 1
@@ -40,11 +41,32 @@ export abstract class TableComponent implements OnInit {
    * si no se define display o length no se muestra la paginacion
    */
 
+  entityName?: string;
+  titleLoad$: Observable<string[]>;
+
   constructor(
     protected router: Router,
+    protected dd: DataDefinitionService
   ) {}
 
   ngOnInit(): void {
+    var p = Object.keys(this.display.getParams());
+    if(p.length == 1 && this.entityName){
+      if(p[0].includes("-")) {
+        this.titleLoad$ = this.dd.post("rel",this.entityName).pipe(
+          map(
+            response => {
+              var r = response[
+                p[0].substring(0,p[0].indexOf("-"))
+              ];
+              r["value"] = this.display.getParams()[p[0]];
+              return r;
+            }
+          )
+        )  
+      }
+    }
+    
     if(!this.length) this.length = this.dataSource.length;    
     //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
