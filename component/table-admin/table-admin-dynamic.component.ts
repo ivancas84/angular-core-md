@@ -14,7 +14,7 @@ import { fastClone } from '@function/fast-clone';
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export class TableAdminDynamicComponent extends TableAdminComponent implements OnInit { //1
+export class TableAdminDynamicComponent extends TableAdminComponent implements OnInit { //2
   /**
    * Grilla de visualizacion y administracion dinamica
    * Copia caracteristicas de TableAdminComponent y FieldsetDynamicComponent
