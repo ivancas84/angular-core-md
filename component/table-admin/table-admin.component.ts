@@ -23,7 +23,7 @@ import { Observable, Subscription } from 'rxjs';
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export abstract class TableAdminComponent extends TableComponent implements OnChanges {
+export abstract class TableAdminComponent extends TableComponent implements OnChanges { //2
   /**
    * Elementos de uso habitual para una tabla de administracion
    * A diferencia de las Tablas de visualizacion, 
@@ -70,7 +70,7 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
     protected snackBar: MatSnackBar,
     protected storage: SessionStorageService
   ) {
-    super(router)
+    super(router, dd)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
