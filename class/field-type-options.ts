@@ -182,7 +182,7 @@ export class FieldInputAutocompleteOptions { //1
 
 
 
-export class FieldInputTextOptions { //1
+export class FieldInputTextOptions { //1.1
   id: string = "input_text" 
   width: string = null //ancho exclusivo del input
   /**
@@ -190,7 +190,7 @@ export class FieldInputTextOptions { //1
    * Debe indicarse la unidad de medida, ej "100%", "100px"
    */
   uniqueRoute: string = null;
-  uniqueParam: string = null; //si es null se asignara posteriormente con el nombre del field
+  uniqueParam: string = "id";
 
   constructor(attributes: any = {}) {
     for(var a in attributes){
