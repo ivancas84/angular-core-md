@@ -6,7 +6,7 @@ import { getControlName } from '@function/get-control-name';
   selector: 'core-input-text',
   templateUrl: './input-text.component.html',
 })
-export class InputTextComponent implements OnInit{
+export class InputTextComponent implements OnInit{ //2
 
   @Input() field: FormControl
   @Input() title?: string
@@ -15,7 +15,7 @@ export class InputTextComponent implements OnInit{
   @Input() uniqueParam?: string 
   /**
    * Por defecto se utiliza el metodo getControlName para definir el nombre
-   *  getControlName funciona solo si tiene padre
+   * CUIDADO! getControlName funciona solo si tiene padre
    */
   
   @Input() type?: string = "text"
@@ -27,16 +27,20 @@ export class InputTextComponent implements OnInit{
    */
   
   queryParams = {};
-  
+  uniqueValue: string;
+
   ngOnInit(): void {
     if(!this.uniqueRoute) return;
-    if(!this.uniqueParam) this.uniqueParam = getControlName(this.field)
-    if(this.uniqueParam) this.field.valueChanges.subscribe(
-      value => {
-        this.queryParams[this.uniqueParam] = value;
+    this.field.statusChanges.subscribe(
+      () => {
+        if(this.field.hasError("notUnique")){
+          this.uniqueValue = this.field.getError("notUnique");
+          if(!this.uniqueParam) this.uniqueParam = getControlName(this.field)
+          this.queryParams[this.uniqueParam] = this.uniqueValue;
+        }
       }
-    )
-
+    );
+    
   }
 
 }
