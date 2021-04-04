@@ -1,18 +1,17 @@
-import { Input, OnInit, Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { getControlName } from '@function/get-control-name';
 
 @Component({
   selector: 'core-input-text',
   templateUrl: './input-text.component.html',
 })
-export class InputTextComponent implements OnInit{ //2
+export class InputTextComponent implements OnInit{ //2.1
 
   @Input() field: FormControl
   @Input() title?: string
   @Input() placeholder?: string = ""
   @Input() uniqueRoute?: string //Ruta de administracion para valor unico (si no se define no se activa enlace)
-  @Input() uniqueParam?: string 
+  @Input() uniqueParam?: string = "id" 
   /**
    * Por defecto se utiliza el metodo getControlName para definir el nombre
    * CUIDADO! getControlName funciona solo si tiene padre
@@ -35,7 +34,6 @@ export class InputTextComponent implements OnInit{ //2
       () => {
         if(this.field.hasError("notUnique")){
           this.uniqueValue = this.field.getError("notUnique");
-          if(!this.uniqueParam) this.uniqueParam = getControlName(this.field)
           this.queryParams[this.uniqueParam] = this.uniqueValue;
         }
       }
