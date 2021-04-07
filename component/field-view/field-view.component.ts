@@ -5,7 +5,7 @@ import { FieldViewOptions } from '@class/field-view-options';
   selector: 'core-field-view',
   templateUrl: './field-view.component.html',
 })
-export class FieldViewComponent { //v1
+export class FieldViewComponent { //1.1
   /**
    * Vista de campo
    * En base a un conjunto de opciones define la vista mas adecuada para el valor del campo

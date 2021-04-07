@@ -180,6 +180,19 @@ export class FieldInputAutocompleteOptions { //1
   }
 }
 
+export class FieldInputUploadOptions { //1
+  id: string = "input_upload";
+  entityName: string = "file";
+
+  constructor(attributes: any= {}) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 
 
 export class FieldInputTextOptions { //1.1
