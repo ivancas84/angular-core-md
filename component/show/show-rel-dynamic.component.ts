@@ -28,7 +28,7 @@ export abstract class ShowRelDynamicComponent extends ShowDynamicComponent { //1
         ids => {
           var fields = {};
           for(var i = 0; i < this.fieldsViewOptions.length; i++){
-            var f = this.fieldsViewOptions[0].field;
+            var f = this.fieldsViewOptions[i].field;
             if(f.includes("-")){
               var n = f.indexOf("-");
               fields[f]= f.substring(n+1)
