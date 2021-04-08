@@ -6,7 +6,7 @@ export class FieldControlOptions { //1.1
   /**
    * Podemos identificar atributos asociados directamente con un FormControl de angular y otros asociados indirectamente.
    * Los atributos asociados directamente coinciden con el nombre de algun atributo de FormControl, ej validatos, asyncValidators
-   * Ejemplo de atributos asociados indirectamente son default, adminRoute, uniqueRoute, readonly, etc.
+   * Ejemplo de atributos asociados indirectamente son default, readonly, etc.
    * Para definir un atributo como FieldControlOptions uno debe hacerse la pregunta: Puede existir este atributo para un elemento que no sea FormControl? 
    * Reformulando la pregunta: Tiene sentido este atributo para elementos que no son FormControl?
    * Hay elementos que pueden parecer de FormControl pero en realidad corresponden a un determinado type, no confundirse, 
