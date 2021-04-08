@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
   selector: 'core-input-text',
   templateUrl: './input-text.component.html',
 })
-export class InputTextComponent implements OnInit{ //2.1
+export class InputTextComponent implements OnInit{ //2.2
 
   @Input() field: FormControl
   @Input() title?: string
@@ -25,6 +25,8 @@ export class InputTextComponent implements OnInit{ //2.1
    * Debe indicarse la unidad de medida, ej "100%", "100px"
    */
   
+  @Input() readonly?: boolean = false;
+
   queryParams = {};
   uniqueValue: string;
 
