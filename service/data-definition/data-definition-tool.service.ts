@@ -10,7 +10,7 @@ import { DataDefinitionService } from './data-definition.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{ //2.2
+export class DataDefinitionToolService extends DataDefinitionService{ //2.3
   
   protected initFields(
     data: { [index: string]: any },
@@ -39,6 +39,30 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.2
           data[f] = d.join(join);
         } else {
           data[f] = response[fields[f]];
+        }
+      }
+    }
+  }
+
+  protected assignFieldsObj(
+    data: { [index: string]: any }, 
+    id:string,
+    response: { [index: string]: any }, 
+    fields:{ [index: string]: string }, 
+    join: string,
+  ){
+    /**
+     * Asociar respuesta a datos
+     * Al trabajar por referencia se reflejan los datos en los parametros
+     */
+    for(var f in fields){
+      if(fields.hasOwnProperty(f)) {                    
+        if(Array.isArray(fields[f])) {
+          var d = [];
+          for(var k = 0; k < fields[f].length; k++) d.push(response[fields[f][k]])
+          data[id][f] = d.join(join);
+        } else {
+          data[id][f] = response[fields[f]];
         }
       }
     }
@@ -271,12 +295,12 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.2
   }
 
   getColumnData(
-    data: { [index: string]: any }[], 
+    data: { [index: string]: any }, 
     fkName: string, 
     entityName: string, 
     fields: { [index: string]: any },
     join:string=", "
-  ): Observable<{ [index: string]: any }[]>{
+  ): Observable<{ [index: string]: any }>{
     /**
      * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
      * Efectua una asociacion 
@@ -298,7 +322,34 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.2
     );  
   }
 
-  
+  getColumnDataObj(
+    data: { [index: string]: { [index: string]: any } },
+    id: string,
+    idResponse: string, 
+    fkName: string, 
+    entityName: string, 
+    fields: { [index: string]: any },
+    join:string=", "
+  ): Observable<{ [index: string]: { [index: string]: any } }>{
+    /**
+     * Similar a getColumnData pero utiliza una estructura de datos diferente de la forma
+     * data["alumno"] = {id:"value",activo:"value"} 
+     * data["per"] = {id:"value",activo:"value"}
+     */
+    data[idResponse] = null;
+    if(!data[id][fkName]) return of(data);
+
+    return this.get(entityName, data[id][fkName]).pipe(
+      map(
+        response => {
+          if(!response) return data;
+          this.assignFieldsObj(data,idResponse,response,fields,join)
+          return data;
+        }
+      )
+    );  
+  }
+
   advancedColumnData(
     data: { [index: string]: any }[], 
     fieldName: string, 
