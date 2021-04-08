@@ -8,7 +8,7 @@
   <core-input-select *ngSwitchCase="'input_select'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName"></core-input-select>
   <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" [field]="field" [title]="fieldViewOptions.label" [options]="fieldViewOptions.type.options"></core-input-select-checkbox>
   <core-input-autocomplete *ngSwitchCase="'input_autocomplete'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName" [adminRoute]="fieldViewOptions.type.adminRoute"></core-input-autocomplete>
-  <core-input-text *ngSwitchCase="'input_text'" [field]="field" [title]="fieldViewOptions.label" [width]="fieldViewOptions.type.width" [uniqueRoute]="fieldViewOptions.type.uniqueRoute" [uniqueParam]="fieldViewOptions.type.uniqueParam"></core-input-text>
+  <core-input-text *ngSwitchCase="'input_text'" [field]="field" [title]="fieldViewOptions.label" [width]="fieldViewOptions.type.width" [uniqueRoute]="fieldViewOptions.type.uniqueRoute" [uniqueParam]="fieldViewOptions.type.uniqueParam" [readonly]="fieldViewOptions.control.readonly"></core-input-text>
   <core-input-upload *ngSwitchCase="'input_upload'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName"></core-input-upload>
 
   <div *ngSwitchCase="'date'">{{field | toDate | date:fieldViewOptions.type.format}}</div>
