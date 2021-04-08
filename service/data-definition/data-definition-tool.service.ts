@@ -219,7 +219,6 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.3
     return this.all(entityName, display).pipe(
       map(
         response => {
-          console.log(response);
           for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
           if(!response.length) return data;
           for(var j = 0; j < response.length; j++){
