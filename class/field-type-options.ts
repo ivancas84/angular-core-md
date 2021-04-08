@@ -3,6 +3,16 @@ import { FieldTreeElement } from "./field-tree-element";
    
 
 export class FieldControlOptions { //1.1
+  /**
+   * Podemos identificar atributos asociados directamente con un FormControl de angular y otros asociados indirectamente.
+   * Los atributos asociados directamente coinciden con el nombre de algun atributo de FormControl, ej validatos, asyncValidators
+   * Ejemplo de atributos asociados indirectamente son default, adminRoute, uniqueRoute, readonly, etc.
+   * Para definir un atributo como FieldControlOptions uno debe hacerse la pregunta: Puede existir este atributo para un elemento que no sea FormControl? 
+   * Reformulando la pregunta: Tiene sentido este atributo para elementos que no son FormControl?
+   * Hay elementos que pueden parecer de FormControl pero en realidad corresponden a un determinado type, no confundirse, 
+   * La postura tomada hasta el momento es estricta, por ejemplo los atributos adminRoute y uniqueRoute para ciertos type no tienen sentido, por lo tanto se definen solo para los type en los que tiene sentido.
+   * Siguiendo con el ejemplo, readonly tiene sentido para todos los type que son FormControl, por lo tanto se define en FormControl
+   */
   id: string = null
   showLabel: boolean = false; //indica si debe mostrarse el label o no
   /**
@@ -12,8 +22,6 @@ export class FieldControlOptions { //1.1
   validators: any[] = [];
   asyncValidators: any[] = [];
   default?: any = null; //valor por defecto
-  adminRoute?: string = null;
-  uniqueRoute?: string = null;
   disabled?: boolean = false;
   readonly?: boolean = false;
 
