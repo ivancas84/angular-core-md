@@ -2,7 +2,7 @@ import { FieldTreeElement } from "./field-tree-element";
 
    
 
-export class FieldControlOptions { //v1
+export class FieldControlOptions { //1.1
   id: string = null
   showLabel: boolean = false; //indica si debe mostrarse el label o no
   /**
@@ -15,7 +15,8 @@ export class FieldControlOptions { //v1
   adminRoute?: string = null;
   uniqueRoute?: string = null;
   disabled?: boolean = false;
-  
+  readonly?: boolean = false;
+
   constructor(attributes: any = {}) {
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
