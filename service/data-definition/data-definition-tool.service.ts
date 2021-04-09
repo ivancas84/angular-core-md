@@ -2,15 +2,16 @@ import { Injectable } from '@angular/core';
 import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
 import { fastClone } from '@function/fast-clone';
+import { isEmptyObject } from '@function/is-empty-object.function';
 import { recursiveData } from '@function/recursive-data';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, concat, Observable, of, race } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{ //2.3
+export class DataDefinitionToolService extends DataDefinitionService{ //2.4
   
   protected initFields(
     data: { [index: string]: any },
@@ -119,6 +120,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.3
     join: string = ", ",
     fieldName = "id",
   ): Observable<{ [index: string]: any }[]>{
+
     /**
      * Consulta de relaciones directas
      * Define un array de identificadores "ids" a partir de los parametros "data[fkName]"
@@ -129,8 +131,11 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.3
      */
     if(!data.length) return of([]);
     var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; });
+    
     for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
+    
     if(!ids.length) return of(data);
+    
     return this.getAll(entityName, ids).pipe(
       map(
         response => {
@@ -440,5 +445,96 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.3
         }
       )
     );  
+  }
+
+  filterFields(fields, prefix) {
+    /**
+     * Filtra los fields en funcion del prefijo
+     * Ejemplo prefix "per-", "per_dom-"
+     */
+    var f = {}
+    for(var key in fields){
+      if(fields.hasOwnProperty(key)){
+        if(key.includes(prefix)) f[key] = fields[key];
+      }
+    }
+    return f;
+  }
+
+  initializeFields(entityName: string, fields: { [index: string]: any }): Observable<any> {
+    /**
+     * Para realizar correctamente las relaciones entre las distintas entidades
+     * es necesario que existan ciertos campos de relacion que pueden no estar incluidos en la consulta original
+     * el metodo initializeFields recorre los campos indicados en el parametro e inicializa los fields de relacion
+     */
+    return this.post("rel",entityName).pipe(
+      map(
+        rel => {
+          var f = {}
+          for(var key in fields){
+            if(fields.hasOwnProperty(key)){
+              if(key.includes("-")) {
+                var k = key.substr(0, key.indexOf('-'));
+                var s = (key.includes("_")) ? key.substr(0, key.lastIndexOf('_'))+"-" : "";
+                f[s+rel[k]["field_name"]] = rel[k]["field_name"] 
+              }
+              if(!f.hasOwnProperty(key)) f[key] = fields[key]  
+            }
+          }
+          return f
+        }
+      )
+    )
+  }
+
+  relGetAll(entityName: string, ids: string[], fields: { [index: string]: any }): Observable<any> {
+    return combineLatest([
+      this.initializeFields(entityName, fields),
+      this.getAll(entityName, ids)
+    ]).pipe(
+      switchMap(
+        response => {
+          var fieldsFilter = response[0];
+          var data = response[1];
+          return this.post("rel",entityName).pipe(
+            switchMap(
+              rel => {
+                var obs: Observable<{ [index: string]: any; }[]>;
+                var keys =  Object.keys(rel);
+                for(var i = 0; i < keys.length; i++){
+                  try{throw i} catch(j){
+                    if(rel.hasOwnProperty(keys[j])){
+                    if(!isEmptyObject(this.filterFields(fieldsFilter, keys[j]+"-"))) {
+                      if(!obs){
+                        obs = this.getAllColumnData(
+                          data, 
+                          ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
+                          rel[keys[j]]["entity_name"], this.filterFields(fieldsFilter, keys[j]+"-")
+                        )
+                      } else {
+                        obs = obs.pipe(
+                          switchMap(
+                            (d:any) => {
+                              return this.getAllColumnData(d, 
+                                ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
+                                rel[keys[j]]["entity_name"], 
+                                this.filterFields(fieldsFilter, keys[j]+"-"))}
+                          ),
+                      
+                        )
+                      }
+                    }
+                  }
+                  }
+                }
+                return obs
+              }
+            
+            )
+          )
+        }
+      
+      )
+    )
   }
 }
