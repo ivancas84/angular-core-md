@@ -12,7 +12,7 @@ import { isEmptyObject } from '@function/is-empty-object.function';
   selector: 'core-show-rel-dynamic',
   template: '',
 })
-export abstract class ShowRelDynamicComponent extends ShowDynamicComponent { //1.1
+export abstract class ShowRelDynamicComponent extends ShowDynamicComponent { //1.2
   constructor(
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
@@ -34,7 +34,8 @@ export abstract class ShowRelDynamicComponent extends ShowDynamicComponent { //1
               fields[f]= f.substring(n+1)
             }
           }
-          return (isEmptyObject(fields)) ? this.dd.getAll(this.entityName, ids) : this.ddra.getAll(this.entityName, ids, fields);
+          return (isEmptyObject(fields)) ? this.dd.getAll(this.entityName, ids) : this.dd.relGetAll(this.entityName, ids, fields);
+          
         }
       )
     )
