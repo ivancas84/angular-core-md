@@ -48,8 +48,6 @@ export class InputUploadComponent implements OnInit { //2
       map(
         row => {
           if(row) {
-            console.log(row);
-
             this.file = row;
             this.file["link"] = UPLOAD_URL+this.file.content; 
             this.fileControl.setValue("");
