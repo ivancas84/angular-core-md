@@ -3,7 +3,7 @@
     <mat-card-title fxFlex="auto">
       {{title}}    
     </mat-card-title>
-    <!--core-input-search-go *ngIf="options.inputSearchGo" fxFlex="auto" [entityName]="entityName"></core-input-search-go-->
+    <!--core-input-search-go *ngIf="inputSearchGo" fxFlex="auto" [entityName]="entityName"></core-input-search-go-->
   </mat-card-header>
   <mat-card-content>
     <div  *ngFor="let row of fieldset.controls; let i=index" [formGroup]="fg(i)">

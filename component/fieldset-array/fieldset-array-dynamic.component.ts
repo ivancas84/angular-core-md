@@ -25,7 +25,6 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //2
 
   @Input() fieldsViewOptions: FieldViewOptions[]; //fields
   @Input() title: string; //titulo del componente
-  @Input() options: FieldsetDynamicOptions = new FieldsetDynamicOptions()
 
   fieldsViewOptionsFilter: FieldViewOptions[]; //fields filtrados
 
