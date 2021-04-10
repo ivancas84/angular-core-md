@@ -10,7 +10,7 @@ import { TableComponent } from '@component/table/table.component';
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export class TableDynamicComponent extends TableComponent implements OnInit { //2
+export class TableDynamicComponent extends TableComponent implements OnInit { //3
   @Input() fieldsViewOptions: FieldViewOptions[]
   @Input() title: string //titulo del componente
   @Input() addButtonLink: string = null;
