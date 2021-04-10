@@ -13,10 +13,14 @@
           [fieldsViewOptions]="s.fieldsViewOptions" 
           [data]="data[s.id]" 
           [title]="s.title"
-          [options]="s.fieldsetOptions"
+          [inputSearchGo]="s.options.inputSearchGo"
           ></core-fieldset-dynamic>
 
-          <ng-template #um>fieldset um en construccion</ng-template>
+          <ng-template #um>
+            
+
+
+          </ng-template>
     
     </div>
         <button mat-raised-button [disabled]="adminForm.pending || isSubmitted" type="submit" color="primary">Aceptar</button>&nbsp;

@@ -15,7 +15,7 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
     .item { padding:0px 10px;  }
   `]
 })
-export class FieldsetDynamicComponent extends FieldsetComponent { //2
+export class FieldsetDynamicComponent extends FieldsetComponent { //3
   
   /**
    * Componente de administración de fieldset.
@@ -24,15 +24,7 @@ export class FieldsetDynamicComponent extends FieldsetComponent { //2
 
   @Input() fieldsViewOptions: FieldViewOptions[]; //opciones de campos
   @Input() title: string; //titulo del componente
-  @Input() options: FieldsetDynamicOptions = new FieldsetDynamicOptions() //opciones de la interfaz
-  /**
-   * @deprecated Cada opcion de la interfaz debe estar implementada como un atributo independiente
-   */
-  
   @Input() inputSearchGo: boolean = true;
-  /**
-   * Reemplaza a options
-   */
 
   fieldsViewOptionsFilter: FieldViewOptions[]; //filtro de opciones de campos
   /**

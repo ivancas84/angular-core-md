@@ -1,7 +1,7 @@
 import { FieldViewOptions } from "./field-view-options";
 import { FieldsetDynamicOptions } from "./fieldset-dynamic-options";
 
-export class AdminRelStructure { //v1.0.1
+export class AdminRelStructure { //2
   id:string = null; //identificacion de la relacion
   /**
    * El identificador se define:
@@ -13,7 +13,7 @@ export class AdminRelStructure { //v1.0.1
   title?: string = null //titulo del fieldset
   fieldsViewOptions: FieldViewOptions[] = [] //array de FieldViewOptions
   data:any //datos
-  fieldsetOptions: FieldsetDynamicOptions = new FieldsetDynamicOptions({
+  options: FieldsetDynamicOptions = new FieldsetDynamicOptions({
     inputSearchGo:false
   });
   
