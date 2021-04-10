@@ -7,7 +7,7 @@ import { fastClone } from '@function/fast-clone';
   selector: 'core-admin-array-id',
   template: '',
 })
-export abstract class AdminArrayIdComponent extends AdminComponent {
+export abstract class AdminArrayIdComponent extends AdminComponent { //2
 /**
  * Variante del formulario de administracion que recibe obligatoriamente un identificador
  * y lo transfiere a sus componentes anidados
