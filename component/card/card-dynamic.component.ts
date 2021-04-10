@@ -9,7 +9,7 @@ import { CardComponent } from '@component/card/card.component';
     .item { padding:10px; border: 1px solid #E6E6FA; }
   `]
 })
-export class CardDynamicComponent extends CardComponent {
+export class CardDynamicComponent extends CardComponent { //2
   @Input() fieldsViewOptions: FieldViewOptions[];
   @Input() title: string; //titulo del componente
 }
