@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
   selector: 'core-fieldset-array-id',
   template: '',
 })
-export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent  {
+export abstract class FieldsetArrayIdComponent extends FieldsetArrayComponent { //2
   /**
    * Variante del FieldsetArrayComponent que inicializa los datos a partir del valor de un identificador
    * El identificador habitualmente es una fk, pero no es estrictamente necesario
