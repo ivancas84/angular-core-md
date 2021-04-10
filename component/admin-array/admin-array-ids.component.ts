@@ -3,20 +3,18 @@ import { map, switchMap } from 'rxjs/operators';
 import { emptyUrl } from '@function/empty-url.function';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { Component } from '@angular/core';
-import { AdminComponent } from '@component/admin/admin.component';
-import { fastClone } from '@function/fast-clone';
 import { AdminArrayComponent } from '@component/admin-array/admin-array.component';
 
 @Component({
   selector: 'core-admin-array',
   template: '',
 })
-export abstract class AdminArrayIdsComponent extends AdminArrayComponent {
+export abstract class AdminArrayIdsComponent extends AdminArrayComponent { //2
 /**
  * Variante del AdminArray que define datos solo si existen ids
  */
-  initDisplay(params){ 
-    var p = (params.hasOwnProperty("ids")) ? params["ids"] : null;
+  initDisplay(){ 
+    var p = (this.params.hasOwnProperty("ids")) ? this.params["ids"] : null;
     this.display$.next(p);  
   }
   
