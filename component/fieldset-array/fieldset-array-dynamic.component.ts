@@ -15,7 +15,7 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
     .item { padding:0px 10px;  }
   `]
 })
-export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent {
+export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //2
   /**
    * Componente dinamico de administración de fieldset array
    * La estructura por defecto del componente de implementacion
