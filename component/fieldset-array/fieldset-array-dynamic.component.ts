@@ -9,7 +9,7 @@ import { arrayCombine } from '@function/array-combine';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
-  selector: 'core-fieldset-array-dynamic',
+  selector:   'core-fieldset-array-dynamic',
   templateUrl: './fieldset-array-dynamic.component.html',
   styles:[`
     .item { padding:0px 10px;  }

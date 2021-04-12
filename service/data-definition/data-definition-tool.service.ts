@@ -77,8 +77,8 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.4
   ){
     /**
      * Recorrer arbol y ejecutar metodo indicado
-     * Utiliza funcion externa "recursiveData" para obtener la hoja indicada del parametro "tree" en "data"
-     * Ejecuta metodo indicado en parametro "method" con parametros indicados en parametro "params"
+     * Utiliza funcion externa "recursiveData" para obtener la hoja indicada de "tree" en "data"
+     * Ejecuta metodo "method" con parametros "params"
      * Los valores se asignan al resultado de "recursiveData" y se reflejan en "data" ya que js trabaja por referencia
      */
     switch(method){
@@ -326,6 +326,34 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.4
     );  
   }
 
+  getColumnDataUm(
+    data: { [index: string]: any }, 
+    fkName: string, 
+    entityName: string, 
+    fields: { [index: string]: any },
+    join:string=", "
+  ): Observable<{ [index: string]: any }>{
+    /**
+     * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
+     * Efectua una asociacion 
+     * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
+     * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
+     */
+    if(!data[fkName]){
+      for(var f in fields) data[f] = null;
+      return of(data);
+    }
+    return this.get(entityName, data[fkName]).pipe(
+      map(
+        response => {
+          if(!response) return data;
+          this.assignFields(data,response,fields,join)
+          return data;
+        }
+      )
+    );  
+  }
+
   getColumnDataObj(
     data: { [index: string]: { [index: string]: any } },
     id: string,
@@ -533,8 +561,9 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.4
             )
           )
         }
-      
       )
     )
   }
+
+
 }

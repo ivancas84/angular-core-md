@@ -19,7 +19,7 @@ export abstract class AdminRelComponent extends AdminComponent implements OnInit
   queryApi:string = "unique_rel"
   /**
    * 'unique_rel' permite inicializar en el servidor una entidad y sus relaciones haciendo un cuidadoso analisis de los parametros
-   * "unique_rel_str" utiliza unique_rel y lo combina con metodos para inicializar las relaciones um.
+   * "unique_rel_um" utiliza unique_rel y lo combina con metodos para inicializar las relaciones um.
    * Ejemplo de identificacion de relaciones um, sea la entidad principal toma: 
    *   cur: curso (toma.curso) fk
    *   cur_com: comision (curso.comision) fk
@@ -31,10 +31,24 @@ export abstract class AdminRelComponent extends AdminComponent implements OnInit
 
   queryData(): Observable<any> {
     switch(this.queryApi){
-      case "unique_rel_str": return this.dd.post("unique_rel", this.entityName, this.display$.value).pipe(
+      case "unique_rel_um": return this.dd.post("unique_rel", this.entityName, this.display$.value).pipe(
         switchMap(
           data => {
+            for(var key in this.structure){
+              if(this.structure.hasOwnProperty(key)){
+                if(key.includes("/")){
+                  
+                }
+
+              }
+            }
+
+            
             console.log(data);
+
+            //recorrer toda la structure para encontrar relaciones um.
+            //encontrar la relacion correspondiente y verificar si existe valor
+            //inicializar
             return of(data)
           }
         )

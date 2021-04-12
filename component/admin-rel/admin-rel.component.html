@@ -17,9 +17,13 @@
           ></core-fieldset-dynamic>
 
           <ng-template #um>
-            
-
-
+            <core-fieldset-array-dynamic
+              [entityName]="s.id" 
+              [form]="adminForm" 
+              [fieldsViewOptions]="s.fieldsViewOptions"
+              [data]="data[s.id]" 
+              [title]="s.title"
+            ></core-fieldset-array-dynamic>
           </ng-template>
     
     </div>
