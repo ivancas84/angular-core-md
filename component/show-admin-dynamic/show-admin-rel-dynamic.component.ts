@@ -13,7 +13,7 @@ import { ShowAdminDynamicComponent } from './show-admin-dynamic.component';
   selector: 'core-show-admin-rel-dynamic',
   templateUrl: './show-admin-dynamic.component.html',
 })
-export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicComponent { //1.1
+export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicComponent { //1.2
   /**
    * Variante de ShowAdminDynamic para utilizar campos de relaciones
    */
@@ -43,7 +43,9 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
               fields[f]= f.substring(n+1)
             }
           }
-          return (isEmptyObject(fields)) ? this.dd.getAll(this.entityName, ids) : this.ddra.getAll(this.entityName, ids, fields);
+          return (isEmptyObject(fields)) ? 
+            this.dd.getAll(this.entityName, ids) :
+            this.dd.relGetAll(this.entityName, ids, fields);
         }
       )
     )
