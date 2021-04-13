@@ -516,6 +516,12 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.4
   }
 
   relGetAll(entityName: string, ids: string[], fields: { [index: string]: any }): Observable<any> {
+    /**
+     * Inicializar los campos de una entidad y sus relaciones
+     * No se inicializan todas las relaciones, solo las que se determinan en "fields"
+     * Ejemplo de retorno (para la entidad principal alumno)
+     * [{id:"value", activo:true, per-id:"value", per-numero_documento:"value"},...]
+     */
     return combineLatest([
       this.initializeFields(entityName, fields),
       this.getAll(entityName, ids)

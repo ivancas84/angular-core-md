@@ -34,7 +34,9 @@ export abstract class ShowRelDynamicComponent extends ShowDynamicComponent { //1
               fields[f]= f.substring(n+1)
             }
           }
-          return (isEmptyObject(fields)) ? this.dd.getAll(this.entityName, ids) : this.dd.relGetAll(this.entityName, ids, fields);
+          return (isEmptyObject(fields)) ? 
+            this.dd.getAll(this.entityName, ids) : 
+            this.dd.relGetAll(this.entityName, ids, fields);
           
         }
       )
