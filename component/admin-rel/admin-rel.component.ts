@@ -1,14 +1,16 @@
 import { OnInit, AfterViewInit, Component } from '@angular/core';
 import { AdminRelStructure } from '@class/admin-rel-structure';
+import { Display } from '@class/display';
 import { AdminComponent } from '@component/admin/admin.component';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { isEmptyObject } from '@function/is-empty-object.function';
+import { combineLatest, forkJoin, Observable, of } from 'rxjs';
+import { combineAll, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'core-admin-rel',
   template: '',
 })
-export abstract class AdminRelComponent extends AdminComponent implements OnInit, AfterViewInit { //1.1
+export abstract class AdminRelComponent extends AdminComponent implements OnInit, AfterViewInit { //2
 /**
  * Especializacion del formulario de administracion 
  * para administrar una entidad y sus relaciones
@@ -34,27 +36,57 @@ export abstract class AdminRelComponent extends AdminComponent implements OnInit
       case "unique_rel_um": return this.dd.post("unique_rel", this.entityName, this.display$.value).pipe(
         switchMap(
           data => {
-            for(var key in this.structure){
-              if(this.structure.hasOwnProperty(key)){
-                if(key.includes("/")){
-                  
+            var obs = {}
+            for(var i = 0; i < this.structure.length; i++){
+              var key = this.structure[i].id; 
+
+              if(key.includes("/")){
+                if( (key.includes("-"))){
+                  var prefix = key.substr(0, key.indexOf('-'));
+                  var l = key.indexOf('-')+1
+                  var entityName = key.substr(l, key.indexOf('/')-l);
+                } else {
+                  var prefix =  this.entityName;
+                  var entityName = key.substr(0,key.indexOf('/'));
                 }
 
+                var fkName = key.substr(key.indexOf('/')+1);
+                obs[key] = this.queryDataUm(data,key,entityName,fkName,prefix)
               }
             }
 
-            
-            console.log(data);
-
-            //recorrer toda la structure para encontrar relaciones um.
-            //encontrar la relacion correspondiente y verificar si existe valor
-            //inicializar
-            return of(data)
+            return (!isEmptyObject(obs)) ? this.combineDataUm(data, obs) : of(data) 
           }
         )
       )
       default: return super.queryData();
     }
+  }
+
+  queryDataUm(
+    data: { [x: string]: { [x: string]: string | number; }; }, 
+    key: string | number, 
+    entityName: string, 
+    fkName: string | number, 
+    prefix: string | number
+  ){
+    if(!data[prefix]["id"]) return of([]);
+    var display = new Display();
+    display.setCondition([fkName,"=",data[prefix]["id"]])
+    return this.dd.all(entityName, display)  
+  }
+
+  combineDataUm(data, obs){
+    return forkJoin(obs).pipe(
+      map(
+        response => {
+          for(var i in response){
+            if(response.hasOwnProperty(i)) data[i] = response[i]
+          }
+          return data;
+        }
+      )
+    )
   }
 
   loadStorage() {
