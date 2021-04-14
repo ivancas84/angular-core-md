@@ -1,6 +1,7 @@
 import { OnInit, AfterViewInit, Component } from '@angular/core';
 import { AdminRelStructure } from '@class/admin-rel-structure';
 import { Display } from '@class/display';
+import { FieldViewOptions } from '@class/field-view-options';
 import { AdminComponent } from '@component/admin/admin.component';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { combineLatest, forkJoin, Observable, of } from 'rxjs';
@@ -10,7 +11,7 @@ import { combineAll, map, switchMap } from 'rxjs/operators';
   selector: 'core-admin-rel',
   template: '',
 })
-export abstract class AdminRelComponent extends AdminComponent implements OnInit, AfterViewInit { //2
+export abstract class AdminRelComponent extends AdminComponent implements OnInit, AfterViewInit { //2.1
 /**
  * Especializacion del formulario de administracion 
  * para administrar una entidad y sus relaciones
@@ -51,11 +52,13 @@ export abstract class AdminRelComponent extends AdminComponent implements OnInit
                 }
 
                 var fkName = key.substr(key.indexOf('/')+1);
-                obs[key] = this.queryDataUm(data,key,entityName,fkName,prefix)
+                obs[key] = this.queryDataUm(data,entityName,fkName,prefix,this.structure[i].fieldsViewOptions)
               }
             }
 
-            return (!isEmptyObject(obs)) ? this.combineDataUm(data, obs) : of(data) 
+            return (!isEmptyObject(obs)) ? 
+              this.combineDataUm(data, obs) : 
+              of(data) 
           }
         )
       )
@@ -65,15 +68,20 @@ export abstract class AdminRelComponent extends AdminComponent implements OnInit
 
   queryDataUm(
     data: { [x: string]: { [x: string]: string | number; }; }, 
-    key: string | number, 
     entityName: string, 
     fkName: string | number, 
-    prefix: string | number
+    prefix: string | number,
+    fieldsViewOptions: FieldViewOptions[]
   ){
     if(!data[prefix]["id"]) return of([]);
     var display = new Display();
     display.setCondition([fkName,"=",data[prefix]["id"]])
-    return this.dd.all(entityName, display)  
+ 
+    return this.dd.post("ids",entityName, display).pipe(
+      switchMap(
+        ids => this.dd.relGetAllFvo(entityName, ids, fieldsViewOptions)
+      )
+    )  
   }
 
   combineDataUm(data, obs){
