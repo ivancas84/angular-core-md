@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Display } from '@class/display';
+import { FieldViewOptions } from '@class/field-view-options';
 import { arrayColumn } from '@function/array-column';
 import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
@@ -11,7 +12,7 @@ import { DataDefinitionService } from './data-definition.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{ //2.4
+export class DataDefinitionToolService extends DataDefinitionService{ //2.5
   
   protected initFields(
     data: { [index: string]: any },
@@ -515,6 +516,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.4
     )
   }
 
+  
   relGetAll(entityName: string, ids: string[], fields: { [index: string]: any }): Observable<any> {
     /**
      * Inicializar los campos de una entidad y sus relaciones
@@ -569,6 +571,24 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.4
         }
       )
     )
+  }
+
+  relGetAllFvo(entityName: string, ids: string[], fieldsViewOptions:FieldViewOptions[]){
+    /**
+     * Analiza el parametor fieldsViewOptions para obteer los fields 
+     * y ejecutar relGetAll (si corresponde)
+     */
+     var fields = {};
+     for(var i = 0; i < fieldsViewOptions.length; i++){
+       var f = fieldsViewOptions[i].field;
+       if(f.includes("-")){
+         var n = f.indexOf("-");
+         fields[f]= f.substring(n+1)
+       }
+     }
+     return (isEmptyObject(fields)) ? 
+       this.getAll(entityName, ids) : 
+       this.relGetAll(entityName, ids, fields);
   }
 
 
