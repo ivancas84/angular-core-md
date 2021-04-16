@@ -1,5 +1,6 @@
 import { Input, Component, OnInit } from '@angular/core';
 import { FieldViewOptions } from '@class/field-view-options';
+import { OptRouteIcon, OptLinkIcon, OptRouteText, OptLinkText } from '@class/opt';
 import { TableComponent } from '@component/table/table.component';
 
 @Component({
@@ -19,13 +20,12 @@ export class TableDynamicComponent extends TableComponent implements OnInit { //
   @Input() printButton: boolean = true;
   @Input() sortActive: string = null;
   @Input() sortDirection: string = "asc";
-  @Input() options: any = null; //columna opciones
-  /**
-   * Si es null no se visualiza
-   * {path, label, params, icon, data}
-   */
+  @Input() optColumn: OptRouteIcon[]
+                    | OptLinkIcon[]
+                    | OptRouteText[]
+                    | OptLinkText[]
+                      = null; //columna opciones (si es null no se visualiza)
 
-  
      
   ngOnInit(): void {
     this.displayedColumns = []

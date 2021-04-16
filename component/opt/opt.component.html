@@ -1,0 +1,21 @@
+<div [ngSwitch]="opt.id">
+  <a *ngSwitchCase="'route_icon'"
+      [routerLink]="'/'+opt.routerLink" 
+      [queryParams]="params"
+  ></a>
+
+  <a *ngSwitchCase="'route_text'"
+     [routerLink]="'/'+opt.routerLink" 
+     [queryParams]="params"
+  ></a>
+
+  <a *ngSwitchCase="'link_icon'"
+     [routerLink]="'/'+opt.routerLink" 
+     [queryParams]="params"
+  ></a>
+
+  <a *ngSwitchCase="'link_text'"
+     [routerLink]="'/'+opt.routerLink" 
+     [queryParams]="params"
+  ></a>
+</div>
