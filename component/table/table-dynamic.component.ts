@@ -1,4 +1,4 @@
-import { Input, Component, OnInit } from '@angular/core';
+import { Input, Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FieldViewOptions } from '@class/field-view-options';
 import { OptRouteIcon, OptLinkIcon, OptRouteText, OptLinkText } from '@class/opt';
 import { TableComponent } from '@component/table/table.component';
@@ -11,7 +11,7 @@ import { TableComponent } from '@component/table/table.component';
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export class TableDynamicComponent extends TableComponent implements OnInit { //3
+export class TableDynamicComponent extends TableComponent implements OnInit { //4
   @Input() fieldsViewOptions: FieldViewOptions[]
   @Input() title: string //titulo del componente
   @Input() addButtonLink: string = null;
@@ -20,18 +20,24 @@ export class TableDynamicComponent extends TableComponent implements OnInit { //
   @Input() printButton: boolean = true;
   @Input() sortActive: string = null;
   @Input() sortDirection: string = "asc";
-  @Input() optColumn: OptRouteIcon[]
-                    | OptLinkIcon[]
-                    | OptRouteText[]
-                    | OptLinkText[]
-                      = null; //columna opciones (si es null no se visualiza)
+  @Input() optColumn: any[] = null; //columna opciones (si es null no se visualiza)
+  /**
+   * Cada elemento debe ser uno de los siguientes OptRouteIcon | OptLinkIcon | OptRouteText | OptLinkText
+   */
 
+  @Output() eventTable: EventEmitter<any> = new EventEmitter();
      
   ngOnInit(): void {
     this.displayedColumns = []
     for(var i in this.fieldsViewOptions) this.displayedColumns.push(this.fieldsViewOptions[i].field)
-
+    if(this.optColumn) this.displayedColumns.push("options");
     super.ngOnInit();
   }
+
+  emitEventTable($event){
+    this.eventTable.emit($event);
+  }
+
+  
   
 }

@@ -27,9 +27,10 @@
       <ng-container matColumnDef="options">
         <th mat-header-cell *matHeaderCellDef> Opciones </th>
         <td mat-cell *matCellDef="let row">
-          <core-opt-column *ngFor="let opt of optColumn" [fieldViewOptColumn]="opt">
-
-          </core-opt-column>
+          <core-opt *ngFor="let opt of optColumn" 
+                    [opt]="opt" 
+                    [data]="row"
+                    (eventOpt)="emitEventTable($event)"></core-opt>
         </td>
       </ng-container>
 
