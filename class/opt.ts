@@ -1,9 +1,11 @@
 
-export class OptRouteIcon { //1
+
+export class OptRouteIcon { //2
   id: string = "route_icon"
-  routeLink: string;
+  action: string;
   params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
-  icon: string = "info";
+  template: string = "info";
+  target: string = "_self";
 
   constructor(attributes: any) {
     for(var a in attributes){
@@ -14,11 +16,11 @@ export class OptRouteIcon { //1
   }
 }
 
-export class OptLinkIcon { //1
+export class OptLinkIcon { //2
   id: string = "link_icon"
-  link: string;
+  action: string;
   params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
-  icon: string = "info";
+  template: string = "info";
 
   constructor(attributes: any) {
     for(var a in attributes){
@@ -30,11 +32,11 @@ export class OptLinkIcon { //1
 }
 
 
-export class OptRouteText { //1
+export class OptRouteText { //2
   id: string = "route_text"
-  routeLink: string;
+  action: string;
   params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
-  text: string = "info";
+  template: string = "info";
 
   constructor(attributes: any) {
     for(var a in attributes){
@@ -45,11 +47,28 @@ export class OptRouteText { //1
   }
 }
 
-export class OptLinkText { //1
+export class OptLinkText { //2
   id: string = "link_text"
-  link: string;
+  action: string;
   params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
-  icon: string = "info";
+  template: string = "info";
+
+  constructor(attributes: any) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+export class OptEventIcon { //2
+  id: string = "event_icon"
+  action: string;
+  params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
+  template: string = "info";
+  ariaLabel: string = null;
+  color: string = null;
 
   constructor(attributes: any) {
     for(var a in attributes){

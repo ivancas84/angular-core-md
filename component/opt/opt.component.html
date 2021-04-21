@@ -1,21 +1,33 @@
-<div [ngSwitch]="opt.id">
+<span [ngSwitch]="opt.id">
   <a *ngSwitchCase="'route_icon'"
-      [routerLink]="'/'+opt.routerLink" 
-      [queryParams]="params"
-  ></a>
+     mat-icon-button 
+     [routerLink]="'/'+opt.action" 
+     [queryParams]="params"
+     [target]="opt.target"
+  >
+    <mat-icon>{{opt.template}}</mat-icon>
+  </a>
 
   <a *ngSwitchCase="'route_text'"
-     [routerLink]="'/'+opt.routerLink" 
+     [routerLink]="'/'+opt.action" 
      [queryParams]="params"
-  ></a>
+  >test</a>
 
   <a *ngSwitchCase="'link_icon'"
-     [routerLink]="'/'+opt.routerLink" 
+     [routerLink]="'/'+opt.action" 
      [queryParams]="params"
-  ></a>
+  >test</a>
 
   <a *ngSwitchCase="'link_text'"
-     [routerLink]="'/'+opt.routerLink" 
+     [routerLink]="'/'+opt.action" 
      [queryParams]="params"
-  ></a>
-</div>
+  >test</a>
+
+    <button *ngSwitchCase="'event_icon'" 
+            mat-mini-fab 
+            [color]="opt.color" 
+            [aria-label]="opt.ariaLabel"
+            (click)="emitEventOpt()">
+        <mat-icon>{{opt.template}}</mat-icon>
+    </button>
+</span>
