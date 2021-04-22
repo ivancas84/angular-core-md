@@ -12,35 +12,44 @@ import { DataDefinitionService } from './data-definition.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{ //2.5
+export class DataDefinitionToolService extends DataDefinitionService{ //3
   
-  protected initFields(
+  protected initFields( //2
     data: { [index: string]: any },
-    fields:{ [index: string]: string },
+    fields:{ [index: string]: string } | string[],
   ){
-    for(var f in fields){
-      if(fields.hasOwnProperty(f)) data[f] = null; //inicializar en null
+    if(Array.isArray(fields)) {
+      for(var f in fields) data[fields[f]] = null
+    } else { 
+      for(var f in fields){
+        if(fields.hasOwnProperty(f)) data[f] = null; //inicializar en null
+      }
     }
+
   }
 
-  protected assignFields(
+  protected assignFields( //2
     data: { [index: string]: any }, 
     response: { [index: string]: any }, 
-    fields:{ [index: string]: string }, 
+    fields:{ [index: string]: string } | string[], 
     join: string
   ){
     /**
      * Asociar respuesta a datos
      * Al trabajar por referencia se reflejan los datos en los parametros
      */
-    for(var f in fields){
-      if(fields.hasOwnProperty(f)) {                    
-        if(Array.isArray(fields[f])) {
-          var d = [];
-          for(var k = 0; k < fields[f].length; k++) d.push(response[fields[f][k]])
-          data[f] = d.join(join);
-        } else {
-          data[f] = response[fields[f]];
+    if(Array.isArray(fields)){
+      for(var f in fields) data[fields[f]] = response[fields[f]]
+    } else {
+      for(var f in fields){
+        if(fields.hasOwnProperty(f)) {                    
+          if(Array.isArray(fields[f])) {
+            var d = [];
+            for(var k = 0; k < fields[f].length; k++) d.push(response[fields[f][k]])
+            data[f] = d.join(join);
+          } else {
+            data[f] = response[fields[f]];
+          }
         }
       }
     }
@@ -113,13 +122,12 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.5
     }
   }
 
-  getAllColumnData( //1.1
+  getAllColumnData( //2
     data: { [index: string]: any }[], 
     fkName: string, 
     entityName: string, 
-    fields: { [index: string]: any },
+    fields: { [index: string]: any } | string[],
     join: string = ", ",
-    fieldName = "id",
   ): Observable<{ [index: string]: any }[]>{
 
     /**
@@ -143,6 +151,46 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.5
           if(!response.length) return data;
           for(var i = 0; i < data.length; i++){
             for(var j = 0; j < response.length; j++){
+              if(data[i][fkName] == response[j]["id"]) {
+                this.assignFields(data[i],response[j],fields,join)
+                break;
+              }
+            }
+          }
+          return data;
+        }
+      )
+    );  
+  }
+
+
+  allColumnData( //1
+    data: { [index: string]: any }[], 
+    fkName: string,
+    entityName: string, 
+    fieldName: string, 
+    fields: { [index: string]: any } | string[],
+    join: string = ", ",
+  ): Observable<{ [index: string]: any }[]>{
+    /**
+     * Similar a getAllColumnData pero utiliza un "fieldName", en vez del "id" para realizar la consulta
+     */
+    if(!data.length) return of([]);
+    var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; });
+    
+    for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
+    
+    if(!ids.length) return of(data);
+    
+    var display = new Display();
+    display.setSize(0);
+    display.setCondition([fieldName,"=",ids]);
+    return this.all(entityName, display).pipe(
+      map(
+        response => {
+          if(!response.length) return data;
+          for(var i = 0; i < data.length; i++){
+            for(var j = 0; j < response.length; j++){
               if(data[i][fkName] == response[j][fieldName]) {
                 this.assignFields(data[i],response[j],fields,join)
                 break;
@@ -154,6 +202,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.5
       )
     );  
   }
+  
     
   
   getPostAllColumnData(
@@ -390,6 +439,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.5
     fields: { [index: string]: string } //no deben ser funciones de agregacion
   ): Observable<{ [index: string]: any }[]>{
     /**
+     * @todo faltaria agregar un fieldName y no utilizar siempre el id
      * Define un conjunto de identificadores "ids".
      * Para definir "ids", recorre el parametro "data y define un array con filtrando el parametro "fieldName"
      * Realiza una consulta avanzada de la entidad identificada con el parametro "entityName"
@@ -476,7 +526,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.5
     );  
   }
 
-  filterFields(fields, prefix) {
+  protected filterFields(fields, prefix) {
     /**
      * Filtra los fields en funcion del prefijo
      * Ejemplo prefix "per-", "per_dom-"
@@ -490,7 +540,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //2.5
     return f;
   }
 
-  initializeFields(entityName: string, fields: { [index: string]: any }): Observable<any> {
+  protected initializeFields(entityName: string, fields: { [index: string]: any }): Observable<any> {
     /**
      * Para realizar correctamente las relaciones entre las distintas entidades
      * es necesario que existan ciertos campos de relacion que pueden no estar incluidos en la consulta original
