@@ -1,7 +1,9 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>
-      {{title}} <button *ngIf="copyButton" mat-mini-fab color="primary" (click)="copyContent()"><mat-icon>content_copy</mat-icon></button>
+      {{title}} <span *ngIf="titleLoad$ | async as t">
+        <core-label [id]="t['value']" [entityName]="t['entity_name']"></core-label>
+      </span> <button *ngIf="copyButton" mat-mini-fab color="primary" (click)="copyContent()"><mat-icon>content_copy</mat-icon></button>
       <button *ngIf="printButton" mat-mini-fab color="primary" (click)="printContent()"><mat-icon>print</mat-icon></button>
       <a *ngIf="addButtonLink" mat-mini-fab color="accent" [routerLink]="'/'+addButtonLink" [queryParams]="addButtonQueryParams">
         <mat-icon>add</mat-icon>
