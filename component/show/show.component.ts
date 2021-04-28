@@ -19,6 +19,11 @@ export abstract class ShowComponent implements OnInit {
   readonly entityName: string; //Nombre de la entidad principal
   data: any; //datos principales
   length: number = null; //longitud total de los datos a mostrar
+  /**
+   * false: No se procesara la longitud
+   * null: Se considera que no hay datos
+   */
+  
   display: Display; //parametros de visualizacion
   params: { [x: string]: any; } //Parametros del componente
   load$: Observable<any>; //Disparador de observables
