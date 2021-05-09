@@ -7,7 +7,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
-import { fastClone } from '@function/fast-clone';
 
 @Component({
   selector: 'core-show',
