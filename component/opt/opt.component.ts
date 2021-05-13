@@ -6,7 +6,7 @@ import { fastClone } from '@function/fast-clone';
   selector: 'core-opt',
   templateUrl: './opt.component.html',
 })
-export class OptComponent implements OnChanges{ //2
+export class OptComponent implements OnChanges{ //3
   /**
    * Visualizar opciones de columna
    */
@@ -18,6 +18,8 @@ export class OptComponent implements OnChanges{ //2
 
 
   @Input() data: { [index: string]: any }; //conjunto de campos
+  @Input() index: number; //indice (evitar utilizarlo, si se realiza ordenamiento de la tabla utilizando angular, no se reflejan los datos en la general)
+  
 
   params: any = null;
 
@@ -42,7 +44,7 @@ export class OptComponent implements OnChanges{ //2
   }
 
   emitEventOpt(){
-    var $event = {action:this.opt.action, data:this.data}
+    var $event = {index:this.index, action:this.opt.action, data:this.data}
     this.eventOpt.emit($event)
   }
 
