@@ -7,6 +7,7 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
 import { ShowDynamicComponent } from './show-dynamic.component';
 import { DataDefinitionRelArrayService } from '@service/data-definition-rel-array/data-definition-rel-array.service';
 import { isEmptyObject } from '@function/is-empty-object.function';
+import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
   selector: 'core-show-rel-dynamic',
@@ -17,9 +18,10 @@ export abstract class ShowRelDynamicComponent extends ShowDynamicComponent { //1
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
+    protected storage: SessionStorageService,
     protected ddra: DataDefinitionRelArrayService
   ) {
-    super(dd,route,dialog)
+    super(dd,route,dialog, storage)
   }
 
   queryData(): Observable<any>{

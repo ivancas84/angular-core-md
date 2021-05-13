@@ -72,7 +72,7 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
     protected snackBar: MatSnackBar,
     protected storage: SessionStorageService
   ) {
-    super(router, dd)
+    super(router, dd, dialog, snackBar, storage)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
