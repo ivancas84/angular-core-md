@@ -6,7 +6,7 @@ import { FieldViewOptions } from '@class/field-view-options';
   selector: 'core-show-dynamic',
   template: '',
 })
-export abstract class ShowDynamicComponent extends ShowComponent implements OnInit { //3
+export abstract class ShowDynamicComponent extends ShowComponent implements OnInit { //4
   fieldsViewOptions: FieldViewOptions[] = []
   fieldsViewOptionsSp: FieldViewOptions[] = []
   optColumn: any[] = null; //columna opciones (si es null no se visualiza)
@@ -21,10 +21,24 @@ export abstract class ShowDynamicComponent extends ShowComponent implements OnIn
     super.ngOnInit();
   }
 
-  switchAction($event:any){ throw new Error("Not Implemented"); }
-  /**
-   * Sobescribir si se necesita utilizar eventos
-   * Utilizar $event.action para la accion a ejecutar (corresponde a opt.action)
-   * Utilizar $event.data para los datos a utilizar (corresponde a row)
-   */ 
+  switchAction($event:any){ 
+    /**
+     * Acciones de opciones
+     * Sobescribir si se necesita utilizar eventos
+     * Utilizar $event.action para la accion a ejecutar (corresponde a opt.action)
+     * Utilizar $event.data para los datos a utilizar (corresponde a row)
+     */  
+    switch($event.action){
+      case "delete":
+        this.delete($event.data["id"])
+        /**
+         * No utilizar indice (si se utiliza ordenamiento angular no se refleja el cambio de indices, y se elimina la fila incorrecta)
+         * @todo conviene implementar el eliminar directamente en la tabla?
+         */
+      break;
+      default:
+        throw new Error("Not Implemented");
+    }   
+  }
+   
 }
