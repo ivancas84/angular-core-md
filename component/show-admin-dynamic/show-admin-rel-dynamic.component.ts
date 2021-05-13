@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { DataDefinitionRelArrayService } from '@service/data-definition-rel-array/data-definition-rel-array.service';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
+import { SessionStorageService } from '@service/storage/session-storage.service';
 import { ValidatorsService } from '@service/validators/validators.service';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -23,9 +24,10 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
     protected validators: ValidatorsService,
+    protected storage: SessionStorageService,
     protected ddra: DataDefinitionRelArrayService
   ) {
-    super(dd,route,dialog, validators)
+    super(dd,route,dialog, storage, validators)
   }
   
   persistApi: string = "persist_rel_array"; //persistApi de TableAdmin 

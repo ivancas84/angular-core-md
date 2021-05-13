@@ -5,6 +5,7 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
 import { ShowComponent } from '@component/show/show.component';
 import { ValidatorsService } from '@service/validators/validators.service';
 import { FieldViewOptions } from '@class/field-view-options';
+import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
   selector: 'core-show-admin-dynamic',
@@ -36,9 +37,10 @@ export abstract class ShowAdminDynamicComponent extends ShowComponent { //v1
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
+    protected storage: SessionStorageService,
     protected validators: ValidatorsService, //los atributos fieldViewOptions y fieldViewOptionsFiters utilizar validadores
     ) {
-    super(dd,route,dialog)
+    super(dd,route,dialog, storage)
   }
 
 
