@@ -11,7 +11,7 @@ import { TableComponent } from '@component/table/table.component';
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export class TableDynamicComponent extends TableComponent implements OnInit { //5
+export class TableDynamicComponent extends TableComponent implements OnInit { //6
   @Input() entityName?: string;
   @Input() fieldsViewOptions: FieldViewOptions[]
   @Input() title: string //titulo del componente
@@ -36,7 +36,13 @@ export class TableDynamicComponent extends TableComponent implements OnInit { //
   }
 
   emitEventTable($event){
-    this.eventTable.emit($event);
+    switch($event.action){
+      case "table_delete":
+        this.onRemove($event.index);
+      break;
+      default:
+        this.eventTable.emit($event);
+    }
   }
 
   
