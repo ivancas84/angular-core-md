@@ -8,10 +8,10 @@ import { combineLatest, forkJoin, Observable, of } from 'rxjs';
 import { combineAll, map, switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'core-admin-rel',
+  selector: 'core-admin-rel-dynamic',
   template: '',
 })
-export abstract class AdminRelComponent extends AdminComponent implements OnInit, AfterViewInit { //2.1
+export abstract class AdminRelDynamicComponent extends AdminComponent implements OnInit, AfterViewInit { //3
 /**
  * Especializacion del formulario de administracion 
  * para administrar una entidad y sus relaciones
