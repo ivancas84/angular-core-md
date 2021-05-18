@@ -12,7 +12,7 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
   selector: 'core-show',
   template: '',
 })
-export abstract class ShowComponent implements OnInit { //1.1
+export abstract class ShowComponent implements OnInit { //2
   /**
    * Grilla de visualizacion
    */
@@ -42,7 +42,7 @@ export abstract class ShowComponent implements OnInit { //1.1
       tap(
         queryParams => {
           this.load = false;
-          this.params = this.initParams(queryParams);
+          this.initParams(queryParams);
           this.initDisplay();          
         },
       ),
@@ -58,7 +58,9 @@ export abstract class ShowComponent implements OnInit { //1.1
     );
   }
 
-  initParams(params: any){ return params; }
+  initParams(params: any){ 
+    this.params = params; 
+  }
 
   initDisplay() {
     this.display = new Display();
