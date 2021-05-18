@@ -10,14 +10,15 @@ import { fastClone } from '../../function/fast-clone';
 })
 export abstract class FieldsetArrayComponent implements OnInit  {
   /**
-   * Componente de administración de fieldset. Características:
-   *   El formulario y los datos son definidos en componente principal  
-   *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
+   * Componente de administración de fieldset.
+   * El formulario principal y los datos principales son definidos en componente principal  
+   * Define un formGroup (fieldset) y lo agrega al formulario principal dinámicamente
    */
 
-  @Input() form: FormGroup; //formulario padre
-  @Input() data: any; //datos del formulario
-  @Input() entityName: string; //entidad principal del componente  
+  entityName: string; //nombre de la entidad
+  @Input() form: FormGroup; //formulario
+  @Input() data: any; //datos
+  @Input() fieldsetId: string; //identificacion del formulario  
   /*
    * Utilizado para identificar el fieldset
    */
@@ -27,7 +28,7 @@ export abstract class FieldsetArrayComponent implements OnInit  {
   formValues = this.storage.getItem(this.router.url);
   /**
    * Al inicializar el formulario se blanquean los valores del storage, por eso deben consultarse previamente
-   * @todo Analizar, por que es necesario blanquear los valores del storage al inicializar?
+   * En AdminComponent se explica por qué es necesario blanquear los valores del storage al inicializar? Se explica
    */
 
   constructor(
@@ -38,7 +39,10 @@ export abstract class FieldsetArrayComponent implements OnInit  {
   abstract formGroup();
 
   ngOnChanges(changes: SimpleChanges): void {    
-    if(!changes["data"].isFirstChange()){ //el firstChange es tratado en el ngOnInit
+    if(!changes["data"].isFirstChange()){ 
+      /**
+       * El firstChange es tratado en el ngOnInit porque es necesario inicializar el fieldset antes de asignar
+       */
       var formValues = this.initFormValues();
       this.setFormValues(formValues);
     }
@@ -52,7 +56,7 @@ export abstract class FieldsetArrayComponent implements OnInit  {
 
   initForm(): void {
     this.fieldset = new FormArray([]);
-    this.form.addControl(this.entityName, this.fieldset);
+    this.form.addControl(this.fieldsetId, this.fieldset);
   }
 
   fg(index) { return this.fieldset.controls[index]; }
@@ -73,7 +77,7 @@ export abstract class FieldsetArrayComponent implements OnInit  {
 
   initFormValues(): any {
     if (this.formValues) {
-      var d = this.formValues.hasOwnProperty(this.entityName)? this.formValues[this.entityName] : null;
+      var d = this.formValues.hasOwnProperty(this.fieldsetId)? this.formValues[this.fieldsetId] : null;
       this.formValues = null; //@todo analizar si es necesario inicializar formValues
       return d;
     }
