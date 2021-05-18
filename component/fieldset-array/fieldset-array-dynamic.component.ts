@@ -15,7 +15,7 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
     .item { padding:0px 10px;  }
   `]
 })
-export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //2
+export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //3
   /**
    * Componente dinamico de administración de fieldset array
    * La estructura por defecto del componente de implementacion
@@ -25,6 +25,7 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //2
 
   @Input() fieldsViewOptions: FieldViewOptions[]; //fields
   @Input() title: string; //titulo del componente
+  @Input() controller: string = "id"; //controlador
 
   fieldsViewOptionsFilter: FieldViewOptions[]; //fields filtrados
 
@@ -52,7 +53,7 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //2
           })
       )
       fg.addControl("_delete",new FormControl(null))
-      
+      fg.addControl("_controller",new FormControl(this.controller))
     }      
     return fg;
   }
