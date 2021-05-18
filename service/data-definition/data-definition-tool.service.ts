@@ -615,7 +615,6 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
                 }
                 return obs
               }
-            
             )
           )
         }
@@ -625,7 +624,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
 
   relGetAllFvo(entityName: string, ids: string[], fieldsViewOptions:FieldViewOptions[]){
     /**
-     * Analiza el parametor fieldsViewOptions para obteer los fields 
+     * Analiza el parametro fieldsViewOptions para obteer los fields 
      * y ejecutar relGetAll (si corresponde)
      */
      var fields = {};
