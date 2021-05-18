@@ -1,7 +1,7 @@
 import { FieldViewOptions } from "./field-view-options";
 import { FieldsetDynamicOptions } from "./fieldset-dynamic-options";
 
-export class AdminRelStructure { //2
+export class AdminRelStructure { //3
   id:string = null; //identificacion de la relacion
   /**
    * El identificador se define:
@@ -13,9 +13,15 @@ export class AdminRelStructure { //2
   title?: string = null //titulo del fieldset
   fieldsViewOptions: FieldViewOptions[] = [] //array de FieldViewOptions
   data:any //datos
+  
   options: FieldsetDynamicOptions = new FieldsetDynamicOptions({
     inputSearchGo:false
   });
+
+  order?: {[key: string]: string};
+  /**
+   * Para el caso de las relaciones um, se proporciona el atributo order para facilitar la definicion del ordenamiento
+   */
   
   constructor(attributes: any = []) {
     for(var a in attributes){
