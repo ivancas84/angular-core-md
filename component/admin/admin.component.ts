@@ -21,7 +21,7 @@ import { ValidatorsService } from '@service/validators/validators.service';
   selector: 'core-admin',
   template: '',
 })
-export abstract class AdminComponent implements OnInit, AfterViewInit {
+export abstract class AdminComponent implements OnInit, AfterViewInit { //2
 /**
  * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
  * En el caso de que se utilice el template general formado por componentes dinamicos deberan definirse los siguientes atributos adicionales:
@@ -39,7 +39,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   /**
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
    */
-  data: any; //datos principales
+  data?: any; //datos principales
 
   isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
   isSubmitted: boolean = false; //Flag para habilitar/deshabilitar boton aceptar
@@ -67,13 +67,11 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
     /**
-     * Si no se incluye, nunca se limpia el formulario 
-     * Si se asignan otros parametros a la url quedan todas las alternativas de una misma interface
-     * en la cache, pudiendo resultar confuso para el que lo utiliza
-     * de esta forma cada vez que se asigna a una interfaz inicialmente se borra la cache
-     * si el usuario realiza una modificacion se carga nuevamente la cache
-     * al rutear a una interface diferente y volver se carga el valor de la cache y nuevamente se borra
-     * logrando el comportamiento deseado
+     * Si no se incluye, nunca se limpia el formulario. 
+     * Si se asignan otros parametros a la url quedan todas las alternativas de una misma interface en la cache, pudiendo resultar confuso para el que lo utiliza
+     * De esta forma cada vez que se asigna a una interfaz inicialmente se borra la cache
+     * Si el usuario realiza una modificacion se carga nuevamente la cache
+     * Al rutear a una interface diferente y volver se carga el valor de la cache y nuevamente se borra logrando el comportamiento deseado
      */
   }
 
@@ -105,7 +103,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.loadParams$ = this.route.queryParams.pipe(
       map(
         queryParams => { 
-          this.params = this.initParams(queryParams);
+          this.initParams(queryParams);
           this.initDisplay()
         },
         error => { 
@@ -140,7 +138,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     )
   }
 
-  initParams(params: any){ return params; }
+  initParams(params: any){ this.params = params; }
 
   initDisplay(){ this.display$.next(this.params);  }
 
