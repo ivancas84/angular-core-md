@@ -10,7 +10,7 @@ import { Display } from '@class/display';
   selector: 'core-admin-array',
   template: '',
 })
-export abstract class AdminArrayComponent extends AdminComponent {
+export abstract class AdminArrayComponent extends AdminComponent { //2
 /**
  * Formulario de administracion para un conjunto de datos
  * Es similiar a AdminComponent pero tiene ciertas restricciones para trabajar con un conjunto de datos
