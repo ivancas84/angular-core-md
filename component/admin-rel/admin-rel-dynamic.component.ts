@@ -39,6 +39,9 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
           data => {
             var obs = {}
             for(var i = 0; i < this.structure.length; i++){
+              /**
+               * Recorrer estructura para procesar relaciones um
+               */
               var key = this.structure[i].id; 
 
               if(key.includes("/")){
@@ -52,7 +55,7 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
                 }
 
                 var fkName = key.substr(key.indexOf('/')+1);
-                obs[key] = this.queryDataUm(data,entityName,fkName,prefix,this.structure[i].fieldsViewOptions)
+                obs[key] = this.queryDataUm(data,entityName,fkName,prefix,i)
               }
             }
 
@@ -69,17 +72,17 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
   queryDataUm(
     data: { [x: string]: { [x: string]: string | number; }; }, 
     entityName: string, 
-    fkName: string | number, 
-    prefix: string | number,
-    fieldsViewOptions: FieldViewOptions[]
+    fkName: string, 
+    prefix: string,
+    index: number 
   ){
     if(!data[prefix]["id"]) return of([]);
     var display = new Display();
     display.setCondition([fkName,"=",data[prefix]["id"]])
- 
+    if(this.structure[index].order) display.setOrder(this.structure[index].order);
     return this.dd.post("ids",entityName, display).pipe(
       switchMap(
-        ids => this.dd.relGetAllFvo(entityName, ids, fieldsViewOptions)
+        ids => this.dd.relGetAllFvo(entityName, ids, this.structure[index].fieldsViewOptions)
       )
     )  
   }
