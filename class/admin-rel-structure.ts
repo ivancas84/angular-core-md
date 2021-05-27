@@ -17,6 +17,11 @@ export class AdminRelStructure { //3
   options: FieldsetDynamicOptions = new FieldsetDynamicOptions({
     inputSearchGo:false
   });
+  /**
+   * Actualmente existe solo FieldsetDynamicOptions, pero posteriormente se habiliten nuevos tipos de opcion (Ej FieldsetArrayDynamicOptions)
+   * Cuando existen distintos tipos de opciones, es convienente definir una clase independiente para facilitar la definicion de valores por defecto,
+   * segun el juego de opciones los valores por defecto variaran
+   */
 
   order?: {[key: string]: string};
   /**
