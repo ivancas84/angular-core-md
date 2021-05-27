@@ -97,7 +97,9 @@ export abstract class ShowComponent implements OnInit { //2
     return of({}).pipe(
       switchMap(
         () => {
-          if(!this.length && this.length !== null) return of([]); 
+          if(!this.length && this.length === null) {
+            return of([]); 
+          }
           return this.queryData();
         },
       ),
