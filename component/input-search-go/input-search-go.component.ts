@@ -20,6 +20,8 @@ export class InputSearchGoComponent implements  OnInit {
   @Input() entityName: string;
   @Input() title?: string = "Buscar";
   @Input() route: string = emptyUrl(this.router.url);
+  //@Input() queryParamsKey: string = "id";
+
 
   searchControl: FormControl = new FormControl();
   searchFailed: boolean = false;
