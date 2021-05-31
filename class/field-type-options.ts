@@ -203,6 +203,19 @@ export class FieldInputUploadOptions { //1
 }
 
 
+export class UmOptions {
+  id: string = "um"
+  fields: any
+  
+  constructor(attributes: any) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 
 export class FieldInputTextOptions { //1.1
   id: string = "input_text" 
@@ -254,6 +267,19 @@ export class FieldYesNoOptions { //1
 
 export class FieldSummaryOptions { //1
   id: string = "summary"
+
+  constructor(attributes: any = {}) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+export class DownloadOptions { //1
+  id: string = "download"
+  entityName: string = "file"
 
   constructor(attributes: any = {}) {
     for(var a in attributes){
