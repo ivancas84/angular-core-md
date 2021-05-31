@@ -1,4 +1,4 @@
-import { FieldControlOptions, FieldDateOptions, FieldDefaultOptions, FieldInputAutocompleteOptions, FieldInputCheckboxOptions, FieldInputDateOptions, FieldInputSelectCheckboxOptions, FieldInputSelectOptions, FieldInputSelectParamOptions, FieldInputTextOptions, FieldInputTimeOptions, FieldInputYearOptions, TypeLabelOptions, FieldSummaryOptions, FieldTextareaOptions, FieldYesNoOptions } from "./field-type-options";
+import { FieldControlOptions, FieldDateOptions, FieldDefaultOptions, FieldInputAutocompleteOptions, FieldInputCheckboxOptions, FieldInputDateOptions, FieldInputSelectCheckboxOptions, FieldInputSelectOptions, FieldInputSelectParamOptions, FieldInputTextOptions, FieldInputTimeOptions, FieldInputYearOptions, TypeLabelOptions, FieldSummaryOptions, FieldTextareaOptions, FieldYesNoOptions, UmOptions, DownloadOptions } from "./field-type-options";
 import { InputPersistOptions, RouterLinkOptions } from "./field-view-aux-options"
 import { FieldWidthOptions } from "./field-width-options";
 
@@ -30,7 +30,9 @@ export class FieldViewOptions { //v1
   
     default?:any = null; //valor por defecto (podria considerarse como parte de FieldControlOptions)
     
-    type?: FieldInputCheckboxOptions
+    type?: DownloadOptions
+      | UmOptions  
+      | FieldInputCheckboxOptions
       | FieldDefaultOptions
       | FieldTextareaOptions 
       | FieldInputYearOptions 
