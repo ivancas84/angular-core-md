@@ -14,7 +14,7 @@ import { DataDefinitionService } from './data-definition.service';
 })
 export class DataDefinitionToolService extends DataDefinitionService{ //3
   
-  protected initFields( //2
+  public initFields( //2
     data: { [index: string]: any },
     fields:{ [index: string]: string } | string[],
   ){
@@ -28,11 +28,11 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
 
   }
 
-  protected assignFields( //2
+  public assignFields( //2
     data: { [index: string]: any }, 
     response: { [index: string]: any }, 
     fields:{ [index: string]: string } | string[], 
-    join: string
+    join: string = ", "
   ){
     /**
      * Asociar respuesta a datos
@@ -60,7 +60,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     id:string,
     response: { [index: string]: any }, 
     fields:{ [index: string]: string }, 
-    join: string,
+    join: string = ", ",
   ){
     /**
      * Asociar respuesta a datos
@@ -545,16 +545,18 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
      * Para realizar correctamente las relaciones entre las distintas entidades
      * es necesario que existan ciertos campos de relacion que pueden no estar incluidos en la consulta original
      * el metodo initializeFields recorre los campos indicados en el parametro e inicializa los fields de relacion
+     * por ejemplo, si desde alumno_comision, queremos recorrer persona, debemos pasar por alumno, entonces debe existir alu-persona por mas que no se incluya
+     * a diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      */
-    return this.post("rel",entityName).pipe(
+    return this.post("rel",entityName).pipe( //se consultan las relaciones de la entidad para armar el grupo de fields
       map(
         rel => {
           var f = {}
-          for(var key in fields){
+          for(var key in fields){ //se recorren los fields a consultar para identificar las relaciones faltantes
             if(fields.hasOwnProperty(key)){
               if(key.includes("-")) {
                 var k = key.substr(0, key.indexOf('-'));
-                var s = (key.includes("_")) ? key.substr(0, key.lastIndexOf('_'))+"-" : "";
+                var s = (k.includes("_")) ? k.substr(0, k.lastIndexOf('_'))+"-" : "";
                 f[s+rel[k]["field_name"]] = rel[k]["field_name"] 
               }
               if(!f.hasOwnProperty(key)) f[key] = fields[key]  
@@ -566,13 +568,13 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     )
   }
 
-  
   relGetAll(entityName: string, ids: string[], fields: { [index: string]: any }): Observable<any> {
     /**
      * Inicializar los campos de una entidad y sus relaciones
      * No se inicializan todas las relaciones, solo las que se determinan en "fields"
      * Ejemplo de retorno (para la entidad principal alumno)
      * [{id:"value", activo:true, per-id:"value", per-numero_documento:"value"},...]
+     * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      */
     return combineLatest([
       this.initializeFields(entityName, fields),
@@ -590,27 +592,27 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
                 for(var i = 0; i < keys.length; i++){
                   try{throw i} catch(j){
                     if(rel.hasOwnProperty(keys[j])){
-                    if(!isEmptyObject(this.filterFields(fieldsFilter, keys[j]+"-"))) {
-                      if(!obs){
-                        obs = this.getAllColumnData(
-                          data, 
-                          ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
-                          rel[keys[j]]["entity_name"], this.filterFields(fieldsFilter, keys[j]+"-")
-                        )
-                      } else {
-                        obs = obs.pipe(
-                          switchMap(
-                            (d:any) => {
-                              return this.getAllColumnData(d, 
-                                ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
-                                rel[keys[j]]["entity_name"], 
-                                this.filterFields(fieldsFilter, keys[j]+"-"))}
-                          ),
-                      
-                        )
+                      if(!isEmptyObject(this.filterFields(fieldsFilter, keys[j]+"-"))) {
+                        if(!obs){
+                          obs = this.getAllColumnData(
+                            data, 
+                            ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
+                            rel[keys[j]]["entity_name"], this.filterFields(fieldsFilter, keys[j]+"-")
+                          )
+                        } else {
+                          obs = obs.pipe(
+                            switchMap(
+                              (d:any) => {
+                                return this.getAllColumnData(d, 
+                                  ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
+                                  rel[keys[j]]["entity_name"], 
+                                  this.filterFields(fieldsFilter, keys[j]+"-"))}
+                            ),
+                        
+                          )
+                        }
                       }
                     }
-                  }
                   }
                 }
                 return obs
@@ -624,8 +626,12 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
 
   relGetAllFvo(entityName: string, ids: string[], fieldsViewOptions:FieldViewOptions[]){
     /**
-     * Analiza el parametro fieldsViewOptions para obteer los fields 
+     * Analiza el parametro fieldsViewOptions para obtener los fields 
      * y ejecutar relGetAll (si corresponde)
+     * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
+     * 
+     * Se recorren los fields obtenidos de fieldsViewOptions[i].field y se verifica la existencia del caracter "-".
+     * Si existe el caracter "-" significa que se está queriendo manipular un fields de una relación, por lo tanto debe inicializarse
      */
      var fields = {};
      for(var i = 0; i < fieldsViewOptions.length; i++){
