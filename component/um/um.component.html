@@ -1,0 +1,8 @@
+
+<mat-list role="list">
+  <mat-list-item *ngFor="let d of data" >
+    <core-field-view-aux *ngFor="let f of fields" 
+                         [data]="d"
+                         [fieldViewOptions]="f"></core-field-view-aux>
+  </mat-list-item>
+</mat-list>
