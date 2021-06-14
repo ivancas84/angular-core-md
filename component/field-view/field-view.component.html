@@ -3,13 +3,13 @@
   <core-input-timepicker *ngSwitchCase="'input_time'" [field]="field" [title]="fieldViewOptions.label"></core-input-timepicker>
   <core-input-year *ngSwitchCase="'input_year'" [field]="field" [title]="fieldViewOptions.label"></core-input-year>  
   <core-input-textarea *ngSwitchCase="'textarea'" [field]="field" [title]="fieldViewOptions.label"></core-input-textarea>
-  <core-input-checkbox *ngSwitchCase="'input_checkbox'" [field]="field" [title]="fieldViewOptions.label" [titleDisabled]="fieldViewOptions.labelDisabled"></core-input-checkbox>
+  <core-input-checkbox *ngSwitchCase="'input_checkbox'" [field]="field" [title]="fieldViewOptions.label" [titleDisabled]="fieldViewOptions.type.labelDisabled"></core-input-checkbox>
   <core-input-select-param *ngSwitchCase="'input_select_param'" [field]="field" [title]="fieldViewOptions.label" [options]="fieldViewOptions.type.options"></core-input-select-param>
   <core-input-select *ngSwitchCase="'input_select'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName"></core-input-select>
   <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" [field]="field" [title]="fieldViewOptions.label" [options]="fieldViewOptions.type.options"></core-input-select-checkbox>
   <core-input-autocomplete *ngSwitchCase="'input_autocomplete'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName" [adminRoute]="fieldViewOptions.type.adminRoute"></core-input-autocomplete>
   <core-input-text *ngSwitchCase="'input_text'" [field]="field" [title]="fieldViewOptions.label" [width]="fieldViewOptions.type.width" [uniqueRoute]="fieldViewOptions.type.uniqueRoute" [uniqueParam]="fieldViewOptions.type.uniqueParam" [readonly]="fieldViewOptions.control.readonly"></core-input-text>
-  <core-input-upload *ngSwitchCase="'input_upload'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName"></core-input-upload>
+  <core-input-upload *ngSwitchCase="'input_upload'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName"></core-input-upload >
 
 
   <span *ngSwitchCase="'download'">
