@@ -2,7 +2,7 @@ import { FieldControlOptions, FieldDateOptions, FieldDefaultOptions, FieldInputA
 import { InputPersistOptions, RouterLinkOptions } from "./field-view-aux-options"
 import { FieldWidthOptions } from "./field-width-options";
 
-export class FieldViewOptions { //v1
+export class FieldViewOptions { //2
     /**
      * Opciones de FieldView.
      * Todas las caracteristicas de los fields 
@@ -23,13 +23,9 @@ export class FieldViewOptions { //v1
      * aplicarse ordenamiento en el cliente o en el servidor
      */ 
     label?: string = null //etiqueta campo
-    labelDisabled?: boolean = false; //deshabilitar label
-    //entityName?: string = null //nombre de la entidad principal (@deprecated)
 
     aux?: RouterLinkOptions | InputPersistOptions = null; //opciones para field-view-aux
   
-    default?:any = null; //valor por defecto (podria considerarse como parte de FieldControlOptions)
-    
     type?: DownloadOptions
       | UmOptions  
       | FieldInputCheckboxOptions
@@ -50,6 +46,12 @@ export class FieldViewOptions { //v1
       | TypeLabelOptions = new FieldDefaultOptions()
   
     control?: FieldControlOptions = new FieldControlOptions();
+
+    /**
+     * @todo los siguientes elementos forman parte de un nuevo atributo options, objeto con llaves no definidas que variaran segun la interfaz
+     * por ejemplo para TableComponent cada elemento tendra los atributos sortDisabled, para FieldsetOptions tendra el atributo width
+     * no confundir con las opciones del componente, esto vendria a ser como opciones de elementos segun el componente (FieldTableOptions)
+     */
     sortDisabled?:boolean //deshabilitar ordenamiento
    
     width?:FieldWidthOptions = new FieldWidthOptions(); //ancho del contenedor
