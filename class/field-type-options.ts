@@ -61,7 +61,6 @@ export class FieldHiddenOptions { //1
 
 export class FieldInputCheckboxOptions { //1
   id: string = "input_checkbox"
-
   constructor(attributes: any = {}) {
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
