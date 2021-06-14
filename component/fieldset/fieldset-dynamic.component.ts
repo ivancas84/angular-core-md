@@ -61,7 +61,7 @@ export class FieldsetDynamicComponent extends FieldsetComponent { //3
   }
 
   ngOnInit() {    
-    this.defaultValues = arrayCombine(arrayColumn(this.fieldsViewOptions,"field"),arrayColumn(this.fieldsViewOptions,"default"));
+    this.fieldsViewOptions.forEach(fc =>  this.defaultValues[fc["field"]] = fc["control"]["default"] );
     this.fieldsViewOptionsFilter = this.fieldsViewOptions.filter(fc => fc.type.id != 'hidden');
     super.ngOnInit();
 
