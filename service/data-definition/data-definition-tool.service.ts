@@ -6,7 +6,7 @@ import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { recursiveData } from '@function/recursive-data';
 import { combineLatest, concat, Observable, of, race } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
 
 @Injectable({
@@ -288,6 +288,50 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
+  getRelColumnDataUm(
+    data: { [index: string]: any }[], 
+    fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
+    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
+    entityName: string, 
+    fields: string[]
+  ){
+    /**
+     * Consulta relaciones um de un conjunto de datos
+     * Define un conjunto de identificadores "ids", filtrando del parametro "data" el campo "fieldName"
+     * Consulta todos los campos del parametro "entityName" utilizando el parametro "fkName" "(fkName = ids)"
+     * Recorre "data" y "response", compara "data[i][fkName]" con "response[j][id]" y realiza un push de cada coincidencia
+     * los elementos coincidentes se almacenan en data[i][fkName+"_"]
+     * Al no ser una "asociacion" no hace falta filtrar datos, 
+     * directamente se almacena todo el cada resultado 
+     * como elemento de un array
+     */
+     if(!data.length) return of([]);
+     var ids = arrayColumn(data, fieldName);
+     if(!ids.length) return of(data);
+     var display = new Display();
+     display.setSize(0);
+     display.addParam(fkName,ids);
+     return this.post("ids",entityName, display).pipe(
+       switchMap(
+         ids => {
+          return this.relGetAll(entityName,ids,fields)}
+       ),
+       map(
+         response => {
+           for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+           if(!response.length) return data;
+           for(var j = 0; j < response.length; j++){
+             for(var i = 0; i < data.length; i++) { 
+               if(response[j][fkName] == data[i][fieldName]) 
+                 data[i]["_"+entityName].push(response[j]);
+             }
+           }
+           return data;
+         }
+       )
+     );
+  }
+
   selectColumnDataUm(
     data: { [index: string]: any }[], 
     fields: { [index: string]: string }, //fields a consultar (no deben ser funciones de agregacion)
@@ -526,21 +570,19 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
-  protected filterFields(fields, prefix) {
+  protected filterFields(fields:string[], prefix) {
     /**
      * Filtra los fields en funcion del prefijo
      * Ejemplo prefix "per-", "per_dom-"
      */
     var f = {}
-    for(var key in fields){
-      if(fields.hasOwnProperty(key)){
-        if(key.includes(prefix)) f[key] = fields[key];
-      }
+    for(var i = 0; i < fields.length; i++){
+      if(fields[i].includes(prefix)) f[fields[i]] = fields[i].substring(fields[i].indexOf("-")+1)
     }
     return f;
   }
 
-  protected initializeFields(entityName: string, fields: { [index: string]: any }): Observable<any> {
+  protected initializeFields(entityName: string, fields: string[]): Observable<any> {
     /**
      * Para realizar correctamente las relaciones entre las distintas entidades
      * es necesario que existan ciertos campos de relacion que pueden no estar incluidos en la consulta original
@@ -551,16 +593,14 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     return this.post("rel",entityName).pipe( //se consultan las relaciones de la entidad para armar el grupo de fields
       map(
         rel => {
-          var f = {}
-          for(var key in fields){ //se recorren los fields a consultar para identificar las relaciones faltantes
-            if(fields.hasOwnProperty(key)){
-              if(key.includes("-")) {
-                var k = key.substr(0, key.indexOf('-'));
+          var f = []
+          for(var i = 0; i < fields.length; i++){ //se recorren los fields a consultar para identificar las relaciones faltantes
+              if(fields[i].includes("-")) {
+                var k = fields[i].substr(0, fields[i].indexOf('-'));
                 var s = (k.includes("_")) ? k.substr(0, k.lastIndexOf('_'))+"-" : "";
-                f[s+rel[k]["field_name"]] = rel[k]["field_name"] 
+                if(f.indexOf(s+rel[k]["field_name"]) === -1) f.push(s+rel[k]["field_name"])
               }
-              if(!f.hasOwnProperty(key)) f[key] = fields[key]  
-            }
+              if(f.indexOf(fields[i]) === -1) f.push(fields[i])  
           }
           return f
         }
@@ -568,7 +608,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     )
   }
 
-  relGetAll(entityName: string, ids: string[], fields: { [index: string]: any }): Observable<any> {
+  relGetAll(entityName: string, ids: string[], fields: string[]): Observable<any> {
     /**
      * Inicializar los campos de una entidad y sus relaciones
      * No se inicializan todas las relaciones, solo las que se determinan en "fields"
@@ -633,15 +673,11 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
      * Se recorren los fields obtenidos de fieldsViewOptions[i].field y se verifica la existencia del caracter "-".
      * Si existe el caracter "-" significa que se está queriendo manipular un fields de una relación, por lo tanto debe inicializarse
      */
-     var fields = {};
+     var fields = [];
      for(var i = 0; i < fieldsViewOptions.length; i++){
-       var f = fieldsViewOptions[i].field;
-       if(f.includes("-")){
-         var n = f.indexOf("-");
-         fields[f]= f.substring(n+1)
-       }
+       if(fieldsViewOptions[i].field.includes("-")) fields.push(fieldsViewOptions[i].field);
      }
-     return (isEmptyObject(fields)) ? 
+     return (!fields.length) ? 
        this.getAll(entityName, ids) : 
        this.relGetAll(entityName, ids, fields);
   }

@@ -83,7 +83,8 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
     return this.dd.post("ids",entityName, display).pipe(
       switchMap(
         ids => this.dd.relGetAllFvo(entityName, ids, this.structure[index].fieldsViewOptions)
-      )
+      ),
+
     )  
   }
 

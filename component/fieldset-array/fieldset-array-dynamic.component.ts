@@ -38,7 +38,7 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //3
   }
   
   formGroup() {
-    let fg: FormGroup = this.fb.group({});
+    let fg: FormGroup = this.fb.group({})
     for(var i = 0; i < this.fieldsViewOptions.length; i++){
       fg.addControl(
         this.fieldsViewOptions[i].field, 
@@ -52,13 +52,13 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //3
             asyncValidators:this.fieldsViewOptions[i].control.asyncValidators,
           })
       )
-      fg.addControl("_delete",new FormControl(null))
-      fg.addControl("_controller",new FormControl(this.controller))
-    }      
-    return fg;
+    } 
+    fg.addControl("_delete",new FormControl(null))
+    fg.addControl("_controller",new FormControl(this.controller))  
+    return fg
   }
 
-  _delete(index: number) { return this.fieldset.at(index).get('_delete')}
+  _delete(index: number) { return this.fieldset.controls[index].get('_delete')}
 
 
   ngOnInit() {    

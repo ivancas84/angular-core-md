@@ -4,9 +4,7 @@
 
 <form *ngIf="(loadParams$ | async); else loading" [formGroup]="adminForm" (ngSubmit)="onSubmit()" novalidate autocomplete="off">
     <div *ngIf="(loadDisplay$ | async); else loading">  
-      
       <div  *ngFor="let s of structure; let i = index">
-      
         <core-fieldset-dynamic *ngIf="!s.id.includes('/') else um" 
           [entityName]="s.id" 
           [form]="adminForm" 
