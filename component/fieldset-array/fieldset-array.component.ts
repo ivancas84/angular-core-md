@@ -49,6 +49,7 @@ export abstract class FieldsetArrayComponent implements OnInit  {
   }
   
   ngOnInit() {
+    if(!this.fieldsetId) this.fieldsetId = this.entityName
     this.initForm();
     var data = this.initFormValues();
     this.setFormValues(data);

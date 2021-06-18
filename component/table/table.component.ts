@@ -13,6 +13,7 @@ import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SessionStorageService } from '@service/storage/session-storage.service';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 
 declare function copyFormatted(html): any;
 declare function printHtml(html): any;
@@ -50,7 +51,7 @@ export abstract class TableComponent implements OnInit, OnChanges { //3
 
   constructor(
     protected router: Router,
-    protected dd: DataDefinitionService,
+    protected dd: DataDefinitionToolService,
     protected dialog: MatDialog,
     protected snackBar: MatSnackBar,
     protected storage: SessionStorageService
