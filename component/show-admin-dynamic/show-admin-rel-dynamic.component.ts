@@ -37,13 +37,9 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
     return this.dd.post("ids", this.entityName, this.display).pipe(
       switchMap(
         ids => {
-          var fields = {};
+          var fields = [];
           for(var i = 0; i < this.fieldsViewOptions.length; i++){
-            var f = this.fieldsViewOptions[i].field;
-            if(f.includes("-")){
-              var n = f.indexOf("-");
-              fields[f]= f.substring(n+1)
-            }
+            fields.push(this.fieldsViewOptions[i].field);
           }
           return (isEmptyObject(fields)) ? 
             this.dd.getAll(this.entityName, ids) :
