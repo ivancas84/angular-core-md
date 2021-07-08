@@ -1,4 +1,4 @@
-import { OnInit, AfterViewInit, Component } from '@angular/core';
+import { OnInit, AfterViewInit, Component, Output, EventEmitter } from '@angular/core';
 import { AdminRelStructure } from '@class/admin-rel-structure';
 import { Display } from '@class/display';
 import { FieldViewOptions } from '@class/field-view-options';
@@ -29,6 +29,8 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
    *   cur_com-alumno/comision (alumno.comision) um
    * @returns 
    */
+
+   optColumn: any[] = null; //opciones (si es null no se visualiza)
 
   serverData() { return this.adminForm.value }
 
@@ -76,9 +78,11 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
     prefix: string,
     index: number 
   ){
+    console.log("voy a consultar" +entityName+fkName+prefix+index+data[prefix]["id"] )
     if(!data[prefix]["id"]) return of([]);
     var display = new Display();
     display.setCondition([fkName,"=",data[prefix]["id"]])
+    console.log(display);
     if(this.structure[index].order) display.setOrder(this.structure[index].order);
     return this.dd.post("ids",entityName, display).pipe(
       switchMap(
@@ -118,5 +122,33 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
       }
     );
     this.subscriptions.add(s);
+  }
+
+  @Output() event: EventEmitter<any> = new EventEmitter();
+
+  switchAction($event:any){ 
+    console.log($event)
+
+    /**
+     * Acciones de opciones
+     * Sobescribir si se necesita utilizar eventos
+     * Utilizar $event.action para la accion a ejecutar (corresponde a opt.action)
+     * Utilizar $event.data para los datos a utilizar (corresponde a row)
+     */  
+    switch($event.action){
+      case "delete":
+        this.delete()
+      break;
+      default:
+        throw new Error("Not Implemented");
+    }   
+  }
+
+  emitEvent($event){
+    console.log($event);
+    switch($event.action){
+      default:
+        this.event.emit($event);
+    }
   }
 }
