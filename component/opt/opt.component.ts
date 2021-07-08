@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import { OptLinkIcon, OptLinkText, OptRouteIcon, OptRouteText } from '@class/opt';
+import { OptEventIcon, OptLinkIcon, OptLinkText, OptRouteIcon, OptRouteText } from '@class/opt';
 import { fastClone } from '@function/fast-clone';
  
 @Component({
@@ -8,18 +8,17 @@ import { fastClone } from '@function/fast-clone';
 })
 export class OptComponent implements OnChanges{ //3
   /**
-   * Visualizar opciones de columna
+   * Visualizar opciones
    */
 
   @Input() opt: OptRouteIcon
           | OptLinkIcon
           | OptRouteText
           | OptLinkText
+          | OptEventIcon
 
 
   @Input() data: { [index: string]: any }; //conjunto de campos
-  @Input() index: number; //indice (evitar utilizarlo, si se realiza ordenamiento de la tabla utilizando angular, no se reflejan los datos en la general)
-  
 
   params: any = null;
 
@@ -29,7 +28,7 @@ export class OptComponent implements OnChanges{ //3
   ngOnChanges(changes: SimpleChanges): void {
 
     /**
-     * Se realiza una traduccion del atributo fieldViewOptions.aux.params que contienen {{key}}
+     * Se realiza una traduccion del atributo opt.params que contienen {{key}}
      */
 
     if( changes["data"] && this.opt.params ) {
@@ -44,7 +43,7 @@ export class OptComponent implements OnChanges{ //3
   }
 
   emitEventOpt(){
-    var $event = {index:this.index, action:this.opt.action, data:this.data}
+    var $event = {action:this.opt.action, data:this.data}
     this.eventOpt.emit($event)
   }
 
