@@ -6,7 +6,7 @@ export class OptRouteIcon { //2
   params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
   template: string = "info";
   target: string = "_self";
-
+ 
   constructor(attributes: any) {
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
@@ -21,7 +21,7 @@ export class OptLinkIcon { //2
   action: string;
   params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
   template: string = "info";
-
+  
   constructor(attributes: any) {
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
