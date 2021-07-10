@@ -24,8 +24,8 @@ export class Display {
   /**
    * Atributos para consultas avanzadas
    */
-  protected fields: Array<string> = []; 
-  protected group: Array<string> = [];
+  protected fields: {[key: string]: string|string[] } = {}; 
+  protected group: {[key: string]: string|string[] } = {};
   protected having: Array<any> = [];
 
   public getSize(){ return this.size }
@@ -33,10 +33,10 @@ export class Display {
   public getOrder(){ return this.order }
   public getCondition(){ return this.condition }
   public getParams(){ return this.params }
-  public getParam(key){ return this.params.hasOwnProperty(key) ?  this.params[key]:null; }
+  public getParam(key:string){ return this.params.hasOwnProperty(key) ?  this.params[key]:null; }
 
-  public getFields(){ return this.fields }
-  public getGroup(){ return this.group }
+  public getFields(): {[key: string]: string|string[] } { return this.fields }
+  public getGroup(): {[key: string]: string|string[] } { return this.group }
   public getHaving(){ return this.having }
 
   public setSize(size: number) { this.size = size; }
@@ -45,11 +45,68 @@ export class Display {
   public addCondition(condition){ this.condition.push(condition); }
   public setCondition(condition){ this.condition = condition; }
   
-  public addField(field: string){ this.fields.push(field); }
-  public setFields(fields: string[]){ this.fields = fields; }
-  
-  public addGroup(field: string){ this.group.push(field); }
-  public setGroup(fields: string[]){ this.group = fields; }
+  public addField(field: string){
+    /**
+     * se obtiene el indice mayor y se incrementa en uno
+     */
+    var keys = Object.keys(this.fields);
+    var key = 0;
+    for (var i = keys.length - 1; i >= 0; i--) {
+      if(/^\d+$/.test(keys[i])){
+        key = parseInt(keys[i]);
+        key+=1;
+      }
+    }
+    this.fields[key]=field;
+  }
+
+  public addFieldAs(key:string,field:string){
+    this.fields[key]=field;
+  }
+    
+  public setFields(fields: string[] | {[key: string]: string }){
+    //this.fields = Object.assign({}, fields)
+    /**
+     * @todo La sentencia this.fields = Object.assign({}, fields) deberia funcionar
+     * pero el compilador de angular/typescript tira un error de tipo
+     * se modifica el codigo a continuacion para que no indique el error,
+     * se volvera a probar en futuras versiones
+     */
+    this.fields = {};
+     var obj = Object.assign({}, fields)
+    for(var x in obj) this.fields[x] = obj[x];
+  }
+
+  public addGroup(field: string){
+    /**
+     * se obtiene el indice mayor y se incrementa en uno
+     */
+    var keys = Object.keys(this.group);
+    var key = 0;
+    for (var i = keys.length - 1; i >= 0; i--) {
+      if(/^\d+$/.test(keys[i])){
+        key = parseInt(keys[i]);
+        key+=1;
+      }
+    }
+    this.group[key]=field;
+  }
+  public addGroupAs(key:string,field:string){
+    this.group[key]=field;
+  }
+    
+  public setGroup(fields: string[] | {[key: string]: string }){
+    //this.group = Object.assign({}, fields)
+    /**
+     * @todo La sentencia this.group = Object.assign({}, fields) deberia funcionar
+     * pero el compilador de angular/typescript tira un error de tipo
+     * se modifica el codigo a continuacion para que no indique el error,
+     * se volvera a probar en futuras versiones
+     */
+    this.group = {};
+    var obj = Object.assign({}, fields)
+    for(var x in obj) this.group[x] = obj[x];
+  }
 
   public addHaving(condition){ this.having.push(condition); }
   public setHaving(condition){ this.having = condition; }
@@ -61,8 +118,8 @@ export class Display {
     if(!isEmptyObject(this.order)) ret["order"] = this.order;
     if(this.condition.length) ret["condition"] = this.condition;
     if(!isEmptyObject(this.params)) ret["params"] = this.params;
-    if(this.fields.length) ret["fields"] = this.fields;
-    if(this.group.length) ret["group"] = this.group;
+    if(!isEmptyObject(this.fields)) ret["fields"] = this.fields;
+    if(!isEmptyObject(this.fields)) ret["group"] = this.group;
     if(this.having.length) ret["having"] = this.having;
     
     return ret;

@@ -1,7 +1,6 @@
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription, Observable, BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { map, switchMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { emptyUrl } from '../../function/empty-url.function';
@@ -15,12 +14,14 @@ import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fastClone } from '@function/fast-clone';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
+import { ValidatorsService } from '@service/validators/validators.service';
 
 @Component({
   selector: 'core-admin',
   template: '',
 })
-export abstract class AdminComponent implements OnInit, AfterViewInit {
+export abstract class AdminComponent implements OnInit, AfterViewInit { //2
 /**
  * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
  * En el caso de que se utilice el template general formado por componentes dinamicos deberan definirse los siguientes atributos adicionales:
@@ -38,37 +39,39 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
   /**
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
    */
-  data: any; //datos principales
+  data?: any; //datos principales
 
   isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
   isSubmitted: boolean = false; //Flag para habilitar/deshabilitar boton aceptar
 
-  params: any; //parametros
+  params: { [x: string]: any; } //parametros del componente
   loadParams$: Observable<any>; //carga de parametros
   loadDisplay$: Observable<any>; //carga de display
   protected subscriptions = new Subscription(); //suscripciones en el ts
+  persistApi: string = "persist";
+  queryApi: string = "unique";
 
   constructor(
     protected fb: FormBuilder, 
     protected route: ActivatedRoute, 
     protected router: Router, 
     protected location: Location, 
-    protected dd: DataDefinitionService, 
-    protected storage: SessionStorageService,
+    protected dd: DataDefinitionToolService, 
+    protected validators: ValidatorsService,
+    protected storage: SessionStorageService, 
     protected dialog: MatDialog,
-    protected snackBar: MatSnackBar,
-  ) {}
+    protected snackBar: MatSnackBar
+  ) { }
+
   
   ngAfterViewInit(): void {
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
     /**
-     * Si no se incluye, nunca se limpia el formulario 
-     * Si se asignan otros parametros a la url quedan todas las alternativas de una misma interface
-     * en la cache, pudiendo resultar confuso para el que lo utiliza
-     * de esta forma cada vez que se asigna a una interfaz inicialmente se borra la cache
-     * si el usuario realiza una modificacion se carga nuevamente la cache
-     * al rutear a una interface diferente y volver se carga el valor de la cache y nuevamente se borra
-     * logrando el comportamiento deseado
+     * Si no se incluye, nunca se limpia el formulario. 
+     * Si se asignan otros parametros a la url quedan todas las alternativas de una misma interface en la cache, pudiendo resultar confuso para el que lo utiliza
+     * De esta forma cada vez que se asigna a una interfaz inicialmente se borra la cache
+     * Si el usuario realiza una modificacion se carga nuevamente la cache
+     * Al rutear a una interface diferente y volver se carga el valor de la cache y nuevamente se borra logrando el comportamiento deseado
      */
   }
 
@@ -100,8 +103,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     this.loadParams$ = this.route.queryParams.pipe(
       map(
         queryParams => { 
-          var params = this.initParams(queryParams);
-          this.initDisplay(params)
+          this.initParams(queryParams);
+          this.initDisplay()
         },
         error => { 
           this.snackBar.open(JSON.stringify(error), "X"); 
@@ -115,11 +118,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
 
   loadDisplay(){
     /**
-     * Se define como observable y se suscribe en el template
-     * con esto me aseguro de que me suscribo luego de inicializados los parametros
-     * Si me suscribo directamente en el template, se suscribe dos veces, uno en null y otro con el valor del parametro
+     * A diferencia de los componentes de visualizacion o similares
+     * Se define un load independiente para el display 
+     * debido a que se puede reasignar directamente el display para reinicializar
+     * por ejemplo al limpiar o resetear el formulario
      */
-    this.loadDisplay$ =  this.display$.pipe(
+    this.loadDisplay$ = this.display$.pipe(
       switchMap(
         () => {
           return this.initData();
@@ -134,15 +138,15 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
     )
   }
 
-  initParams(params: any){ return params; }
+  initParams(params: any){ this.params = params; }
 
-  initDisplay(params){ this.display$.next(params);  }
+  initDisplay(){ this.display$.next(this.params);  }
 
   initData(): Observable<any> {
     return of({}).pipe(
       switchMap(() => {
         if(isEmptyObject(this.display$.value)) return of (null);
-        else return this.dd.unique(this.entityName, this.display$.value)
+        else return this.queryData();
       }),
       map(
         data => {
@@ -154,6 +158,13 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
         }
       )
     );
+  }
+
+  queryData(): Observable<any> {
+    switch(this.queryApi){
+      case "unique": return this.dd.unique(this.entityName, this.display$.value)
+      default:  return this.dd.post(this.queryApi, this.entityName, this.display$.value);
+    }
   }
 
   back() { this.location.back(); }
@@ -185,7 +196,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit {
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array de logs)"
      */
-    return this.dd.post("persist", this.entityName, this.serverData())
+    return this.dd._post(this.persistApi, this.entityName, this.serverData())
   }
 
   onSubmit(): void {

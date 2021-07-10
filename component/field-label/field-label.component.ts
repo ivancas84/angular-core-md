@@ -6,7 +6,9 @@ import { DataDefinitionService } from '@service/data-definition/data-definition.
   templateUrl: './field-label.component.html',
 })
 export class FieldLabelComponent implements OnChanges {
-  
+  /**
+   * Definir etiqueta con los campos indicados
+   */
   @Input() entityName: string;
   @Input() id: string;
   @Input() fieldNames: string[];

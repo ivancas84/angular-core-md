@@ -34,6 +34,8 @@ export class InputPersistComponent implements OnInit {
   @Input() fieldViewOptions: FieldViewOptions
   @Input() params?: { [index: string]: any } = {} //parametros para identificar univocamente el campo que se debe persistir
   @Input() api: string = "persist_unique" //api de persistencia
+  @Input() entityName: string
+  @Input() fieldName: string
 
   field: FormControl;
   load$: Observable<any>;
@@ -64,13 +66,13 @@ export class InputPersistComponent implements OnInit {
         value => { 
           if(value == this.value) return of(true)
           this.value = value;
-          if(this.value === "") return of(true);
+          //if(this.value === "") return of(true);
           if(this.field.invalid) {
             this.snackBar.open("Valor incorrecto " + this.value, "X");
             return of(true)
           }
-          this.params[this.fieldViewOptions.field] = value;
-          return this.dd._post(this.api, this.fieldViewOptions.entityName, this.params).pipe(
+          this.params[this.fieldName] = value;
+          return this.dd._post(this.api, this.entityName, this.params).pipe(
             tap(
               response => {
                 this.snackBar.open("Se ha registrado " + this.value, "X");

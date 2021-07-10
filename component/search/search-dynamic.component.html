@@ -1,0 +1,16 @@
+<mat-accordion>
+  <mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{title}}</mat-panel-title>
+    </mat-expansion-panel-header>
+    <form [formGroup]="searchForm" novalidate (ngSubmit)="onSubmit()">       
+      <!--core-search-all *ngIf="searchAll" [form]="searchForm" [display]="display"></core-search-all-->
+      <core-search-params-dynamic *ngIf="searchParams" [form]="searchForm" [display]="display" [fieldsViewOptions]="fieldsViewOptionsSp"></core-search-params-dynamic>
+
+      <!--app-alumno-search-params [form]="searchForm" [display]="display"></app-alumno-search-params-->
+      <!--app-alumno-search-condition [form]="searchForm" [display]="display"></app-alumno-search-condition-->
+      <!--app-alumno-search-order [form]="searchForm" [display]="display"></app-alumno-search-order-->
+      <button mat-raised-button color="primary" type="submit">Buscar</button>&nbsp;
+    </form>
+  </mat-expansion-panel>
+</mat-accordion>

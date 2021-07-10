@@ -10,9 +10,9 @@ import { fastClone } from '../../function/fast-clone';
 })
 export abstract class FieldsetComponent implements OnInit, OnChanges  {
   /**
-   * Componente de administración de fieldset. Características:
-   *   El formulario y los datos son definidos en componente principal  
-   *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
+   * Componente de administración de fieldset.
+   * El formulario principal y los datos principales son definidos en componente principal  
+   * Define un formGroup (fieldset) y lo agrega al formulario principal dinámicamente
    */
 
   @Input() form: FormGroup; //formulario padre
@@ -33,6 +33,11 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
   /**
    * Al inicializar el formulario, en el padre se borran los valores del storage, 
    * por eso deben consultarte los valores del storage previamente
+   */
+
+  controller = "id"
+  /**
+   * Controlador utilizado para realizar el procesamiento del fieldset (unique o id)
    */
 
   constructor(
@@ -57,6 +62,10 @@ export abstract class FieldsetComponent implements OnInit, OnChanges  {
   }
 
   formGroup() { return new FormGroup({}); }
+  /**
+   * Incoporporar valores de control con el prefijo "_", por ejemplo
+   * fg.addControl("_controller",new FormControl(this.controller))
+   */
 
   initForm(): void {
     this.fieldset = this.formGroup();

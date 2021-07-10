@@ -1,14 +1,19 @@
-import { Input, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Observable, BehaviorSubject, of, forkJoin, concat, merge, combineLatest } from 'rxjs';
+import { Input, Component, OnInit, ViewChild, ElementRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
-import { combineAll, first, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
-import { compare } from '@function/compare';
-import { fastClone } from '@function/fast-clone';
 import { naturalCompare } from '@function/natural-compare';
+import { DataDefinitionService } from '@service/data-definition/data-definition.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
+import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SessionStorageService } from '@service/storage/session-storage.service';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 
 declare function copyFormatted(html): any;
 declare function printHtml(html): any;
@@ -22,7 +27,7 @@ declare function printHtml(html): any;
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export abstract class TableComponent implements OnInit {
+export abstract class TableComponent implements OnInit, OnChanges { //3
   /**
    * Elementos de uso habitual para una tabla
    */
@@ -33,19 +38,51 @@ export abstract class TableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator; //paginacion
   @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
   //footer: { [index: string]: any }[] = []; //
+  protected subscriptions = new Subscription(); //suscripciones en el ts
 
   /**
    * los datos a visualizar se separan de los datos recibidos para facilitar la reimplementacion
    * si no se define display o length no se muestra la paginacion
    */
 
+  entityName?: string;
+  titleLoad$: Observable<string[]>;
+  deleteApi: string = "delete";
+
   constructor(
     protected router: Router,
+    protected dd: DataDefinitionToolService,
+    protected dialog: MatDialog,
+    protected snackBar: MatSnackBar,
+    protected storage: SessionStorageService
   ) {}
 
   ngOnInit(): void {
+    var p = Object.keys(this.display.getParams());
+    if(p.length == 1 && this.entityName){
+      if(p[0].includes("-")) {
+        this.titleLoad$ = this.dd.post("rel",this.entityName).pipe(
+          map(
+            response => {
+              var r = response[
+                p[0].substring(0,p[0].indexOf("-"))
+              ];
+              r["value"] = this.display.getParams()[p[0]];
+              return r;
+            }
+          )
+        )  
+      }
+    }
+    
     if(!this.length) this.length = this.dataSource.length;    
     //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if( changes['dataSource'] && changes['dataSource'].previousValue != changes['dataSource'].currentValue ) {    
+      if(!this.length) this.length = this.dataSource.length;    
+    }
   }
   
   onChangePage($event: PageEvent){
@@ -94,4 +131,61 @@ export abstract class TableComponent implements OnInit {
   printContent(): void {
     if(this.content) printHtml(this.content.nativeElement.innerHTML);
   }
+
+  onRemove(index) { 
+    /**
+     * Evento de eliminacion, proporciona al usuario un dialogo de confimacion e invoca a remove para eliminar
+     */
+    const dialogRef = this.dialog.open(DialogConfirmComponent, {
+      data: {title: "Eliminar registro " + index, message: "Está seguro?"}
+    });
+ 
+    var s = dialogRef.afterClosed().subscribe(result => {
+      if(result) this.remove(index)
+    });
+    
+    this.subscriptions.add(s)
+  }
+
+  remove(index: number) {
+    /**
+     * Acción de eliminación
+     */
+    var s = this.delete(index).subscribe(
+      response => {
+        this.deleted(index, response)        
+      },
+      error => { 
+        this.dialog.open(DialogAlertComponent, {
+          data: {title: "Error", message: error.error}
+        });
+      }
+    );
+    this.subscriptions.add(s);
+  }
+
+  delete(index: number): Observable<any> {
+    /**
+     * Invocar api de eliminación indicda en atributo deleteApi
+     */
+    return this.dd.post(this.deleteApi, this.entityName, [this.dataSource[index]["id"]])
+  }
+
+  deleted(index, response){
+    /**
+     * Acciones una vez realizada la eliminación
+     */
+    const data = this.dataSource.slice()
+    data.splice(index, 1)
+    this.snackBar.open("Registro eliminado", "X")
+    this.removeStorage(response)
+    this.dataSource = data
+    this.length--
+  }
+
+  removeStorage(response){
+    this.storage.removeItemsContains(".");
+    this.storage.removeItemsPersisted(response["detail"]);
+  }
+
 }

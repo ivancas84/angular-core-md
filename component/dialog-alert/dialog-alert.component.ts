@@ -11,7 +11,7 @@ export interface DialogData {
   selector: 'app-dialog-alert',
   templateUrl: './dialog-alert.component.html'
 })
-export class DialogAlertComponent {
+export class DialogAlertComponent { //v1
 
   constructor(
     public dialogRef: MatDialogRef<DialogAlertComponent>,

@@ -1,31 +1,66 @@
 import { Injectable } from '@angular/core';
 import { Display } from '@class/display';
+import { FieldViewOptions } from '@class/field-view-options';
 import { arrayColumn } from '@function/array-column';
 import { fastClone } from '@function/fast-clone';
+import { isEmptyObject } from '@function/is-empty-object.function';
 import { recursiveData } from '@function/recursive-data';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, concat, Observable, of, race } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{
+export class DataDefinitionToolService extends DataDefinitionService{ //3
   
-  protected initFields(
+  public initFields( //2
     data: { [index: string]: any },
-    fields:{ [index: string]: string },
+    fields:{ [index: string]: string } | string[],
   ){
-    for(var f in fields){
-      if(fields.hasOwnProperty(f)) data[f] = null; //inicializar en null
+    if(Array.isArray(fields)) {
+      for(var f in fields) data[fields[f]] = null
+    } else { 
+      for(var f in fields){
+        if(fields.hasOwnProperty(f)) data[f] = null; //inicializar en null
+      }
+    }
+
+  }
+
+  public assignFields( //2
+    data: { [index: string]: any }, 
+    response: { [index: string]: any }, 
+    fields:{ [index: string]: string } | string[], 
+    join: string = ", "
+  ){
+    /**
+     * Asociar respuesta a datos
+     * Al trabajar por referencia se reflejan los datos en los parametros
+     */
+    if(Array.isArray(fields)){
+      for(var f in fields) data[fields[f]] = response[fields[f]]
+    } else {
+      for(var f in fields){
+        if(fields.hasOwnProperty(f)) {                    
+          if(Array.isArray(fields[f])) {
+            var d = [];
+            for(var k = 0; k < fields[f].length; k++) d.push(response[fields[f][k]])
+            data[f] = d.join(join);
+          } else {
+            data[f] = response[fields[f]];
+          }
+        }
+      }
     }
   }
 
-  protected assignFields(
+  protected assignFieldsObj(
     data: { [index: string]: any }, 
+    id:string,
     response: { [index: string]: any }, 
     fields:{ [index: string]: string }, 
-    join: string
+    join: string = ", ",
   ){
     /**
      * Asociar respuesta a datos
@@ -36,9 +71,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
         if(Array.isArray(fields[f])) {
           var d = [];
           for(var k = 0; k < fields[f].length; k++) d.push(response[fields[f][k]])
-          data[f] = d.join(join);
+          data[id][f] = d.join(join);
         } else {
-          data[f] = response[fields[f]];
+          data[id][f] = response[fields[f]];
         }
       }
     }
@@ -52,13 +87,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
   ){
     /**
      * Recorrer arbol y ejecutar metodo indicado
-     * Utiliza funcion externa "recursiveData" para obtener la hoja indicada del parametro "tree" en "data"
-     * Ejecuta metodo indicado en parametro "method" con parametros indicados en parametro "params"
+     * Utiliza funcion externa "recursiveData" para obtener la hoja indicada de "tree" en "data"
+     * Ejecuta metodo "method" con parametros "params"
      * Los valores se asignan al resultado de "recursiveData" y se reflejan en "data" ya que js trabaja por referencia
      */
     switch(method){
       case "getAllColumnDataUm":
-        return this.getAllColumnDataUm(recursiveData(tree, data),params["fkName"],params["entityName"]).pipe(map(
+        return this.getAllColumnDataUm(recursiveData(tree, data),params["fieldName"], params["fkName"],params["entityName"]).pipe(map(
           () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
         ));
       case "getPostAllColumnData":
@@ -81,21 +116,20 @@ export class DataDefinitionToolService extends DataDefinitionService{
           params["fieldName"],
           params["entityName"],
           params["fields"],
-          params["fieldsResponse"],
-          join
         ).pipe(map(
           () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
         ))
     }
   }
 
-  getAllColumnData(
+  getAllColumnData( //2
     data: { [index: string]: any }[], 
     fkName: string, 
     entityName: string, 
-    fields: { [index: string]: any },
-    join: string = ", "
+    fields: { [index: string]: any } | string[],
+    join: string = ", ",
   ): Observable<{ [index: string]: any }[]>{
+
     /**
      * Consulta de relaciones directas
      * Define un array de identificadores "ids" a partir de los parametros "data[fkName]"
@@ -106,16 +140,16 @@ export class DataDefinitionToolService extends DataDefinitionService{
      */
     if(!data.length) return of([]);
     var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; });
-    if(!ids.length) {
-      for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
-      return of(data);
-    }
+    
+    for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
+    
+    if(!ids.length) return of(data);
+    
     return this.getAll(entityName, ids).pipe(
       map(
         response => {
           if(!response.length) return data;
           for(var i = 0; i < data.length; i++){
-            this.initFields(data[i],fields);
             for(var j = 0; j < response.length; j++){
               if(data[i][fkName] == response[j]["id"]) {
                 this.assignFields(data[i],response[j],fields,join)
@@ -128,6 +162,47 @@ export class DataDefinitionToolService extends DataDefinitionService{
       )
     );  
   }
+
+
+  allColumnData( //1
+    data: { [index: string]: any }[], 
+    fkName: string,
+    entityName: string, 
+    fieldName: string, 
+    fields: { [index: string]: any } | string[],
+    join: string = ", ",
+  ): Observable<{ [index: string]: any }[]>{
+    /**
+     * Similar a getAllColumnData pero utiliza un "fieldName", en vez del "id" para realizar la consulta
+     */
+    if(!data.length) return of([]);
+    var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; });
+    
+    for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
+    
+    if(!ids.length) return of(data);
+    
+    var display = new Display();
+    display.setSize(0);
+    display.setCondition([fieldName,"=",ids]);
+    return this.all(entityName, display).pipe(
+      map(
+        response => {
+          if(!response.length) return data;
+          for(var i = 0; i < data.length; i++){
+            for(var j = 0; j < response.length; j++){
+              if(data[i][fkName] == response[j][fieldName]) {
+                this.assignFields(data[i],response[j],fields,join)
+                break;
+              }
+            }
+          }
+          return data;
+        }
+      )
+    );  
+  }
+  
     
   
   getPostAllColumnData(
@@ -142,16 +217,17 @@ export class DataDefinitionToolService extends DataDefinitionService{
     /**
      * Consulta de relaciones directas para metodos no habituales
      * Procedimiento similar a getAllColumnData
-     * Define un array de identificadores "ids" a partir de los parametros "data[fkName]"
+     * Define un array de identificadores "ids" a partir de los parametros "data[fieldNameData]"
      * Consulta todos los campos del parametro "entityName" utilizando "ids" y parametro "method" para obtener "response"
      * Recorre "data" y "response", compara "data[i][fieldNameData]" con "response[j][fieldNameResponse]" y realiza una asociacion
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
+     * En la medida de lo posible evitar el uso de este metodo ya que no utiliza storage
      */
     if(!data.length) return of([]);
     var ids = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; });
     if(!ids.length) return of(data);
-    return this.post(method,entityName,ids).pipe(
+    return this._post(method,entityName,ids).pipe(
       map(
         response => {
           if(!response.length) return data;
@@ -175,12 +251,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
   
   getAllColumnDataUm(
     data: { [index: string]: any }[], 
-    fkName: string, //fkName para entityName
+    fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
+    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
     entityName: string, 
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta relaciones um de un conjunto de datos
-     * Define un conjunto de identificadores "ids", filtrando del parametro "data" el campo "id"
+     * Define un conjunto de identificadores "ids", filtrando del parametro "data" el campo "fieldName"
      * Consulta todos los campos del parametro "entityName" utilizando el parametro "fkName" "(fkName = ids)"
      * Recorre "data" y "response", compara "data[i][fkName]" con "response[j][id]" y realiza un push de cada coincidencia
      * los elementos coincidentes se almacenan en data[i][fkName+"_"]
@@ -189,7 +266,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * como elemento de un array
      */
     if(!data.length) return of([]);
-    var ids = arrayColumn(data, "id");
+    var ids = arrayColumn(data, fieldName);
     if(!ids.length) return of(data);
     var display = new Display();
     display.setSize(0);
@@ -201,7 +278,111 @@ export class DataDefinitionToolService extends DataDefinitionService{
           if(!response.length) return data;
           for(var j = 0; j < response.length; j++){
             for(var i = 0; i < data.length; i++) { 
-              if(response[j][fkName] == data[i]["id"]) 
+              if(response[j][fkName] == data[i][fieldName]) 
+                data[i]["_"+entityName].push(response[j]);
+            }
+          }
+          return data;
+        }
+      )
+    );  
+  }
+
+  getRelColumnDataUm(
+    data: { [index: string]: any }[], 
+    fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
+    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
+    entityName: string, 
+    fields: string[]
+  ){
+    /**
+     * Consulta relaciones um de un conjunto de datos
+     * Define un conjunto de identificadores "ids", filtrando del parametro "data" el campo "fieldName"
+     * Consulta todos los campos del parametro "entityName" utilizando el parametro "fkName" "(fkName = ids)"
+     * Recorre "data" y "response", compara "data[i][fkName]" con "response[j][id]" y realiza un push de cada coincidencia
+     * los elementos coincidentes se almacenan en data[i][fkName+"_"]
+     * Al no ser una "asociacion" no hace falta filtrar datos, 
+     * directamente se almacena todo el cada resultado 
+     * como elemento de un array
+     */
+     if(!data.length) return of([]);
+     var ids = arrayColumn(data, fieldName);
+     if(!ids.length) return of(data);
+     var display = new Display();
+     display.setSize(0);
+     display.addParam(fkName,ids);
+     return this.post("ids",entityName, display).pipe(
+       switchMap(
+         ids => {
+          return this.relGetAll(entityName,ids,fields)}
+       ),
+       map(
+         response => {
+           for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+           if(!response.length) return data;
+           for(var j = 0; j < response.length; j++){
+             for(var i = 0; i < data.length; i++) { 
+               if(response[j][fkName] == data[i][fieldName]) 
+                 data[i]["_"+entityName].push(response[j]);
+             }
+           }
+           return data;
+         }
+       )
+     );
+  }
+
+  selectColumnDataUm(
+    data: { [index: string]: any }[], 
+    fields: { [index: string]: string }, //fields a consultar (no deben ser funciones de agregacion)
+    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
+    entityName: string,
+    fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
+  ): Observable<{ [index: string]: any }[]>{
+    /**
+     * Consulta avanzada de relaciones um de un conjunto de datos
+     * 
+     * Define un conjunto de identificadores "ids", 
+     * filtrando del parametro "data" el campo "fieldName"
+     * 
+     * Consulta los campos "fields" de la entidad "entityName"
+     * filtrando por "fkName" "(fkName = ids)"
+     * 
+     * Recorre "data" y "response", 
+     * compara "data[i][fkName]" con "response[j][fieldName]" 
+     * y realiza un push de cada coincidencia
+     * los elementos coincidentes se almacenan en data[i]["_"+fkName]
+     * 
+     * Al no ser una "asociacion" no hace falta filtrar datos, 
+     * directamente se almacena todo el cada resultado 
+     * como elemento de un array
+     * 
+     * Se utiliza la nomenclartura "_"+fkName para diferenciarla de fkName+"_" 
+     * utilizada para almacenar un json de la relacion de datos consultada
+     * 
+     * Siempre que se pueda utilizar el metodo getAllColumnDataUm,
+     * ya que implementa storage 
+     */
+    if(!data.length) return of([]);
+
+    for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+
+    var ids = arrayColumn(data, fieldName);
+    if(!ids.length) return of(data);
+
+    fields[fieldName]=fieldName; //siempre debe existir el fieldName para comparar el resultado
+
+    var display = new Display();
+    display.setSize(0);
+    display.setFields(fields);
+    display.addParam(fkName,ids);
+    return this._post("advanced",entityName, display).pipe(
+      map(
+        response => {
+          if(!response.length) return data;
+          for(var j = 0; j < response.length; j++){
+            for(var i = 0; i < data.length; i++) { 
+              if(response[j][fkName] == data[i][fieldName]) 
                 data[i]["_"+entityName].push(response[j]);
             }
           }
@@ -212,23 +393,23 @@ export class DataDefinitionToolService extends DataDefinitionService{
   }
 
   getColumnData(
-    data: { [index: string]: any }[], 
-    fieldName: string, 
+    data: { [index: string]: any }, 
+    fkName: string, 
     entityName: string, 
     fields: { [index: string]: any },
     join:string=", "
-  ): Observable<{ [index: string]: any }[]>{
+  ): Observable<{ [index: string]: any }>{
     /**
-     * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fieldName]" para obtener "response" 
+     * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
      * Efectua una asociacion 
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      */
-    if(!data[fieldName]){
+    if(!data[fkName]){
       for(var f in fields) data[f] = null;
       return of(data);
     }
-    return this.get(entityName, data[fieldName]).pipe(
+    return this.get(entityName, data[fkName]).pipe(
       map(
         response => {
           if(!response) return data;
@@ -239,7 +420,62 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  
+  getColumnDataUm(
+    data: { [index: string]: any }, 
+    fkName: string, 
+    entityName: string, 
+    fields: { [index: string]: any },
+    join:string=", "
+  ): Observable<{ [index: string]: any }>{
+    /**
+     * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
+     * Efectua una asociacion 
+     * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
+     * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
+     */
+    if(!data[fkName]){
+      for(var f in fields) data[f] = null;
+      return of(data);
+    }
+    return this.get(entityName, data[fkName]).pipe(
+      map(
+        response => {
+          if(!response) return data;
+          this.assignFields(data,response,fields,join)
+          return data;
+        }
+      )
+    );  
+  }
+
+  getColumnDataObj(
+    data: { [index: string]: { [index: string]: any } },
+    id: string,
+    idResponse: string, 
+    fkName: string, 
+    entityName: string, 
+    fields: { [index: string]: any },
+    join:string=", "
+  ): Observable<{ [index: string]: { [index: string]: any } }>{
+    /**
+     * Similar a getColumnData pero utiliza una estructura de datos diferente de la forma
+     * data["alumno"] = {id:"value",activo:"value"} 
+     * data["per"] = {id:"value",activo:"value"}
+     */
+    data[idResponse] = null;
+    if(!data[id][fkName]) return of(data);
+
+    return this.get(entityName, data[id][fkName]).pipe(
+      map(
+        response => {
+          if(!response) return data;
+          this.assignFieldsObj(data,idResponse,response,fields,join)
+          return data;
+        }
+      )
+    );  
+  }
+
   advancedColumnData(
     data: { [index: string]: any }[], 
     fieldName: string, 
@@ -247,6 +483,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     fields: { [index: string]: string } //no deben ser funciones de agregacion
   ): Observable<{ [index: string]: any }[]>{
     /**
+     * @todo faltaria agregar un fieldName y no utilizar siempre el id
      * Define un conjunto de identificadores "ids".
      * Para definir "ids", recorre el parametro "data y define un array con filtrando el parametro "fieldName"
      * Realiza una consulta avanzada de la entidad identificada con el parametro "entityName"
@@ -254,6 +491,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Recorre "data" y "response", compara "data[i][fieldName]" con "response[j][id]" y realiza una asociacion
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * A diferencia de otros metodos "nombre_field" no puede ser un array, debe ser un campo reconocible por la consulta avanzada
+     * En la medida de lo posible evitar el uso de este metodo ya que no almacena cache
      */
     var ids = arrayColumn(data, fieldName).filter(function (el) { return el != null; });
     var display = new Display();
@@ -261,7 +499,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     if(!fields_.hasOwnProperty("id")) fields_["id"]="id"; //siempre debe existir el id para comparar el resultado
     display.setFields(Object.values(fields_));
     display.addCondition(["id","=",ids]);
-    return this.post("advanced",entityName, display).pipe(
+    return this._post("advanced",entityName, display).pipe(
       map(
         response => {
           for(var i = 0; i < data.length; i++){
@@ -287,12 +525,10 @@ export class DataDefinitionToolService extends DataDefinitionService{
     data: { [index: string]: any }[], 
     fieldName: string, 
     entityName: string, 
-    fields: string[], //utilizar solo funciones de agregacion
-    fieldsResponse: { [index: string]: string }, //el resultado de las funciones de agregacion reciben un nombre diferente al atributo fields 
-    join: string = ", " 
+    fields: { [index: string]: string }, //utilizar solo funciones de agregacion
   ): Observable<{ [index: string]: any }[]>{
     /**
-     * Consulta avanzada de relaciones directas
+     * Consulta avanzada de relaciones con agrupamiento
      * Define "ids" filtra el campo "id" del parametro "data"
      * Define "display.fields", asigna el parametro fields
      * Define "display.group", asigna el parametro fieldName
@@ -302,27 +538,28 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Si data[i]["id"] == response[j][fieldName] almacena en data los campos indicados en parametro "fieldsResponse"
      * "fieldsResponse" es un objeto de la forma {nombre_identificacion:nombre_field}
      * si "nombre_field" es un array realiza un join utilizando el parametro "join"
-     * 
+     * A diferencia de las consultas no avanzadas, se especifican los fields directamente en la consulta y se retornan dichos fields que seran asignados
+     * Tiene la ventaja de que se reducen los parametros, pero como desventaja no utilizan el storage para las entities.
+     * En la medida de lo posible evitar el uso de este metodo ya que no utiliza storage.
      */
 
     var ids = arrayColumn(data, "id")
-    if(!ids.length) {
-      for(var i = 0; i < data.length; i++) this.initFields(data[i],fieldsResponse);
-      return of(data);
-    } 
+    for(var i = 0; i < data.length; i++) this.initFields(data[i],fields);
+    if(!ids.length) return of(data);
     var display = new Display();
     display.setSize(0);
     display.setFields(fields);
     display.setGroup([fieldName]);
     display.addCondition([fieldName,"=",ids]);
-    return this.post("advanced",entityName, display).pipe(
+    return this._post("advanced",entityName, display).pipe(
       map(
         response => {
           for(var i = 0; i < data.length; i++){
-            this.initFields(data[i],fieldsResponse);
             for(var j = 0; j < response.length; j++){
               if(data[i]["id"] == response[j][fieldName]) {
-                this.assignFields(data[i],response[j],fieldsResponse,join)
+                for(var f in fields){
+                  if(fields.hasOwnProperty(f)) data[i][f] = response[j][f];
+                }
                 break;
               }
             }
@@ -332,4 +569,118 @@ export class DataDefinitionToolService extends DataDefinitionService{
       )
     );  
   }
+
+  protected filterFields(fields:string[], prefix) {
+    /**
+     * Filtra los fields en funcion del prefijo
+     * Ejemplo prefix "per-", "per_dom-"
+     */
+    var f = {}
+    for(var i = 0; i < fields.length; i++){
+      if(fields[i].includes(prefix)) f[fields[i]] = fields[i].substring(fields[i].indexOf("-")+1)
+    }
+    return f;
+  }
+
+  protected initializeFields(entityName: string, fields: string[]): Observable<any> {
+    /**
+     * Para realizar correctamente las relaciones entre las distintas entidades
+     * es necesario que existan ciertos campos de relacion que pueden no estar incluidos en la consulta original
+     * el metodo initializeFields recorre los campos indicados en el parametro e inicializa los fields de relacion
+     * por ejemplo, si desde alumno_comision, queremos recorrer persona, debemos pasar por alumno, entonces debe existir alu-persona por mas que no se incluya
+     * a diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
+     */
+    return this.post("rel",entityName).pipe( //se consultan las relaciones de la entidad para armar el grupo de fields
+      map(
+        rel => {
+          var f = []
+          for(var i = 0; i < fields.length; i++){ //se recorren los fields a consultar para identificar las relaciones faltantes
+              if(fields[i].includes("-")) {
+                var k = fields[i].substr(0, fields[i].indexOf('-'));
+                var s = (k.includes("_")) ? k.substr(0, k.lastIndexOf('_'))+"-" : "";
+                if(f.indexOf(s+rel[k]["field_name"]) === -1) f.push(s+rel[k]["field_name"])
+              }
+              if(f.indexOf(fields[i]) === -1) f.push(fields[i])  
+          }
+          return f
+        }
+      )
+    )
+  }
+
+  relGetAll(entityName: string, ids: string[], fields: string[]): Observable<any> {
+    /**
+     * Inicializar los campos de una entidad y sus relaciones
+     * No se inicializan todas las relaciones, solo las que se determinan en "fields"
+     * Ejemplo de retorno (para la entidad principal alumno)
+     * [{id:"value", activo:true, per-id:"value", per-numero_documento:"value"},...]
+     * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
+     */
+    return combineLatest([
+      this.initializeFields(entityName, fields),
+      this.getAll(entityName, ids)
+    ]).pipe(
+      switchMap(
+        response => {
+          var fieldsFilter = response[0];
+          var data = response[1];
+          return this.post("rel",entityName).pipe(
+            switchMap(
+              rel => {
+                var obs: Observable<{ [index: string]: any; }[]>;
+                var keys =  Object.keys(rel);
+                for(var i = 0; i < keys.length; i++){
+                  try{throw i} catch(j){
+                    if(rel.hasOwnProperty(keys[j])){
+                      if(!isEmptyObject(this.filterFields(fieldsFilter, keys[j]+"-"))) {
+                        if(!obs){
+                          obs = this.getAllColumnData(
+                            data, 
+                            ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
+                            rel[keys[j]]["entity_name"], this.filterFields(fieldsFilter, keys[j]+"-")
+                          )
+                        } else {
+                          obs = obs.pipe(
+                            switchMap(
+                              (d:any) => {
+                                return this.getAllColumnData(d, 
+                                  ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
+                                  rel[keys[j]]["entity_name"], 
+                                  this.filterFields(fieldsFilter, keys[j]+"-"))}
+                            ),
+                        
+                          )
+                        }
+                      }
+                    }
+                  }
+                }
+                return obs
+              }
+            )
+          )
+        }
+      )
+    )
+  }
+
+  relGetAllFvo(entityName: string, ids: string[], fieldsViewOptions:FieldViewOptions[]){
+    /**
+     * Analiza el parametro fieldsViewOptions para obtener los fields 
+     * y ejecutar relGetAll (si corresponde)
+     * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
+     * 
+     * Se recorren los fields obtenidos de fieldsViewOptions[i].field y se verifica la existencia del caracter "-".
+     * Si existe el caracter "-" significa que se está queriendo manipular un fields de una relación, por lo tanto debe inicializarse
+     */
+     var fields = [];
+     for(var i = 0; i < fieldsViewOptions.length; i++){
+       if(fieldsViewOptions[i].field.includes("-")) fields.push(fieldsViewOptions[i].field);
+     }
+     return (!fields.length) ? 
+       this.getAll(entityName, ids) : 
+       this.relGetAll(entityName, ids, fields);
+  }
+
+
 }

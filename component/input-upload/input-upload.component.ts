@@ -1,18 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { FormControl } from '@angular/forms';
-import { first } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { UPLOAD_URL } from 'app/app.config';
+import { fastClone } from '@function/fast-clone';
 
 
 @Component({
   selector: 'core-input-upload',
   templateUrl: './input-upload.component.html',
+  
 })
-export class InputUploadComponent implements OnInit {
+export class InputUploadComponent implements OnInit { //2
 
+  @Input() title?: string
   @Input() field: FormControl;
   /**
    * Field correspondiente a la entidad padre con el id del archivo
@@ -32,32 +35,41 @@ export class InputUploadComponent implements OnInit {
 
   constructor(protected dd: DataDefinitionService, protected storage: SessionStorageService) { }
 
+  load$: Observable<any>
+
  ngOnInit(): void {
-    //if(this.field.value) this.initValue(this.field.value);
-
-    var s = this.field.valueChanges.subscribe(
-      value => this.initValue(value)
-    );
-
-    this.subscriptions.add(s);
-  }
-
-  initValue(value){
-    this.dd.get("file", value).subscribe(
-      row => {
-        if(row) {
-          this.file = row;
-          this.file["link"] = UPLOAD_URL+this.file.content; 
-          this.fileControl.setValue("");
-          this.fileControl.disable();
-        } else {
-          this.file = null;
-          if(this.field.enabled) this.fileControl.enable();
+    this.load$ = this.field.valueChanges.pipe(
+      startWith(this.field.value),
+      switchMap(
+        value => {
+          return this.dd.get("file", value)
         }
-      }
+      ),
+      map(
+        row => {
+          if(row) {
+            this.file = row;
+            this.file["link"] = UPLOAD_URL+this.file.content; 
+            this.fileControl.setValue("");
+            this.fileControl.disable();
+          } else {
+            this.file = null;
+            if(this.field.enabled) this.fileControl.enable();
+          }
+          return true;
+        }
+      )
     );
+
   }
 
+  @ViewChild('fileSelection') FileSelectInputDialog: ElementRef;
+
+  public OpenAddFilesDialog() {
+      const e: HTMLElement = this.FileSelectInputDialog.nativeElement;
+      e.click();
+  }
+  
   onFileSelect(event) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
@@ -69,7 +81,9 @@ export class InputUploadComponent implements OnInit {
       this.field.markAsPending();
       this.dd.upload(this.entityName, formData).subscribe(
         (res) => {
-          this.storage.setItem("file" + res.id, res);
+          //this.file = fastClone(res.file);
+          //this.file["link"]= UPLOAD_URL+this.file["content"]
+          this.storage.setItem("file" + res.id, res.file);
           this.field.setValue(res.id);
           this.field.markAsDirty();
           // this.field.setErrors({'incorrect': true});

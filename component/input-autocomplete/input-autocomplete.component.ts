@@ -18,10 +18,14 @@ import { DataDefinitionLabelService } from '@service/data-definition-label/data-
   }
   `],
 })
-export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
+export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy { //1.1
   /**
    * Input autocomplete reutilizable
    * Define un input independiente para facilitar la incorporacion de funcionalidad adicional (validación de seteo, clear, etc)
+   * 
+   * Para las consultas realiza un dd.all utilizando el campo "label" (label debe estar correctamente definido en el servidor)
+   * Para visualizar el resultado utiliza el ddl.label (label del cliente, se recomienda que coincida con el del servidor)
+   * Para inicializar utiliza dd.get
    * 
    * @todo
    * Existe un atributo displayFn que podria utilizarse para visualizar el label en el template
@@ -126,7 +130,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
           this.searchControl.disable();
         } else {
           this.searchControl.setValue("");
-          this.searchControl.enable();
+          if(!this.field.disabled) this.searchControl.enable();
         }
       }
     );

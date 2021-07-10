@@ -16,7 +16,7 @@ export class FieldTreeElement {
   }
 
   /**
-   * Ejemplo planificacion u:u_ plan
+   * Ejemplo planificacion _u:u plan
    * planificacionTree = new FieldTreeElement({
    * entityName:"planificacion",
    * fkName:"plan",

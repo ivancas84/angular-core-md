@@ -1,5 +1,5 @@
-<div *ngIf="fieldViewOptions.aux">
-  <div [ngSwitch]="fieldViewOptions.aux.id">
+<span *ngIf="fieldViewOptions.aux">
+  <span [ngSwitch]="fieldViewOptions.aux.id">
     <a *ngSwitchCase="'router_link'" [routerLink]="'/'+fieldViewOptions.aux.path" [queryParams]="params">
       <core-field-view [field]="data[fieldViewOptions.field]" [fieldViewOptions]="fieldViewOptions"></core-field-view>
     </a>
@@ -7,12 +7,15 @@
                         [value]="data[fieldViewOptions.field]" 
                         [fieldViewOptions]="fieldViewOptions" 
                         [params]="params"
-                        [api]=fieldViewOptions.aux.api>
+                        [api]=fieldViewOptions.aux.api
+                        [entityName]=fieldViewOptions.aux.entityName
+                        [fieldName]=fieldViewOptions.aux.fieldName
+                        >
     </core-input-persist>
-  </div>
+  </span>
   
 
-</div>
-<div *ngIf="!fieldViewOptions.aux">
+</span>
+<span *ngIf="!fieldViewOptions.aux">
   <core-field-view [field]="data[fieldViewOptions.field]" [fieldViewOptions]="fieldViewOptions"></core-field-view>
-</div>          
+</span>          

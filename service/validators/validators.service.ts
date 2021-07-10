@@ -9,7 +9,7 @@ import { mergeMap, map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class ValidatorsService {
+export class ValidatorsService { //1.1
   /**
    * Inicialmente se iban a crear funciones independientes para validación
    * Se opto por crear un servicio para poder importar otros servicios necesarios
@@ -107,7 +107,7 @@ export class ValidatorsService {
         return this.dd.id(entityName, display).pipe(
           map(
             id => {
-              return (id && (id != control.parent.get("id").value)) ? { notUnique: true } : null
+              return (id && (id != control.parent.get("id").value)) ? { notUnique: id } : null
             }
           )
         );

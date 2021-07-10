@@ -1,0 +1,37 @@
+<span [ngSwitch]="opt.id">
+  <a *ngSwitchCase="'route_icon'"
+     mat-icon-button 
+     [routerLink]="'/'+opt.action" 
+     [queryParams]="params"
+     [target]="opt.target"
+  >
+    <mat-icon>{{opt.template}}</mat-icon>
+  </a>
+
+  <a *ngSwitchCase="'route_text'"
+     [routerLink]="'/'+opt.action" 
+     [queryParams]="params"
+  >test</a>
+
+  <a  *ngSwitchCase="'link_icon'"
+     [title]="opt.title"
+     mat-mini-fab 
+     [color]="opt.color" 
+     (click)="goToLink()"
+  >   
+   <mat-icon>{{opt.template}}</mat-icon>
+</a>
+
+  <a *ngSwitchCase="'link_text'"
+    (click)="goToLink(opt)"
+  >{{opt.template}}</a>
+
+    <button *ngSwitchCase="'event_icon'" 
+            type="button" 
+            mat-mini-fab 
+            [color]="opt.color" 
+            [aria-label]="opt.ariaLabel"
+            (click)="emitEventOpt()">
+        <mat-icon>{{opt.template}}</mat-icon>
+    </button>
+</span>

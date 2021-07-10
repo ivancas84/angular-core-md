@@ -1,20 +1,36 @@
-<div [ngSwitch]="fieldViewOptions.type.id">
+<span [ngSwitch]="fieldViewOptions.type.id">
   <core-input-date *ngSwitchCase="'input_date'" [field]="field" [title]="fieldViewOptions.label"></core-input-date>
   <core-input-timepicker *ngSwitchCase="'input_time'" [field]="field" [title]="fieldViewOptions.label"></core-input-timepicker>
   <core-input-year *ngSwitchCase="'input_year'" [field]="field" [title]="fieldViewOptions.label"></core-input-year>  
   <core-input-textarea *ngSwitchCase="'textarea'" [field]="field" [title]="fieldViewOptions.label"></core-input-textarea>
-  <core-input-checkbox *ngSwitchCase="'input_checkbox'" [field]="field" [title]="fieldViewOptions.label"></core-input-checkbox>
+  <core-input-checkbox *ngSwitchCase="'input_checkbox'" [field]="field" [title]="fieldViewOptions.label" [titleDisabled]="fieldViewOptions.type.labelDisabled"></core-input-checkbox>
   <core-input-select-param *ngSwitchCase="'input_select_param'" [field]="field" [title]="fieldViewOptions.label" [options]="fieldViewOptions.type.options"></core-input-select-param>
   <core-input-select *ngSwitchCase="'input_select'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName"></core-input-select>
   <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" [field]="field" [title]="fieldViewOptions.label" [options]="fieldViewOptions.type.options"></core-input-select-checkbox>
   <core-input-autocomplete *ngSwitchCase="'input_autocomplete'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName" [adminRoute]="fieldViewOptions.type.adminRoute"></core-input-autocomplete>
-  <core-input-text *ngSwitchCase="'input_text'" [field]="field" [title]="fieldViewOptions.label" [uniqueRoute]="fieldViewOptions.type.uniqueRoute" [width]="fieldViewOptions.type.width"></core-input-text>
+  <core-input-text *ngSwitchCase="'input_text'" [field]="field" [title]="fieldViewOptions.label" [width]="fieldViewOptions.type.width" [uniqueRoute]="fieldViewOptions.type.uniqueRoute" [uniqueParam]="fieldViewOptions.type.uniqueParam" [readonly]="fieldViewOptions.control.readonly"></core-input-text>
+  <core-input-upload *ngSwitchCase="'input_upload'" [field]="field" [title]="fieldViewOptions.label" [entityName]="fieldViewOptions.type.entityName"></core-input-upload >
 
-  <div *ngSwitchCase="'date'">{{field | toDate | date:fieldViewOptions.type.format}}</div>
-  <div *ngSwitchCase="'yes_no'">{{field | siNo}}</div>
-  <div *ngSwitchCase="'summary'">{{field | summary}}</div>
-  <div *ngSwitchCase="'label'"><core-label *ngIf="field" [id]="field" [entityName]="fieldViewOptions.type.entityName"></core-label></div>
-  <div *ngSwitchCase="'tree'"><core-field-tree *ngIf="field" [id]="field" [tree]="fieldViewOptions.type.tree"></core-field-tree></div>
-  <div *ngSwitchDefault>{{field}}</div>
-</div>
+
+  <span *ngSwitchCase="'download'">
+    <core-download *ngIf="field" 
+                   [id]="field" 
+                   [entityName]="fieldViewOptions.type.entityName"></core-download>
+  </span>
+
+  <span *ngSwitchCase="'date'">{{field | toDate | date:fieldViewOptions.type.format}}</span>
+  <span *ngSwitchCase="'yes_no'">{{field | siNo}}</span>
+  <span *ngSwitchCase="'summary'">{{field | summary}}</span>
+  <span *ngSwitchCase="'label'"><core-label *ngIf="field" [id]="field" [entityName]="fieldViewOptions.type.entityName"></core-label></span>
+  <span *ngSwitchCase="'field_label'"><core-field-label *ngIf="field" [id]="field" [entityName]="fieldViewOptions.type.entityName" [fieldNames]="fieldViewOptions.type.fieldNames" [join]="fieldViewOptions.type.join"></core-field-label></span>
+  <span *ngSwitchCase="'tree'"><core-field-tree *ngIf="field" [id]="field" [tree]="fieldViewOptions.type.tree"></core-field-tree></span>
+  <span *ngSwitchCase="'um'">
+    <core-um *ngIf="field" 
+             [data]="field" 
+             [fields]="fieldViewOptions.type.fields">
+    </core-um>
+  </span>
+
+  <span *ngSwitchDefault>{{field}}</span>
+</span>
 

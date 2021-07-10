@@ -1,0 +1,7 @@
+
+  <div *ngFor="let d of data" >
+    <span  *ngFor="let f of fields">
+      <core-field-view-aux [data]="d"
+                           [fieldViewOptions]="f"></core-field-view-aux>&nbsp;
+    </span>                 
+  </div>

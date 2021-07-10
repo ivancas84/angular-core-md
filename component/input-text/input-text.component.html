@@ -1,9 +1,14 @@
 <mat-form-field [style.width]="width"> 
   <mat-label *ngIf="title">{{title}}</mat-label>
-  <input matInput [type]="type" [formControl]="field" placeholder="{{placeholder}}">
+  <input matInput
+         [readonly]="readonly"
+         [type]="type"
+         [formControl]="field" 
+         [placeholder]="placeholder"
+  >
   <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
   <mat-error *ngIf="field.hasError('notUnique')">
-    El valor ya se encuentra utilizado <a *ngIf="uniqueRoute" routerLink="/{{uniqueRoute}}" [queryParams]="uniqueParams">cargar</a>    
+    El valor ya se encuentra utilizado <a *ngIf="uniqueRoute" routerLink="/{{uniqueRoute}}" [queryParams]="queryParams">cargar</a>    
   </mat-error>
   <mat-error *ngIf="field.hasError('pattern')">El formato es incorrecto</mat-error>
   <mat-error *ngIf="field.hasError('maxlength')">Supera el máximo permitido</mat-error>

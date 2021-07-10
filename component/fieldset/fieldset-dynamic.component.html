@@ -1,0 +1,35 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title fxFlex="auto">
+      {{title}}    
+    </mat-card-title>
+    <core-input-search-go *ngIf="inputSearchGo" fxFlex="auto" [entityName]="entityName"></core-input-search-go>  
+  </mat-card-header>
+
+  <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">
+    <div class="mat-subheading-2 highlightText" [innerHTML]="intro" fxFlex="100%"></div>
+
+    <div *ngFor="let fvo of fieldsViewOptionsFilter" 
+         class="item" 
+         [fxFlex.xs]="fvo.width.xs" 
+         [fxFlex.sm]="fvo.width.sm" 
+         [fxFlex.md]="fvo.width.md" 
+         [fxFlex.lg]="fvo.width.lg" 
+         [fxFlex.xl]="fvo.width.xl" 
+         [fxFlex.lt-sm]="fvo.width.ltSm"
+         [fxFlex.lt-md]="fvo.width.ltMd"
+         [fxFlex.lt-lg]="fvo.width.ltLg"
+         [fxFlex.lt-xl]="fvo.width.ltXl"
+         [fxFlex.gt-xs]="fvo.width.gtXs"
+         [fxFlex.gt-sm]="fvo.width.gtSm" 
+         [fxFlex.gt-md]="fvo.width.gtMd" 
+         [fxFlex.gt-lg]="fvo.width.gtLg" 
+    >
+      <core-field-view [fieldViewOptions]="fvo" 
+                       [field]="fieldset.controls[fvo.field]"></core-field-view>  
+    </div>
+    <div *ngFor="let v of validatorOpts">
+      <mat-error *ngIf="fieldset.hasError(v.id)">{{v.message}}</mat-error>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { tap, map, first, switchMap } from 'rxjs/operators';
+import { map, first, switchMap } from 'rxjs/operators';
 import { API_URL} from '../../../app.config';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Display } from '@class/display';
@@ -54,9 +54,10 @@ export class DataDefinitionService {
     let key = entity + "." + api + JSON.stringify(params);
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key))
 
-    return this._post(api, entity, data).pipe(tap(
+    return this._post(api, entity, data).pipe(map(
       response => {
         this.storage.setItem(key, response)
+        return response;
       }
     ));
   }
@@ -69,7 +70,7 @@ export class DataDefinitionService {
         }
       )
     )
-  }
+  }  
 
   unique (entity: string, params: any): Observable<any> {
     /**
