@@ -13,15 +13,18 @@
      [queryParams]="params"
   >test</a>
 
-  <a *ngSwitchCase="'link_icon'"
-     [routerLink]="'/'+opt.action" 
-     [queryParams]="params"
-  >test</a>
+  <a  *ngSwitchCase="'link_icon'"
+     [title]="opt.title"
+     mat-mini-fab 
+     [color]="opt.color" 
+     (click)="goToLink()"
+  >   
+   <mat-icon>{{opt.template}}</mat-icon>
+</a>
 
   <a *ngSwitchCase="'link_text'"
-     [routerLink]="'/'+opt.action" 
-     [queryParams]="params"
-  >test</a>
+    (click)="goToLink(opt)"
+  >{{opt.template}}</a>
 
     <button *ngSwitchCase="'event_icon'" 
             type="button" 

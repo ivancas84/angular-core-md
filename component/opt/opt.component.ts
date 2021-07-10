@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import { OptEventIcon, OptLinkIcon, OptLinkText, OptRouteIcon, OptRouteText } from '@class/opt';
 import { fastClone } from '@function/fast-clone';
  
@@ -6,7 +6,7 @@ import { fastClone } from '@function/fast-clone';
   selector: 'core-opt',
   templateUrl: './opt.component.html',
 })
-export class OptComponent implements OnChanges{ //3
+export class OptComponent implements OnChanges, OnInit { //3
   /**
    * Visualizar opciones
    */
@@ -25,6 +25,10 @@ export class OptComponent implements OnChanges{ //3
   @Output() eventOpt: EventEmitter<any> = new EventEmitter();
 
 
+  ngOnInit(): void {
+    if(!this.opt.title) this.opt.title = this.opt.action;
+  }
+  
   ngOnChanges(changes: SimpleChanges): void {
 
     /**
@@ -46,5 +50,12 @@ export class OptComponent implements OnChanges{ //3
     var $event = {action:this.opt.action, data:this.data}
     this.eventOpt.emit($event)
   }
+
+  goToLink(){
+    var p = "";
+    for(var key in this.params) p += key + "=" + this.params[key]
+    var action = (p.length) ? this.opt.action + "?" + p : this.opt.action
+    window.open(action, this.opt["target"]);
+}
 
 }
