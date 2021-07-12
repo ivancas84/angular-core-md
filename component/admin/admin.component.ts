@@ -40,6 +40,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
    */
   data?: any; //datos principales
+  /**
+   * Todos los datos se inicializan en el componente principal:
+   *   Si se definen relaciones, el origen puede ser incierto.
+   *   Se reduce la cantidad de parametros a los componentes anidados.
+   *   Un componente anidado puede no responder exactamente a una entidad.
+   */
 
   isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
   isSubmitted: boolean = false; //Flag para habilitar/deshabilitar boton aceptar
@@ -151,13 +157,17 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
       map(
         data => {
           if(!isEmptyObject(data)) return data;
-          return fastClone(this.display$.value)
+          return this.initDataFromDisplay();
           /**
            * Se retorna un clone para posibilitar el cambio y el uso de ngOnChanges si se requiere
            */
         }
       )
     );
+  }
+
+  initDataFromDisplay(){
+    return fastClone(this.display$.value)
   }
 
   queryData(): Observable<any> {
