@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { isEmptyObject } from '@function/is-empty-object.function';
-import { DataDefinitionRelArrayService } from '@service/data-definition-rel-array/data-definition-rel-array.service';
+import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { ValidatorsService } from '@service/validators/validators.service';
@@ -25,7 +25,8 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
     protected dialog: MatDialog,
     protected validators: ValidatorsService,
     protected storage: SessionStorageService,
-    protected ddra: DataDefinitionRelArrayService
+    protected ddrf: DataDefinitionRelFieldsService
+
   ) {
     super(dd,route,dialog, storage, validators)
   }
@@ -43,7 +44,7 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
           }
           return (isEmptyObject(fields)) ? 
             this.dd.getAll(this.entityName, ids) :
-            this.dd.relGetAll(this.entityName, ids, fields);
+            this.ddrf.getAll(this.entityName, ids, fields);
         }
       )
     )
