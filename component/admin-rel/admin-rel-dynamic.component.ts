@@ -1,11 +1,20 @@
 import { OnInit, AfterViewInit, Component, Output, EventEmitter } from '@angular/core';
 import { AdminRelStructure } from '@class/admin-rel-structure';
 import { Display } from '@class/display';
-import { FieldViewOptions } from '@class/field-view-options';
 import { AdminComponent } from '@component/admin/admin.component';
 import { isEmptyObject } from '@function/is-empty-object.function';
-import { combineLatest, forkJoin, Observable, of } from 'rxjs';
-import { combineAll, map, switchMap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Location } from '@angular/common';
+import { FormBuilder } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
+import { SessionStorageService } from '@service/storage/session-storage.service';
+import { ValidatorsService } from '@service/validators/validators.service';
+import { DataDefinitionFkObjService } from '@service/data-definition/data-definition-fk-obj.service';
+import { DataDefinitionUmObjService } from '@service/data-definition/data-definition-um-obj.service';
 
 @Component({
   selector: 'core-admin-rel-dynamic',
@@ -16,6 +25,26 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
  * Especializacion del formulario de administracion 
  * para administrar una entidad y sus relaciones
  */
+
+ constructor(
+  protected fb: FormBuilder, 
+  protected route: ActivatedRoute, 
+  protected router: Router, 
+  protected location: Location, 
+  protected dd: DataDefinitionToolService, 
+  protected validators: ValidatorsService,
+  protected storage: SessionStorageService, 
+  protected dialog: MatDialog,
+  protected snackBar: MatSnackBar,
+  protected relFk: DataDefinitionFkObjService,
+  protected relUm: DataDefinitionUmObjService
+) { 
+  super(fb, route, router, location, dd, validators, storage, dialog, snackBar)
+
+}
+
+
+
 
   structure:AdminRelStructure[];
   persistApi:string = "persist_rel";
@@ -36,34 +65,11 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
 
   queryData(): Observable<any> {
     switch(this.queryApi){
-      case "unique_rel_um": return this.dd.post("unique_rel", this.entityName, this.display$.value).pipe(
+      case "unique_rel_um": case "unique_rel":  
+        return this.relFk.uniqueStructure(this.entityName, this.display$.value, this.structure).pipe(
         switchMap(
-          data => {
-            var obs = {}
-            for(var i = 0; i < this.structure.length; i++){
-              /**
-               * Recorrer estructura para procesar relaciones um
-               */
-              var key = this.structure[i].id; 
-
-              if(key.includes("/")){
-                if( (key.includes("-"))){
-                  var prefix = key.substr(0, key.indexOf('-'));
-                  var l = key.indexOf('-')+1
-                  var entityName = key.substr(l, key.indexOf('/')-l);
-                } else {
-                  var prefix =  this.entityName;
-                  var entityName = key.substr(0,key.indexOf('/'));
-                }
-
-                var fkName = key.substr(key.indexOf('/')+1);
-                obs[key] = this.queryDataUm(data,entityName,fkName,prefix,i)
-              }
-            }
-
-            return (!isEmptyObject(obs)) ? 
-              this.combineDataUm(data, obs) : 
-              of(data) 
+          row => {
+            return this.relUm.structure(this.entityName, row, this.structure)
           }
         )
       )
@@ -71,39 +77,8 @@ export abstract class AdminRelDynamicComponent extends AdminComponent implements
     }
   }
 
-  queryDataUm(
-    data: { [x: string]: { [x: string]: string | number; }; }, 
-    entityName: string, 
-    fkName: string, 
-    prefix: string,
-    index: number 
-  ){
-    console.log("voy a consultar" +entityName+fkName+prefix+index+data[prefix]["id"] )
-    if(!data[prefix]["id"]) return of([]);
-    var display = new Display();
-    display.setCondition([fkName,"=",data[prefix]["id"]])
-    console.log(display);
-    if(this.structure[index].order) display.setOrder(this.structure[index].order);
-    return this.dd.post("ids",entityName, display).pipe(
-      switchMap(
-        ids => this.dd.relGetAllFvo(entityName, ids, this.structure[index].fieldsViewOptions)
-      ),
 
-    )  
-  }
-
-  combineDataUm(data, obs){
-    return forkJoin(obs).pipe(
-      map(
-        response => {
-          for(var i in response){
-            if(response.hasOwnProperty(i)) data[i] = response[i]
-          }
-          return data;
-        }
-      )
-    )
-  }
+ 
 
   loadStorage() {
     /**
