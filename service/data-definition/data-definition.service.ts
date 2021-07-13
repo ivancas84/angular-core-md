@@ -5,10 +5,10 @@ import { map, first, switchMap } from 'rxjs/operators';
 import { API_URL} from '../../../app.config';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Display } from '@class/display';
-import { DataDefinitionStorageService } from '@service/data-definition-storage.service';
 import { CookieService } from 'ngx-cookie-service';
 import { arrayClean } from '@function/array-clean';
 import { arrayUnique } from '@function/array-unique';
+import { DataDefinitionStorageService } from './data-definition-storage-service';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +51,8 @@ export class DataDefinitionService {
 
   post(api: string, entity: string, data: any = null):  Observable<any> {    
     var params = (data instanceof Display) ? data.describe() : data;
-    let key = entity + "." + api + JSON.stringify(params);
+    var p = (params)? JSON.stringify(params) : "";
+    let key = entity + "." + api + p;
     if(this.storage.keyExists(key)) return of(this.storage.getItem(key))
 
     return this._post(api, entity, data).pipe(map(
@@ -115,16 +116,18 @@ export class DataDefinitionService {
 
     if(!searchIds.length) return of(rows);
 
-    return this._post("get_all", entity, searchIds).pipe(
+    return this.post("tree", entity).pipe(
+      switchMap(
+        () => this._post("get_all", entity, searchIds)
+      ),
       map(
         rows_ => {
           rows_.forEach(element => {
-            this.dds.storage(entity, element);
             let i_string: string = String(element.id);
             let i_int: number = parseInt(i_string);
             let j: string | number = ids.indexOf(i_string);
             if(j == -1){ j = ids.indexOf(i_int); } //BUG: chequear por ambos tipos
-            rows[j] = element;
+            rows[j] = this.dds.storage(entity, element);
           })
           return rows;
         }
