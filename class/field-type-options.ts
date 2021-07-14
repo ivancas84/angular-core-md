@@ -1,4 +1,5 @@
 import { FieldTreeElement } from "./field-tree-element";
+import { AsyncValidatorOpt, ValidatorOpt } from "./validator-opt";
 
    
 
@@ -19,11 +20,11 @@ export class FieldControlOptions { //1.1
    * no siempre se puede indicar label = null para esconder el label
    */
 
-  validators: any[] = [];
-  asyncValidators: any[] = [];
-  default?: any = null; //valor por defecto
-  disabled?: boolean = false;
-  readonly?: boolean = false;
+  default?: any = null //valor por defecto
+  disabled?: boolean = false
+  readonly?: boolean = false
+  validatorOpts: ValidatorOpt[] = []
+  asyncValidatorOpts: AsyncValidatorOpt[] = []
 
   constructor(attributes: any = {}) {
     for(var a in attributes){
