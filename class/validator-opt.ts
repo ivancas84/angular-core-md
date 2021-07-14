@@ -1,9 +1,9 @@
 import { AsyncValidatorFn, ValidatorFn } from "@angular/forms";
 
 export class ValidatorOpt {
-  id:string
-  fn:ValidatorFn | AsyncValidatorFn
-  message:string
+  id:string //id del validador (debe ser el mismo que el identificador del error retornado)
+  fn:ValidatorFn //funcion de validacion
+  message:string //mensaje a visualizar
 
   constructor(attributes: any = {}) {
     for(var a in attributes){
@@ -15,8 +15,33 @@ export class ValidatorOpt {
 }
 
 
-export class UniqueValidatorOpt extends ValidatorOpt {
-  fn:AsyncValidatorFn
+export class AsyncValidatorOpt {
+  id:string //id del validador (debe ser el mismo que el identificador del error retornado)
+  fn:AsyncValidatorFn //funcion de validacion
+  message:string //mensaje a visualizar
+
+  constructor(attributes: any) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+
+export class UniqueValidatorOpt extends AsyncValidatorOpt {
+  id:string="notUnique"
   route:string
-  queryParams:any  
+  uniqueParam:any = "id" 
+  queryParams = {}
+
+  constructor(attributes: any = {}) {
+    super(attributes);
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
 }
