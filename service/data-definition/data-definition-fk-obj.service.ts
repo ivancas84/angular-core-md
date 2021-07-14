@@ -33,7 +33,7 @@ export class DataDefinitionFkObjService {
     return this.dd.unique(entityName, params).pipe(
       switchMap(
         (row) => {
-          if(!row) return of(null);
+          if(!row) return this.initStructure(entityName, params, structure);
           var r = {};
           r[entityName] = fastClone(row)
           /**
@@ -43,6 +43,19 @@ export class DataDefinitionFkObjService {
         }
       )
     )
+  }
+
+  public initStructure(entityName:string, params:any, structure:AdminRelStructure[]){
+    /**
+     * Recorre parametros e inicializa relaciones
+     */
+    if(!params) return of(null);
+    var r = {};
+    r[entityName] = fastClone(params)
+    /**
+     * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
+     */
+    return this.structure(entityName, r, structure)
   }
 
   public structure(entityName:string, row: any, structure: AdminRelStructure[]){
@@ -116,8 +129,11 @@ export class DataDefinitionFkObjService {
      * @param tree Arbol de relaciones
      * @param relationsFk Relaciones que deben procesarse
      */
-    
-    return this.dd.get(tree[key]["entity_name"], row[id][tree[key]["field_name"]]).pipe(
+     return of({}).pipe(
+      switchMap(() => {
+        if(row[id].hasOwnProperty(tree[key]["field_name"]) && row[id][tree[key]["field_name"]])  return this.dd.get(tree[key]["entity_name"], row[id][tree[key]["field_name"]])
+        else return of(null);
+      }),
       map(
         response => {
           row[key] = response
