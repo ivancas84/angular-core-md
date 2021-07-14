@@ -1,6 +1,5 @@
 import { Input, Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FieldViewOptions } from '@class/field-view-options';
-import { OptRouteIcon, OptLinkIcon, OptRouteText, OptLinkText } from '@class/opt';
 import { TableComponent } from '@component/table/table.component';
 
 @Component({
