@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FieldViewOptions } from '@class/field-view-options';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
+import { FormBuilderService } from '@service/form-builder/form-builder.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, mergeMap, startWith, switchMap, tap } from 'rxjs/operators';
@@ -44,20 +45,11 @@ export class InputPersistComponent implements OnInit {
     protected dd: DataDefinitionService, 
     protected snackBar: MatSnackBar,
     protected storage: SessionStorageService,
+    protected fb: FormBuilderService
   ) {}
   
   ngOnInit(): void {
-    this.field = new FormControl(
-      {
-        value:this.value,
-        disabled:this.fieldViewOptions.control.disabled
-      }, 
-      {
-        validators:this.fieldViewOptions.control.validators,
-        asyncValidators:this.fieldViewOptions.control.asyncValidators,
-      }
-    );
-
+    this.field = this.fb.controlFvo(this.fieldViewOptions, this.value)
     this.load$ = this.field.valueChanges.pipe(
       startWith(this.value),
       distinctUntilChanged(),
