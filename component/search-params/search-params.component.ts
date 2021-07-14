@@ -2,6 +2,7 @@ import { Input, OnInit, Component} from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { Display } from '@class/display';
+import { FormBuilderService } from '@service/form-builder/form-builder.service';
 
 @Component({
   selector: 'core-search-params',
@@ -16,7 +17,7 @@ export abstract class SearchParamsComponent implements OnInit { //1.1
   @Input() display: Display; //Datos de busqueda
   fieldset: FormGroup; //fieldset
 
-  constructor( protected fb: FormBuilder ) { }
+  constructor( protected fb: FormBuilderService ) { }
 
   abstract formGroup();
 
