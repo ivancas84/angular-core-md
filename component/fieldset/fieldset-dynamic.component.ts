@@ -1,12 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FieldViewOptions } from '@class/field-view-options';
-import { FieldsetDynamicOptions } from '@class/fieldset-dynamic-options';
-import { UniqueValidatorOpt, ValidatorOpt } from '@class/validator-opt';
+import { ValidatorOpt } from '@class/validator-opt';
 import { FieldsetComponent } from '@component/fieldset/fieldset.component';
-import { arrayColumn } from '@function/array-column';
-import { arrayCombine } from '@function/array-combine';
+import { FormBuilderService } from '@service/form-builder/form-builder.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
@@ -39,7 +37,7 @@ export class FieldsetDynamicComponent extends FieldsetComponent { //3
    */
 
   constructor(
-    protected fb: FormBuilder, 
+    protected fb: FormBuilderService, 
     protected router: Router, 
     protected storage: SessionStorageService 
   ) {
@@ -47,27 +45,11 @@ export class FieldsetDynamicComponent extends FieldsetComponent { //3
   }
   
   formGroup() {
-    let fg: FormGroup = this.fb.group({});
-    for(var i = 0; i < this.fieldsViewOptions.length; i++){
-      fg.addControl(
-        this.fieldsViewOptions[i].field, 
-        new FormControl(
-          {
-            value:null,
-            disabled:this.fieldsViewOptions[i].control.disabled
-          }, 
-          {
-            validators:this.fieldsViewOptions[i].control.validators,
-            asyncValidators:this.fieldsViewOptions[i].control.asyncValidators,
-          }
-        )
-      )
-    } 
-    
+    let fg: FormGroup = this.fb.groupFvo(this.fieldsViewOptions);
+
     var v = [];
     for(var i = 0; i < this.validatorOpts.length; i++) v.push(this.validatorOpts[i].fn)
     fg.setValidators(v);
-
 
     return fg;
   }
