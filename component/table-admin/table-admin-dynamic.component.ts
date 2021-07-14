@@ -49,23 +49,7 @@ export class TableAdminDynamicComponent extends TableAdminComponent implements O
   }
 
   formGroup() {
-    let fg: FormGroup = this.fb.group({});
-    for(var i = 0; i < this.fieldsViewOptions.length; i++){
-      fg.addControl(
-        this.fieldsViewOptions[i].field, 
-        new FormControl(
-          {
-            value:null,
-            disabled:this.fieldsViewOptions[i].control.disabled
-          }, 
-          {
-            validators:this.fieldsViewOptions[i].control.validators,
-            asyncValidators:this.fieldsViewOptions[i].control.asyncValidators,
-          }
-        )
-      )
-    }      
-    return fg;
+    return this.fb.groupFvo(this.fieldsViewOptions);
   }
 
   
