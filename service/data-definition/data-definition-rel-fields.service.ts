@@ -68,29 +68,36 @@ export class DataDefinitionRelFieldsService {
   }
 
   protected getAllLoop(data, rel, fieldsFilter) {
-    var obs: Observable<{ [index: string]: any; }[]>;
     var keys =  Object.keys(rel);
-    for(var i = 0; i < keys.length; i++) {
-      try{throw i} catch(j) {
-        if(rel.hasOwnProperty(keys[j])) {
-          var entityName = rel[keys[j]]["entity_name"];
-          var fields = this.filterFields(fieldsFilter, keys[j]+"-");
-          var fkName = ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"];
-          if(!isEmptyObject(fields)) {
-            if(!obs) {
-              obs = this.dd.getAllColumnData( data, fkName, entityName, fields )
-            } else {
-              obs = obs.pipe(
-                switchMap(
-                  (d:any) => { return this.dd.getAllColumnData(d, fkName, entityName, fields)} ),
-              )
-            }
-          }
+    var elements = []
+    for(var j = 0; j < keys.length; j++) {
+      if(rel.hasOwnProperty(keys[j])) {
+        var fields = this.filterFields(fieldsFilter, keys[j]+"-");
+        if(!isEmptyObject(fields)) {
+          var e = {
+            "fields":fields,
+            "entityName":rel[keys[j]]["entity_name"],  
+            "fkName":((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"]
+          };
+          elements.push(e);
         }
       }
     }
-    return obs
+    return this.chaining(data,elements, 0)
   }
+
+  protected chaining(data, elements, i){
+    /**
+     * Metodo independiente para encadenar observables
+     */
+    if(i == elements.length) return of(data);
+    return this.dd.getAllColumnData(data, elements[i]["fkName"], elements[i]["entityName"], elements[i]["fields"]).pipe(
+      switchMap(
+        response => this.chaining(response, elements, ++i)
+      )
+    )
+  }
+    
 
   public getAllFvo(entityName: string, ids: string[], fieldsViewOptions:FieldViewOptions[]){
     /**
