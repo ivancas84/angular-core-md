@@ -15,17 +15,6 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 export class DataDefinitionRelFieldsService {
   /**
    * Servicio de inicializacion de fields de una entidad y sus relaciones
-   * El metodo principal "uniqueStructure" recibe
-   *   1) el nombre de una entidad 
-   *   2) un conjunto de parametros de inicializacion 
-   *   3) una estructura de administracion
-   * Se obtiene una tupla de 1 utilizando 2, luego se obtienen las relaciones utilizando 3
-   * El resultado es un objeto con keys (nombre de la relacion) y values (valor correspondiente)
-   * Ej. para la entidad "alumno" {
-   *   "alumno" => {id:"1", activo:true, ...}
-   *   "per" => {id:"1", nombres:"Juan"}
-   *   "per_dom" => {id:"1", calle:"33"}
-   * }  
    */
 
   constructor(
@@ -163,7 +152,53 @@ export class DataDefinitionRelFieldsService {
   }
 
 
-  
+
+
+  public fields(entityName, fields, row){
+    return this.dd.post("rel",entityName).pipe(
+      switchMap(
+        rel => {
+          var obs: Observable<{ [index: string]: any; }>;
+          var keys =  Object.keys(rel);
+          for(var i = 0; i < keys.length; i++){
+            try{throw i} catch(j){
+              if(rel.hasOwnProperty(keys[j])){
+                if(!isEmptyObject(this.filterFields(fields, keys[j]+"-"))) {
+                  if(!obs){
+                    // data: { [index: string]: any }, 
+                    // fkName: string, 
+                    // entityName: string, 
+                    // fields: { [index: string]: any },
+                    // join:string=", "
+                  
+                    obs = this.dd.getColumnData(
+                      row, 
+                      ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
+                      rel[keys[j]]["entity_name"], 
+                      this.filterFields(fields, keys[j]+"-")
+                    )
+                  } else {
+                    obs = obs.pipe(
+                      switchMap(
+                        (d:any) => {
+                          return this.dd.getColumnData(d, 
+                            ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
+                            rel[keys[j]]["entity_name"], 
+                            this.filterFields(fields, keys[j]+"-"))}
+                      ),
+                  
+                    )
+                  }
+                }
+              }
+            }
+          }
+          return obs
+        }
+      )
+    )
+  }
+
   public get(entityName: string, id: string, fields: string[]): Observable<any> {
     /**
      * @param entityName Nombre de la entidad
@@ -187,52 +222,14 @@ export class DataDefinitionRelFieldsService {
         response => {
           var fieldsFilter = response[0];
           var data = response[1];
-          return this.dd.post("rel",entityName).pipe(
-            switchMap(
-              rel => {
-                var obs: Observable<{ [index: string]: any; }>;
-                var keys =  Object.keys(rel);
-                for(var i = 0; i < keys.length; i++){
-                  try{throw i} catch(j){
-                    if(rel.hasOwnProperty(keys[j])){
-                      if(!isEmptyObject(this.filterFields(fieldsFilter, keys[j]+"-"))) {
-                        if(!obs){
-                          // data: { [index: string]: any }, 
-                          // fkName: string, 
-                          // entityName: string, 
-                          // fields: { [index: string]: any },
-                          // join:string=", "
-                        
-                          obs = this.dd.getColumnData(
-                            data, 
-                            ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
-                            rel[keys[j]]["entity_name"], 
-                            this.filterFields(fieldsFilter, keys[j]+"-")
-                          )
-                        } else {
-                          obs = obs.pipe(
-                            switchMap(
-                              (d:any) => {
-                                return this.dd.getColumnData(d, 
-                                  ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
-                                  rel[keys[j]]["entity_name"], 
-                                  this.filterFields(fieldsFilter, keys[j]+"-"))}
-                            ),
-                        
-                          )
-                        }
-                      }
-                    }
-                  }
-                }
-                return obs
-              }
-            )
-          )
+          return this.fields(entityName, fieldsFilter, data)
+          
         }
       )
     )
   }
+
+
 
   protected initializeFields(entityName: string, fields: string[]): Observable<any> {
     /**
