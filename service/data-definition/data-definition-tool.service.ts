@@ -122,14 +122,14 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     }
   }
 
-  getAllColumnData( //2
+  getAllColumnData(
     data: { [index: string]: any }[], 
     fkName: string, 
     entityName: string, 
     fields: { [index: string]: any } | string[],
     join: string = ", ",
   ): Observable<{ [index: string]: any }[]>{
-
+    var d = fastClone(data);
     /**
      * Consulta de relaciones directas
      * Define un array de identificadores "ids" a partir de los parametros "data[fkName]"
