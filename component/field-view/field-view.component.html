@@ -4,45 +4,58 @@
                    [title]="fieldViewOptions.label"
                    [readonly]="fieldViewOptions.control.readonly"
                    [validatorOpts]="fieldViewOptions.control.validatorOpts"
-                   [asyncValidatorOpts]="fieldViewOptions.control.asyncValidatorOpts"></core-input-date>
+                   [asyncValidatorOpts]="fieldViewOptions.control.asyncValidatorOpts"
+                   [placeholder]="fieldViewOptions.control.placeholder"></core-input-date>
   
   <core-input-timepicker *ngSwitchCase="'input_time'" 
                          [field]="field" 
-                         [title]="fieldViewOptions.label"></core-input-timepicker>
+                         [title]="fieldViewOptions.label"
+                         [placeholder]="fieldViewOptions.control.placeholder"></core-input-timepicker>
   
   <core-input-year *ngSwitchCase="'input_year'" 
                    [field]="field" 
-                   [title]="fieldViewOptions.label"></core-input-year>  
+                   [title]="fieldViewOptions.label"
+                   [placeholder]="fieldViewOptions.control.placeholder"></core-input-year>  
   
   <core-input-textarea *ngSwitchCase="'textarea'" 
                        [field]="field" 
-                       [title]="fieldViewOptions.label"></core-input-textarea>
+                       [title]="fieldViewOptions.label"
+                       [title]="fieldViewOptions.label"
+                       [readonly]="fieldViewOptions.control.readonly"
+                       [validatorOpts]="fieldViewOptions.control.validatorOpts"
+                       [asyncValidatorOpts]="fieldViewOptions.control.asyncValidatorOpts"
+                       [placeholder]="fieldViewOptions.control.placeholder"></core-input-textarea>
   
   <core-input-checkbox *ngSwitchCase="'input_checkbox'" 
                        [field]="field" 
                        [title]="fieldViewOptions.label" 
-                       [titleDisabled]="fieldViewOptions.type.labelDisabled"></core-input-checkbox>
+                       [titleDisabled]="fieldViewOptions.type.labelDisabled"
+                       [placeholder]="fieldViewOptions.control.placeholder"></core-input-checkbox>
   
   <core-input-select-param *ngSwitchCase="'input_select_param'" 
                            [field]="field" 
                            [title]="fieldViewOptions.label" 
-                           [options]="fieldViewOptions.type.options"></core-input-select-param>
+                           [options]="fieldViewOptions.type.options"
+                           [placeholder]="fieldViewOptions.control.placeholder"></core-input-select-param>
   
   <core-input-select *ngSwitchCase="'input_select'" 
                      [field]="field" 
                      [title]="fieldViewOptions.label" 
-                     [entityName]="fieldViewOptions.type.entityName"></core-input-select>
+                     [entityName]="fieldViewOptions.type.entityName"
+                     [placeholder]="fieldViewOptions.control.placeholder"></core-input-select>
   
   <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" 
                               [field]="field" 
                               [title]="fieldViewOptions.label" 
-                              [options]="fieldViewOptions.type.options"></core-input-select-checkbox>
+                              [options]="fieldViewOptions.type.options"
+                              [placeholder]="fieldViewOptions.control.placeholder"></core-input-select-checkbox>
 
   <core-input-autocomplete *ngSwitchCase="'input_autocomplete'" 
                            [field]="field" 
                            [title]="fieldViewOptions.label" 
                            [entityName]="fieldViewOptions.type.entityName" 
-                           [adminRoute]="fieldViewOptions.type.adminRoute"></core-input-autocomplete>
+                           [adminRoute]="fieldViewOptions.type.adminRoute"
+                           [placeholder]="fieldViewOptions.control.placeholder"></core-input-autocomplete>
 
   <core-input-text *ngSwitchCase="'input_text'" 
                    [field]="field" 
@@ -50,7 +63,8 @@
                    [width]="fieldViewOptions.type.width"
                    [readonly]="fieldViewOptions.control.readonly"
                    [validatorOpts]="fieldViewOptions.control.validatorOpts"
-                   [asyncValidatorOpts]="fieldViewOptions.control.asyncValidatorOpts"></core-input-text>
+                   [asyncValidatorOpts]="fieldViewOptions.control.asyncValidatorOpts"
+                   [placeholder]="fieldViewOptions.control.placeholder"></core-input-text>
 
   <core-input-upload *ngSwitchCase="'input_upload'" 
                      [field]="field" 
