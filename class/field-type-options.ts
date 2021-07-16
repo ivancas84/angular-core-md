@@ -25,6 +25,7 @@ export class FieldControlOptions { //1.1
   readonly?: boolean = false
   validatorOpts: ValidatorOpt[] = []
   asyncValidatorOpts: AsyncValidatorOpt[] = []
+  placeholder: string = null
 
   constructor(attributes: any = {}) {
     for(var a in attributes){
