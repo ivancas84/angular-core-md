@@ -19,9 +19,7 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
 export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //3
   /**
    * Componente dinamico de administración de fieldset array
-   * La estructura por defecto del componente de implementacion
-   * es la misma que para FieldsetDynamicComponent,
-   * simplemente se debe cambiar la superclase
+   * La estructura por defecto del componente de implementacion es la misma que para FieldsetDynamicComponent, simplemente se debe cambiar la superclase
    **/
 
   @Input() fieldsViewOptions: FieldViewOptions[]; //fields
