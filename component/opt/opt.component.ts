@@ -35,7 +35,7 @@ export class OptComponent implements OnChanges, OnInit { //3
      * Se realiza una traduccion del atributo opt.params que contienen {{key}}
      */
 
-    if( changes["data"] && this.opt.params ) {
+    if( changes["data"] && this.opt.params && this.data) {
       this.params = fastClone(this.opt.params);
       for(var i in this.params){
         if(this.params.hasOwnProperty(i)){

@@ -2,6 +2,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { SearchParamsComponent } from '@component/search-params/search-params.component';
 import { Component } from '@angular/core';
+import { FormBuilderService } from '@service/form-builder/form-builder.service';
 
 @Component({
   selector: 'core-search-all',
@@ -10,7 +11,7 @@ import { Component } from '@angular/core';
 export class SearchAllComponent extends SearchParamsComponent {
   
   constructor (
-    protected fb: FormBuilder, 
+    protected fb: FormBuilderService, 
     protected dd: DataDefinitionService
   ) { super(fb); }
 

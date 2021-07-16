@@ -33,7 +33,7 @@ export class DataDefinitionFkObjService {
     return this.dd.unique(entityName, params).pipe(
       switchMap(
         (row) => {
-          if(!row) return of(null);
+          if(!row) return this.initStructure(entityName, params, structure);
           var r = {};
           r[entityName] = fastClone(row)
           /**
@@ -43,6 +43,19 @@ export class DataDefinitionFkObjService {
         }
       )
     )
+  }
+
+  public initStructure(entityName:string, params:any, structure:AdminRelStructure[]){
+    /**
+     * Recorre parametros e inicializa relaciones
+     */
+    if(!params) return of(null);
+    var r = {};
+    r[entityName] = fastClone(params)
+    /**
+     * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
+     */
+    return this.structure(entityName, r, structure)
   }
 
   public structure(entityName:string, row: any, structure: AdminRelStructure[]){
@@ -116,8 +129,11 @@ export class DataDefinitionFkObjService {
      * @param tree Arbol de relaciones
      * @param relationsFk Relaciones que deben procesarse
      */
-    
-    return this.dd.get(tree[key]["entity_name"], row[id][tree[key]["field_name"]]).pipe(
+     return of({}).pipe(
+      switchMap(() => {
+        if(row[id].hasOwnProperty(tree[key]["field_name"]) && row[id][tree[key]["field_name"]])  return this.dd.get(tree[key]["entity_name"], row[id][tree[key]["field_name"]])
+        else return of(null);
+      }),
       map(
         response => {
           row[key] = response
@@ -143,8 +159,12 @@ export class DataDefinitionFkObjService {
      * @param tree Arbol de relaciones
      * @param relationsFk Relaciones que deben inicializarse
      */
-    var obs;
+    var keys = Object.keys(tree);
+    return this.chaining(id, row, tree, relationsFk, keys, 0)
+/*
     for(var key in tree){
+      
+        DEPRECATED?
       if(relationsFk.includes(key)){
         if(!obs) obs = this.recursive(id, row, key, tree, relationsFk);
         else obs.pipe(
@@ -157,6 +177,21 @@ export class DataDefinitionFkObjService {
       }
     }
     return (obs) ? obs : of(row);
+    }*/
   }
 
+  protected chaining(id, row, tree, relationsFk, keys, i){
+    if(i == keys.length) return of(row);
+    else return this.subchaining(id, row, tree, relationsFk, keys[i]).pipe(
+      switchMap(
+        row => this.chaining(id, row, tree, relationsFk, keys, ++i)
+      )
+    )
+  }
+
+
+  protected subchaining(id, row, tree, relationsFk, key){
+    if(!relationsFk.includes(key)) return of(row);
+    return this.recursive(id, row, key, tree, relationsFk)
+  }
 }

@@ -4,6 +4,7 @@ import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/materia
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DATE_FORMATS } from 'app/core/const/DATE_FORMATS';
 import { getControlName } from '@function/get-control-name';
+import { AsyncValidatorOpt, ValidatorOpt } from '@class/validator-opt';
 
 @Component({
   selector: 'core-input-date',
@@ -27,30 +28,24 @@ export class InputDateComponent implements OnInit {
   @Input() field: FormControl;
   @Input() title?: string;
   @Input() placeholder?: string = "Seleccione fecha";
- 
-  adminRoute:string;
-  /**
-   * Interfaz de administracion para cuando se carga un valor unico
-   * @todo puede ser un Input y dar la posibilidad de indicar la interfaz de administración
-   */
+  @Input() readonly?: boolean = false;
+  @Input() validatorOpts?: ValidatorOpt[] = [] //validators
+  @Input() asyncValidatorOpts?: AsyncValidatorOpt[] = [] //validators
 
-  fieldName:string;
-  /**
-   * Nombre del campo, utilizado como filtro para cargar la interfaz de administracion
-   */
+  uniqueValue: string;
 
   ngOnInit(): void {
-    this.fieldName = getControlName(this.field);
-    this.adminRoute = getControlName(this.field.parent);
+  this.field.statusChanges.subscribe(
+      () => {
+        if(this.field.hasError("notUnique")){
+          this.uniqueValue = this.field.getError("notUnique");
+          for(var i = 0; i < this.asyncValidatorOpts.length; i++){
+            if(this.asyncValidatorOpts[i].id=="notUnique") 
+              this.asyncValidatorOpts[i]["queryParams"][this.asyncValidatorOpts[i]["uniqueParam"]] = this.uniqueValue
+          }
+        }
+      }
+    );
+    
   }
- 
-  get adminParams() {
-    /**
-     * Definir parametros de administracion si se ingresa un valor unico
-     */
-    let queryParams = {};
-    queryParams[this.fieldName] = this.field.value;
-    return queryParams;
-  }
-  
 }

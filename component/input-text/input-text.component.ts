@@ -1,5 +1,7 @@
 import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { FieldControlOptions } from '@class/field-type-options';
+import { AsyncValidatorOpt, UniqueValidatorOpt, ValidatorOpt } from '@class/validator-opt';
 
 @Component({
   selector: 'core-input-text',
@@ -10,13 +12,6 @@ export class InputTextComponent implements OnInit{ //2.2
   @Input() field: FormControl
   @Input() title?: string
   @Input() placeholder?: string = ""
-  @Input() uniqueRoute?: string //Ruta de administracion para valor unico (si no se define no se activa enlace)
-  @Input() uniqueParam?: string = "id" 
-  /**
-   * Por defecto se utiliza el metodo getControlName para definir el nombre
-   * CUIDADO! getControlName funciona solo si tiene padre
-   */
-  
   @Input() type?: string = "text"
   @Input() width?: string = null
   /**
@@ -24,19 +19,23 @@ export class InputTextComponent implements OnInit{ //2.2
    * se aplica al contenedor utilizando [style.width]="width"
    * Debe indicarse la unidad de medida, ej "100%", "100px"
    */
-  
-  @Input() readonly?: boolean = false;
 
-  queryParams = {};
+  @Input() readonly?: boolean = false;
+  @Input() validatorOpts?: ValidatorOpt[] = [] //validators
+  @Input() asyncValidatorOpts?: AsyncValidatorOpt[] = [] //validators
+
+
   uniqueValue: string;
 
   ngOnInit(): void {
-    if(!this.uniqueRoute) return;
-    this.field.statusChanges.subscribe(
+   this.field.statusChanges.subscribe(
       () => {
         if(this.field.hasError("notUnique")){
           this.uniqueValue = this.field.getError("notUnique");
-          this.queryParams[this.uniqueParam] = this.uniqueValue;
+          for(var i = 0; i < this.asyncValidatorOpts.length; i++){
+            if(this.asyncValidatorOpts[i].id=="notUnique") 
+              this.asyncValidatorOpts[i]["queryParams"][this.asyncValidatorOpts[i]["uniqueParam"]] = this.uniqueValue
+          }
         }
       }
     );

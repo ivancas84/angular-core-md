@@ -6,6 +6,7 @@ import { FieldsetDynamicOptions } from '@class/fieldset-dynamic-options';
 import { FieldsetArrayComponent } from '@component/fieldset-array/fieldset-array.component';
 import { arrayColumn } from '@function/array-column';
 import { arrayCombine } from '@function/array-combine';
+import { FormBuilderService } from '@service/form-builder/form-builder.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
@@ -18,9 +19,7 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
 export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //3
   /**
    * Componente dinamico de administración de fieldset array
-   * La estructura por defecto del componente de implementacion
-   * es la misma que para FieldsetDynamicComponent,
-   * simplemente se debe cambiar la superclase
+   * La estructura por defecto del componente de implementacion es la misma que para FieldsetDynamicComponent, simplemente se debe cambiar la superclase
    **/
 
   @Input() fieldsViewOptions: FieldViewOptions[]; //fields
@@ -31,7 +30,7 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //3
   fieldsViewOptionsFilter: FieldViewOptions[]; //fields filtrados
 
   constructor(
-    protected fb: FormBuilder, 
+    protected fb: FormBuilderService, 
     protected router: Router, 
     protected storage: SessionStorageService 
   ) {
@@ -39,21 +38,7 @@ export class FieldsetArrayDynamicComponent extends FieldsetArrayComponent { //3
   }
   
   formGroup() {
-    let fg: FormGroup = this.fb.group({})
-    for(var i = 0; i < this.fieldsViewOptions.length; i++){
-      fg.addControl(
-        this.fieldsViewOptions[i].field, 
-        new FormControl(
-          {
-            value:null,
-            disabled:this.fieldsViewOptions[i].control.disabled
-          }, 
-          {
-            validators:this.fieldsViewOptions[i].control.validators,
-            asyncValidators:this.fieldsViewOptions[i].control.asyncValidators,
-          })
-      )
-    } 
+    let fg: FormGroup = this.fb.groupFvo(this.fieldsViewOptions)
     fg.addControl("_delete",new FormControl(null))
     fg.addControl("_controller",new FormControl(this.controller))  
     return fg
