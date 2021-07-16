@@ -1,9 +1,14 @@
 <mat-form-field>
   <mat-label>{{title}}</mat-label>
   <textarea matInput [formControl]="field" placeholder="{{placeholder}}"></textarea>
-  <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
-  <mat-error *ngIf="field.hasError('notUnique')">
-    El valor ya se encuentra utilizado: <a *ngIf="uniqueRoute" routerLink="/{{uniqueRoute}}" [queryParams]="queryParams">Cargar</a>    
+  <mat-error *ngFor="let v of validatorOpts">
+    <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
   </mat-error>
-  <mat-error *ngIf="field.hasError('pattern')">El formato es incorrecto</mat-error>
+
+  <mat-error *ngFor="let v of asyncValidatorOpts">
+    <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
+      <span *ngIf="field.hasError('notUnique') && v.route">
+      &nbsp;
+      <a *ngIf="v.route" routerLink="/{{v.route}}" [queryParams]="v.queryParams">Cargar</a></span>
+  </mat-error>
 </mat-form-field>
