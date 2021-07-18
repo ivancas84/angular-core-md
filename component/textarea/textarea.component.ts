@@ -1,13 +1,12 @@
 import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AsyncValidatorOpt, ValidatorOpt } from '@class/validator-opt';
-import { getControlName } from '@function/get-control-name';
 
 @Component({
-  selector: 'core-input-textarea',
-  templateUrl: './input-textarea.component.html',
+  selector: 'core-textarea',
+  templateUrl: './textarea.component.html',
 })
-export class InputTextareaComponent implements OnInit { //2
+export class TextareaComponent implements OnInit { //2
   @Input() field: FormControl;
   @Input() title?: string;
   @Input() placeholder?: string = "";

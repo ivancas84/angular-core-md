@@ -17,14 +17,14 @@
                    [title]="fieldViewOptions.label"
                    [placeholder]="fieldViewOptions.control.placeholder"></core-input-year>  
   
-  <core-input-textarea *ngSwitchCase="'textarea'" 
+  <core-textarea *ngSwitchCase="'textarea'" 
                        [field]="field" 
                        [title]="fieldViewOptions.label"
                        [title]="fieldViewOptions.label"
                        [readonly]="fieldViewOptions.control.readonly"
                        [validatorOpts]="fieldViewOptions.control.validatorOpts"
                        [asyncValidatorOpts]="fieldViewOptions.control.asyncValidatorOpts"
-                       [placeholder]="fieldViewOptions.control.placeholder"></core-input-textarea>
+                       [placeholder]="fieldViewOptions.control.placeholder"></core-textarea>
   
   <core-input-checkbox *ngSwitchCase="'input_checkbox'" 
                        [field]="field" 
