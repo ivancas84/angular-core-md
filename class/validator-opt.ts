@@ -1,4 +1,4 @@
-import { AsyncValidatorFn, ValidatorFn } from "@angular/forms";
+import { AsyncValidatorFn, ValidatorFn, Validators } from "@angular/forms";
 
 export class ValidatorOpt {
   id:string //id del validador (debe ser el mismo que el identificador del error retornado)
@@ -44,4 +44,10 @@ export class UniqueValidatorOpt extends AsyncValidatorOpt {
       }
     }
   }
+}
+
+export class RequiredValidatorOpt extends ValidatorOpt {
+  id:string = "required" //id del validador (debe ser el mismo que el identificador del error retornado)
+  fn:ValidatorFn = Validators.required //funcion de validacion
+  message:string = "Debe completar valor" //mensaje a visualizar
 }
