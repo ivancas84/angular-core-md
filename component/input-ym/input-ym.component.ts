@@ -6,6 +6,7 @@ import { MY_FORMATS } from 'app/core/const/MY_FORMATS';
 import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
 import { getControlName } from '@function/get-control-name';
+import { AsyncValidatorOpt, ValidatorOpt } from '@class/validator-opt';
 
 @Component({
   selector: 'core-input-ym',
@@ -25,7 +26,7 @@ import { getControlName } from '@function/get-control-name';
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class InputYmComponent implements OnInit {
+export class InputYmComponent  {
  
   /**
    * Si se desea inicializar con el valor por defecto de mes y año actual
@@ -37,31 +38,11 @@ export class InputYmComponent implements OnInit {
   @Input() field: FormControl;
   @Input() title?: string;
   @Input() placeholder?: string = "Ingrese año y mes";
+  @Input() readonly?: boolean = false;
+  @Input() validatorOpts?: ValidatorOpt[] = [] //validators
+  @Input() asyncValidatorOpts?: AsyncValidatorOpt[] = [] //validators
  
-  adminRoute:string;
-  /**
-   * Interfaz de administracion para cuando se carga un valor unico
-   * @todo puede ser un Input y dar la posibilidad de indicar la interfaz de administración
-   */
-
-  fieldName:string;
-  /**
-   * Nombre del campo, utilizado como filtro para cargar la interfaz de administracion
-   */
-
-  ngOnInit(): void {
-    this.fieldName = getControlName(this.field); //deprecated?
-    this.adminRoute = getControlName(this.field.parent); //deprecated? comparar con otros ejemplos
-  }
  
-  get adminParams() {
-    /**
-     * Definir parametros de administracion si se ingresa un valor unico
-     */
-    let queryParams = {};
-    queryParams[this.fieldName] = (moment.isMoment(this.field.value)) ? this.field.value.format() : this.field.value;
-    return queryParams;
-  }
 
   chosenYearHandler(normalizedYear: moment.Moment) {
     let ctrlValue = this.field.value;
