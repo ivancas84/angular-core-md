@@ -17,6 +17,14 @@
                    [title]="fieldViewOptions.label"
                    [placeholder]="fieldViewOptions.control.placeholder"></core-input-year>  
   
+  <core-input-ym *ngSwitchCase="'input_year_month'" 
+                   [field]="field" 
+                   [title]="fieldViewOptions.label"
+                   [readonly]="fieldViewOptions.control.readonly"
+                   [validatorOpts]="fieldViewOptions.control.validatorOpts"
+                   [asyncValidatorOpts]="fieldViewOptions.control.asyncValidatorOpts"
+                   [placeholder]="fieldViewOptions.control.placeholder"></core-input-ym>  
+  
   <core-textarea *ngSwitchCase="'textarea'" 
                        [field]="field" 
                        [title]="fieldViewOptions.label"
