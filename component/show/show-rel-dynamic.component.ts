@@ -13,7 +13,7 @@ import { DataDefinitionRelFieldsService } from '@service/data-definition/data-de
   selector: 'core-show-rel-dynamic',
   template: '',
 })
-export abstract class ShowRelDynamicComponent extends ShowDynamicComponent { //1.3
+export abstract class ShowRelDynamicComponent extends ShowDynamicComponent {
  
   constructor(
     protected dd: DataDefinitionToolService, 
@@ -29,7 +29,7 @@ export abstract class ShowRelDynamicComponent extends ShowDynamicComponent { //1
   queryData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display).pipe(
       switchMap(
-        ids => this.ddrf.getAllFvo(this.entityName, ids, this.fieldsViewOptions)
+        ids => this.ddrf.getAllFvo(this.entityName, ids, this.tableOptions.fieldsViewOptions)
       )
     )
   }

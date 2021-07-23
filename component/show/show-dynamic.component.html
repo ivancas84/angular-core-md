@@ -12,9 +12,12 @@
   <core-table-dynamic [dataSource]="data" 
                       [length]="length" 
                       [display]="display" 
-                      [fieldsViewOptions]="fieldsViewOptions" 
-                      [optColumn]="optColumn"
+                      [fieldsViewOptions]="tableOptions.fieldsViewOptions" 
+                      [optColumn]="tableOptions.optColumn"
                       (eventTable)= "switchAction($event)"
-                      [title]="title"
-                      [entityName]="entityName"></core-table-dynamic>
+                      [title]="tableOptions.title"
+                      [entityName]="tableOptions.entityName"
+                      [sortActive]="tableOptions.sortActive"
+                      [sortDirection]="tableOptions.sortDirection"
+                      [serverSortObligatory]="tableOptions.serverSortObligatory"></core-table-dynamic>
 </div>
