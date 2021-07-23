@@ -48,9 +48,17 @@ export class FieldsetDynamicComponent extends FieldsetComponent { //3
     let fg: FormGroup = this.fb.groupFvo(this.fieldsViewOptions);
 
     var v = [];
-    for(var i = 0; i < this.validatorOpts.length; i++) v.push(this.validatorOpts[i].fn)
+    for(var i = 0; i < this.validatorOpts.length; i++) {
+      if(this.validatorOpts[i].fn) v.push(this.validatorOpts[i].fn)
+    }
     fg.setValidators(v);
 
+    var v = [];
+    for(var i = 0; i < this.validatorOpts.length; i++) {
+      if(this.validatorOpts[i].fn) v.push(this.validatorOpts[i].fn)
+    }
+    fg.setValidators(v);
+    
     return fg;
   }
 
