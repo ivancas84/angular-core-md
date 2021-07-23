@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { Display } from '@class/display';
+import { AsyncValidatorOpt, ValidatorOpt } from '@class/validator-opt';
 
 @Component({
   selector: 'core-input-select',
@@ -21,6 +22,10 @@ export class InputSelectComponent implements  OnInit {
   @Input() multiple?: boolean = false;
 
   options$: Observable<Array<any>>;
+
+  @Input() readonly?: boolean = false;
+  @Input() validatorOpts?: ValidatorOpt[] = [] //validators
+  @Input() asyncValidatorOpts?: AsyncValidatorOpt[] = [] //validators
 
   constructor( public dd: DataDefinitionService ) { }
 
