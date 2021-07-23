@@ -26,22 +26,8 @@ export class InputSelectParamComponent implements OnInit {
 
   constructor( public dd: DataDefinitionService ) { }
 
-  uniqueValue: string;
-
   ngOnInit(): void {
     if(!this.title) this.title = "Seleccione";
-
-    this.field.statusChanges.subscribe(
-      () => {
-        if(this.field.hasError("notUnique")){
-          this.uniqueValue = this.field.getError("notUnique");
-          for(var i = 0; i < this.asyncValidatorOpts.length; i++){
-            if(this.asyncValidatorOpts[i].id=="notUnique") 
-              this.asyncValidatorOpts[i]["queryParams"][this.asyncValidatorOpts[i]["uniqueParam"]] = this.uniqueValue
-          }
-        }
-      }
-    );
   }
 
 }
