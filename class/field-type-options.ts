@@ -124,6 +124,18 @@ export class FieldInputYearOptions { //1
   }
 }
 
+export class FieldInputYearMonthOptions {
+  id: string = "input_year_month"
+  
+  constructor(attributes: any = {}) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 export class FieldTreeOptions { //1
   id: string = "tree"
   tree: FieldTreeElement = null
@@ -165,7 +177,7 @@ export class FieldInputSelectOptions { //1
 
 export class FieldInputSelectCheckboxOptions { //1
   id: string = "input_select_checkbox";
-  options: any[] = null;
+  options: any[] = ["Sí", "No"];
 
   constructor(attributes: any = {}) {
     for(var a in attributes){
