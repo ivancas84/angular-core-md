@@ -41,17 +41,21 @@ export class FormBuilderService extends FormBuilder{
       )
 
       var v = []
-      for(var j = 0; j < fieldsViewOptions[i].control.validatorOpts.length; j++) 
-        v.push(fieldsViewOptions[i].control.validatorOpts[j].fn)
+      for(var j = 0; j < fieldsViewOptions[i].control.validatorOpts.length; j++) {
+        if(fieldsViewOptions[i].control.validatorOpts[j].fn) 
+          v.push(fieldsViewOptions[i].control.validatorOpts[j].fn)
+      }
       c.setValidators(v)
 
       var v = []
-      for(var j = 0; j < fieldsViewOptions[i].control.asyncValidatorOpts.length; j++)
-        v.push(fieldsViewOptions[i].control.asyncValidatorOpts[j].fn)
+      for(var j = 0; j < fieldsViewOptions[i].control.asyncValidatorOpts.length; j++) {
+        if(fieldsViewOptions[i].control.asyncValidatorOpts[j].fn) 
+          v.push(fieldsViewOptions[i].control.asyncValidatorOpts[j].fn)
+      }
       c.setAsyncValidators(v)
 
       fg.addControl(
-        fieldsViewOptions[i].field, 
+        fieldsViewOptions[i].field,
         c
       )
     }
