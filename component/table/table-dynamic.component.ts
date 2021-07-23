@@ -1,6 +1,8 @@
 import { Input, Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Sort } from '@angular/material/sort';
 import { FieldViewOptions } from '@class/field-view-options';
 import { TableComponent } from '@component/table/table.component';
+import { emptyUrl } from '@function/empty-url.function';
 
 @Component({
   selector: 'core-table-dynamic',
@@ -20,6 +22,7 @@ export class TableDynamicComponent extends TableComponent implements OnInit { //
   @Input() printButton: boolean = true;
   @Input() sortActive: string = null;
   @Input() sortDirection: string = "asc";
+  @Input() sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
   @Input() optColumn: any[] = null; //columna opciones (si es null no se visualiza)
   /**
    * Cada elemento debe ser uno de los siguientes OptRouteIcon | OptLinkIcon | OptRouteText | OptLinkText
@@ -43,6 +46,8 @@ export class TableDynamicComponent extends TableComponent implements OnInit { //
         this.eventTable.emit($event);
     }
   }
+
+  
 
   
   
