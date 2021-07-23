@@ -34,6 +34,18 @@ export abstract class TableComponent implements OnInit, OnChanges { //3
   @Input() dataSource: { [index: string]: any }[] = []; //datos recibidos que seran visualizados
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
   @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
+  @Input() serverSortTranslate: { [index: string]: string[] } = {}; //traduccion de campos de ordenamiento
+  /**
+   * @example {"nombre":["per-apellidos","per-nombres"], "departamento_judicial":["per_dj-codigo"]}
+   */
+   @Input() serverSortObligatory: string[]; //ordenamiento obligatorio en el servidor
+   /**
+    * Ciertos campos que son utilizados en subcomponentes y traducidos a otros valores puede ser necesario ordenarlos siempre en el servidor
+    * Si se ordenan en el cliente, no se proporcionara un ordenamiento correcto
+    * Es utilizado por ejemplo para las claves foraneas que se muestran a traves del componente "label". El valor original es un id, si se ordena por el id puede no proporcional el valor deseado
+    * Si un campo se incluye en serverSortObligatory, casi con seguridad estara tambien incluido su valor en serverSortTranslate
+    */
+
   displayedColumns: string[]; //columnas a visualizar
   @ViewChild(MatPaginator) paginator: MatPaginator; //paginacion
   @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
@@ -91,16 +103,14 @@ export abstract class TableComponent implements OnInit, OnChanges { //3
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
   }
 
-  serverSort(sort: Sort): boolean{
-    /**
-     * Ordenamiento en el servidor
-     * Para que se produzca ordenamiento en el servidor se tienen que cumplir ciertas condiciones
-     * @return true si se efectuo ordenamiento en el servidor
-     *         false si no se efectuo ordenamiento en el servidor
-     */
-    if(!this.length || !this.display || this.dataSource.length >= this.length) return false;
-    this.display.setPage(1);
-    this.display.setOrderByKeys([sort.active]);
+  serverSort(sort: Sort): boolean{ 
+    if((!this.length || !this.display || this.dataSource.length >= this.length)) {
+      if(!this.serverSortObligatory.includes(sort.active)) return false;
+    }
+    this.display.setOrderByKeys(
+      this.serverSortTranslate.hasOwnProperty(sort.active) ? this.serverSortTranslate[sort.active] : [sort.active]
+    )
+    this.display.setPage(1)
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
     return true;
   }
