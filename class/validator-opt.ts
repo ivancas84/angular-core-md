@@ -51,3 +51,9 @@ export class RequiredValidatorOpt extends ValidatorOpt {
   fn:ValidatorFn = Validators.required //funcion de validacion
   message:string = "Debe completar valor" //mensaje a visualizar
 }
+
+export class YearMonthValidatorOpt extends ValidatorOpt {
+  id:string = "matDatepickerParse"
+  fn:null //no se necesita definir funcion de validacion de Year month, ya se encuentra implicita
+  message:string = "El formato es incorrecto"
+}
