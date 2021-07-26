@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Display } from '@class/display';
-import { FieldViewOptions } from '@class/field-view-options';
 import { arrayColumn } from '@function/array-column';
 import { fastClone } from '@function/fast-clone';
-import { isEmptyObject } from '@function/is-empty-object.function';
 import { recursiveData } from '@function/recursive-data';
-import { combineLatest, concat, Observable, of, race } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
 
 @Injectable({

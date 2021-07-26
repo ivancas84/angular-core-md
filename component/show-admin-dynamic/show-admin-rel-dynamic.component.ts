@@ -39,9 +39,9 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
       switchMap(
         ids => {
           var fields = [];
-          for(var i = 0; i < this.fieldsViewOptions.length; i++){
-            fields.push(this.fieldsViewOptions[i].field);
-          }
+          // for(var i = 0; i < this.fieldsViewOptions.length; i++){
+          //   fields.push(this.fieldsViewOptions[i].field);
+          // }
           return (isEmptyObject(fields)) ? 
             this.dd.getAll(this.entityName, ids) :
             this.ddrf.getAll(this.entityName, ids, fields);

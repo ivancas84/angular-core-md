@@ -1,7 +1,7 @@
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription, Observable, BehaviorSubject, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { emptyUrl } from '../../function/empty-url.function';
 import { SessionStorageService } from '../../service/storage/session-storage.service';
@@ -16,6 +16,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { fastClone } from '@function/fast-clone';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { ValidatorsService } from '@service/validators/validators.service';
+import { DataDefinitionFkObjService } from '@service/data-definition/data-definition-fk-obj.service';
+import { DataDefinitionUmObjService } from '@service/data-definition/data-definition-um-obj.service';
+import { FormGroupExt } from '@class/reactive-form-ext';
 
 @Component({
   selector: 'core-admin',
@@ -29,33 +32,35 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
  *   fieldsViewOptions: FieldViewOptions[] Configuracion de campos
  */
 
-  adminForm: FormGroup = this.fb.group({}); //formulario principal
+  adminForm: FormGroup; //formulario principal
   /**
    * Se asignaran dinamicamente los formGroups correspondientes a fieldsets
    */
 
   readonly entityName: string; //entidad principal
+
   display$:BehaviorSubject<any> = new BehaviorSubject(null); //parametros de consulta
   /**
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
    */
-  data?: any; //datos principales
-  /**
-   * Todos los datos se inicializan en el componente principal:
-   *   Si se definen relaciones, el origen puede ser incierto.
-   *   Se reduce la cantidad de parametros a los componentes anidados.
-   *   Un componente anidado puede no responder exactamente a una entidad.
-   */
-
-  isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
+  
   isSubmitted: boolean = false; //Flag para habilitar/deshabilitar boton aceptar
 
   params: { [x: string]: any; } //parametros del componente
+  
   loadParams$: Observable<any>; //carga de parametros
+  
   loadDisplay$: Observable<any>; //carga de display
+  
   protected subscriptions = new Subscription(); //suscripciones en el ts
-  persistApi: string = "persist";
-  queryApi: string = "unique";
+  
+  persistApi: string = "persist_rel";
+  
+  queryApi: string = "unique_rel";
+
+  defaultValues: {[key:string]: any} = {};
+
+  formValues = this.storage.getItem(this.router.url);
 
   constructor(
     protected fb: FormBuilder, 
@@ -66,7 +71,9 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
     protected validators: ValidatorsService,
     protected storage: SessionStorageService, 
     protected dialog: MatDialog,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    protected relFk: DataDefinitionFkObjService,
+    protected relUm: DataDefinitionUmObjService
   ) { }
 
   
@@ -82,6 +89,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
   }
 
   ngOnInit() {
+
     this.loadStorage();
     this.loadParams();  
     this.loadDisplay();
@@ -90,10 +98,12 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
   loadStorage() {
     /**
      * Me suscribo directamente en el ts
-     * Con esto me aseguro que se suscribe inicialmente y no ensucio el HTML
+     * @todo es posible pasarlo al html?
      */
     var s = this.adminForm.valueChanges.subscribe (
-      formValues => { this.storage.setItem(this.router.url, formValues); },
+      formValues => {
+        console.log(this.router.url)
+        this.storage.setItem(this.router.url, formValues); },
       error => { 
         this.snackBar.open(JSON.stringify(error), "X"); 
       }
@@ -137,7 +147,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
       ),
       map(
         data => {
-          this.data = data;
+          this.adminForm.patchValue(data);
           return true;
         }
       )
@@ -151,7 +161,8 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
   initData(): Observable<any> {
     return of({}).pipe(
       switchMap(() => {
-        if(isEmptyObject(this.display$.value)) return of (null);
+        if(this.formValues) return of(this.formValues);
+        if(isEmptyObject(this.display$.value)) return of (this.defaultValues);
         else return this.queryData();
       }),
       map(
@@ -172,8 +183,16 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
 
   queryData(): Observable<any> {
     switch(this.queryApi){
-      case "unique": return this.dd.unique(this.entityName, this.display$.value)
-      default:  return this.dd.post(this.queryApi, this.entityName, this.display$.value);
+      case "unique_rel_um": case "unique_rel":  
+        return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.adminForm).pipe(
+        switchMap(
+          row => {
+            return this.relUm.group(this.entityName, row, this.adminForm)
+          }
+        ),
+      )
+      case "unique": return this.dd.unique(this.entityName, this.display$.value) 
+      default: return this.dd.post(this.queryApi, this.entityName, this.display$.value);
     }
   }
 
@@ -271,4 +290,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
   }
 
   ngOnDestroy () { this.subscriptions.unsubscribe() }
+
+
+  
 }

@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AdminRelStructure } from '@class/admin-rel-structure';
 import { Display } from '@class/display';
-import { FieldViewOptions } from '@class/field-view-options';
+import { FormGroupExt } from '@class/reactive-form-ext';
 import { arrayColumn } from '@function/array-column';
-import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { combineLatest, Observable, of } from 'rxjs';
-import { map, mergeMap, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DataDefinitionToolService } from './data-definition-tool.service';
 
 @Injectable({
@@ -87,8 +85,7 @@ export class DataDefinitionRelFieldsService {
     )
   }
     
-
-  public getAllFvo(entityName: string, ids: string[], fieldsViewOptions:FieldViewOptions[]){
+  public getAllGroup(entityName: string, ids: string[], group:FormGroupExt){
     /**
      * Analiza el parametro fieldsViewOptions para obtener los fields 
      * y ejecutar getAll (si corresponde)
@@ -98,9 +95,11 @@ export class DataDefinitionRelFieldsService {
      * Si existe el caracter "-" significa que se está queriendo manipular un fields de una relación, por lo tanto debe inicializarse
      */
      var fields = [];
-     for(var i = 0; i < fieldsViewOptions.length; i++){
-       if(fieldsViewOptions[i].field.includes("-")) fields.push(fieldsViewOptions[i].field);
-     }
+
+     Object.keys(group.controls).forEach(key => {
+      if(key.includes("-")) fields.push(key);
+
+    });
      return (!fields.length) ? 
        this.dd.getAll(entityName, ids) : 
        this.getAll(entityName, ids, fields);
@@ -150,9 +149,6 @@ export class DataDefinitionRelFieldsService {
        )
      );
   }
-
-
-
 
   public fields(entityName, fields, row){
     return this.dd.post("rel",entityName).pipe(

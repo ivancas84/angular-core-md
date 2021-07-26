@@ -1,15 +1,15 @@
 <mat-card>
   <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">
-    <div *ngFor="let fieldViewOptions of fieldsViewOptionsFilter" 
+    <div *ngFor="let item of fieldset.controls | keyvalue" 
          class="item" 
-         [fxFlex.xs]="fieldViewOptions.width.xs" 
-         [fxFlex.sm]="fieldViewOptions.width.sm" 
-         [fxFlex.md]="fieldViewOptions.width.md" 
-         [fxFlex.lg]="fieldViewOptions.width.lg" 
-         [fxFlex.xl]="fieldViewOptions.width.xl" 
-         [fxFlex.gt-sm]="fieldViewOptions.width.gtSm" 
+         [fxFlex.xs]="item.width.xs" 
+         [fxFlex.sm]="item.width.sm" 
+         [fxFlex.md]="item.width.md" 
+         [fxFlex.lg]="item.width.lg" 
+         [fxFlex.xl]="item.width.xl" 
+         [fxFlex.gt-sm]="item.width.gtSm" 
     >
-      <core-field-view [fieldViewOptions]="fieldViewOptions" [field]="fieldset.controls[fieldViewOptions.field]"></core-field-view>  
+      <core-field-view [field]="item.value"></core-field-view>  
     </div>
   </mat-card-content>
 </mat-card>

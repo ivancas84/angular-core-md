@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FieldViewOptions } from '@class/field-view-options';
+import { Component, Input } from '@angular/core';
+import { FormGroupExt } from '@class/reactive-form-ext';
 import { CardComponent } from '@component/card/card.component';
 
 @Component({
@@ -10,6 +10,5 @@ import { CardComponent } from '@component/card/card.component';
   `]
 })
 export class CardDynamicComponent extends CardComponent { //2
-  @Input() fieldsViewOptions: FieldViewOptions[];
-  @Input() title: string; //titulo del componente
+  @Input() fieldset:  FormGroupExt;
 }

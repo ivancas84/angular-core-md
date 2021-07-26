@@ -1,12 +1,11 @@
-import { Input, OnInit, Component } from '@angular/core';
+import { Input, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MY_FORMATS } from 'app/core/const/MY_FORMATS';
 import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
-import { getControlName } from '@function/get-control-name';
-import { AsyncValidatorOpt, ValidatorOpt } from '@class/validator-opt';
+import { ValidatorMsg } from '@class/validator-msg';
 
 @Component({
   selector: 'core-input-ym',
@@ -39,10 +38,7 @@ export class InputYmComponent  {
   @Input() title?: string;
   @Input() placeholder?: string = "Ingrese año y mes";
   @Input() readonly?: boolean = false;
-  @Input() validatorOpts?: ValidatorOpt[] = [] //validators
-  @Input() asyncValidatorOpts?: AsyncValidatorOpt[] = [] //validators
- 
- 
+  @Input() validatorMsgs: ValidatorMsg[] = [];
 
   chosenYearHandler(normalizedYear: moment.Moment) {
     let ctrlValue = this.field.value;

@@ -1,32 +1,36 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title fxFlex="auto">
-      {{title}}    
+      {{fieldset.title}}    
     </mat-card-title>
     <!--core-input-search-go *ngIf="inputSearchGo" fxFlex="auto" [entityName]="entityName"></core-input-search-go-->
   </mat-card-header>
   <mat-card-content>
-    <div  *ngFor="let row of fieldset.controls; let i=index" [formGroup]="fg(i)">
+    <ng-container *ngFor="let g of fieldset.controls; let i=index" [formGroup]="fg(i)">
       <div fxLayout="row wrap" *ngIf="!_delete(i).value">
         <div fxLayout="row wrap" fxFlex="90%">
-          <div *ngFor="let fvo of fieldsViewOptionsFilter" 
-          class="item" 
-          [fxFlex.xs]="fvo.width.xs" 
-          [fxFlex.sm]="fvo.width.sm" 
-          [fxFlex.md]="fvo.width.md" 
-          [fxFlex.lg]="fvo.width.lg" 
-          [fxFlex.xl]="fvo.width.xl" 
-          [fxFlex.lt-sm]="fvo.width.ltSm"
-          [fxFlex.lt-md]="fvo.width.ltMd"
-          [fxFlex.lt-lg]="fvo.width.ltLg"
-          [fxFlex.lt-xl]="fvo.width.ltXl"
-          [fxFlex.gt-xs]="fvo.width.gtXs"
-          [fxFlex.gt-sm]="fvo.width.gtSm" 
-          [fxFlex.gt-md]="fvo.width.gtMd" 
-          [fxFlex.gt-lg]="fvo.width.gtLg" 
-        >
-            <core-field-view [fieldViewOptions]="fvo" [field]="fg(i).controls[fvo.field]"></core-field-view>  
-          </div>
+          <ng-container *ngFor="let item of (g).controls | keyvalue: g.sort">
+          
+            <div *ngIf="item.value.type.id != 'hidden'"
+                class="item" 
+                [fxFlex.xs]="item.value.width.xs" 
+                [fxFlex.sm]="item.value.width.sm" 
+                [fxFlex.md]="item.value.width.md" 
+                [fxFlex.lg]="item.value.width.lg" 
+                [fxFlex.xl]="item.value.width.xl" 
+                [fxFlex.lt-sm]="item.value.width.ltSm"
+                [fxFlex.lt-md]="item.value.width.ltMd"
+                [fxFlex.lt-lg]="item.value.width.ltLg"
+                [fxFlex.lt-xl]="item.value.width.ltXl"
+                [fxFlex.gt-xs]="item.value.width.gtXs"
+                [fxFlex.gt-sm]="item.value.width.gtSm" 
+                [fxFlex.gt-md]="item.value.width.gtMd" 
+                [fxFlex.gt-lg]="item.value.width.gtLg" 
+              >
+              <core-field-view [field]="item.value"></core-field-view>  
+            </div>
+          </ng-container>
+
         </div>
 
         <div fxFlex="10%">
@@ -34,8 +38,8 @@
         </div>
       </div>
 
-      <div *ngIf="!_delete(i).value"><mat-divider></mat-divider><br></div>
-    </div>
+      <ng-container *ngIf="!_delete(i).value"><mat-divider></mat-divider><br></ng-container>
+    </ng-container>
     <button mat-mini-fab color="primary" (click)="add()" type="button"><mat-icon>add</mat-icon></button>
 
   </mat-card-content>

@@ -11,7 +11,6 @@ import { fastClone } from '@function/fast-clone';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
-import { FormBuilderService } from '@service/form-builder/form-builder.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { ValidatorsService } from '@service/validators/validators.service';
 import { Observable, Subscription } from 'rxjs';
@@ -64,18 +63,7 @@ export abstract class TableAdminComponent extends TableComponent implements OnCh
   isSubmitted: boolean[] = [];
   protected subscriptions = new Subscription(); //suscripciones en el ts
 
-  constructor(
-    protected router: Router, 
-    protected fb: FormBuilderService, 
-    protected validators: ValidatorsService,
-    protected dialog: MatDialog,
-    protected dd: DataDefinitionToolService, 
-    protected snackBar: MatSnackBar,
-    protected storage: SessionStorageService
-  ) {
-    super(router, dd, dialog, snackBar, storage)
-  }
-
+ 
   ngOnChanges(changes: SimpleChanges): void {
     /**
      * no se detectan directamente los cambios en el dataSource

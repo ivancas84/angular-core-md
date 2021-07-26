@@ -1,13 +1,12 @@
 import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FieldControlOptions } from '@class/field-type-options';
-import { AsyncValidatorOpt, UniqueValidatorOpt, ValidatorOpt } from '@class/validator-opt';
+import { ValidatorMsg } from '@class/validator-msg';
 
 @Component({
   selector: 'core-input-text',
   templateUrl: './input-text.component.html',
 })
-export class InputTextComponent implements OnInit{ //2.2
+export class InputTextComponent {
 
   @Input() field: FormControl
   @Input() title?: string
@@ -21,25 +20,6 @@ export class InputTextComponent implements OnInit{ //2.2
    */
 
   @Input() readonly?: boolean = false;
-  @Input() validatorOpts?: ValidatorOpt[] = [] //validators
-  @Input() asyncValidatorOpts?: AsyncValidatorOpt[] = [] //validators
-
-
-  uniqueValue: string;
-
-  ngOnInit(): void {
-   this.field.statusChanges.subscribe(
-      () => {
-        if(this.field.hasError("notUnique")){
-          this.uniqueValue = this.field.getError("notUnique");
-          for(var i = 0; i < this.asyncValidatorOpts.length; i++){
-            if(this.asyncValidatorOpts[i].id=="notUnique") 
-              this.asyncValidatorOpts[i]["queryParams"][this.asyncValidatorOpts[i]["uniqueParam"]] = this.uniqueValue
-          }
-        }
-      }
-    );
-    
-  }
+  @Input() validatorMsgs: ValidatorMsg[] = [];
 
 }

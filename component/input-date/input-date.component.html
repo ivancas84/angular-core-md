@@ -6,16 +6,10 @@
     <mat-icon matDatepickerToggleIcon>clear</mat-icon>
   </mat-datepicker-toggle>
   <mat-datepicker #fieldPicker></mat-datepicker>
-  <mat-error *ngFor="let v of validatorOpts">
+  <mat-error *ngFor="let v of validatorMsgs">
     <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
-  </mat-error>
-
-  <mat-error *ngFor="let v of asyncValidatorOpts">
-    <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
-      <span *ngIf="field.hasError('notUnique') && v.route">
-      &nbsp;
-      <a *ngIf="v.route" routerLink="/{{v.route}}" [queryParams]="v.queryParams">Cargar</a></span>
-  </mat-error>
-
-  <mat-error *ngIf="field.hasError('matDatepickerParse')">El formato es incorrecto</mat-error>  
+    <core-error-unique-route *ngIf="field.hasError('notUnique') && v.id == 'notUnique' && v.route" 
+                             [validatorMsg]="v" 
+                             [field]="field"></core-error-unique-route>
+  </mat-error>  
 </mat-form-field>

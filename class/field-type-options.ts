@@ -1,40 +1,4 @@
 import { FieldTreeElement } from "./field-tree-element";
-import { AsyncValidatorOpt, ValidatorOpt } from "./validator-opt";
-
-   
-
-export class FieldControlOptions { //1.1
-  /**
-   * Podemos identificar atributos asociados directamente con un FormControl de angular y otros asociados indirectamente.
-   * Los atributos asociados directamente coinciden con el nombre de algun atributo de FormControl, ej validator, asyncValidators
-   * Ejemplo de atributos asociados indirectamente son default, readonly.
-   * Para definir un atributo como FieldControlOptions uno debe hacerse la pregunta: Puede existir este atributo para un elemento que no sea FormControl? 
-   * Reformulando la pregunta: Tiene sentido este atributo para elementos que no son FormControl?
-   * Hay elementos que pueden parecer de FormControl pero en realidad corresponden a un determinado type,  
-   * La postura tomada hasta el momento es estricta, por ejemplo los atributos adminRoute y uniqueRoute para ciertos type no tienen sentido, por lo tanto se definen solo para los type en los que tiene sentido.
-   * Siguiendo con el ejemplo, readonly tiene sentido para todos los type que son FormControl, por lo tanto se define en FormControlOptions
-   */
-  id: string = null
-  showLabel: boolean = false; //indica si debe mostrarse el label o no
-  /**
-   * no siempre se puede indicar label = null para esconder el label
-   */
-
-  default?: any = null //valor por defecto
-  disabled?: boolean = false
-  readonly?: boolean = false
-  validatorOpts: ValidatorOpt[] = []
-  asyncValidatorOpts: AsyncValidatorOpt[] = []
-  placeholder: string = null
-
-  constructor(attributes: any = {}) {
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
-}
 
 export class FieldDefaultOptions { //1
   id: string = "default"

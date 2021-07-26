@@ -1,4 +1,4 @@
-import { ValidatorOpt } from "./validator-opt";
+import { ValidatorMsg } from "./validator-msg";
 
 export class FieldsetDynamicOptions {
   /**
@@ -8,7 +8,7 @@ export class FieldsetDynamicOptions {
    */
 
   inputSearchGo: boolean = true //activar o desactivar el formulario de busqueda rapida
-  validators: ValidatorOpt[] = [] //opciones de validacion del fieldset
+  validatorMsgs: ValidatorMsg[] = [] //opciones de validacion del fieldset
   intro?:string //parrafo con un mensaje de introduccion al formulario, util para indicar instrucciones breves
 
   constructor(attributes: any = {}) {

@@ -4,7 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { ShowComponent } from '@component/show/show.component';
 import { ValidatorsService } from '@service/validators/validators.service';
-import { FieldViewOptions } from '@class/field-view-options';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
@@ -17,8 +16,8 @@ export abstract class ShowAdminDynamicComponent extends ShowComponent { //v1
    * que implementan estructuras dinamicas
    */
 
-  fieldsViewOptions: FieldViewOptions[] = []; //visualizacion
-  fieldsViewOptionsSp: FieldViewOptions[] = []; //busqueda
+  // fieldsViewOptions: FieldViewOptions[] = []; //visualizacion
+  // fieldsViewOptionsSp: FieldViewOptions[] = []; //busqueda
   persistApi: string = "persist"; //persistApi de TableAdmin 
   /**
    * Puede utilizarse persist_rel_array

@@ -11,14 +11,10 @@
                   (monthSelected)="chosenMonthHandler($event, fieldPicker)"
   ></mat-datepicker>
 
-  <mat-error *ngFor="let v of validatorOpts">
-    <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
-  </mat-error>
-  <mat-error *ngFor="let v of asyncValidatorOpts">
-    
+  <mat-error *ngFor="let v of validatorMsgs">
     <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
     <core-error-unique-route *ngIf="field.hasError('notUnique') && v.id == 'notUnique' && v.route" 
-                             [avo]="v" 
+                             [validatorMsg]="v" 
                              [field]="field"></core-error-unique-route>
   </mat-error>
 </mat-form-field>

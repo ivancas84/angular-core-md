@@ -1,21 +1,18 @@
-<span *ngIf="fieldViewOptions.aux">
-  <span [ngSwitch]="fieldViewOptions.aux.id">
-    <a *ngSwitchCase="'router_link'" [routerLink]="'/'+fieldViewOptions.aux.path" [queryParams]="params">
-      <core-field-view [field]="data[fieldViewOptions.field]" [fieldViewOptions]="fieldViewOptions"></core-field-view>
+<span *ngIf="field.aux">
+  <span [ngSwitch]="fied.aux.id">
+    <a *ngSwitchCase="'router_link'" [routerLink]="'/'+field.aux.path" [queryParams]="params">
+      <core-field-view [field]="field"></core-field-view>
     </a>
     <core-input-persist *ngSwitchCase="'input_persist'" 
-                        [value]="data[fieldViewOptions.field]" 
-                        [fieldViewOptions]="fieldViewOptions" 
+                        [field]="field" 
                         [params]="params"
-                        [api]=fieldViewOptions.aux.api
-                        [entityName]=fieldViewOptions.aux.entityName
-                        [fieldName]=fieldViewOptions.aux.fieldName
-                        >
-    </core-input-persist>
+                        [api]=field.aux.api
+                        [entityName]=field.aux.entityName
+                        [fieldName]=field.aux.fieldName></core-input-persist>
   </span>
   
 
 </span>
-<span *ngIf="!fieldViewOptions.aux">
-  <core-field-view [field]="data[fieldViewOptions.field]" [fieldViewOptions]="fieldViewOptions"></core-field-view>
+<span *ngIf="!field.aux">
+  <core-field-view [field]="field"></core-field-view>
 </span>          

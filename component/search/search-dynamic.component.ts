@@ -1,5 +1,5 @@
 import { Input, Component, OnInit } from '@angular/core';
-import { FieldViewOptions } from '@class/field-view-options';
+import { FormGroupExt } from '@class/reactive-form-ext';
 import { SearchComponent } from '@component/search/search.component';
 
 @Component({
@@ -12,7 +12,7 @@ export class SearchDynamicComponent extends SearchComponent { //2
   @Input() searchCondition: boolean = false; //activar/desactivar busqueda condiciones
   @Input() searchOrder: boolean = false; //activar/desactivar ordenamiento
   @Input() title: string = "Opciones"
-  @Input() fieldsViewOptionsSp?: FieldViewOptions[] = []; //fields control search params
-  @Input() fieldsViewOptionsSc?: FieldViewOptions[] = []; //fields control search condition
+  @Input() fieldsetSp?: FormGroupExt; //fields control search params
+  //@Input() fieldsViewOptionsSc?: FieldViewOptions[] = []; //fields control search condition
   
 }

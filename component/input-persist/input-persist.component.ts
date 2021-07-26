@@ -1,12 +1,11 @@
 import { Input, Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FieldViewOptions } from '@class/field-view-options';
+import { FormControlExt } from '@class/reactive-form-ext';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
-import { FormBuilderService } from '@service/form-builder/form-builder.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
-import { Observable, of, Subscription } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, mergeMap, startWith, switchMap, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'core-input-persist',
@@ -26,30 +25,28 @@ export class InputPersistComponent implements OnInit {
    * [params]="{organo:display.getParam('organo'), periodo:display.getParam('periodo'), departamento_judicial:row.id}"></core-input-persist>
    *   viatico: FieldViewOptions = new FieldViewOptions({
    *     field:"valor", width:"100px", 
-   *     validators: [Validators.pattern('^-?[0-9]+(\\.[0-9]{1,2})?$'),
+   *     validators: [Validators.pattern('^-?[0-9]+(\.[0-9]{1,2})?$'),
    *     Validators.max(99999999999999999.99),
    *     Validators.min(-99999999999999999.99)]
    *   });
    */  
   @Input() value: any
-  @Input() fieldViewOptions: FieldViewOptions
   @Input() params?: { [index: string]: any } = {} //parametros para identificar univocamente el campo que se debe persistir
   @Input() api: string = "persist_unique" //api de persistencia
   @Input() entityName: string
   @Input() fieldName: string
 
-  field: FormControl;
+  @Input() field: FormControlExt;
   load$: Observable<any>;
   
   constructor(
     protected dd: DataDefinitionService, 
     protected snackBar: MatSnackBar,
     protected storage: SessionStorageService,
-    protected fb: FormBuilderService
+    protected fb: FormBuilder
   ) {}
   
   ngOnInit(): void {
-    this.field = this.fb.controlFvo(this.fieldViewOptions, this.value)
     this.load$ = this.field.valueChanges.pipe(
       startWith(this.value),
       distinctUntilChanged(),

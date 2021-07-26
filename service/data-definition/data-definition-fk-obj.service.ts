@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AdminRelStructure } from '@class/admin-rel-structure';
+import { FormGroup } from '@angular/forms';
 import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -29,23 +29,23 @@ export class DataDefinitionFkObjService {
     protected dd: DataDefinitionToolService, 
   ) { }
 
-  public uniqueStructure(entityName:string, params:any, structure:AdminRelStructure[]){
+  public uniqueGroup(entityName:string, params:any, group:FormGroup){
     return this.dd.unique(entityName, params).pipe(
       switchMap(
         (row) => {
-          if(!row) return this.initStructure(entityName, params, structure);
+          if(!row) return this.initGroup(entityName, params, group);
           var r = {};
           r[entityName] = fastClone(row)
           /**
            * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
            */
-          return this.structure(entityName, r, structure)
+          return this.group(entityName, r, group)
         }
       )
     )
   }
 
-  public initStructure(entityName:string, params:any, structure:AdminRelStructure[]){
+  public initGroup(entityName:string, params:any, group:FormGroup){
     /**
      * Recorre parametros e inicializa relaciones
      */
@@ -55,21 +55,18 @@ export class DataDefinitionFkObjService {
     /**
      * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
      */
-    return this.structure(entityName, r, structure)
+    return this.group(entityName, r, group)
   }
 
-  public structure(entityName:string, row: any, structure: AdminRelStructure[]){
+
+  public group(entityName:string, row: any, group: FormGroup){
     /**
      * Definir relaciones a partir de la estructura y armar el arbol de datos
      */
     var relationsFk = [];
-    for(var i = 0; i < structure.length; i++){
-      /**
-       * Recorrer estructura para identificar relaciones fk
-       */
-      var key = structure[i].id; 
+    Object.keys(group.controls).forEach(key => {
       if(!key.includes("/")) relationsFk.push(key)
-    }
+    });
 
     return this.fk(entityName, row, relationsFk)
   }

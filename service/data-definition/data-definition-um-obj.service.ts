@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AdminRelStructure } from '@class/admin-rel-structure';
+import { FormGroup } from '@angular/forms';
 import { Display } from '@class/display';
+import { FormArrayExt, FormGroupExt } from '@class/reactive-form-ext';
 import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { forkJoin, of } from 'rxjs';
@@ -32,7 +33,7 @@ export class DataDefinitionUmObjService {
     protected rel: DataDefinitionRelFieldsService
   ) { }
 
-  public uniqueStructure(entityName:string, params:any, structure:AdminRelStructure[]){
+  public uniqueGroup(entityName:string, params:any, group:FormGroupExt){
     return this.dd.unique(entityName, params).pipe(
       switchMap(
         (row) => {
@@ -42,20 +43,17 @@ export class DataDefinitionUmObjService {
           /**
            * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
            */
-          return this.structure(entityName, r, structure)
+          return this.group(entityName, r, group)
         }
       )
     )
   }
 
-  public structure(entityName:string, row: any, structure: AdminRelStructure[]){
-    var obs = {}
-    for(var i = 0; i < structure.length; i++){
-      /**
-       * Recorrer estructura para procesar relaciones um
-       */
-      var key = structure[i].id; 
 
+  public group(entityName:string, row: any, group: FormGroup){
+    var obs = {}
+    
+    Object.keys(group.controls).forEach(key => {
       if(key.includes("/")){
         if( (key.includes("-"))){
           var prefix = key.substr(0, key.indexOf('-'));
@@ -67,9 +65,9 @@ export class DataDefinitionUmObjService {
         }
 
         var fkName = key.substr(key.indexOf('/')+1);
-        obs[key] = this.queryDataUm(row,en,fkName,prefix,i, structure)
+        obs[key] = this.queryDataUm(row,en,fkName,prefix,group.controls[key] as FormArrayExt)
       }
-    }
+    });
 
     return (!isEmptyObject(obs)) ? 
       this.combineDataUm(row, obs) : 
@@ -82,16 +80,15 @@ export class DataDefinitionUmObjService {
     entityName: string, 
     fkName: string, 
     prefix: string,
-    index: number,
-    structure
+    formArray: FormArrayExt,
   ){
     if(!data[prefix]["id"]) return of([]);
     var display = new Display();
     display.setCondition([fkName,"=",data[prefix]["id"]])
-    if(structure[index].order) display.setOrder(structure[index].order);
+    if(formArray.order) display.setOrder(formArray.order);
     return this.dd.post("ids",entityName, display).pipe(
       switchMap(
-        ids => this.rel.getAllFvo(entityName, ids, structure[index].fieldsViewOptions)
+        ids => this.rel.getAllGroup(entityName, ids, formArray.factory.formGroup())
       ),
 
     )  

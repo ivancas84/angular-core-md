@@ -1,8 +1,6 @@
 import { Input, Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Sort } from '@angular/material/sort';
-import { FieldViewOptions } from '@class/field-view-options';
+import { FormArrayExt } from '@class/reactive-form-ext';
 import { TableComponent } from '@component/table/table.component';
-import { emptyUrl } from '@function/empty-url.function';
 
 @Component({
   selector: 'core-table-dynamic',
@@ -13,8 +11,8 @@ import { emptyUrl } from '@function/empty-url.function';
   `],
 })
 export class TableDynamicComponent extends TableComponent implements OnInit { //6
-  @Input() entityName?: string;
-  @Input() fieldsViewOptions: FieldViewOptions[]
+  @Input() entityName?: string
+  @Input() fieldset: FormArrayExt
   @Input() title: string //titulo del componente
   @Input() addButtonLink: string = null;
   @Input() addButtonQueryParams: { [index: string]: any } = {};
@@ -32,7 +30,9 @@ export class TableDynamicComponent extends TableComponent implements OnInit { //
      
   ngOnInit(): void {
     this.displayedColumns = []
-    for(var i in this.fieldsViewOptions) this.displayedColumns.push(this.fieldsViewOptions[i].field)
+    Object.keys(this.fieldset.controls).forEach(key => {
+      this.displayedColumns.push(key)
+    })
     if(this.optColumn) this.displayedColumns.push("options");
     super.ngOnInit();
   }

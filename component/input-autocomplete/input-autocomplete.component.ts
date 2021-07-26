@@ -6,6 +6,7 @@ import { first, map, startWith, mergeMap, debounceTime, distinctUntilChanged, ta
 import { Display } from '../../class/display';
 import { getControlName } from '@function/get-control-name';
 import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
+import { ValidatorMsg } from '@class/validator-msg';
 
 
 @Component({
@@ -38,9 +39,9 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   @Input() field: FormControl;
   @Input() entityName: string;
   @Input() title?: string;
-  @Input() adminRoute?: string; //Ruta opcional de administracion para la clave foranea (si no se define no se activa el enlace)
-  @Input() uniqueRoute?: string; //Ruta opcional de administracion para valor unico (si no se define no se activa el enlace)
-  
+  @Input() validatorMsgs: ValidatorMsg[] = [];
+
+
   public label: string = null;
   /**
    * Atributo para visualizar el label

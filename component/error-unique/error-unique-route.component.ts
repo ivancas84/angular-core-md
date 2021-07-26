@@ -1,6 +1,6 @@
 import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { UniqueValidatorOpt } from '@class/validator-opt';
+import { UniqueValidatorMsg } from '@class/validator-msg';
 
 @Component({
   selector: 'core-error-unique-route',
@@ -11,7 +11,7 @@ export class ErrorUniqueRouteComponent implements OnInit{
    * Definir ruteo para error unique
    */
 
-  @Input() avo: UniqueValidatorOpt; //validators
+  @Input() validatorMsg: UniqueValidatorMsg; //validators
   @Input() field: FormControl
 
   uniqueValue: string;
@@ -21,7 +21,7 @@ export class ErrorUniqueRouteComponent implements OnInit{
       () => {
         if(this.field.hasError("notUnique")){
           this.uniqueValue = this.field.getError("notUnique");
-              this.avo["queryParams"][this.avo["uniqueParam"]] = this.uniqueValue
+              this.validatorMsg["queryParams"][this.validatorMsg["uniqueParam"]] = this.uniqueValue
           }
         }
     );
