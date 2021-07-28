@@ -13,7 +13,6 @@
   <mat-card-content #content>
 
 
-
     <table mat-table [dataSource]="fieldset.controls" matSort [matSortActive]="sortActive" [matSortDirection]="sortDirection" matSortDisableClear (matSortChange)="onChangeSort($event)" class="mat-elevation-z8">
       <ng-container *ngFor="let item of fieldset.factory.formGroup().controls | keyvalue" [matColumnDef]="item.key">
 

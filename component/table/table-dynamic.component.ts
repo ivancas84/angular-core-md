@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
+import { Input, Component, OnInit, EventEmitter, Output, ElementRef, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,7 +15,7 @@ import { naturalCompare } from '@function/natural-compare';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { debounceTime, first, last, map, startWith } from 'rxjs/operators';
 
 declare function copyFormatted(html): any;
 declare function printHtml(html): any;
@@ -84,8 +84,26 @@ export class TableDynamicComponent implements OnInit { //6
     protected snackBar: MatSnackBar,
     protected storage: SessionStorageService
   ) {}
+
+
+  //load$: Observable<any>
   
   ngOnInit(): void {
+    //this.load$ = 
+    this.fieldset.valueChanges.pipe(
+      //startWith(this.fieldset.value),
+      debounceTime(100),
+      map(
+        () => {
+          this.table.renderRows()
+          return true;
+
+        }
+      )
+    ).subscribe(
+      () => {}
+    );
+
     this.displayedColumns = []
     Object.keys(this.fieldset.factory.formGroup().controls).forEach(key => {
       if((this.fieldset.factory.formGroup().controls[key] as FormControlExt).type.id != "hidden")
@@ -163,7 +181,7 @@ export class TableDynamicComponent implements OnInit { //6
     });
 
     this.fieldset.patchValue(data)
-    this.table.renderRows();
+    //this.table.renderRows(); se ejecuta el renderRows del valueChanges definido en el OnInit
   }
  
   copyContent(): void {
