@@ -7,18 +7,22 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
+import { FormArrayExt, FormGroupExt } from '@class/reactive-form-ext';
+import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
 
 @Component({
   selector: 'core-show',
-  template: '',
+  template: './show.component.html',
 })
-export abstract class ShowComponent implements OnInit { //2
+export abstract class ShowComponent implements OnInit {
   /**
-   * Grilla de visualizacion
+   * Definir un conjunto de datos para visualizacion
+   * El componente no define la manera en que se visualizaran los datos (puede ser a traves de una tabla o del componente deseado)
+   * El componente define el codigo en comun para obtener un conjunto de datos del servidor y posteriormente visualizarlos
    */
 
   readonly entityName: string; //Nombre de la entidad principal
-  data: any; //datos principales
+  structure: FormArrayExt
   length?: number; //longitud total de los datos a mostrar
   /**
    * undefined: No se procesara la longitud
@@ -34,10 +38,15 @@ export abstract class ShowComponent implements OnInit { //2
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
-    protected storage: SessionStorageService
+    protected storage: SessionStorageService,
+    protected ddrf: DataDefinitionRelFieldsService
+
   ) {}
 
+  abstract configForm()
+
   ngOnInit(): void {
+    this.configForm();
     this.load$ = this.route.queryParams.pipe(
       tap(
         queryParams => {
@@ -105,14 +114,10 @@ export abstract class ShowComponent implements OnInit { //2
       ),
       tap(
         data => {
-          this.data = data;
+          this.structure.patchValue(data);
         }
       ),      
     )
-  }
-
-  queryData(): Observable<any>{
-    return this.dd.all(this.entityName, this.display)
   }
 
   delete(id){
@@ -142,6 +147,35 @@ export abstract class ShowComponent implements OnInit { //2
           data: {title: "Registro eliminado", message: "Se ha eliminado un registro"}
         })
       }
+    )
+  }
+
+  
+  switchAction($event:any){ 
+    /**
+     * Acciones de opciones
+     * Sobescribir si se necesita utilizar eventos
+     * Utilizar $event.action para la accion a ejecutar (corresponde a opt.action)
+     * Utilizar $event.data para los datos a utilizar (corresponde a row)
+     */  
+    switch($event.action){
+      case "delete":
+        this.delete($event.data["id"])
+        /**
+         * No utilizar indice (si se utiliza ordenamiento angular no se refleja el cambio de indices, y se elimina la fila incorrecta)
+         * @todo conviene implementar el eliminar directamente en la tabla?
+         */
+      break;
+      default:
+        throw new Error("Not Implemented");
+    }   
+  }
+
+  queryData(): Observable<any>{
+    return this.dd.post("ids", this.entityName, this.display).pipe(
+      switchMap(
+        ids => this.ddrf.getAllGroup(this.entityName, ids, this.structure.factory.formGroup())
+      )
     )
   }
 

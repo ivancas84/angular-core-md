@@ -9,18 +9,8 @@ import { fastClone } from '@function/fast-clone';
 export class FieldViewAuxComponent implements OnInit {
   
   /**
-   * Auxiliar para Field View
-   * Verifica caracteristicas "auxiliares" de FieldViewOptions 
-   * para definir una "presentacion" auxiliar complementaria a FieldView 
-   * Invoca luego a Field View
+   * Visualizacion auxiliar de campo
    */
-
-  @Input() fieldset: FormGroupExt; //opciones
-  /**
-   * Las opciones principales para definir enlaces son
-   * routerLink: Ruta
-   * queryParamField: Nombre del campo que sera utilizado como id para la ruta [queryParams]="{id:data[fieldViewOptions.queryParamField]}"
-   */  
   
   @Input() field: FormControlExt; //conjunto de campos
   /**
@@ -30,7 +20,17 @@ export class FieldViewAuxComponent implements OnInit {
   params: any = null;
 
   ngOnInit(){
-    var s = this.fieldset.valueChanges.subscribe (
+    if(this.field.aux && this.field.aux.params){
+      this.params = fastClone(this.field.aux.params);
+      for(var i in this.params){
+        if(this.params.hasOwnProperty(i)){
+          var key = this.params[i].match(/\{\{(.*?)\}\}/)
+          if(key) this.params[i] = this.field.parent.controls[key[1]].value;
+        }
+      }
+    }
+
+    /*var s = this.field.parent.valueChanges.subscribe (
       formValues => { 
         console.log(formValues);
         this.params = fastClone(this.field.aux.params);
@@ -38,7 +38,7 @@ export class FieldViewAuxComponent implements OnInit {
           for(var i in this.params){
             if(this.params.hasOwnProperty(i)){
               var key = this.params[i].match(/\{\{(.*?)\}\}/)
-              if(key) this.params[i] = this.fieldset.controls[key[1]].value;
+              if(key) this.params[i] = this.field.parent.controls[key[1]].value;
             }
           }
         }
@@ -49,6 +49,6 @@ export class FieldViewAuxComponent implements OnInit {
         //this.snackBar.open(JSON.stringify(error), "X"); 
       }
     );
-    //this.subscriptions.add(s);
+    //this.subscriptions.add(s);*/
   }
 }

@@ -14,7 +14,10 @@ export class FieldsetDynamicComponent  {
   /**
    * Componente para construir fieldsets dinamicos.
    */
-
   @Input() fieldset: FormGroupExt;
+  @Input() title?: string;
+  @Input() inputSearchGo: boolean = false;
+  @Input() entityName?: string;
+  @Input() intro?: string;
 
 }

@@ -1,44 +1,44 @@
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { Subscription, Observable, BehaviorSubject, of } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { Location } from '@angular/common';
-import { emptyUrl } from '../../function/empty-url.function';
-import { SessionStorageService } from '../../service/storage/session-storage.service';
-import { isEmptyObject } from '../../function/is-empty-object.function';
-import { OnInit, AfterViewInit, Component } from '@angular/core';
-import { markAllAsDirty } from '../../function/mark-all-as-dirty';
-import { logValidationErrors } from '../../function/log-validation-errors';
-import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
+import { FormGroupExt } from '@class/reactive-form-ext';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { fastClone } from '@function/fast-clone';
-import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
-import { ValidatorsService } from '@service/validators/validators.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DataDefinitionFkObjService } from '@service/data-definition/data-definition-fk-obj.service';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { DataDefinitionUmObjService } from '@service/data-definition/data-definition-um-obj.service';
-import { FormGroupExt } from '@class/reactive-form-ext';
+import { SessionStorageService } from '@service/storage/session-storage.service';
+import { ValidatorsService } from '@service/validators/validators.service';
+import { emptyUrl } from '@function/empty-url.function';
+import { map, switchMap } from 'rxjs/operators';
+import { fastClone } from '@function/fast-clone';
+import { Location } from '@angular/common';
+import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
+import { isEmptyObject } from '@function/is-empty-object.function';
+import { logValidationErrors } from '@function/log-validation-errors';
+import { markAllAsDirty } from '@function/mark-all-as-dirty';
+
 
 @Component({
   selector: 'core-admin',
-  template: '',
+  template: './admin.component.html',
 })
-export abstract class AdminComponent implements OnInit, AfterViewInit { //2
-/**
- * Formulario de administracion (FormGroup) formado por fieldsets (FormGroups)
- * En el caso de que se utilice el template general formado por componentes dinamicos deberan definirse los siguientes atributos adicionales:
- *   title: string; Titulo del fieldset dinamico
- *   fieldsViewOptions: FieldViewOptions[] Configuracion de campos
- */
+export abstract class AdminComponent implements OnInit{
 
-  adminForm: FormGroup; //formulario principal
-  /**
-   * Se asignaran dinamicamente los formGroups correspondientes a fieldsets
-   */
+  adminForm: FormGroupExt
 
   readonly entityName: string; //entidad principal
 
+  title: string //titulo principal
+  
+  isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
+  
+  @Output() event: EventEmitter<any> = new EventEmitter(); //eventos
+  
+  options: any[] = null; //opciones (si es null no se visualiza)
+  
   display$:BehaviorSubject<any> = new BehaviorSubject(null); //parametros de consulta
   /**
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
@@ -75,8 +75,9 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
     protected relFk: DataDefinitionFkObjService,
     protected relUm: DataDefinitionUmObjService
   ) { }
-
   
+  abstract configForm();
+
   ngAfterViewInit(): void {
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
     /**
@@ -89,7 +90,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
   }
 
   ngOnInit() {
-
+    this.configForm()
     this.loadStorage();
     this.loadParams();  
     this.loadDisplay();
@@ -112,10 +113,6 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
   }
 
   loadParams(){
-    /**
-     * No realizar la suscripcion en el template (cambia el Lifecycle)! 
-     * Puede generar errores "ExpressionChanged"
-     */
     this.loadParams$ = this.route.queryParams.pipe(
       map(
         queryParams => { 
@@ -134,9 +131,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
 
   loadDisplay(){
     /**
-     * A diferencia de los componentes de visualizacion o similares
-     * Se define un load independiente para el display 
-     * debido a que se puede reasignar directamente el display para reinicializar
+     * Se define un load independiente para el display, es util para reasignar valores directamente al display y reinicializar
      * por ejemplo al limpiar o resetear el formulario
      */
     this.loadDisplay$ = this.display$.pipe(
@@ -162,7 +157,7 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
     return of({}).pipe(
       switchMap(() => {
         if(this.formValues) return of(this.formValues);
-        if(isEmptyObject(this.display$.value)) return of (this.defaultValues);
+        if(isEmptyObject(this.display$.value)) return of (this.adminForm.defaultValues());
         else return this.queryData();
       }),
       map(
@@ -284,13 +279,32 @@ export abstract class AdminComponent implements OnInit, AfterViewInit { //2
     this.isSubmitted = false;
   }
 
-  serverData() {  
-    return this.adminForm.get(this.entityName).value;
-    //return this.adminForm.value
-  }
+  serverData() { return this.adminForm.value }
 
   ngOnDestroy () { this.subscriptions.unsubscribe() }
 
+  switchAction($event:any){ 
 
-  
+    /**
+     * Acciones de opciones
+     * Sobescribir si se necesita utilizar eventos
+     * Utilizar $event.action para la accion a ejecutar (corresponde a opt.action)
+     * Utilizar $event.data para los datos a utilizar (corresponde a row)
+     */  
+    switch($event.action){
+      case "delete":
+        this.delete()
+      break;
+      default:
+        throw new Error("Not Implemented");
+    }   
+  }
+
+  emitEvent($event){
+    console.log($event);
+    switch($event.action){
+      default:
+        this.event.emit($event);
+    }
+  }
 }

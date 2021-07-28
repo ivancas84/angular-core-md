@@ -11,4 +11,6 @@ import { CardComponent } from '@component/card/card.component';
 })
 export class CardDynamicComponent extends CardComponent { //2
   @Input() fieldset:  FormGroupExt;
+  @Input() title:  FormGroupExt;
+
 }

@@ -7,6 +7,8 @@ import { RouterLinkOptions, InputPersistOptions } from "./field-view-aux-options
 import { FieldWidthOptions } from "./field-width-options";
 import { ValidatorMsg } from "./validator-msg";
 import { Pipe, PipeTransform } from "@angular/core";
+import { TableDynamicOptions } from "./table-dynamic-options";
+import { ComponentOptions } from "./component-options";
 
 @Pipe({
   name: 'controlCast',
@@ -55,14 +57,9 @@ export class FormGroupExt extends FormGroup implements SortControl, SortMember, 
 
   position: number = 0;
 
-  title?: string = null //titulo del fieldset
-
-  entityName: string = null; //entidad principal
-
-  options: FieldsetDynamicOptions = new FieldsetDynamicOptions({
-    inputSearchGo:false
-  }); //opciones especificas del componente
+  options?: ComponentOptions; //opciones especificas del componente
   /**
+   * Para facilitiar la iteracion entre estructuras y asignar las opciones de componente directamente a traves de la estructura se define el atributo options
    * Actualmente existe solo FieldsetDynamicOptions, pero posteriormente se habiliten nuevos tipos de opcion (Ej FieldsetArrayDynamicOptions)
    * Cuando existen distintos tipos de opciones, es convienente definir una clase independiente para facilitar la definicion de valores por defecto,
    * segun el juego de opciones los valores por defecto variaran
@@ -138,6 +135,7 @@ export class FormGroupExt extends FormGroup implements SortControl, SortMember, 
    Object.keys(value).forEach(key => {
     if(key.includes("/")){
       var f = (this.controls[key] as FormArrayExt);
+      f.clear();
       for(var i = 0; i <value[key].length; i++) f.push(f.factory.formGroup());
     }
   });
@@ -289,9 +287,8 @@ export class FormArrayExt extends FormArray implements SortControl, SortMember, 
 
   validatorMsgs: ValidatorMsg[] = []
 
-  title?: string = null //titulo del fieldset
 
-  entityName: string = null; //entidad principal
+  options?: TableDynamicOptions;
 
   set(attributes: any) {
     for(var a in attributes){
@@ -303,6 +300,21 @@ export class FormArrayExt extends FormArray implements SortControl, SortMember, 
     
 
   sort = (a: KeyValue<string,SortControl>, b: KeyValue<string,SortControl>): number => {
+    console.log(a.value)
+    console.log(b.value)
     return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0);
+  }
+
+  patchValue(
+    value: any[], 
+    options?: {
+      onlySelf?: boolean;
+      emitEvent?: boolean;
+    }
+  ): void {
+    this.clear();
+    //si existen valores por defecto para el array, debe inicializarse el formgroup
+    for(var i = 0; i <value.length; i++) this.push(this.factory.formGroup());
+    super.patchValue(value, options)
   }
 }

@@ -91,7 +91,7 @@ export class DataDefinitionRelFieldsService {
      * y ejecutar getAll (si corresponde)
      * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      * 
-     * Se recorren los fields obtenidos de fieldsViewOptions[i].field y se verifica la existencia del caracter "-".
+     * Se recorren los keys obtenidos de group y se verifica la existencia del caracter "-".
      * Si existe el caracter "-" significa que se está queriendo manipular un fields de una relación, por lo tanto debe inicializarse
      */
      var fields = [];

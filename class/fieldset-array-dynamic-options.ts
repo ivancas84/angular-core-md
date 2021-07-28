@@ -1,17 +1,14 @@
 import { ComponentOptions } from "./component-options";
 import { ValidatorMsg } from "./validator-msg";
 
-export class FieldsetDynamicOptions extends ComponentOptions{
+export class FieldsetArrayDynamicOptions extends ComponentOptions{
   /**
    * Opciones de FieldsetDynamicComponent
    * Definir una clase de opciones facilita la asignacion de valores.
    * Es util para aquellas estructuras donde se manipulan diferentes tipos de componentes y cada una tiene su juego de opciones y valores por defecto definidos.
    */
 
-  id: string = "fieldset"
-  inputSearchGo: boolean = true //activar o desactivar el formulario de busqueda rapida
-  validatorMsgs: ValidatorMsg[] = [] //opciones de validacion del fieldset
-  intro?:string //parrafo con un mensaje de introduccion al formulario, util para indicar instrucciones breves
+  id: string = "fieldset-array"
 
   constructor(attributes: any = {}) {
     super()

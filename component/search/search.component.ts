@@ -21,7 +21,6 @@ export abstract class SearchComponent {
   /**
    * Busqueda a traves de condicion
    * implementacion opcional mediante componente SearchCondition
-   * display$ al ser definida por elementos asincronicos se considera observable
    */ 
 
   searchForm: FormGroup = this.fb.group({});
@@ -47,7 +46,7 @@ export abstract class SearchComponent {
 
   onSubmit(): void {
     /**
-     * Transformar valores del atributo display$ a traves de los valores del formulario
+     * Transformar valores del atributo display a traves de los valores del formulario
      */
 
     this.isSubmitted = true;

@@ -1,0 +1,22 @@
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
+
+<div *ngIf="(load$ | async); else loading">
+  <mat-progress-bar *ngIf="!load" 
+                    mode="indeterminate"></mat-progress-bar>
+
+  <!--core-search-dynamic [display]="display" 
+                       [fieldsViewOptionsSp]="fieldsViewOptionsSp"></core-search-dynamic-->
+  
+  <core-table-dynamic [length]="length" 
+                      [display]="display"
+                      [fieldset]="structure" 
+                      [optColumn]="structure.options.optColumn"
+                      (eventTable)= "switchAction($event)"
+                      [title]="structure.options.title"
+                      [entityName]="entityName"
+                      [sortActive]="structure.options.sortActive"
+                      [sortDirection]="structure.options.sortDirection"
+                      [serverSortObligatory]="structure.options.serverSortObligatory"></core-table-dynamic>
+</div>

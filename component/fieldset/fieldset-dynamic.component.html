@@ -1,16 +1,15 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title fxFlex="auto">
-      {{fieldset.title}}    
+      {{title}}    
     </mat-card-title>
-    <core-input-search-go *ngIf="fieldset.options.inputSearchGo" fxFlex="auto" [entityName]="fieldset.entityName"></core-input-search-go>  
+    <core-input-search-go *ngIf="inputSearchGo" fxFlex="auto" [entityName]="entityName"></core-input-search-go>  
   </mat-card-header>
 
   <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">
-    <div class="mat-subheading-2 highlightText" [innerHTML]="fieldset.options.intro" fxFlex="100%"></div>
+    <div class="mat-subheading-2 highlightText" [innerHTML]="intro" fxFlex="100%"></div>
 
     <ng-container *ngFor="let item of (fieldset).controls | keyvalue: fieldset.sort">
-
       <div *ngIf="item.value.type.id != 'hidden'" 
           class="item" 
           [fxFlex.xs]="item.value.width.xs" 

@@ -1,5 +1,5 @@
-<span *ngIf="field.aux">
-  <span [ngSwitch]="fied.aux.id">
+<ng-container *ngIf="field.aux">
+  <ng-container [ngSwitch]="field.aux.id">
     <a *ngSwitchCase="'router_link'" [routerLink]="'/'+field.aux.path" [queryParams]="params">
       <core-field-view [field]="field"></core-field-view>
     </a>
@@ -9,10 +9,10 @@
                         [api]=field.aux.api
                         [entityName]=field.aux.entityName
                         [fieldName]=field.aux.fieldName></core-input-persist>
-  </span>
+  </ng-container>
   
 
-</span>
-<span *ngIf="!field.aux">
+</ng-container>
+<ng-container *ngIf="!field.aux">
   <core-field-view [field]="field"></core-field-view>
-</span>          
+</ng-container>          
