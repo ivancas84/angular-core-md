@@ -38,3 +38,34 @@ export class DateValidatorMsg extends ValidatorMsg {
   message:string = "El formato es incorrecto"
 }
 
+export class PatternValidatorMsg extends ValidatorMsg {
+  id:string = "pattern"
+  message:string = "El formato es incorrecto"
+}
+
+export class MinValidatorMsg extends ValidatorMsg {
+  id:string = "min"
+  message:string = "Inferior al mínimo permitido"
+}
+
+
+export class MaxValidatorMsg extends ValidatorMsg {
+  id:string = "max"
+  message:string = "Superior al máximo permitido"
+}
+
+export class EmailValidatorMsg extends ValidatorMsg {
+  id:string = "email"
+  message:string = "El formato es incorrecto"
+} 
+
+export class MinLengthValidatorMsg extends ValidatorMsg {
+  id:string = "minlength"
+  message:string = "Longitud incorrecta"
+} 
+
+export class MaxLengthValidatorMsg extends ValidatorMsg {
+  id:string = "maxlength"
+  message:string = "Longitud incorrecta"
+} 
+

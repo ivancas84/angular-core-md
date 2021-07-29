@@ -4,6 +4,7 @@ export function markAllAsTouched(control: AbstractControl) {
   /**
    * Marcar todos los elementos del formulario como touched 
    * Util para visualizar errores
+   * @todo esta funcion ha sido implementada de forma general, se puede reemplazar
    */
     if(control.hasOwnProperty('controls')) {
         control.markAsTouched({ onlySelf: true }) // mark group

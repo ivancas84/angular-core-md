@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { OptEventIcon, OptLinkIcon, OptLinkText, OptRouteIcon, OptRouteText } from '@class/opt';
-import { fastClone } from '@function/fast-clone';
+import { FormControlExt, FormGroupExt } from '@class/reactive-form-ext';
+import { startWith } from 'rxjs/operators';
  
 @Component({
   selector: 'core-opt',
   templateUrl: './opt.component.html',
 })
-export class OptComponent implements OnChanges, OnInit { //3
+export class OptComponent implements OnInit { //3
   /**
    * Visualizar opciones
    */
@@ -18,7 +19,7 @@ export class OptComponent implements OnChanges, OnInit { //3
           | OptEventIcon
 
 
-  @Input() data: { [index: string]: any }; //conjunto de campos
+  //@Input() data?: FormGroupExt;
 
   params: any = null;
 
@@ -27,27 +28,22 @@ export class OptComponent implements OnChanges, OnInit { //3
 
   ngOnInit(): void {
     if(!this.opt.title) this.opt.title = this.opt.action;
-  }
-  
-  ngOnChanges(changes: SimpleChanges): void {
 
-    /**
-     * Se realiza una traduccion del atributo opt.params que contienen {{key}}
-     */
-
-    if( changes["data"] && this.opt.params && this.data) {
-      this.params = fastClone(this.opt.params);
-      for(var i in this.params){
-        if(this.params.hasOwnProperty(i)){
-          var key = this.params[i].match(/\{\{(.*?)\}\}/)
-          if(key) this.params[i] = this.data[key[1]];
+    
+    if(this.opt.data && this.opt.params){
+      this.opt.data.valueChanges.pipe(
+        startWith(this.opt.data.value)
+      ).subscribe(
+        () => {
+          this.params = this.opt.data.matchParams(this.opt.params)
         }
-      }
+      )
     }
   }
 
+
   emitEventOpt(){
-    var $event = {action:this.opt.action, data:this.data}
+    var $event = {action:this.opt.action, data:this.opt.data}
     this.eventOpt.emit($event)
   }
 

@@ -12,7 +12,7 @@ import { emptyUrl } from '@function/empty-url.function';
   selector: 'core-input-search-go',
   templateUrl: './input-search-go.component.html',
 })
-export class InputSearchGoComponent implements  OnInit {
+export class InputSearchGoComponent implements OnInit {
   /**
    * Busqueda y ruteo 
    */
@@ -31,7 +31,6 @@ export class InputSearchGoComponent implements  OnInit {
   filteredOptions: Observable<Array<{[key:string]: any}>>;
 
   label: string;
-  load$;
 
   constructor(
     protected dd: DataDefinitionService,

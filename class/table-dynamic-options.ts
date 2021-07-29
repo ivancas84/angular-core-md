@@ -1,4 +1,5 @@
 import { ComponentOptions } from "./component-options";
+import { Opt, OptEventIcon } from "./opt";
 
 export class TableDynamicOptions extends ComponentOptions{
   /**
@@ -8,7 +9,7 @@ export class TableDynamicOptions extends ComponentOptions{
    * Solo deben definirse atributos de configuracion que no varian, para aquellos elementos que si varian (ejemplo datos, atributos de busqueda o display, etc, se recomienda manterlos como parametros independientes)
    */
 
-  id: string = "table-dynamic";
+  id: string = "table";
 
   serverSortTranslate: { [index: string]: string[] } = {}; //traduccion de campos de ordenamiento
    /**
@@ -24,7 +25,11 @@ export class TableDynamicOptions extends ComponentOptions{
  
   sortDirection: string = "asc";
   sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
-  optColumn: any[] = null; //columna opciones (si es null no se visualiza)
+  optColumn: Opt[] = []; //columna opciones 
+  optTitle: Opt[] = [ //opciones de titulo 
+    new OptEventIcon({action:"copy_content", title:"Copiar", template:"content_copy", color:"primary"}),
+    new OptEventIcon({action:"print_content", title:"Imprimir", template:"print", color:"primary"}),
+  ]; 
 
   // addButtonLink: string = null;
   // addButtonQueryParams: { [index: string]: any } = {};

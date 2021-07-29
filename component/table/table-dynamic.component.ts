@@ -6,10 +6,10 @@ import { Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Display } from '@class/display';
+import { OptEventIcon, OptLinkIcon } from '@class/opt';
 import { FormArrayExt, FormControlExt } from '@class/reactive-form-ext';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
-import { TableComponent } from '@component/table/table.component';
 import { emptyUrl } from '@function/empty-url.function';
 import { naturalCompare } from '@function/natural-compare';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
@@ -32,14 +32,13 @@ export class TableDynamicComponent implements OnInit { //6
   @Input() entityName?: string
   @Input() fieldset: FormArrayExt
   @Input() title: string //titulo del componente
-  @Input() addButtonLink: string = null;
-  @Input() addButtonQueryParams: { [index: string]: any } = {};
-  @Input() copyButton: boolean = true;
-  @Input() printButton: boolean = true;
   @Input() sortActive: string = null;
   @Input() sortDirection: string = "asc";
   @Input() sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
-  @Input() optColumn: any[] = null; //columna opciones (si es null no se visualiza)
+  
+  @Input() optTitle: any[] = []; //opciones de titulo
+
+  @Input() optColumn: any[] = []; //columna opciones
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
   @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
   @Input() serverSortTranslate: { [index: string]: string[] } = {}; //traduccion de campos de ordenamiento
@@ -64,6 +63,8 @@ export class TableDynamicComponent implements OnInit { //6
   protected subscriptions = new Subscription(); //suscripciones en el ts
   titleLoad$: Observable<string[]>;
   deleteApi: string = "delete";
+
+  titleOptions
 
   @ViewChild(MatTable) table: MatTable<any>;
 
@@ -109,7 +110,7 @@ export class TableDynamicComponent implements OnInit { //6
       if((this.fieldset.factory.formGroup().controls[key] as FormControlExt).type.id != "hidden")
         this.displayedColumns.push(key)
     })
-    if(this.optColumn) this.displayedColumns.push("options");
+    if(this.optColumn.length) this.displayedColumns.push("options");
 
     this.titleLoad()
 
@@ -118,6 +119,7 @@ export class TableDynamicComponent implements OnInit { //6
   }
 
   titleLoad(){
+    if(!this.display) return;
     var p = Object.keys(this.display.getParams());
     if(p.length == 1 && this.entityName){
       if(p[0].includes("-")) {
@@ -138,13 +140,14 @@ export class TableDynamicComponent implements OnInit { //6
 
   emitEventTable($event){
     switch($event.action){
-      case "table_delete":
-        this.onRemove($event.index);
-      break;
-      default:
-        this.eventTable.emit($event);
+      case "copy_content": this.copyContent(); break;
+      case "print_content": this.printContent(); break;
+      case "table_delete": this.onRemove($event.index); break;
+      default: this.eventTable.emit($event);
     }
   }
+
+
 
 
 
@@ -189,6 +192,7 @@ export class TableDynamicComponent implements OnInit { //6
   }
 
   printContent(): void {
+    console.log(this.content);
     if(this.content) printHtml(this.content.nativeElement.innerHTML);
   }
 

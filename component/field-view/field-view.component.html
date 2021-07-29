@@ -88,7 +88,7 @@
   
   <span *ngSwitchCase="'label'">
     <core-label *ngIf="field" 
-                [id]="field" 
+                [id]="field.value" 
                 [entityName]="field.type.entityName"></core-label></span>
 
   <span *ngSwitchCase="'field_label'">

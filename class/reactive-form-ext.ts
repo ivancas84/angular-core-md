@@ -9,6 +9,7 @@ import { ValidatorMsg } from "./validator-msg";
 import { Pipe, PipeTransform } from "@angular/core";
 import { TableDynamicOptions } from "./table-dynamic-options";
 import { ComponentOptions } from "./component-options";
+import { fastClone } from "@function/fast-clone";
 
 @Pipe({
   name: 'controlCast',
@@ -75,11 +76,6 @@ export class FormGroupExt extends FormGroup implements SortControl, SortMember, 
       }
     }
   }
-
-  public getGroup(key: string): FormGroupExt {
-    return this.controls[key] as FormGroupExt
-  }
-
  
   defaultValues(): any  {
     var dv = {}
@@ -125,27 +121,41 @@ export class FormGroupExt extends FormGroup implements SortControl, SortMember, 
 
   patchValue(value: {
     [key: string]: any;
-}, options?: {
+  }, options?: {
     onlySelf?: boolean;
     emitEvent?: boolean;
-}): void {
+  }): void {
 
-  
-   //si existen valores por defecto para el array, debe inicializarse el formgroup
-   Object.keys(value).forEach(key => {
-    if(key.includes("/")){
-      var f = (this.controls[key] as FormArrayExt);
-      f.clear();
-      for(var i = 0; i <value[key].length; i++) f.push(f.factory.formGroup());
+    Object.keys(value).forEach(key => { 
+      if(key.includes("/")){ //la forma facil de identificar si es un FormArray es con la key (si tiene caracter / es un FormArray) 
+        /**
+         * Si existen valores para el array, se limpia y crean instancias utilizando factory.formGroup
+         */
+        var f = (this.controls[key] as FormArrayExt);
+        f.clear();
+        for(var i = 0; i <value[key].length; i++) f.push(f.factory.formGroup());
+      }
+    });
+    super.patchValue(value, options)
+  }
+
+  /**
+   * Se realiza una traduccion del atributo params que contienen {{key}}
+   */
+  public matchParams(params: any){
+    var p = fastClone(params)
+    for(var i in p){
+      if(p.hasOwnProperty(i)){
+        var key = p[i].match(/\{\{(.*?)\}\}/)
+        if(key) {
+          if(!this.controls[key[1]].value) return null;
+          p[i] = this.controls[key[1]].value;
+        }
+      }
     }
-  });
-
-  
-  super.patchValue(value, options)
-
+    return p;
   }
 }
-
 
 
 export class FormControlExt extends FormControl implements ReactiveFormId{
@@ -254,6 +264,9 @@ export class FormControlExt extends FormControl implements ReactiveFormId{
   
       return name;
     }
+
+
+    
 }
 
 
@@ -278,7 +291,10 @@ export class FormArrayExt extends FormArray implements SortControl, SortMember, 
 
   factory: FormGroupFactory //es necesario definir una clase concreta de FormGroupFactory con el FormGroupExt del FormArray
   
-  order?: {[key: string]: string};
+  order?: {[key: string]: string}; //ordenamiento por defecto para realizar la consulta
+  /**
+   * @example {motivo:"asc", per-nombres:"desc"}
+   */
 
   default: any[] = [] //valores por defecto para el FormArray
   /**

@@ -103,7 +103,6 @@ export abstract class AdminComponent implements OnInit{
      */
     var s = this.adminForm.valueChanges.subscribe (
       formValues => {
-        console.log(this.router.url)
         this.storage.setItem(this.router.url, formValues); },
       error => { 
         this.snackBar.open(JSON.stringify(error), "X"); 
@@ -225,7 +224,6 @@ export abstract class AdminComponent implements OnInit{
 
   onSubmit(): void {
     this.isSubmitted = true;
-    
     if (!this.adminForm.valid) {
       this.cancelSubmit();
     } else {

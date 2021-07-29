@@ -3,11 +3,12 @@
     <mat-card-title>
       {{title}} <span *ngIf="titleLoad$ | async as t">
         <core-label [id]="t['value']" [entityName]="t['entity_name']"></core-label>
-      </span> <button *ngIf="copyButton" mat-mini-fab color="primary" (click)="copyContent()"><mat-icon>content_copy</mat-icon></button>
-      <button *ngIf="printButton" mat-mini-fab color="primary" (click)="printContent()"><mat-icon>print</mat-icon></button>
-      <a *ngIf="addButtonLink" mat-mini-fab color="accent" [routerLink]="'/'+addButtonLink" [queryParams]="addButtonQueryParams">
-        <mat-icon>add</mat-icon>
-      </a>
+      </span> 
+
+      <core-opt *ngFor="let opt of optTitle" 
+                [opt]="opt" 
+                (eventOpt)="emitEventTable($event)"></core-opt>
+      
     </mat-card-title>
   </mat-card-header>
   <mat-card-content #content>
@@ -38,7 +39,6 @@
           <core-opt *ngFor="let opt of optColumn" 
                     [opt]="opt" 
                     [data]="row"
-                    [index]="i"
                     (eventOpt)="emitEventTable($event)"></core-opt>
         </td>
       </ng-container>

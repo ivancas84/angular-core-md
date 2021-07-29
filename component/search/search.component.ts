@@ -1,10 +1,8 @@
-import { Input, Component, ViewChild, OnChanges } from '@angular/core';
+import { Input, Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { Display } from '@class/display';
 import { emptyUrl } from '@function/empty-url.function';
-import { first } from 'rxjs/operators';
 import { markAllAsTouched } from '@function/mark-all-as-touched';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { DialogAlertComponent } from '../dialog-alert/dialog-alert.component';

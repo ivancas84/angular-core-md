@@ -8,18 +8,24 @@
       novalidate autocomplete="off">
   <div *ngIf="(loadDisplay$ | async); else loading">
     <div  *ngFor="let item of adminForm.controls | keyvalue: adminForm.sort; let i = index">
-      <core-fieldset-dynamic *ngIf="!item.key.includes('/') else um" 
-                             [fieldset]="item.value"
-                             [entityName]="item.value.options.entityName"
-                             [intro]="item.value.options.intro"
-                             [title]="item.value.options.title"
-                             [inputSearchGo]="item.value.options.inputSearchGo"></core-fieldset-dynamic>
-    
-      <ng-template #um>
-        <core-fieldset-array-dynamic [fieldset]="item.value"
+      <ng-container [ngSwitch]="item.value.options.id">
+        <core-fieldset-dynamic *ngSwitchCase="'fieldset'" 
+                               [fieldset]="item.value"
+                               [entityName]="item.value.options.entityName"
+                               [intro]="item.value.options.intro"
+                               [title]="item.value.options.title"
+                               [inputSearchGo]="item.value.options.inputSearchGo"></core-fieldset-dynamic>
+      
+        <core-fieldset-array-dynamic *ngSwitchCase="'fieldset-array'" 
+                                     [fieldset]="item.value"
                                      [title]="item.value.options.title"></core-fieldset-array-dynamic>
-      </ng-template>
-                          
+
+        <core-table-dynamic *ngSwitchCase="'table'"
+                            [fieldset]="item.value"
+                            [title]="item.value.options.title"
+                            [sortDisabled]="item.value.options.sortDisabled"
+                            [optTitle]="item.value.options.optTitle"></core-table-dynamic>
+      </ng-container>      
     </div>
 
     <button mat-raised-button [disabled]="adminForm.pending || isSubmitted" type="submit" color="primary">Aceptar</button>&nbsp;

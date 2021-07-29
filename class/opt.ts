@@ -1,20 +1,17 @@
+import { FormGroupExt } from "./reactive-form-ext";
+
 export abstract class Opt {
   id: string;
   action: string;
   title?: string;
   params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
-  key?: string; //clave para identificar subarray de datos
-  /**
-   * si los datos se almacenan de la forma data["ej"] = ["id":"value","key":"value",...] 
-   * entonces key = "ej"
-   */ 
+  data?: FormGroupExt; //referencia al conjunto de datos donde se obtendra params
 }
 
 export class OptRouteIcon extends Opt { //2
   id: string = "route_icon"
   template: string = "info";
   target: string = "_self";
-  key?: string; //clave para identificar subarray de datos
   /**
    * si los datos se almacenan de la forma data["ej"] = ["id":"value","key":"value",...] 
    * entonces key = "ej"
@@ -35,6 +32,7 @@ export class OptLinkIcon extends Opt {
   color: string = null;
   template: string = "info";
   target: string = "_self";
+
 
   constructor(attributes: any) {
     super()
