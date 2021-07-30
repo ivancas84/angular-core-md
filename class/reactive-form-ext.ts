@@ -119,7 +119,7 @@ export class FormGroupExt extends FormGroup implements SortControl, SortMember, 
     return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0);
   }
 
-  patchValue(value: {
+  initValue(value: {
     [key: string]: any;
   }, options?: {
     onlySelf?: boolean;
@@ -136,7 +136,7 @@ export class FormGroupExt extends FormGroup implements SortControl, SortMember, 
         for(var i = 0; i <value[key].length; i++) f.push(f.factory.formGroup());
       }
     });
-    super.patchValue(value, options)
+    this.patchValue(value, options)
   }
 
   /**
@@ -321,7 +321,7 @@ export class FormArrayExt extends FormArray implements SortControl, SortMember, 
     return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0);
   }
 
-  patchValue(
+  initValue(
     value: any[], 
     options?: {
       onlySelf?: boolean;
@@ -331,6 +331,6 @@ export class FormArrayExt extends FormArray implements SortControl, SortMember, 
     this.clear();
     //si existen valores por defecto para el array, debe inicializarse el formgroup
     for(var i = 0; i <value.length; i++) this.push(this.factory.formGroup());
-    super.patchValue(value, options)
+    this.patchValue(value, options)
   }
 }

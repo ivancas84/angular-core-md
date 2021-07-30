@@ -18,7 +18,7 @@ export class ErrorUniqueRouteComponent implements OnInit{
 
   ngOnInit(): void {
    this.field.statusChanges.subscribe(
-      () => {
+      status => {
         if(this.field.hasError("notUnique")){
           this.uniqueValue = this.field.getError("notUnique");
               this.validatorMsg["queryParams"][this.validatorMsg["uniqueParam"]] = this.uniqueValue

@@ -16,7 +16,9 @@ export class UniqueValidatorMsg extends ValidatorMsg {
   id:string="notUnique"
   route:string
   uniqueParam:any = "id" 
-  queryParams = {}
+  queryParams = {} //uniqueParam se asigna a queryParams con el valor del error, adicionalmente se pueden definir queryParams alternativos
+  message:string = "El valor ya se encuentra en uso" //mensaje a visualizar
+
 
   constructor(attributes: any = {}) {
     super(attributes);

@@ -141,7 +141,9 @@ export abstract class AdminComponent implements OnInit{
       ),
       map(
         data => {
-          this.adminForm.patchValue(data);
+          this.adminForm.initValue(data);
+          if(this.formValues) this.adminForm.patchValue(data);
+
           return true;
         }
       )
@@ -155,7 +157,6 @@ export abstract class AdminComponent implements OnInit{
   initData(): Observable<any> {
     return of({}).pipe(
       switchMap(() => {
-        if(this.formValues) return of(this.formValues);
         if(isEmptyObject(this.display$.value)) return of (this.adminForm.defaultValues());
         else return this.queryData();
       }),
