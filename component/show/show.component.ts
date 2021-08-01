@@ -114,8 +114,7 @@ export abstract class ShowComponent implements OnInit {
       ),
       tap(
         data => {
-          console.log(data);
-          this.structure.patchValue(data);
+          this.structure.initValue(data);
         }
       ),      
     )

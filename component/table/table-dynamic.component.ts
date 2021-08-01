@@ -35,7 +35,7 @@ export class TableDynamicComponent implements OnInit { //6
   @Input() sortActive: string = null;
   @Input() sortDirection: string = "asc";
   @Input() sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
-  
+
   @Input() optTitle: any[] = []; //opciones de titulo
 
   @Input() optColumn: any[] = []; //columna opciones
@@ -61,10 +61,7 @@ export class TableDynamicComponent implements OnInit { //6
   @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
   //footer: { [index: string]: any }[] = []; //
   protected subscriptions = new Subscription(); //suscripciones en el ts
-  titleLoad$: Observable<string[]>;
   deleteApi: string = "delete";
-
-  titleOptions
 
   @ViewChild(MatTable) table: MatTable<any>;
 
@@ -90,7 +87,6 @@ export class TableDynamicComponent implements OnInit { //6
   //load$: Observable<any>
   
   ngOnInit(): void {
-    //this.load$ = 
     this.fieldset.valueChanges.pipe(
       //startWith(this.fieldset.value),
       debounceTime(100),
@@ -98,7 +94,6 @@ export class TableDynamicComponent implements OnInit { //6
         () => {
           this.table.renderRows()
           return true;
-
         }
       )
     ).subscribe(
@@ -112,32 +107,10 @@ export class TableDynamicComponent implements OnInit { //6
     })
     if(this.optColumn.length) this.displayedColumns.push("options");
 
-    this.titleLoad()
-
     if(!this.length) this.length = this.fieldset.controls.length;    
-
   }
 
-  titleLoad(){
-    if(!this.display) return;
-    var p = Object.keys(this.display.getParams());
-    if(p.length == 1 && this.entityName){
-      if(p[0].includes("-")) {
-        this.titleLoad$ = this.dd.post("rel",this.entityName).pipe(
-          map(
-            response => {
-              var r = response[
-                p[0].substring(0,p[0].indexOf("-"))
-              ];
-              r["value"] = this.display.getParams()[p[0]];
-              return r;
-            }
-          )
-        )  
-      }
-    }
-  }
-
+ 
   emitEventTable($event){
     switch($event.action){
       case "copy_content": this.copyContent(); break;

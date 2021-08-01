@@ -1,10 +1,7 @@
 <mat-card>
   <mat-card-header>
     <mat-card-title>
-      {{title}} <span *ngIf="titleLoad$ | async as t">
-        <core-label [id]="t['value']" [entityName]="t['entity_name']"></core-label>
-      </span> 
-
+      {{title}}
       <core-opt *ngFor="let opt of optTitle" 
                 [opt]="opt" 
                 (eventOpt)="emitEventTable($event)"></core-opt>
