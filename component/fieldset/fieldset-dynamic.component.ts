@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Display } from '@class/display';
 import { FormGroupExt } from '@class/reactive-form-ext';
 
 @Component({

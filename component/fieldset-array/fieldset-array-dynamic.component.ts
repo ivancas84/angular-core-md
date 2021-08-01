@@ -23,7 +23,7 @@ export class FieldsetArrayDynamicComponent {
    
   add() {
     var fg = this.fieldset.factory.formGroup();
-    fg.patchValue(this.fieldset.factory.formGroup().defaultValues()); 
+    fg.initValue(this.fieldset.factory.formGroup().defaultValues()); 
     this.fieldset.push(fg); 
   }
  

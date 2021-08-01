@@ -30,12 +30,7 @@ export class TableDynamicOptions extends ComponentOptions{
     new OptEventIcon({action:"copy_content", title:"Copiar", template:"content_copy", color:"primary"}),
     new OptEventIcon({action:"print_content", title:"Imprimir", template:"print", color:"primary"}),
   ]; 
-
-  // addButtonLink: string = null;
-  // addButtonQueryParams: { [index: string]: any } = {};
-  // copyButton: boolean = true;
-  // printButton: boolean = true;
-
+  titleLoad: boolean = true
   sortActive: string = null;
 
   constructor(attributes: any = {}) {

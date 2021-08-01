@@ -14,7 +14,8 @@
                                [entityName]="item.value.options.entityName"
                                [intro]="item.value.options.intro"
                                [title]="item.value.options.title"
-                               [inputSearchGo]="item.value.options.inputSearchGo"></core-fieldset-dynamic>
+                               [inputSearchGo]="item.value.options.inputSearchGo"
+                               [display]="display$.value"></core-fieldset-dynamic>
       
         <core-fieldset-array-dynamic *ngSwitchCase="'fieldset-array'" 
                                      [fieldset]="item.value"
@@ -24,7 +25,8 @@
                             [fieldset]="item.value"
                             [title]="item.value.options.title"
                             [sortDisabled]="item.value.options.sortDisabled"
-                            [optTitle]="item.value.options.optTitle"></core-table-dynamic>
+                            [optTitle]="item.value.options.optTitle"
+                            [titleLoad]="item.value.options.titleLoad"></core-table-dynamic>
       </ng-container>      
     </div>
 

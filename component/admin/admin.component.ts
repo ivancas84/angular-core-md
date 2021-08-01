@@ -12,13 +12,14 @@ import { DataDefinitionUmObjService } from '@service/data-definition/data-defini
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { ValidatorsService } from '@service/validators/validators.service';
 import { emptyUrl } from '@function/empty-url.function';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { fastClone } from '@function/fast-clone';
 import { Location } from '@angular/common';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
+import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 
 
 @Component({
@@ -62,6 +63,8 @@ export abstract class AdminComponent implements OnInit{
 
   formValues = this.storage.getItem(this.router.url);
 
+  labels: string //etiquetas de parametros
+  
   constructor(
     protected fb: FormBuilder, 
     protected route: ActivatedRoute, 
@@ -73,7 +76,8 @@ export abstract class AdminComponent implements OnInit{
     protected dialog: MatDialog,
     protected snackBar: MatSnackBar,
     protected relFk: DataDefinitionFkObjService,
-    protected relUm: DataDefinitionUmObjService
+    protected relUm: DataDefinitionUmObjService,
+    protected ddrl: DataDefinitionRelLabelService, 
   ) { }
   
   abstract configForm();
@@ -90,9 +94,8 @@ export abstract class AdminComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.configForm()
-    this.loadStorage();
     this.loadParams();  
+    this.loadStorage();
     this.loadDisplay();
   }
 
@@ -116,14 +119,28 @@ export abstract class AdminComponent implements OnInit{
       map(
         queryParams => { 
           this.initParams(queryParams);
-          this.initDisplay()
+          this.initDisplay();
         },
         error => { 
           this.snackBar.open(JSON.stringify(error), "X"); 
         }
+      ),
+      switchMap(
+        () => {return this.initLabels()}
       ), 
       map(
-        () => {return true;}
+        () => {
+          this.configForm()
+          return true;
+        }
+      )
+    )
+  }
+
+  initLabels(): Observable<any>{
+    return this.ddrl.labels(this.params, this.entityName).pipe(
+      tap(
+        labels => {this.labels = labels}
       )
     )
   }
@@ -146,7 +163,7 @@ export abstract class AdminComponent implements OnInit{
 
           return true;
         }
-      )
+      ),
     )
   }
 
