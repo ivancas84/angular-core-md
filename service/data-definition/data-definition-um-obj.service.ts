@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { Display } from '@class/display';
-import { FormArrayExt, FormGroupExt } from '@class/reactive-form-ext';
+import { FormArrayConfig, FormConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { forkJoin, of } from 'rxjs';
@@ -33,7 +32,7 @@ export class DataDefinitionUmObjService {
     protected rel: DataDefinitionRelFieldsService
   ) { }
 
-  public uniqueGroup(entityName:string, params:any, group:FormGroupExt){
+  public uniqueGroup(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
     return this.dd.unique(entityName, params).pipe(
       switchMap(
         (row) => {
@@ -43,17 +42,17 @@ export class DataDefinitionUmObjService {
           /**
            * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
            */
-          return this.group(entityName, r, group)
+          return this.group(entityName, r, controls)
         }
       )
     )
   }
 
 
-  public group(entityName:string, row: any, group: FormGroup){
+  public group(entityName:string, row: any, controls:{ [index: string]: FormConfig }){
     var obs = {}
     
-    Object.keys(group.controls).forEach(key => {
+    Object.keys(controls).forEach(key => {
       if(key.includes("/")){
         if( (key.includes("-"))){
           var prefix = key.substr(0, key.indexOf('-'));
@@ -65,7 +64,7 @@ export class DataDefinitionUmObjService {
         }
 
         var fkName = key.substr(key.indexOf('/')+1);
-        obs[key] = this.queryDataUm(row,en,fkName,prefix,group.controls[key] as FormArrayExt)
+        obs[key] = this.queryDataUm(row,en,fkName,prefix,controls[key] as FormArrayConfig)
       }
     });
 
@@ -80,15 +79,16 @@ export class DataDefinitionUmObjService {
     entityName: string, 
     fkName: string, 
     prefix: string,
-    formArray: FormArrayExt,
+    formArray: FormArrayConfig,
   ){
+
     if(!data[prefix]["id"]) return of([]);
     var display = new Display();
     display.setCondition([fkName,"=",data[prefix]["id"]])
     if(formArray.order) display.setOrder(formArray.order);
     return this.dd.post("ids",entityName, display).pipe(
       switchMap(
-        ids => this.rel.getAllGroup(entityName, ids, formArray.factory.formGroup())
+        ids => this.rel.getAllGroup(entityName, ids, formArray.controls)
       ),
 
     )  

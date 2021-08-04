@@ -1,9 +1,40 @@
 import { FieldTreeElement } from "./field-tree-element";
 
-export class FieldDefaultOptions { //1
+
+export class FieldViewOptions {
+  id: string =  "default"
+  /**
+   * hidden
+   * input_checkbox
+   * input_time
+   * input_date
+   * input_year
+   * input_year_month
+   * tree
+   * input_select_param
+   * input_select
+   * input_select_checkbox
+   * textarea
+   * input_autocomplete
+   * input_upload
+   * um
+   * input_text
+   * date
+   * yes_no
+   * summary
+   * download
+   * label
+   * field_label
+   * 
+   * 
+   * 
+   */
+}
+export class FieldDefaultOptions extends FieldViewOptions { //1
   id: string = "default"
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -12,10 +43,11 @@ export class FieldDefaultOptions { //1
   }
 }
 
-export class FieldHiddenOptions { //1
+export class FieldHiddenOptions extends FieldViewOptions { //1
   id: string = "hidden"
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -25,9 +57,10 @@ export class FieldHiddenOptions { //1
 }
 
 
-export class FieldInputCheckboxOptions { //1
+export class FieldInputCheckboxOptions extends FieldViewOptions { //1
   id: string = "input_checkbox"
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -36,10 +69,11 @@ export class FieldInputCheckboxOptions { //1
   }
 }
 
-export class FieldTextareaOptions { //1
+export class FieldTextareaOptions extends FieldViewOptions { //1
   id: string = "textarea"
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -51,10 +85,11 @@ export class FieldTextareaOptions { //1
 
 
 
-export class FieldInputTimeOptions  { //1
+export class FieldInputTimeOptions extends FieldViewOptions { //1
   id: string = "input_time"
 
   constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -64,10 +99,11 @@ export class FieldInputTimeOptions  { //1
 }
 
 
-export class FieldInputDateOptions  { //1
+export class FieldInputDateOptions extends FieldViewOptions {
   id: string = "input_date"
   
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -76,10 +112,11 @@ export class FieldInputDateOptions  { //1
   }
 }
 
-export class FieldInputYearOptions { //1
+export class FieldInputYearOptions extends FieldViewOptions {
   id: string = "input_year"
   
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -88,10 +125,11 @@ export class FieldInputYearOptions { //1
   }
 }
 
-export class FieldInputYearMonthOptions {
+export class FieldInputYearMonthOptions extends FieldViewOptions {
   id: string = "input_year_month"
   
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -100,11 +138,12 @@ export class FieldInputYearMonthOptions {
   }
 }
 
-export class FieldTreeOptions { //1
+export class FieldTreeOptions extends FieldViewOptions {
   id: string = "tree"
   tree: FieldTreeElement = null
 
   constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -113,11 +152,12 @@ export class FieldTreeOptions { //1
   }
 }
 
-export class FieldInputSelectParamOptions { //1
+export class FieldInputSelectParamOptions extends FieldViewOptions {
   id: string = "input_select_param"
   options: any[] = [];
 
   constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -126,11 +166,12 @@ export class FieldInputSelectParamOptions { //1
   }
 }
 
-export class FieldInputSelectOptions { //1
+export class FieldInputSelectOptions extends FieldViewOptions {
   id: string = "input_select";
   entityName: string = null;
 
   constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -139,11 +180,12 @@ export class FieldInputSelectOptions { //1
   }
 }
 
-export class FieldInputSelectCheckboxOptions { //1
+export class FieldInputSelectCheckboxOptions extends FieldViewOptions { //1
   id: string = "input_select_checkbox";
   options: any[] = ["Sí", "No"];
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -152,12 +194,13 @@ export class FieldInputSelectCheckboxOptions { //1
   }
 }
 
-export class FieldInputAutocompleteOptions { //1
+export class FieldInputAutocompleteOptions extends FieldViewOptions { //1
   id: string = "input_autocomplete";
   entityName: string = null;
   adminRoute: string = null;
 
   constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -166,11 +209,12 @@ export class FieldInputAutocompleteOptions { //1
   }
 }
 
-export class FieldInputUploadOptions { //1
+export class FieldInputUploadOptions extends FieldViewOptions {
   id: string = "input_upload";
   entityName: string = "file";
 
   constructor(attributes: any= {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -180,11 +224,12 @@ export class FieldInputUploadOptions { //1
 }
 
 
-export class UmOptions {
+export class UmOptions extends FieldViewOptions {
   id: string = "um"
   fields: any
   
   constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -194,7 +239,7 @@ export class UmOptions {
 }
 
 
-export class FieldInputTextOptions { //1.1
+export class FieldInputTextOptions extends FieldViewOptions {
   id: string = "input_text" 
   width: string = null //ancho exclusivo del input
   /**
@@ -205,6 +250,7 @@ export class FieldInputTextOptions { //1.1
   uniqueParam: string = "id";
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -215,11 +261,12 @@ export class FieldInputTextOptions { //1.1
 
 
 
-export class FieldDateOptions { //1
+export class FieldDateOptions extends FieldViewOptions{
   id: string = "date"
   format: string = "dd/MM/yyyy"
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -229,10 +276,11 @@ export class FieldDateOptions { //1
 }
 
 
-export class FieldYesNoOptions { //1
+export class FieldYesNoOptions extends FieldViewOptions{
   id: string = "yes_no"
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -242,10 +290,11 @@ export class FieldYesNoOptions { //1
 }
 
 
-export class FieldSummaryOptions { //1
+export class FieldSummaryOptions extends FieldViewOptions{ //1
   id: string = "summary"
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -254,11 +303,12 @@ export class FieldSummaryOptions { //1
   }
 }
 
-export class DownloadOptions { //1
+export class DownloadOptions extends FieldViewOptions{
   id: string = "download"
   entityName: string = "file"
 
   constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -268,11 +318,12 @@ export class DownloadOptions { //1
 }
 
 
-export class TypeLabelOptions { //1
+export class TypeLabelOptions extends FieldViewOptions{
   id: string = "label"
   entityName: string
 
   constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -281,13 +332,34 @@ export class TypeLabelOptions { //1
   }
 }
 
-export class FieldLabelOptions { //1
+export class FieldLabelOptions extends FieldViewOptions { //1
   id: string = "field_label"
   entityName: string
   fieldNames: string[]
   join: string = " ";
 
   constructor(attributes: any) {
+    super()
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+export class RouteIconFieldViewOptions extends FieldViewOptions {
+
+  id: string = "route_icon"
+  icon: string = "info";
+  target: string = "_self";
+	key: string = "id"
+  color:string="primary"
+  routerLink: string;
+  title?: string;
+
+  constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]

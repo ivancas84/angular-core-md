@@ -9,6 +9,7 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { FormArrayExt, FormGroupExt } from '@class/reactive-form-ext';
 import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
+import { FormArrayConfig, FormConfig } from '@class/reactive-form-config';
 
 @Component({
   selector: 'core-show',
@@ -23,6 +24,7 @@ export abstract class ShowComponent implements OnInit {
 
   readonly entityName: string; //Nombre de la entidad principal
   structure: FormArrayExt
+  config: FormArrayConfig
   length?: number; //longitud total de los datos a mostrar
   /**
    * undefined: No se procesara la longitud
@@ -174,7 +176,7 @@ export abstract class ShowComponent implements OnInit {
   queryData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display).pipe(
       switchMap(
-        ids => this.ddrf.getAllGroup(this.entityName, ids, this.structure.factory.formGroup())
+        ids => this.ddrf.getAllGroup(this.entityName, ids, this.config.controls)
       )
     )
   }

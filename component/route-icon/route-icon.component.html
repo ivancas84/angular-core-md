@@ -1,0 +1,16 @@
+<a *ngIf="queryParams; else disableOpt"
+  mat-mini-fab 
+  [routerLink]="'/'+routerLink"
+  [queryParams]="queryParams"
+  [target]="target"
+  [title]="title"
+  [color]="color"
+>
+   <mat-icon>{{icon}}</mat-icon>
+ </a>
+
+ <ng-template #disableOpt>
+  <a mat-mini-fab 
+     disabled
+     [title]="title"><mat-icon>{{icon}}</mat-icon></a>
+  </ng-template>

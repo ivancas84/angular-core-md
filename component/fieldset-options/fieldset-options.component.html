@@ -1,0 +1,9 @@
+<ng-container fxLayout="row wrap" 
+              [formGroup]="fieldset">
+  <ng-container *ngFor="let item of config.controls | keyvalue: config.sort">
+    <div *ngIf="item.value.type.id != 'hidden'"> 
+      <core-field-view [field]="fieldset.controls[item.key]" 
+                       [config]="item.value"></core-field-view>  
+    </div>
+  </ng-container>
+</ng-container>

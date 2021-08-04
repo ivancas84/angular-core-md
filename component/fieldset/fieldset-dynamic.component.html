@@ -10,7 +10,7 @@
   <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">
     <div class="mat-subheading-2 highlightText" [innerHTML]="intro" fxFlex="100%"></div>
 
-    <ng-container *ngFor="let item of (fieldset).controls | keyvalue: fieldset.sort">
+    <ng-container *ngFor="let item of config.controls | keyvalue: config.sort">
       <div *ngIf="item.value.type.id != 'hidden'" 
           class="item" 
           [fxFlex.xs]="item.value.width.xs" 
@@ -26,12 +26,14 @@
           [fxFlex.gt-sm]="item.value.width.gtSm" 
           [fxFlex.gt-md]="item.value.width.gtMd" 
           [fxFlex.gt-lg]="item.value.width.gtLg">
-        <core-field-view [field]="item.value"></core-field-view>  
+
+        <core-field-view [field]="fieldset.controls[item.key]" 
+                         [config]="item.value"></core-field-view>  
       </div>
 
     </ng-container>
-    <div *ngFor="let v of fieldset.validatorMsgs">
+    <!--div *ngFor="let v of fieldset.validatorMsgs">
       <mat-error *ngIf="fieldset.hasError(v.id)">{{v.message}}</mat-error>
-    </div>
+    </div-->
   </mat-card-content>
 </mat-card>

@@ -43,7 +43,6 @@ export class DataDefinitionRelLabelService {
               )
             }
           })
-          console.log(obs.length);
           
           return (!obs.length) ? of([]) : combineLatest(obs)
         }        

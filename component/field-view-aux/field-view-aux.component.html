@@ -1,18 +1,21 @@
-<ng-container *ngIf="field.aux">
-  <ng-container [ngSwitch]="field.aux.id">
-    <a *ngSwitchCase="'router_link'" [routerLink]="'/'+field.aux.path" [queryParams]="params">
-      <core-field-view [field]="field"></core-field-view>
+<ng-container *ngIf="config.aux">
+  <ng-container [ngSwitch]="config.aux.id">
+    <a *ngSwitchCase="'router_link'" [routerLink]="'/'+config.aux.path" [queryParams]="params">
+      <core-field-view [field]="field"
+                       [config]="config"></core-field-view>
     </a>
-    <core-input-persist *ngSwitchCase="'input_persist'" 
+    <core-input-persist *ngSwitchCase="'input_persist'"
+                        [config]="field" 
                         [field]="field" 
                         [params]="params"
-                        [api]=field.aux.api
-                        [entityName]=field.aux.entityName
-                        [fieldName]=field.aux.fieldName></core-input-persist>
+                        [api]=config.aux.api
+                        [entityName]=config.aux.entityName
+                        [fieldName]=config.aux.fieldName></core-input-persist>
   </ng-container>
   
 
 </ng-container>
-<ng-container *ngIf="!field.aux">
-  <core-field-view [field]="field"></core-field-view>
+<ng-container *ngIf="!config.aux">
+  <core-field-view [field]="field" 
+                   [config]="config"></core-field-view>
 </ng-container>          

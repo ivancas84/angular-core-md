@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { FormArrayConfig } from '@class/reactive-form-config';
 import { FormArrayExt } from '@class/reactive-form-ext';
+import { FormConfigService } from '@service/form-config/form-config.service';
 
 @Component({
   selector:   'core-fieldset-array-dynamic',
@@ -13,17 +15,25 @@ export class FieldsetArrayDynamicComponent {
    * Componente dinamico de administración de fieldset array
    * La estructura por defecto del componente de implementacion es la misma que para FieldsetDynamicComponent, simplemente se debe cambiar la superclase
    **/
-  @Input() title?: string; //formulario
+  @Input() title?: string; //titulo
   @Input() fieldset: FormArrayExt; //formulario
+  @Input() config: FormArrayConfig; //formulario
+
+
+  constructor(
+    protected fc: FormConfigService
+  ) { }
+  
 
   fg(index) { return this.fieldset.controls[index]; }
   /**
    * Metodo utilizado para indicar el formGroup en el template
    */
    
+  
   add() {
-    var fg = this.fieldset.factory.formGroup();
-    fg.initValue(this.fieldset.factory.formGroup().defaultValues()); 
+    var fg = this.config.factory.formGroup();
+    this.fc.initArray(this.config, this.fieldset, this.fc.defaultValues(this.config)); 
     this.fieldset.push(fg); 
   }
  

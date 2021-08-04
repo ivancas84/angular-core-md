@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { Display } from '@class/display';
-import { FormGroupExt } from '@class/reactive-form-ext';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { FormGroupConfig } from '@class/reactive-form-config';
 
 @Component({
   selector: 'core-fieldset-dynamic',
@@ -10,12 +10,15 @@ import { FormGroupExt } from '@class/reactive-form-ext';
     .highlightText { background: yellow; }
   `]
 })
-export class FieldsetDynamicComponent  { 
+export class FieldsetDynamicComponent  implements OnInit {
+  ngOnInit(): void {
+  } 
   
   /**
    * Componente para construir fieldsets dinamicos.
    */
-  @Input() fieldset: FormGroupExt;
+  @Input() config: FormGroupConfig;
+  @Input() fieldset: FormGroup;
   @Input() title?: string;
   @Input() inputSearchGo: boolean = false;
   @Input() entityName?: string;

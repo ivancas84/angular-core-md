@@ -1,86 +1,87 @@
-<span [ngSwitch]="field.type.id">
+<span [ngSwitch]="config.type.id">
+
   <core-input-date *ngSwitchCase="'input_date'" 
                    [field]="field" 
-                   [title]="field.label"
-                   [readonly]="field.readonly"
-                   [validatorMsgs]="field.validatorMsgs"
-                   [placeholder]="field.placeholder"></core-input-date>
+                   [title]="config.label"
+                   [readonly]="config.readonly"
+                   [validatorMsgs]="config.validatorMsgs"
+                   [placeholder]="config.placeholder"></core-input-date>
   
   <core-input-timepicker *ngSwitchCase="'input_time'" 
                          [field]="field" 
-                         [title]="field.label"
-                         [placeholder]="field.placeholder"></core-input-timepicker>
+                         [title]="config.label"
+                         [placeholder]="config.placeholder"></core-input-timepicker>
   
   <core-input-year *ngSwitchCase="'input_year'" 
                    [field]="field" 
-                   [title]="field.label"
-                   [placeholder]="field.placeholder"></core-input-year>  
+                   [title]="config.label"
+                   [placeholder]="config.placeholder"></core-input-year>  
   
   <core-input-ym *ngSwitchCase="'input_year_month'" 
                    [field]="field" 
-                   [title]="field.label"
-                   [readonly]="field.readonly"
-                   [validatorMsgs]="field.validatorMsgs"
-                   [placeholder]="field.placeholder"></core-input-ym>  
+                   [title]="config.label"
+                   [readonly]="config.readonly"
+                   [validatorMsgs]="config.validatorMsgs"
+                   [placeholder]="config.placeholder"></core-input-ym>  
   
   <core-textarea *ngSwitchCase="'textarea'" 
                        [field]="field" 
-                       [title]="field.label"
-                       [readonly]="field.readonly"
-                       [validatorMsgs]="field.validatorMsgs"
-                       [placeholder]="field.placeholder"></core-textarea>
+                       [title]="config.label"
+                       [readonly]="config.readonly"
+                       [validatorMsgs]="config.validatorMsgs"
+                       [placeholder]="config.placeholder"></core-textarea>
   
   <core-input-checkbox *ngSwitchCase="'input_checkbox'" 
                        [field]="field" 
-                       [title]="field.label" 
-                       [titleDisabled]="field.type.labelDisabled"
-                       [placeholder]="field.placeholder"></core-input-checkbox>
+                       [title]="config.label" 
+                       [titleDisabled]="config.type.labelDisabled"
+                       [placeholder]="config.placeholder"></core-input-checkbox>
   
   <core-input-select-param *ngSwitchCase="'input_select_param'" 
                            [field]="field" 
-                           [title]="field.label" 
-                           [options]="field.type.options"
-                           [placeholder]="field.placeholder"></core-input-select-param>
+                           [title]="config.label" 
+                           [options]="config.type.options"
+                           [placeholder]="config.placeholder"></core-input-select-param>
   
   <core-input-select *ngSwitchCase="'input_select'" 
                      [field]="field" 
-                     [title]="field.label" 
-                     [entityName]="field.type.entityName"
-                     [placeholder]="field.placeholder"></core-input-select>
+                     [title]="config.label" 
+                     [entityName]="config.type.entityName"
+                     [placeholder]="config.placeholder"></core-input-select>
   
   <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" 
                               [field]="field" 
-                              [title]="field.label" 
-                              [options]="field.type.options"
-                              [placeholder]="field.placeholder"></core-input-select-checkbox>
+                              [title]="config.label" 
+                              [options]="config.type.options"
+                              [placeholder]="config.placeholder"></core-input-select-checkbox>
 
   <core-input-autocomplete *ngSwitchCase="'input_autocomplete'" 
                            [field]="field" 
-                           [title]="field.label" 
-                           [entityName]="field.type.entityName" 
-                           [adminRoute]="field.type.adminRoute"
-                           [placeholder]="field.placeholder"></core-input-autocomplete>
+                           [title]="config.label" 
+                           [entityName]="config.type.entityName" 
+                           [adminRoute]="config.type.adminRoute"
+                           [placeholder]="config.placeholder"></core-input-autocomplete>
 
   <core-input-text *ngSwitchCase="'input_text'" 
                    [field]="field" 
-                   [title]="field.label" 
-                   [width]="field.type.width"
-                   [readonly]="field.readonly"
-                   [validatorMsgs]="field.validatorMsgs"
-                   [placeholder]="field.placeholder"></core-input-text>
+                   [title]="config.label" 
+                   [width]="config.type.width"
+                   [readonly]="config.readonly"
+                   [validatorMsgs]="config.validatorMsgs"
+                   [placeholder]="config.placeholder"></core-input-text>
 
   <core-input-upload *ngSwitchCase="'input_upload'" 
                      [field]="field" 
-                     [title]="field.label" 
-                     [entityName]="field.type.entityName"></core-input-upload >
+                     [title]="config.label" 
+                     [entityName]="config.type.entityName"></core-input-upload >
 
   <span *ngSwitchCase="'download'">
     <core-download *ngIf="field" 
                    [id]="field" 
-                   [entityName]="field.type.entityName"></core-download>
+                   [entityName]="config.type.entityName"></core-download>
   </span>
 
-  <span *ngSwitchCase="'date'">{{field.value | toDate | date:field.type.format}}</span>
+  <span *ngSwitchCase="'date'">{{field.value | toDate | date:config.type.format}}</span>
   
   <span *ngSwitchCase="'yes_no'">{{field.value | siNo}}</span>
   
@@ -89,26 +90,37 @@
   <span *ngSwitchCase="'label'">
     <core-label *ngIf="field" 
                 [id]="field.value" 
-                [entityName]="field.type.entityName"></core-label></span>
+                [entityName]="config.type.entityName"></core-label></span>
 
   <span *ngSwitchCase="'field_label'">
     <core-field-label *ngIf="field" 
                       [id]="field" 
-                      [entityName]="field.type.entityName" 
-                      [fieldNames]="field.type.fieldNames" 
-                      [join]="field.type.join"></core-field-label></span>
+                      [entityName]="config.type.entityName" 
+                      [fieldNames]="config.type.fieldNames" 
+                      [join]="config.type.join"></core-field-label></span>
   
   <span *ngSwitchCase="'tree'">
     <core-field-tree *ngIf="field" 
                      [id]="field" 
-                     [tree]="field.type.tree"></core-field-tree></span>
+                     [tree]="config.type.tree"></core-field-tree></span>
   
   <span *ngSwitchCase="'um'">
     <core-um *ngIf="field" 
              [data]="field" 
-             [fields]="field.type.fields"></core-um></span>
+             [fields]="config.type.fields"></core-um></span>
 
   <span *ngSwitchCase="'default'">{{field.value}}</span>
+
+  <ng-container *ngSwitchCase="'route_icon'">
+    <core-route-icon [field]="field"
+                     [icon]="config.type.icon"
+                     [routerLink]="config.type.routerLink"
+                     [key]="config.type.key"
+                     [color]="config.type.color"
+                     [target]="config.type.target"
+                     [title]="config.type.title"></core-route-icon>
+                     
+  </ng-container>
 
 </span>
 

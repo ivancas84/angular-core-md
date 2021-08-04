@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { FormConfig, FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -29,23 +30,23 @@ export class DataDefinitionFkObjService {
     protected dd: DataDefinitionToolService, 
   ) { }
 
-  public uniqueGroup(entityName:string, params:any, group:FormGroup){
+  public uniqueGroup(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
     return this.dd.unique(entityName, params).pipe(
       switchMap(
         (row) => {
-          if(!row) return this.initGroup(entityName, params, group);
+          if(!row) return this.initGroup(entityName, params, controls);
           var r = {};
           r[entityName] = fastClone(row)
           /**
            * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
            */
-          return this.group(entityName, r, group)
+          return this.group(entityName, r, controls)
         }
       )
     )
   }
 
-  public initGroup(entityName:string, params:any, group:FormGroup){
+  public initGroup(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
     /**
      * Recorre parametros e inicializa relaciones
      */
@@ -55,16 +56,16 @@ export class DataDefinitionFkObjService {
     /**
      * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
      */
-    return this.group(entityName, r, group)
+    return this.group(entityName, r, controls)
   }
 
 
-  public group(entityName:string, row: any, group: FormGroup){
+  public group(entityName:string, row: any, controls: { [index: string]: FormConfig }){
     /**
      * Definir relaciones a partir de la estructura y armar el arbol de datos
      */
     var relationsFk = [];
-    Object.keys(group.controls).forEach(key => {
+    Object.keys(controls).forEach(key => {
       if(!key.includes("/")) relationsFk.push(key)
     });
 

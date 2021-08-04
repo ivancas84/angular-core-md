@@ -1,5 +1,7 @@
 import { ComponentOptions } from "./component-options";
 import { Opt, OptEventIcon } from "./opt";
+import { FormControlOption, FormGroupConfig } from "./reactive-form-config";
+import { FormControlExt } from "./reactive-form-ext";
 
 export class TableDynamicOptions extends ComponentOptions{
   /**
@@ -26,10 +28,12 @@ export class TableDynamicOptions extends ComponentOptions{
   sortDirection: string = "asc";
   sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
   optColumn: Opt[] = []; //columna opciones 
-  optTitle: Opt[] = [ //opciones de titulo 
-    new OptEventIcon({action:"copy_content", title:"Copiar", template:"content_copy", color:"primary"}),
-    new OptEventIcon({action:"print_content", title:"Imprimir", template:"print", color:"primary"}),
-  ]; 
+  optTitle: FormControlOption[] = [];
+
+  //[ opciones de titulo 
+  //   //new OptEventIcon({action:"copy_content", title:"Copiar", template:"content_copy", color:"primary"}),
+  //   //new OptEventIcon({action:"print_content", title:"Imprimir", template:"print", color:"primary"}),
+  // ]; 
   titleLoad: boolean = true
   sortActive: string = null;
 

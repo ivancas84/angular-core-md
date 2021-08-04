@@ -1,4 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { FormGroupExt, FormControlExt } from '@class/reactive-form-ext';
 import { fastClone } from '@function/fast-clone';
  
@@ -12,7 +14,8 @@ export class FieldViewAuxComponent implements OnInit {
    * Visualizacion auxiliar de campo
    */
   
-  @Input() field: FormControlExt; //conjunto de campos
+  @Input() config: FormControlConfig; //conjunto de campos
+  @Input() field: FormControl; //conjunto de campos
   /**
    * La visualizacion auxiliar de un campo utiliza datos adicionales que son indicados en fieldViewOptions
    */
@@ -20,8 +23,8 @@ export class FieldViewAuxComponent implements OnInit {
   params: any = null;
 
   ngOnInit(){
-    if(this.field.aux && this.field.aux.params){
-      this.params = fastClone(this.field.aux.params);
+    if(this.config.aux && this.config.aux.params){
+      this.params = fastClone(this.config.aux.params);
       for(var i in this.params){
         if(this.params.hasOwnProperty(i)){
           var key = this.params[i].match(/\{\{(.*?)\}\}/)

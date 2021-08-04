@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Display } from '@class/display';
+import { FormConfig, FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { FormGroupExt } from '@class/reactive-form-ext';
 import { arrayColumn } from '@function/array-column';
 import { isEmptyObject } from '@function/is-empty-object.function';
@@ -85,7 +87,7 @@ export class DataDefinitionRelFieldsService {
     )
   }
     
-  public getAllGroup(entityName: string, ids: string[], group:FormGroupExt){
+  public getAllGroup(entityName: string, ids: string[], controls:{ [index: string]: FormConfig }){
     /**
      * Analiza el parametro fieldsViewOptions para obtener los fields 
      * y ejecutar getAll (si corresponde)
@@ -96,7 +98,7 @@ export class DataDefinitionRelFieldsService {
      */
      var fields = [];
 
-     Object.keys(group.controls).forEach(key => {
+     Object.keys(controls).forEach(key => {
       if(key.includes("-")) fields.push(key);
 
     });

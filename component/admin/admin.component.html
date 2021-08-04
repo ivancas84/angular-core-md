@@ -7,22 +7,23 @@
       (ngSubmit)="onSubmit()" 
       novalidate autocomplete="off">
   <div *ngIf="(loadDisplay$ | async); else loading">
-    <div  *ngFor="let item of adminForm.controls | keyvalue: adminForm.sort; let i = index">
+    <div  *ngFor="let item of configForm.controls | keyvalue: configForm.sort; let i = index">
       <ng-container [ngSwitch]="item.value.options.id">
         <core-fieldset-dynamic *ngSwitchCase="'fieldset'" 
-                               [fieldset]="item.value"
+                               [config]="item.value"
+                               [fieldset]="adminForm.controls[item.key]"
                                [entityName]="item.value.options.entityName"
                                [intro]="item.value.options.intro"
                                [title]="item.value.options.title"
-                               [inputSearchGo]="item.value.options.inputSearchGo"
-                               [display]="display$.value"></core-fieldset-dynamic>
+                               [inputSearchGo]="item.value.options.inputSearchGo"></core-fieldset-dynamic>
       
-        <core-fieldset-array-dynamic *ngSwitchCase="'fieldset-array'" 
+        <!--core-fieldset-array-dynamic *ngSwitchCase="'fieldset-array'" 
                                      [fieldset]="item.value"
-                                     [title]="item.value.options.title"></core-fieldset-array-dynamic>
+                                     [title]="item.value.options.title"></core-fieldset-array-dynamic-->
 
         <core-table-dynamic *ngSwitchCase="'table'"
-                            [fieldset]="item.value"
+                            [config]="item.value"
+                            [fieldset]="adminForm.controls[item.key]"
                             [title]="item.value.options.title"
                             [sortDisabled]="item.value.options.sortDisabled"
                             [optTitle]="item.value.options.optTitle"

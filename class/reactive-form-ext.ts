@@ -1,6 +1,5 @@
 import { KeyValue } from "@angular/common";
-import { AbstractControl, FormArray } from "@angular/forms";
-import { FieldsetDynamicOptions } from "./fieldset-dynamic-options";
+import { FormArray } from "@angular/forms";
 import { FormControl, FormGroup } from "@angular/forms";
 import { DownloadOptions, UmOptions, FieldInputCheckboxOptions, FieldDefaultOptions, FieldTextareaOptions, FieldInputYearOptions, FieldInputTimeOptions, FieldInputDateOptions, FieldInputSelectParamOptions, FieldInputSelectOptions, FieldInputSelectCheckboxOptions, FieldInputAutocompleteOptions, FieldInputTextOptions, FieldDateOptions, FieldYesNoOptions, FieldSummaryOptions, TypeLabelOptions } from "./field-type-options";
 import { RouterLinkOptions, InputPersistOptions } from "./field-view-aux-options";
@@ -271,7 +270,7 @@ export class FormControlExt extends FormControl implements ReactiveFormId{
 
 
 export interface FormGroupFactory{
-  formGroup(): FormGroupExt;
+  formGroup(): FormGroup;
 }
 
 export class FormArrayExt extends FormArray implements SortControl, SortMember, ReactiveFormId{

@@ -3,7 +3,6 @@ import { switchMap } from 'rxjs/operators';
 import { Component } from '@angular/core';
 import { Display } from '@class/display';
 import { AdminArrayComponent } from './admin-array.component';
-import { FieldViewOptions } from '@class/field-view-options';
 
 @Component({
   selector: 'core-admin-array',
@@ -16,7 +15,6 @@ export abstract class AdminArrayDynamicComponent extends AdminArrayComponent { /
  */
 
  title: string;
- fieldsViewOptions: FieldViewOptions[]
 
 
 }

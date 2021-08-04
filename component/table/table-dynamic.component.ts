@@ -1,4 +1,5 @@
-import { Input, Component, OnInit, EventEmitter, Output, ElementRef, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
+import { Input, Component, OnInit, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
+import { FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -6,8 +7,7 @@ import { Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Display } from '@class/display';
-import { OptEventIcon, OptLinkIcon } from '@class/opt';
-import { FormArrayExt, FormControlExt } from '@class/reactive-form-ext';
+import { FormArrayConfig, FormControlConfig, FormControlOption } from '@class/reactive-form-config';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { emptyUrl } from '@function/empty-url.function';
@@ -15,7 +15,7 @@ import { naturalCompare } from '@function/natural-compare';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Observable, Subscription } from 'rxjs';
-import { debounceTime, first, last, map, startWith } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 
 declare function copyFormatted(html): any;
 declare function printHtml(html): any;
@@ -30,13 +30,14 @@ declare function printHtml(html): any;
 })
 export class TableDynamicComponent implements OnInit { //6
   @Input() entityName?: string
-  @Input() fieldset: FormArrayExt
+  @Input() config: FormArrayConfig
+  @Input() fieldset: FormArray
   @Input() title: string //titulo del componente
   @Input() sortActive: string = null;
   @Input() sortDirection: string = "asc";
   @Input() sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
 
-  @Input() optTitle: any[] = []; //opciones de titulo
+  @Input() optTitle: FormControlOption[] = []; //opciones de titulo
 
   @Input() optColumn: any[] = []; //columna opciones
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
@@ -101,8 +102,8 @@ export class TableDynamicComponent implements OnInit { //6
     );
 
     this.displayedColumns = []
-    Object.keys(this.fieldset.factory.formGroup().controls).forEach(key => {
-      if((this.fieldset.factory.formGroup().controls[key] as FormControlExt).type.id != "hidden")
+    Object.keys(this.config.factory.formGroup().controls).forEach(key => {
+      if((this.config.controls[key] as FormControlConfig).type.id != "hidden")
         this.displayedColumns.push(key)
     })
     if(this.optColumn.length) this.displayedColumns.push("options");
@@ -119,6 +120,7 @@ export class TableDynamicComponent implements OnInit { //6
       default: this.eventTable.emit($event);
     }
   }
+
 
 
 

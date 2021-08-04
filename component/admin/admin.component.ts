@@ -1,8 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
-import { FormGroupExt } from '@class/reactive-form-ext';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +19,8 @@ import { isEmptyObject } from '@function/is-empty-object.function';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
+import { FormConfigService } from '@service/form-config/form-config.service';
+import { FormConfig } from '@class/reactive-form-config';
 
 
 @Component({
@@ -28,7 +29,9 @@ import { DataDefinitionRelLabelService } from '@service/data-definition/data-def
 })
 export abstract class AdminComponent implements OnInit{
 
-  adminForm: FormGroupExt
+  adminForm: FormGroup
+
+  configForm: FormConfig
 
   readonly entityName: string; //entidad principal
 
@@ -78,9 +81,9 @@ export abstract class AdminComponent implements OnInit{
     protected relFk: DataDefinitionFkObjService,
     protected relUm: DataDefinitionUmObjService,
     protected ddrl: DataDefinitionRelLabelService, 
+    protected fc: FormConfigService
   ) { }
   
-  abstract configForm();
 
   ngAfterViewInit(): void {
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
@@ -130,7 +133,6 @@ export abstract class AdminComponent implements OnInit{
       ), 
       map(
         () => {
-          this.configForm()
           return true;
         }
       )
@@ -158,9 +160,8 @@ export abstract class AdminComponent implements OnInit{
       ),
       map(
         data => {
-          this.adminForm.initValue(data);
+          this.fc.initValue(this.configForm, this.adminForm, data)
           if(this.formValues) this.adminForm.patchValue(data);
-
           return true;
         }
       ),
@@ -174,7 +175,7 @@ export abstract class AdminComponent implements OnInit{
   initData(): Observable<any> {
     return of({}).pipe(
       switchMap(() => {
-        if(isEmptyObject(this.display$.value)) return of (this.adminForm.defaultValues());
+        if(isEmptyObject(this.display$.value)) return of (this.fc.defaultValues(this.configForm));
         else return this.queryData();
       }),
       map(
@@ -196,10 +197,10 @@ export abstract class AdminComponent implements OnInit{
   queryData(): Observable<any> {
     switch(this.queryApi){
       case "unique_rel_um": case "unique_rel":  
-        return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.adminForm).pipe(
+        return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.configForm.controls).pipe(
         switchMap(
           row => {
-            return this.relUm.group(this.entityName, row, this.adminForm)
+            return this.relUm.group(this.entityName, row, this.configForm.controls)
           }
         ),
       )
@@ -300,7 +301,6 @@ export abstract class AdminComponent implements OnInit{
   ngOnDestroy () { this.subscriptions.unsubscribe() }
 
   switchAction($event:any){ 
-
     /**
      * Acciones de opciones
      * Sobescribir si se necesita utilizar eventos
