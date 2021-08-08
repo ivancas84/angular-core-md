@@ -7,38 +7,33 @@
       (ngSubmit)="onSubmit()" 
       novalidate autocomplete="off">
   <div *ngIf="(loadDisplay$ | async); else loading">
-    <div  *ngFor="let item of configForm.controls | keyvalue: configForm.sort; let i = index">
-      <ng-container [ngSwitch]="item.value.options.id">
+    <div  *ngFor="let item of configComponent | keyvalue: configForm.sort; let i = index">
+      <ng-container [ngSwitch]="item.value.id">
         <core-fieldset-dynamic *ngSwitchCase="'fieldset'" 
-                               [config]="item.value"
+                               [config]="configForm.controls[item.key]"
                                [fieldset]="adminForm.controls[item.key]"
-                               [entityName]="item.value.options.entityName"
-                               [intro]="item.value.options.intro"
-                               [title]="item.value.options.title"
-                               [inputSearchGo]="item.value.options.inputSearchGo"></core-fieldset-dynamic>
+                               [entityName]="item.value.entityName"
+                               [intro]="item.value.intro"
+                               [title]="item.value.title"
+                               [inputSearchGo]="item.value.inputSearchGo"></core-fieldset-dynamic>
       
         <!--core-fieldset-array-dynamic *ngSwitchCase="'fieldset-array'" 
                                      [fieldset]="item.value"
                                      [title]="item.value.options.title"></core-fieldset-array-dynamic-->
 
         <core-table-dynamic *ngSwitchCase="'table'"
-                            [config]="item.value"
+                            [config]="configForm.controls[item.key]"
                             [fieldset]="adminForm.controls[item.key]"
-                            [title]="item.value.options.title"
-                            [sortDisabled]="item.value.options.sortDisabled"
-                            [optTitle]="item.value.options.optTitle"
-                            [titleLoad]="item.value.options.titleLoad"></core-table-dynamic>
+                            [title]="item.value.title"
+                            [sortDisabled]="item.value.sortDisabled"
+                            [optTitle]="item.value.optTitle"
+                            [titleLoad]="item.value.titleLoad"></core-table-dynamic>
       </ng-container>      
     </div>
 
-    <button mat-raised-button [disabled]="adminForm.pending || isSubmitted" type="submit" color="primary">Aceptar</button>&nbsp;
-    <button mat-mini-fab color="accent" type="button"  (click)="back()"><mat-icon>keyboard_backspace</mat-icon></button>
-    <button mat-mini-fab color="accent" type="button" (click)="reset()"><mat-icon>clear_all</mat-icon></button>
-    <!--button mat-mini-fab color="accent" type="button" (click)="clear()"><mat-icon>add</mat-icon></button-->
-    <!--button mat-mini-fab color="warn" type="button" [disabled]="isDeletable" (click)="delete()"><mat-icon>delete</mat-icon></button-->
+    <core-field-view *ngFor="let o of optComponent" [field]="o.field" [config]="o.config"></core-field-view>          
+   
     <p>Debug Form value: {{ adminForm.value | json }}</p>
     <p>Debug Form status: {{ adminForm.status | json }}</p>
-    <a routerLink="/persona-admin" [queryParams]="{id:'60f5a20f4616d'}">Prueba 1</a>
-    <a routerLink="/persona-admin" [queryParams]="{id:'60f80c1225926'}">Prueba 2</a>
   </div>
 </form>

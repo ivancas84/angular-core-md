@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,7 +20,9 @@ import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { FormConfig } from '@class/reactive-form-config';
+import { FormConfig, FormControlConfig, FormControlOption, FormControlsConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { ComponentOptions } from '@class/component-options';
+import { EventButtonFieldViewOptions, EventIconFieldViewOptions, RouteIconFieldViewOptions } from '@class/field-type-options';
 
 
 @Component({
@@ -28,45 +30,65 @@ import { FormConfig } from '@class/reactive-form-config';
   template: './admin.component.html',
 })
 export abstract class AdminComponent implements OnInit{
-
   adminForm: FormGroup
+  configForm: FormStructureConfig
+  configComponent: { [x: string]: ComponentOptions }
 
-  configForm: FormConfig
+  optField: FormControl = new FormControl(null)//field de opciones para disparar eventos
+  optComponent: FormControlOption[] = [ //opciones de componente
+    new FormControlOption({
+      config: new FormControlConfig({ 
+        type: new EventButtonFieldViewOptions({
+          text: "Aceptar", //texto del boton
+          action: "submit", //accion del evento a realizar
+          color: "primary",
+        }) 
+      }),
+      field: this.optField
+    }),
 
-  readonly entityName: string; //entidad principal
+    new FormControlOption({
+      config: new FormControlConfig({ 
+        type: new EventIconFieldViewOptions({
+          icon: "add", //texto del boton
+          action: "clear", //accion del evento a realizar
+          color: "accent",
+        }) 
+      }),
+      field: this.optField
+    }),
 
+    new FormControlOption({
+      config: new FormControlConfig({ 
+        type: new EventIconFieldViewOptions({
+          icon: "arrow_back", //texto del boton
+          action: "back", //accion del evento a realizar
+          color: "accent",
+        }) 
+      }),
+      field: this.optField
+    }),
+  ]; 
+  
+  readonly entityName: string //entidad principal
   title: string //titulo principal
-  
-  isDeletable: boolean = false; //Flag para habilitar/deshabilitar boton eliminar
-  
-  @Output() event: EventEmitter<any> = new EventEmitter(); //eventos
-  
-  options: any[] = null; //opciones (si es null no se visualiza)
-  
-  display$:BehaviorSubject<any> = new BehaviorSubject(null); //parametros de consulta
+  isDeletable: boolean = false //Flag para habilitar/deshabilitar boton eliminar
+  @Output() event: EventEmitter<any> = new EventEmitter() //eventos
+  options: any[] = null //opciones (si es null no se visualiza)
+  display$:BehaviorSubject<any> = new BehaviorSubject(null) //parametros de consulta
   /**
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
    */
   
-  isSubmitted: boolean = false; //Flag para habilitar/deshabilitar boton aceptar
-
-  params: { [x: string]: any; } //parametros del componente
-  
-  loadParams$: Observable<any>; //carga de parametros
-  
-  loadDisplay$: Observable<any>; //carga de display
-  
-  protected subscriptions = new Subscription(); //suscripciones en el ts
-  
-  persistApi: string = "persist_rel";
-  
-  queryApi: string = "unique_rel";
-
-  defaultValues: {[key:string]: any} = {};
-
+  isSubmitted: boolean = false //Flag para habilitar/deshabilitar boton aceptar
+  params: { [x: string]: any } //parametros del componente
+  loadParams$: Observable<any> //carga de parametros
+  loadDisplay$: Observable<any> //carga de display
+  protected subscriptions = new Subscription() //suscripciones en el ts
+  persistApi: string = "persist_rel"
+  queryApi: string = "unique_rel"
+  defaultValues: {[key:string]: any} = {}
   formValues = this.storage.getItem(this.router.url);
-
-  labels: string //etiquetas de parametros
   
   constructor(
     protected fb: FormBuilder, 
@@ -99,7 +121,31 @@ export abstract class AdminComponent implements OnInit{
   ngOnInit() {
     this.loadParams();  
     this.loadStorage();
-    this.loadDisplay();
+    this.loadDisplay(); 
+    /**
+     * @test Se define el display a parte para poder asignar valores directamente al display, por ejemplo en las funciones clear y reset
+     */
+    this.loadOptField();
+  }
+
+  loadOptField(){
+    var s = this.optField.valueChanges.subscribe (
+      value => this.switchOptField(value),
+      error =>  this.snackBar.open(JSON.stringify(error), "X") 
+    );
+    this.subscriptions.add(s);
+    
+    
+  }
+
+  switchOptField(value: any){
+    switch(value){
+      case "submit": this.onSubmit(); break;
+      case "clear": this.clear(); break;
+      case "back": this.back(); break;
+      case "reset": this.reset(); break;
+      case "delete": this.delete(); break;
+    }
   }
 
   loadStorage() {
@@ -128,9 +174,6 @@ export abstract class AdminComponent implements OnInit{
           this.snackBar.open(JSON.stringify(error), "X"); 
         }
       ),
-      switchMap(
-        () => {return this.initLabels()}
-      ), 
       map(
         () => {
           return true;
@@ -139,14 +182,7 @@ export abstract class AdminComponent implements OnInit{
     )
   }
 
-  initLabels(): Observable<any>{
-    return this.ddrl.labels(this.params, this.entityName).pipe(
-      tap(
-        labels => {this.labels = labels}
-      )
-    )
-  }
-
+  
   loadDisplay(){
     /**
      * Se define un load independiente para el display, es util para reasignar valores directamente al display y reinicializar

@@ -367,3 +367,43 @@ export class RouteIconFieldViewOptions extends FieldViewOptions {
     }
   }
 }
+
+
+export class EventButtonFieldViewOptions extends FieldViewOptions {
+
+  id: string = "event_button"
+  text: string;
+  color:string="primary"
+  action: string;
+  title?: string;
+
+  constructor(attributes: any) {
+    super()
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+
+export class EventIconFieldViewOptions extends FieldViewOptions {
+
+  id: string = "event_icon"
+  icon: string;
+  color:string="primary"
+  action: string;
+  title?: string;
+
+  constructor(attributes: any) {
+    super()
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+

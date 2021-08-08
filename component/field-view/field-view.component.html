@@ -122,5 +122,27 @@
                      
   </ng-container>
 
+
+  <ng-container *ngSwitchCase="'event_button'">
+    <core-event-button [field]="field"
+                     [text]="config.type.text"
+                     [color]="config.type.color"
+                     [action]="config.type.action"
+                     [ariaLabel]="config.type.ariaLabel"
+                     [title]="config.type.title"></core-event-button>
+                     
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'event_icon'">
+    <core-event-icon [field]="field"
+                     [icon]="config.type.icon"
+                     [color]="config.type.color"
+                     [action]="config.type.action"
+                     [ariaLabel]="config.type.ariaLabel"
+                     [title]="config.type.title"></core-event-icon>
+                     
+  </ng-container>
+  
+
 </span>
 

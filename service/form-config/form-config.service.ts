@@ -2,7 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
-import { FormArrayConfig, FormConfig } from '@class/reactive-form-config';
+import { FormArrayConfig, FormConfig, FormControlsConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { SortControl } from '@class/reactive-form-ext';
 import { fastClone } from '@function/fast-clone';
 
@@ -12,7 +12,7 @@ import { fastClone } from '@function/fast-clone';
 export class FormConfigService {
 
 
-  public defaultValues(config: FormConfig): any  {
+  public defaultValues(config: FormControlsConfig): any  {
     var dv = {}
     Object.keys(config.controls).forEach(key => {
       switch(config.controls[key].id){
@@ -21,7 +21,7 @@ export class FormConfigService {
         break;
 
         case "form_group":
-          dv[key] = this.defaultValues(config.controls[key]);
+          dv[key] = this.defaultValues(config.controls[key] as FormGroupConfig);
         break;
       }
     })
@@ -51,7 +51,7 @@ export class FormConfigService {
     return name;
   }
 
-  initValue(config: FormConfig, form: FormGroup, value: { [key: string]: any; }): void {
+  initValue(config: FormControlsConfig, form: FormGroup, value: { [key: string]: any; }): void {
     Object.keys(value).forEach(key => { 
       if(config.controls[key].id == "form_array"){
         this.initArray(
