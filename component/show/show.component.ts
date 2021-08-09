@@ -7,9 +7,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
-import { FormArrayExt, FormGroupExt } from '@class/reactive-form-ext';
 import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
-import { FormArrayConfig, FormConfig } from '@class/reactive-form-config';
+import { FormArrayConfig } from '@class/reactive-form-config';
+import { FormArray } from '@angular/forms';
+import { FormConfigService } from '@service/form-config/form-config.service';
+import { TableDynamicOptions } from '@class/table-dynamic-options';
+import { ComponentOptions } from '@class/component-options';
 
 @Component({
   selector: 'core-show',
@@ -23,8 +26,8 @@ export abstract class ShowComponent implements OnInit {
    */
 
   readonly entityName: string; //Nombre de la entidad principal
-  structure: FormArrayExt
-  config: FormArrayConfig
+  form: FormArray
+  configForm: FormArrayConfig
   length?: number; //longitud total de los datos a mostrar
   /**
    * undefined: No se procesara la longitud
@@ -35,20 +38,19 @@ export abstract class ShowComponent implements OnInit {
   params: { [x: string]: any; } //Parametros del componente
   load$: Observable<any>; //Disparador de observables
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
+  tableOptions: ComponentOptions = new TableDynamicOptions()
 
   constructor(
     protected dd: DataDefinitionToolService, 
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
     protected storage: SessionStorageService,
-    protected ddrf: DataDefinitionRelFieldsService
-
+    protected ddrf: DataDefinitionRelFieldsService,
+    protected fc: FormConfigService
   ) {}
 
-  abstract configForm()
 
   ngOnInit(): void {
-    this.configForm();
     this.load$ = this.route.queryParams.pipe(
       tap(
         queryParams => {
@@ -116,7 +118,11 @@ export abstract class ShowComponent implements OnInit {
       ),
       tap(
         data => {
-          this.structure.initValue(data);
+          console.log(this.form);
+          console.log(data);
+          
+          this.fc.initArray(this.configForm, this.form, data)
+          console.log(this.form)
         }
       ),      
     )
@@ -176,7 +182,7 @@ export abstract class ShowComponent implements OnInit {
   queryData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display).pipe(
       switchMap(
-        ids => this.ddrf.getAllGroup(this.entityName, ids, this.config.controls)
+        ids => this.ddrf.getAllGroup(this.entityName, ids, this.configForm.controls)
       )
     )
   }

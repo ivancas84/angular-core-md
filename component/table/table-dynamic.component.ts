@@ -102,7 +102,7 @@ export class TableDynamicComponent implements OnInit { //6
     );
 
     this.displayedColumns = []
-    Object.keys(this.config.factory.formGroup().controls).forEach(key => {
+    Object.keys(this.config.controls).forEach(key => {
       if((this.config.controls[key] as FormControlConfig).type.id != "hidden")
         this.displayedColumns.push(key)
     })

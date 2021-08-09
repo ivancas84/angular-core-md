@@ -11,12 +11,13 @@
   
   <core-table-dynamic [length]="length" 
                       [display]="display"
-                      [fieldset]="structure" 
-                      [optColumn]="structure.options.optColumn"
-                      (eventTable)= "switchAction($event)"
-                      [title]="structure.options.title"
-                      [entityName]="entityName"
-                      [sortActive]="structure.options.sortActive"
-                      [sortDirection]="structure.options.sortDirection"
-                      [serverSortObligatory]="structure.options.serverSortObligatory"></core-table-dynamic>
+                      [fieldset]="form" 
+                      [config]="configForm"
+                      [optColumn]="tableOptions.optColumn"
+                      [title]="tableOptions.title"
+                      [entityName]="tableOptions.entityName"
+                      [sortActive]="tableOptions.sortActive"
+                      [sortDirection]="tableOptions.sortDirection"
+                      [serverSortTranslate]="tableOptions.serverSortTranslate"
+                      [serverSortObligatory]="tableOptions.serverSortObligatory"></core-table-dynamic>
 </div>

@@ -2,12 +2,20 @@
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>
 
+<mat-card *ngIf="inputSearchGo">
+  <mat-card-content>
+    <core-input-search-go fxFlex="auto" [entityName]="entityName"></core-input-search-go>  
+  </mat-card-content>
+</mat-card>
+
+
 <form *ngIf="(loadParams$ | async); else loading" 
       [formGroup]="adminForm" 
       (ngSubmit)="onSubmit()" 
       novalidate autocomplete="off">
-  <div *ngIf="(loadDisplay$ | async); else loading">
-    <div  *ngFor="let item of configComponent | keyvalue: configForm.sort; let i = index">
+  <ng-container *ngIf="(loadDisplay$ | async); else loading">
+
+    <ng-container  *ngFor="let item of configComponent | keyvalue: configForm.sort; let i = index">
       <ng-container [ngSwitch]="item.value.id">
         <core-fieldset-dynamic *ngSwitchCase="'fieldset'" 
                                [config]="configForm.controls[item.key]"
@@ -29,11 +37,16 @@
                             [optTitle]="item.value.optTitle"
                             [titleLoad]="item.value.titleLoad"></core-table-dynamic>
       </ng-container>      
-    </div>
+    </ng-container>
 
-    <core-field-view *ngFor="let o of optComponent" [field]="o.field" [config]="o.config"></core-field-view>          
-   
-    <p>Debug Form value: {{ adminForm.value | json }}</p>
-    <p>Debug Form status: {{ adminForm.status | json }}</p>
-  </div>
+    
+  <mat-card *ngIf="optComponent.length">
+    <mat-card-content>
+      <core-field-view *ngFor="let o of optComponent" [field]="o.field" [config]="o.config"></core-field-view>          
+    </mat-card-content>
+  </mat-card>
+  
+  <p>Debug Form value: {{ adminForm.value | json }}</p>
+  <p>Debug Form status: {{ adminForm.status | json }}</p>
+  </ng-container>
 </form>

@@ -89,7 +89,8 @@ export abstract class AdminComponent implements OnInit{
   queryApi: string = "unique_rel"
   defaultValues: {[key:string]: any} = {}
   formValues = this.storage.getItem(this.router.url);
-  
+  inputSearchGo: boolean = true; //flag para activar / desactivar componente inputSearchGo
+
   constructor(
     protected fb: FormBuilder, 
     protected route: ActivatedRoute, 
