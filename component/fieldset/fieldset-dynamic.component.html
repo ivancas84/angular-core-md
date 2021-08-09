@@ -2,8 +2,8 @@
   <mat-card-header>
     <mat-card-title fxFlex="auto">
       {{title}}    
+      <core-field-view *ngFor="let o of optTitle" [field]="o.field" [config]="o.config"></core-field-view>          
     </mat-card-title>
-
   </mat-card-header>
 
   <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">

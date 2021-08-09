@@ -1,5 +1,5 @@
 import { Input, Component, OnInit, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { FormArray, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -38,6 +38,8 @@ export class TableDynamicComponent implements OnInit { //6
   @Input() sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
 
   @Input() optTitle: FormControlOption[] = []; //opciones de titulo
+  @Input() optField: FormControl; //opciones de titulo
+  
 
   @Input() optColumn: any[] = []; //columna opciones
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
@@ -75,7 +77,15 @@ export class TableDynamicComponent implements OnInit { //6
 
   @Output() eventTable: EventEmitter<any> = new EventEmitter();
   
-  
+
+  initOptField(){
+    var s = this.optField.valueChanges.subscribe (
+      value => this.switchOptField(value),
+      error =>  this.snackBar.open(JSON.stringify(error), "X") 
+    );
+    this.subscriptions.add(s);
+  }
+
   constructor(
     protected router: Router,
     protected dd: DataDefinitionToolService,
@@ -88,6 +98,22 @@ export class TableDynamicComponent implements OnInit { //6
   //load$: Observable<any>
   
   ngOnInit(): void {
+    this.initOptField();
+    this.initFieldset();
+    this.initDisplayedColumns();
+    if(!this.length) this.length = this.fieldset.controls.length;    
+  }
+
+  initDisplayedColumns(){
+    this.displayedColumns = []
+    Object.keys(this.config.controls).forEach(key => {
+      if((this.config.controls[key] as FormControlConfig).type.id != "hidden")
+        this.displayedColumns.push(key)
+    })
+    if(this.optColumn.length) this.displayedColumns.push("options");
+  }
+
+  initFieldset(){
     this.fieldset.valueChanges.pipe(
       //startWith(this.fieldset.value),
       debounceTime(100),
@@ -100,24 +126,14 @@ export class TableDynamicComponent implements OnInit { //6
     ).subscribe(
       () => {}
     );
+  } 
 
-    this.displayedColumns = []
-    Object.keys(this.config.controls).forEach(key => {
-      if((this.config.controls[key] as FormControlConfig).type.id != "hidden")
-        this.displayedColumns.push(key)
-    })
-    if(this.optColumn.length) this.displayedColumns.push("options");
-
-    if(!this.length) this.length = this.fieldset.controls.length;    
-  }
-
- 
-  emitEventTable($event){
+  switchOptField($event){
+    console.log($event)
     switch($event.action){
       case "copy_content": this.copyContent(); break;
       case "print_content": this.printContent(); break;
-      case "table_delete": this.onRemove($event.index); break;
-      default: this.eventTable.emit($event);
+      case "table_delete": this.onRemove($event.field); break;
     }
   }
 
@@ -171,19 +187,20 @@ export class TableDynamicComponent implements OnInit { //6
     if(this.content) printHtml(this.content.nativeElement.innerHTML);
   }
 
-  onRemove(index) { 
+  onRemove(formControl: FormControl) { 
     /**
+     * @todo Falta terminar
      * Evento de eliminacion, proporciona al usuario un dialogo de confimacion e invoca a remove para eliminar
      */
     const dialogRef = this.dialog.open(DialogConfirmComponent, {
-      data: {title: "Eliminar registro " + index, message: "Está seguro?"}
+      data: {title: "Eliminar registro " + formControl.value, message: "Está seguro?"}
     });
  
-    var s = dialogRef.afterClosed().subscribe(result => {
-      if(result) this.remove(index)
-    });
+    //var s = dialogRef.afterClosed().subscribe(result => {
+      //if(result) this.remove(index)
+    //});
     
-    this.subscriptions.add(s)
+    //this.subscriptions.add(s)
   }
 
   remove(index: number) {

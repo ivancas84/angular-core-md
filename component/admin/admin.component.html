@@ -8,7 +8,6 @@
   </mat-card-content>
 </mat-card>
 
-
 <form *ngIf="(loadParams$ | async); else loading" 
       [formGroup]="adminForm" 
       (ngSubmit)="onSubmit()" 
@@ -23,7 +22,7 @@
                                [entityName]="item.value.entityName"
                                [intro]="item.value.intro"
                                [title]="item.value.title"
-                               [inputSearchGo]="item.value.inputSearchGo"></core-fieldset-dynamic>
+                               [optTitle]="item.value.optTitle"></core-fieldset-dynamic>
       
         <!--core-fieldset-array-dynamic *ngSwitchCase="'fieldset-array'" 
                                      [fieldset]="item.value"
@@ -35,7 +34,15 @@
                             [title]="item.value.title"
                             [sortDisabled]="item.value.sortDisabled"
                             [optTitle]="item.value.optTitle"
-                            [titleLoad]="item.value.titleLoad"></core-table-dynamic>
+                            [titleLoad]="item.value.titleLoad"
+                            [optField]="item.value.optField"
+                            [optTitle]="item.value.optTitle"
+                            [optColumn]="item.value.optColumn"
+                            [entityName]="item.value.entityName"
+                            [sortActive]="item.value.sortActive"
+                            [sortDirection]="item.value.sortDirection"
+                            [serverSortTranslate]="item.value.serverSortTranslate"
+                            [serverSortObligatory]="item.value.serverSortObligatory"></core-table-dynamic>
       </ng-container>      
     </ng-container>
 

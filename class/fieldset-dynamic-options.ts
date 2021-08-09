@@ -1,4 +1,5 @@
 import { ComponentOptions } from "./component-options";
+import { FormControlOption } from "./reactive-form-config";
 import { ValidatorMsg } from "./validator-msg";
 
 export class FieldsetDynamicOptions extends ComponentOptions{
@@ -9,9 +10,11 @@ export class FieldsetDynamicOptions extends ComponentOptions{
    */
 
   id: string = "fieldset"
-  inputSearchGo: boolean = true //activar o desactivar el formulario de busqueda rapida
-  validatorMsgs: ValidatorMsg[] = [] //opciones de validacion del fieldset
+  validatorMsgs: ValidatorMsg[] = [] //mensajes de validacion del fieldset
   intro?:string //parrafo con un mensaje de introduccion al formulario, util para indicar instrucciones breves
+  optTitle: FormControlOption[] = []; //opciones de titulo
+  title?: string;
+  entityName?: string;
 
   constructor(attributes: any = {}) {
     super()

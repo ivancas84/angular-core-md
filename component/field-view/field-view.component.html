@@ -125,6 +125,7 @@
 
   <ng-container *ngSwitchCase="'event_button'">
     <core-event-button [field]="field"
+                       [fieldEvent]="config.type.fieldEvent"
                      [text]="config.type.text"
                      [color]="config.type.color"
                      [action]="config.type.action"
@@ -135,6 +136,7 @@
 
   <ng-container *ngSwitchCase="'event_icon'">
     <core-event-icon [field]="field"
+                     [fieldEvent]="config.type.fieldEvent"
                      [icon]="config.type.icon"
                      [color]="config.type.color"
                      [action]="config.type.action"

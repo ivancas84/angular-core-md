@@ -118,11 +118,7 @@ export abstract class ShowComponent implements OnInit {
       ),
       tap(
         data => {
-          console.log(this.form);
-          console.log(data);
-          
           this.fc.initArray(this.configForm, this.form, data)
-          console.log(this.form)
         }
       ),      
     )

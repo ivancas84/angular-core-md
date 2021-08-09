@@ -14,9 +14,10 @@ export class EventIconComponent {
   @Input() action: string //accion del evento a realizar
   @Input() color: string
   @Input() title?: string
-  @Input() field: FormControl
+  @Input() field?: FormControl = null
+  @Input() fieldEvent: FormControl
 
   setValue(){
-    this.field.setValue(this.action)
+    this.fieldEvent.setValue({action:this.action,field:this.field})
   }
 }

@@ -1,3 +1,4 @@
+import { FormControl } from "@angular/forms";
 import { FieldTreeElement } from "./field-tree-element";
 
 
@@ -376,6 +377,7 @@ export class EventButtonFieldViewOptions extends FieldViewOptions {
   color:string="primary"
   action: string;
   title?: string;
+  fieldEvent: FormControl;
 
   constructor(attributes: any) {
     super()
@@ -395,6 +397,7 @@ export class EventIconFieldViewOptions extends FieldViewOptions {
   color:string="primary"
   action: string;
   title?: string;
+  fieldEvent: FormControl;
 
   constructor(attributes: any) {
     super()

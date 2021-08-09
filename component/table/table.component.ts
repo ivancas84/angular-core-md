@@ -3,11 +3,9 @@ import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { emptyUrl } from '@function/empty-url.function';
 import { Display } from '@class/display';
-import { map } from 'rxjs/operators';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { naturalCompare } from '@function/natural-compare';
-import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
@@ -61,6 +59,8 @@ export abstract class TableComponent implements OnInit, OnChanges { //3
   titleLoad$: Observable<string[]>;
   deleteApi: string = "delete";
 
+ 
+
   constructor(
     protected router: Router,
     protected dd: DataDefinitionToolService,
@@ -70,26 +70,11 @@ export abstract class TableComponent implements OnInit, OnChanges { //3
   ) {}
 
   ngOnInit(): void {
-    var p = Object.keys(this.display.getParams());
-    if(p.length == 1 && this.entityName){
-      if(p[0].includes("-")) {
-        this.titleLoad$ = this.dd.post("rel",this.entityName).pipe(
-          map(
-            response => {
-              var r = response[
-                p[0].substring(0,p[0].indexOf("-"))
-              ];
-              r["value"] = this.display.getParams()[p[0]];
-              return r;
-            }
-          )
-        )  
-      }
-    }
-    
     if(!this.length) this.length = this.dataSource.length;    
     //this.footer["key"] = this.data.map(t => t["key"]).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
+
+  
 
   ngOnChanges(changes: SimpleChanges): void {
     if( changes['dataSource'] && changes['dataSource'].previousValue != changes['dataSource'].currentValue ) {    

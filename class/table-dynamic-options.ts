@@ -1,7 +1,8 @@
+import { FormControl } from "@angular/forms";
 import { ComponentOptions } from "./component-options";
-import { Opt, OptEventIcon } from "./opt";
-import { FormControlOption, FormGroupConfig } from "./reactive-form-config";
-import { FormControlExt } from "./reactive-form-ext";
+import { EventIconFieldViewOptions } from "./field-type-options";
+import { Opt } from "./opt";
+import { FormControlConfig, FormControlOption } from "./reactive-form-config";
 
 export class TableDynamicOptions extends ComponentOptions{
   /**
@@ -28,12 +29,33 @@ export class TableDynamicOptions extends ComponentOptions{
   sortDirection: string = "asc";
   sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
   optColumn: Opt[] = []; //columna opciones 
-  optTitle: FormControlOption[] = [];
 
-  //[ opciones de titulo 
-  //   //new OptEventIcon({action:"copy_content", title:"Copiar", template:"content_copy", color:"primary"}),
-  //   //new OptEventIcon({action:"print_content", title:"Imprimir", template:"print", color:"primary"}),
-  // ]; 
+  optField: FormControl = new FormControl() //optField del componente anidado
+  optTitle: FormControlOption[] = [ //opciones de componente
+    new FormControlOption({
+      config: new FormControlConfig({ 
+        type: new EventIconFieldViewOptions({
+          icon: "content_copy", 
+          action: "copy_content", 
+          color: "primary",
+          title:"Copiar",
+          fieldEvent: this.optField
+        }) 
+      })
+    }),
+    new FormControlOption({
+      config: new FormControlConfig({ 
+        type: new EventIconFieldViewOptions({
+          icon: "print", 
+          action: "print_content",
+          color: "primary",
+          title:"Copiar",
+          fieldEvent: this.optField
+        }) 
+      }),
+    }),
+  ]
+
   titleLoad: boolean = true
   sortActive: string = null;
 

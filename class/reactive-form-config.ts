@@ -73,7 +73,7 @@ export class FormStructureConfig extends FormGroupConfig {
 
 export class FormControlOption {
   config: FormControlConfig
-  field: FormControl
+  field?: FormControl = null
 
   constructor(attributes: any) {
     for(var a in attributes){
@@ -105,18 +105,18 @@ export class FormArrayConfig extends FormControlsConfig {
 
 export class FormControlConfig extends FormConfig {
   id: string = "form_control"
-  label?: string = null //etiqueta campo
-  aux?: RouterLinkOptions | InputPersistOptions = null //opciones para field-view-aux
-  type?: FieldViewOptions = new FieldDefaultOptions()
+  label: string = null //etiqueta campo
+  aux: RouterLinkOptions | InputPersistOptions = null //opciones para field-view-aux
+  type: FieldViewOptions = new FieldDefaultOptions()
   showLabel: boolean = false //indica si debe mostrarse el label o no
     /**
      * no siempre se puede indicar label = null para esconder el label
      */
-  readonly?: boolean = false
+  readonly: boolean = false
   placeholder: string = null
-  width?:FieldWidthOptions = new FieldWidthOptions(); //ancho del contenedor
+  width:FieldWidthOptions = new FieldWidthOptions(); //ancho del contenedor
 
-  constructor(attributes: any) {
+  constructor(attributes: any = {}) {
     super({})
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){

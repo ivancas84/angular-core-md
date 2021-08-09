@@ -68,7 +68,6 @@ export class DataDefinitionFkObjService {
     Object.keys(controls).forEach(key => {
       if(!key.includes("/")) relationsFk.push(key)
     });
-
     return this.fk(entityName, row, relationsFk)
   }
 
@@ -82,6 +81,7 @@ export class DataDefinitionFkObjService {
      * para definir los valores de las relaciones,
      * se asignan a row
      */
+
     if(!relationsFk.length) return of(row); 
     return combineLatest([
       this.initializeRelations(entityName, relationsFk),

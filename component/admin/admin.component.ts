@@ -42,9 +42,9 @@ export abstract class AdminComponent implements OnInit{
           text: "Aceptar", //texto del boton
           action: "submit", //accion del evento a realizar
           color: "primary",
+          fieldEvent: this.optField
         }) 
       }),
-      field: this.optField
     }),
 
     new FormControlOption({
@@ -53,9 +53,9 @@ export abstract class AdminComponent implements OnInit{
           icon: "add", //texto del boton
           action: "clear", //accion del evento a realizar
           color: "accent",
+          fieldEvent: this.optField
         }) 
       }),
-      field: this.optField
     }),
 
     new FormControlOption({
@@ -135,12 +135,10 @@ export abstract class AdminComponent implements OnInit{
       error =>  this.snackBar.open(JSON.stringify(error), "X") 
     );
     this.subscriptions.add(s);
-    
-    
   }
 
   switchOptField(value: any){
-    switch(value){
+    switch(value.action){
       case "submit": this.onSubmit(); break;
       case "clear": this.clear(); break;
       case "back": this.back(); break;
@@ -354,7 +352,6 @@ export abstract class AdminComponent implements OnInit{
   }
 
   emitEvent($event){
-    console.log($event);
     switch($event.action){
       default:
         this.event.emit($event);
