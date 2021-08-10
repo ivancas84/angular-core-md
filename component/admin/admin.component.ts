@@ -122,11 +122,11 @@ export abstract class AdminComponent implements OnInit{
   ngOnInit() {
     this.loadParams();  
     this.loadStorage();
+    this.loadOptField();
     this.loadDisplay(); 
     /**
-     * @test Se define el display a parte para poder asignar valores directamente al display, por ejemplo en las funciones clear y reset
+     * Se define el display aparte para poder asignar valores directamente al display, por ejemplo en las funciones clear y reset
      */
-    this.loadOptField();
   }
 
   loadOptField(){

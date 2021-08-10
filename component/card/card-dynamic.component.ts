@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormGroupExt } from '@class/reactive-form-ext';
+import { FormGroup } from '@angular/forms';
 import { CardComponent } from '@component/card/card.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { CardComponent } from '@component/card/card.component';
   `]
 })
 export class CardDynamicComponent extends CardComponent { //2
-  @Input() fieldset:  FormGroupExt;
-  @Input() title  :  FormGroupExt;
+  @Input() fieldset:  FormGroup;
+  @Input() title  :  string;
 
 }

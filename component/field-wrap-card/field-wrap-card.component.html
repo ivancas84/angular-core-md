@@ -1,0 +1,10 @@
+<mat-card *ngIf="field.value" [style.backgroundColor]="backgroundColor">
+  <mat-card-header>
+    <mat-card-title>{{config.label}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <core-field-view [config]="config" [field]="field"></core-field-view>
+  </mat-card-content>
+</mat-card>
+
+

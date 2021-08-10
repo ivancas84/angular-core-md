@@ -41,12 +41,14 @@
                            [field]="field" 
                            [title]="config.label" 
                            [options]="config.type.options"
+                           [validatorMsgs]="config.validatorMsgs"
                            [placeholder]="config.placeholder"></core-input-select-param>
   
   <core-input-select *ngSwitchCase="'input_select'" 
                      [field]="field" 
                      [title]="config.label" 
                      [entityName]="config.type.entityName"
+                     [validatorMsgs]="config.validatorMsgs"
                      [placeholder]="config.placeholder"></core-input-select>
   
   <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" 

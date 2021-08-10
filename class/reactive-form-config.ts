@@ -1,10 +1,9 @@
 import { FormControl, FormGroup } from "@angular/forms"
 import { FieldDefaultOptions, FieldViewOptions } from "./field-type-options"
-import { RouterLinkOptions, InputPersistOptions } from "./field-view-aux-options"
+import { FieldWrapOptions } from "./field-wrap-options"
 import { FieldWidthOptions } from "./field-width-options"
 import { ValidatorMsg } from "./validator-msg"
 import { KeyValue } from "@angular/common"
-import { SortControl } from "./reactive-form-ext"
 
 export class FormConfig {
   id: string
@@ -20,6 +19,16 @@ export class FormConfig {
     }
   } 
 }
+
+export interface FormGroupFactory{
+  formGroup(): FormGroup;
+}
+
+
+export interface SortControl {
+  position: number;
+}
+
 
 export class FormControlsConfig extends FormConfig {
   controls: { [index: string]: FormConfig }
@@ -106,7 +115,7 @@ export class FormArrayConfig extends FormControlsConfig {
 export class FormControlConfig extends FormConfig {
   id: string = "form_control"
   label: string = null //etiqueta campo
-  aux: RouterLinkOptions | InputPersistOptions = null //opciones para field-view-aux
+  wrap?: FieldWrapOptions //opciones para field-view-aux
   type: FieldViewOptions = new FieldDefaultOptions()
   showLabel: boolean = false //indica si debe mostrarse el label o no
     /**

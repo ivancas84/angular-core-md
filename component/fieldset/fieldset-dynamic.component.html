@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-card-header>
+  <mat-card-header *ngIf="title || optTitle.length">
     <mat-card-title fxFlex="auto">
       {{title}}    
       <core-field-view *ngFor="let o of optTitle" [field]="o.field" [config]="o.config"></core-field-view>          
@@ -26,8 +26,8 @@
           [fxFlex.gt-md]="item.value.width.gtMd" 
           [fxFlex.gt-lg]="item.value.width.gtLg">
 
-        <core-field-view [field]="fieldset.controls[item.key]" 
-                         [config]="item.value"></core-field-view>  
+        <core-field-wrap [field]="fieldset.controls[item.key]" 
+                         [config]="item.value"></core-field-wrap>  
       </div>
 
     </ng-container>

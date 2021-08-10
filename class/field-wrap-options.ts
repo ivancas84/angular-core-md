@@ -1,9 +1,14 @@
-export class RouterLinkOptions { //1.1
+export class FieldWrapOptions {
+  id: string;
+}
+
+export class RouterLinkOptions extends FieldWrapOptions { //1.1
   id: string = "router_link"
   path: string = null
   params: {} = {id:"{{id}}"}; //utilizar {{key}} para identificar valor del conjunto de datos
 
   constructor(attributes: any) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -12,7 +17,7 @@ export class RouterLinkOptions { //1.1
   }
 }
 
-export class InputPersistOptions { //2
+export class InputPersistOptions extends FieldWrapOptions { //2
   id: string = "input_persist"
   params: {} = {id:"{{id}}"}//utilizar {{key}} para identificar valor del conjunto de datos
   api: string = "persist"
@@ -24,6 +29,23 @@ export class InputPersistOptions { //2
 
 
   constructor(attributes: any) {
+    super()
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+
+
+export class FieldWrapCardOptions extends FieldWrapOptions {
+  id: string = "card"
+  backgroundColor?: string
+
+  constructor(attributes: any = {}) {
+    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]

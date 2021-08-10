@@ -8,8 +8,8 @@ import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.compo
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
-import { FormArrayConfig } from '@class/reactive-form-config';
-import { FormArray } from '@angular/forms';
+import { FormArrayConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { FormArray, FormGroup } from '@angular/forms';
 import { FormConfigService } from '@service/form-config/form-config.service';
 import { TableDynamicOptions } from '@class/table-dynamic-options';
 import { ComponentOptions } from '@class/component-options';
@@ -39,6 +39,10 @@ export abstract class ShowComponent implements OnInit {
   load$: Observable<any>; //Disparador de observables
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
   tableOptions: ComponentOptions = new TableDynamicOptions()
+
+  searchForm: FormGroup
+  searchConfig: FormStructureConfig
+
 
   constructor(
     protected dd: DataDefinitionToolService, 

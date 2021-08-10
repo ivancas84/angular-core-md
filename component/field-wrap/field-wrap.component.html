@@ -1,0 +1,30 @@
+<ng-container *ngIf="config.wrap">
+
+  <ng-container [ngSwitch]="config.wrap.id">
+    <core-field-wrap-router-link *ngSwitchCase="'router_link'"
+                        [field]="field" 
+                        [config]="config"
+                        [path]="config.wrap.path"
+                        [params]=config.wrap.params></core-field-wrap-router-link>
+
+
+    <core-input-persist *ngSwitchCase="'input_persist'"
+                        [config]="config" 
+                        [field]="field" 
+                        [params]="params"
+                        [api]=config.wrap.api
+                        [entityName]=config.wrap.entityName
+                        [fieldName]=config.wrap.fieldName></core-input-persist>
+
+    <core-field-wrap-card *ngSwitchCase="'card'"
+                        [config]="config" 
+                        [field]="field" 
+                        [backgroundColor]=config.wrap.backgroundColor></core-field-wrap-card>               
+  </ng-container>
+  
+</ng-container>
+
+<ng-container *ngIf="!config.wrap">
+  <core-field-view [field]="field" 
+                   [config]="config"></core-field-view>
+</ng-container>          

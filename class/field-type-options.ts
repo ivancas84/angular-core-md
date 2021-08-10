@@ -58,6 +58,7 @@ export class FieldHiddenOptions extends FieldViewOptions { //1
 }
 
 
+
 export class FieldInputCheckboxOptions extends FieldViewOptions { //1
   id: string = "input_checkbox"
   constructor(attributes: any = {}) {

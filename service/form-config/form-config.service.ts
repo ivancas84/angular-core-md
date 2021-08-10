@@ -1,9 +1,7 @@
-import { KeyValue } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
-import { FormArrayConfig, FormConfig, FormControlsConfig, FormGroupConfig } from '@class/reactive-form-config';
-import { SortControl } from '@class/reactive-form-ext';
+import { FormArrayConfig, FormControlsConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 
 @Injectable({

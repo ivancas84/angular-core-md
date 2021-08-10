@@ -6,8 +6,9 @@
   <mat-progress-bar *ngIf="!load" 
                     mode="indeterminate"></mat-progress-bar>
 
-  <!--core-search-dynamic [display]="display" 
-                       [fieldsViewOptionsSp]="fieldsViewOptionsSp"></core-search-dynamic-->
+  <core-search-dynamic [display]="display" 
+                       [config]="searchConfig"
+                       [form]="searchForm"></core-search-dynamic>
   
   <core-table-dynamic [length]="length" 
                       [display]="display"

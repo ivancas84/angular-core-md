@@ -1,14 +1,12 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormControlConfig } from '@class/reactive-form-config';
-import { FormGroupExt, FormControlExt } from '@class/reactive-form-ext';
-import { fastClone } from '@function/fast-clone';
  
 @Component({
-  selector: 'core-field-view-aux',
-  templateUrl: './field-view-aux.component.html',
+  selector: 'core-field-wrap',
+  templateUrl: './field-wrap.component.html',
 })
-export class FieldViewAuxComponent implements OnInit {
+export class FieldWrapComponent implements OnInit {
   
   /**
    * Visualizacion auxiliar de campo
@@ -23,8 +21,8 @@ export class FieldViewAuxComponent implements OnInit {
   params: any = null;
 
   ngOnInit(){
-    if(this.config.aux && this.config.aux.params){
-      this.params = fastClone(this.config.aux.params);
+    /*if(this.config.wrap && this.config.wrap.params){
+      this.params = fastClone(this.config.wrap.params);
       for(var i in this.params){
         if(this.params.hasOwnProperty(i)){
           var key = this.params[i].match(/\{\{(.*?)\}\}/)
@@ -33,7 +31,7 @@ export class FieldViewAuxComponent implements OnInit {
       }
     }
 
-    /*var s = this.field.parent.valueChanges.subscribe (
+    var s = this.field.parent.valueChanges.subscribe (
       formValues => { 
         console.log(formValues);
         this.params = fastClone(this.field.aux.params);

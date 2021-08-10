@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { FormArray } from '@angular/forms';
 import { FormArrayConfig } from '@class/reactive-form-config';
-import { FormArrayExt } from '@class/reactive-form-ext';
 import { FormConfigService } from '@service/form-config/form-config.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class FieldsetArrayDynamicComponent {
    * La estructura por defecto del componente de implementacion es la misma que para FieldsetDynamicComponent, simplemente se debe cambiar la superclase
    **/
   @Input() title?: string; //titulo
-  @Input() fieldset: FormArrayExt; //formulario
+  @Input() fieldset: FormArray; //formulario
   @Input() config: FormArrayConfig; //formulario
 
 

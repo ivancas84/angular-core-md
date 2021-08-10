@@ -3,7 +3,11 @@
     <mat-expansion-panel-header>
       <mat-panel-title>{{title}}</mat-panel-title>
     </mat-expansion-panel-header>
-    <form [formGroup]="searchForm" novalidate (ngSubmit)="onSubmit()">       
+    <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()"> 
+
+      <core-fieldset-dynamic [config]="config.controls['params']"
+                             [fieldset]="form.controls['params']"></core-fieldset-dynamic>
+
       <!--core-search-all *ngIf="searchAll" [form]="searchForm" [display]="display"></core-search-all-->
       <!--core-search-params-dynamic *ngIf="searchParams" [form]="searchForm" [display]="display" [fieldsViewOptions]="fieldsViewOptionsSp"></core-search-params-dynamic-->
 

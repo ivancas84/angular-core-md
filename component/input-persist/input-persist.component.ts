@@ -1,7 +1,6 @@
 import { Input, Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormControlExt } from '@class/reactive-form-ext';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Observable, of } from 'rxjs';
@@ -36,7 +35,7 @@ export class InputPersistComponent implements OnInit {
   @Input() entityName: string
   @Input() fieldName: string
 
-  @Input() field: FormControlExt;
+  @Input() field: FormControl;
   load$: Observable<any>;
   
   constructor(

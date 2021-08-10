@@ -1,7 +1,6 @@
 import { FormControl } from "@angular/forms";
 import { ComponentOptions } from "./component-options";
 import { EventIconFieldViewOptions } from "./field-type-options";
-import { Opt } from "./opt";
 import { FormControlConfig, FormControlOption } from "./reactive-form-config";
 
 export class TableDynamicOptions extends ComponentOptions{
@@ -28,7 +27,7 @@ export class TableDynamicOptions extends ComponentOptions{
  
   sortDirection: string = "asc";
   sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
-  optColumn: Opt[] = []; //columna opciones 
+  optColumn: any[] = []; //columna opciones 
 
   optField: FormControl = new FormControl() //optField del componente anidado
   optTitle: FormControlOption[] = [ //opciones de componente
