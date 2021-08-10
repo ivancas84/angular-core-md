@@ -114,13 +114,18 @@ export class FormArrayConfig extends FormControlsConfig {
 
 export class FormControlConfig extends FormConfig {
   id: string = "form_control"
-  label: string = null //etiqueta campo
-  wrap?: FieldWrapOptions //opciones para field-view-aux
+  label: string = null //etiqueta
+  wrap?: FieldWrapOptions | FieldWrapOptions[] //envolturas
+  /**
+   * Si se utiliza un array se aplican las envolturas en el orden de definicion
+   */
+
   type: FieldViewOptions = new FieldDefaultOptions()
   showLabel: boolean = false //indica si debe mostrarse el label o no
-    /**
-     * no siempre se puede indicar label = null para esconder el label
-     */
+  /**
+   * no siempre se puede indicar label = null para esconder el label
+   */
+
   readonly: boolean = false
   placeholder: string = null
   width:FieldWidthOptions = new FieldWidthOptions(); //ancho del contenedor

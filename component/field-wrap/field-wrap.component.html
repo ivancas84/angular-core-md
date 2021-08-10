@@ -1,30 +1,30 @@
-<ng-container *ngIf="config.wrap">
+<ng-container *ngIf="wrap; else noWrap">
 
-  <ng-container [ngSwitch]="config.wrap.id">
+  <ng-container [ngSwitch]="wrap.id">
     <core-field-wrap-router-link *ngSwitchCase="'router_link'"
                         [field]="field" 
                         [config]="config"
-                        [path]="config.wrap.path"
-                        [params]=config.wrap.params></core-field-wrap-router-link>
+                        [path]="wrap.path"
+                        [params]=wrap.params></core-field-wrap-router-link>
 
 
     <core-input-persist *ngSwitchCase="'input_persist'"
                         [config]="config" 
                         [field]="field" 
                         [params]="params"
-                        [api]=config.wrap.api
-                        [entityName]=config.wrap.entityName
-                        [fieldName]=config.wrap.fieldName></core-input-persist>
+                        [api]=wrap.api
+                        [entityName]=wrap.entityName
+                        [fieldName]=wrap.fieldName></core-input-persist>
 
     <core-field-wrap-card *ngSwitchCase="'card'"
                         [config]="config" 
                         [field]="field" 
-                        [backgroundColor]=config.wrap.backgroundColor></core-field-wrap-card>               
+                        [backgroundColor]=wrap.backgroundColor></core-field-wrap-card>               
   </ng-container>
   
 </ng-container>
 
-<ng-container *ngIf="!config.wrap">
+<ng-template #noWrap>
   <core-field-view [field]="field" 
                    [config]="config"></core-field-view>
-</ng-container>          
+</ng-template>          

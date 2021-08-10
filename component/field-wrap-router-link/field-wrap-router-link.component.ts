@@ -1,20 +1,18 @@
 import { Component, Input, SimpleChanges, OnChanges, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormControlConfig } from '@class/reactive-form-config';
+import { FieldWrapComponent } from '@component/field-wrap/field-wrap.component';
 import { fastClone } from '@function/fast-clone';
 
 @Component({
   selector: 'core-field-wrap-router-link',
   templateUrl: './field-wrap-router-link.component.html',
 })
-export class FieldWrapRouterLinkComponent implements OnInit {
+export class FieldWrapRouterLinkComponent   extends FieldWrapComponent implements OnInit {
  
-  @Input() field: FormControl;
-  @Input() config: FormControlConfig;
   @Input() params: any[];
   @Input() path: string;
   queryParams: any[];
-
 
   ngOnInit(): void {
     this.queryParams = fastClone(this.params);
