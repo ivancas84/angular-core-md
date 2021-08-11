@@ -9,7 +9,6 @@ export class FormConfig {
   id: string
   position: number = 0
   validatorMsgs: ValidatorMsg[] = []
-  default: any = null
 
   constructor(attributes: any) {
     for(var a in attributes){
@@ -100,7 +99,6 @@ export class FormArrayConfig extends FormControlsConfig {
   /**
    * @example {motivo:"asc", per-nombres:"desc"}
    */
-  default: any = []
 
   constructor(attributes: any) {
     super({})

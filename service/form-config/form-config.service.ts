@@ -10,23 +10,6 @@ import { fastClone } from '@function/fast-clone';
 export class FormConfigService {
 
 
-  public defaultValues(config: FormControlsConfig): any  {
-    var dv = {}
-    Object.keys(config.controls).forEach(key => {
-      switch(config.controls[key].id){
-        case "form_control": case "form_array":
-          dv[key] = config.controls[key].default;
-        break;
-
-        case "form_group":
-          dv[key] = this.defaultValues(config.controls[key] as FormGroupConfig);
-        break;
-      }
-    })
-    return dv;
-  } 
-
-
   public getName(control: AbstractControl): string | null {
     let group = <FormGroup>control.parent;
 

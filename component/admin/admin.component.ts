@@ -11,8 +11,7 @@ import { DataDefinitionUmObjService } from '@service/data-definition/data-defini
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { ValidatorsService } from '@service/validators/validators.service';
 import { emptyUrl } from '@function/empty-url.function';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { fastClone } from '@function/fast-clone';
+import { map, switchMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { isEmptyObject } from '@function/is-empty-object.function';
@@ -20,9 +19,9 @@ import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { FormConfig, FormControlConfig, FormControlOption, FormControlsConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { FormControlConfig, FormControlOption, FormStructureConfig } from '@class/reactive-form-config';
 import { ComponentOptions } from '@class/component-options';
-import { EventButtonFieldViewOptions, EventIconFieldViewOptions, RouteIconFieldViewOptions } from '@class/field-type-options';
+import { EventButtonFieldViewOptions, EventIconFieldViewOptions } from '@class/field-type-options';
 
 
 @Component({
@@ -195,8 +194,15 @@ export abstract class AdminComponent implements OnInit{
       ),
       map(
         data => {
-          this.fc.initValue(this.configForm, this.adminForm, data)
-          if(this.formValues) this.adminForm.patchValue(data);
+          /**
+           * @todo es posible evitar una doble asignacion?
+           */
+          if(!isEmptyObject(data)) this.fc.initValue(this.configForm, this.adminForm, data);
+          if(!isEmptyObject(this.formValues)) this.fc.initValue(this.configForm, this.adminForm, this.formValues)
+          /**
+           * Debe hacerse una doble asignacion porque no todos los valores se encuentran en el storage, solo los que no se encuentran deshabilitados
+           * No se recomienda deshabilitar valores del formArray, no esta correctamente probado el storage y la inicializacion para estos valores
+           */
           return true;
         }
       ),
@@ -208,25 +214,24 @@ export abstract class AdminComponent implements OnInit{
   initDisplay(){ this.display$.next(this.params);  }
 
   initData(): Observable<any> {
-    return of({}).pipe(
-      switchMap(() => {
-        if(isEmptyObject(this.display$.value)) return of (this.fc.defaultValues(this.configForm));
-        else return this.queryData();
-      }),
+    return  (!isEmptyObject(this.display$.value)) ? this.queryData() : of(null);
+   /* return of({}).pipe(
+      switchMap(
+        () => (!isEmptyObject(this.display$.value)) ? this.queryData() : of(null)
+      ),
       map(
-        data => {
-          if(!isEmptyObject(data)) return data;
-          return this.initDataFromDisplay();
-          /**
-           * Se retorna un clone para posibilitar el cambio y el uso de ngOnChanges si se requiere
-           */
+        queryData => {
+          if(queryData) return queryData
+          var d = this.fc.defaultValues(this.configForm)
+          if(this.display$.value){
+            Object.keys(this.display$.value).forEach(function(key) {
+              d[this.entityName][key] = this.display$.value[key]
+            })
+          }
+          return d;
         }
       )
-    );
-  }
-
-  initDataFromDisplay(){
-    return fastClone(this.display$.value)
+    );*/
   }
 
   queryData(): Observable<any> {

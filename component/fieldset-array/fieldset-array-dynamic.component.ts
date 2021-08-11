@@ -33,7 +33,6 @@ export class FieldsetArrayDynamicComponent {
   
   add() {
     var fg = this.config.factory.formGroup();
-    this.fc.initArray(this.config, this.fieldset, this.fc.defaultValues(this.config)); 
     this.fieldset.push(fg); 
   }
  

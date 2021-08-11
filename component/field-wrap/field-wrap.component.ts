@@ -20,7 +20,7 @@ export class FieldWrapComponent implements OnInit{
   wrap: FieldWrapOptions
   ngOnInit(): void {
     if (Array.isArray(this.config.wrap) && this.index < this.config.wrap.length) this.wrap = this.config.wrap[this.index] 
-    else if(this.index == 0) this.wrap = this.config.wrap
+    else if(!Array.isArray(this.config.wrap) && this.index == 0) this.wrap = this.config.wrap
 
   }
   
