@@ -2,6 +2,7 @@ import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
+import { ValidatorMsg } from '@class/validator-msg';
 
 @Component({
   selector: 'core-input-select-label',
@@ -16,8 +17,9 @@ export class InputSelectLabelComponent implements OnInit {
 
   @Input() field: FormControl;
   @Input() options: any[]; 
-  //array cuyos elementos son objetos que poseen id y label
   @Input() title?: string;
+  @Input() readonly?: boolean = false;
+  @Input() validatorMsgs: ValidatorMsg[] = [];
 
   options$: Observable<Array<any>>;
 

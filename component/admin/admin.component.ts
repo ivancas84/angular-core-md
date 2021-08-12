@@ -214,24 +214,7 @@ export abstract class AdminComponent implements OnInit{
   initDisplay(){ this.display$.next(this.params);  }
 
   initData(): Observable<any> {
-    return  (!isEmptyObject(this.display$.value)) ? this.queryData() : of(null);
-   /* return of({}).pipe(
-      switchMap(
-        () => (!isEmptyObject(this.display$.value)) ? this.queryData() : of(null)
-      ),
-      map(
-        queryData => {
-          if(queryData) return queryData
-          var d = this.fc.defaultValues(this.configForm)
-          if(this.display$.value){
-            Object.keys(this.display$.value).forEach(function(key) {
-              d[this.entityName][key] = this.display$.value[key]
-            })
-          }
-          return d;
-        }
-      )
-    );*/
+    return  (!isEmptyObject(this.display$.value)) ? this.queryData() : of({});
   }
 
   queryData(): Observable<any> {

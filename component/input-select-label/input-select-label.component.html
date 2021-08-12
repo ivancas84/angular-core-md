@@ -6,5 +6,11 @@
       {{opt.label}}
     </mat-option>
   </mat-select>
-  <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
+
+  <mat-error *ngFor="let v of validatorMsgs">
+    <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
+    <core-error-unique-route *ngIf="field.hasError('notUnique') && v.id == 'notUnique' && v.route" 
+                             [validatorMsg]="v" 
+                             [field]="field"></core-error-unique-route>
+  </mat-error>
 </mat-form-field>

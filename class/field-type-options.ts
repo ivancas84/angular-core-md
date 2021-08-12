@@ -168,6 +168,20 @@ export class FieldInputSelectParamOptions extends FieldViewOptions {
   }
 }
 
+export class FieldInputSelectLabelOptions extends FieldViewOptions {
+  id: string = "input_select_label"
+  options: any[] = [];
+
+  constructor(attributes: any) {
+    super()
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 export class FieldInputSelectOptions extends FieldViewOptions {
   id: string = "input_select";
   entityName: string = null;
