@@ -1,6 +1,6 @@
 import { OnInit, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { of, Observable } from 'rxjs';
+import { of, Observable, BehaviorSubject } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { MatDialog } from '@angular/material/dialog';
@@ -26,17 +26,19 @@ export abstract class ShowComponent implements OnInit {
    */
 
   readonly entityName: string; //Nombre de la entidad principal
-  form: FormArray
+  form: FormArray = new FormArray([])
   configForm: FormArrayConfig
   length?: number; //longitud total de los datos a mostrar
-  /**
-   * undefined: No se procesara la longitud
-   * null: Se considera que no hay datos
-   */
-  
-  display: Display; //parametros de visualizacion
   params: { [x: string]: any; } //Parametros del componente
-  load$: Observable<any>; //Disparador de observables
+  loadLength: boolean = true; //flag para indicar que se debe consultar longitud
+  loadParams$: Observable<any> //carga de parametros
+  loadDisplay$: Observable<any> //carga de display
+  display$:BehaviorSubject<any> = new BehaviorSubject(null) //parametros de consulta
+  /**
+   * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
+   */
+
+  
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
   tableOptions: ComponentOptions = new TableDynamicOptions()
 
@@ -54,25 +56,49 @@ export abstract class ShowComponent implements OnInit {
   ) {}
 
 
-  ngOnInit(): void {
-    this.load$ = this.route.queryParams.pipe(
-      tap(
-        queryParams => {
-          this.load = false;
+  loadParams(){
+    this.loadParams$ = this.route.queryParams.pipe(
+      map(
+        queryParams => { 
           this.initParams(queryParams);
-          this.initDisplay();          
+          this.initDisplay();
+          return true;
         },
+        error => { 
+          console.log(error)
+        }
       ),
+    )
+  }
+
+  loadDisplay(){
+    /**
+     * Se define un load independiente para el display, es util para reasignar valores directamente al display y reinicializar
+     * por ejemplo al limpiar o resetear el formulario
+     */
+    this.loadDisplay$ = this.display$.pipe(
       switchMap(
-        () => this.initLength()
+        () => {
+          this.load = false
+          return (this.loadLength) ? this.initLength() : of(null)
+        }
       ),
       switchMap(
         () => this.initData()
       ),
       map(
-        ()=> {return this.load = true}
-      )
-    );
+        data => {
+          if (!this.loadLength) this.length = data.length
+          this.fc.initArray(this.configForm, this.form, data)
+          return this.load = true
+        }
+      ),
+    )
+  }
+
+  ngOnInit(): void {
+    this.loadParams()
+    this.loadDisplay()
   }
 
   initParams(params: any){ 
@@ -80,22 +106,23 @@ export abstract class ShowComponent implements OnInit {
   }
 
   initDisplay() {
-    this.display = new Display();
-    this.display.setSize(100);
-    this.display.setParamsByQueryParams(this.params);
+    var display = new Display();
+    display.setSize(100);
+    display.setParamsByQueryParams(this.params);
+    this.display$.next(display)
   }
 
   initLength(): Observable<any> {
     /**
      * Si no se desea procesar la longitud, retornar of(undefined)
      */
-    return this.dd.post("count", this.entityName, this.display).pipe(
+    return this.dd.post("count", this.entityName, this.display$.value).pipe(
       catchError(
         (error) => {
           this.dialog.open(DialogAlertComponent, {
             data: {title: "Error", message: error.error}
           })
-         return of(null);
+         return of(0);
         }
       ),    
       tap(
@@ -105,27 +132,8 @@ export abstract class ShowComponent implements OnInit {
   }
 
   initData(): Observable<any>{
-    /**
-     * Dependiendo de las caracteristicas de la interfaz,
-     * puede sobrescribirse omitiendo el uso de display,
-     * y directamente utilizar params.
-     * Si se utiliza search considerar que tambien esta configurado con display.
-     */
-    return of({}).pipe(
-      switchMap(
-        () => {
-          if(!this.length && this.length === null) {
-            return of([]); 
-          }
-          return this.queryData();
-        },
-      ),
-      tap(
-        data => {
-          this.fc.initArray(this.configForm, this.form, data)
-        }
-      ),      
-    )
+    if(this.loadLength && !this.length) return of([]); 
+    return this.queryData();
   }
 
   delete(id){
@@ -141,12 +149,8 @@ export abstract class ShowComponent implements OnInit {
         response => {
           this.storage.removeItemsContains(".");
           this.storage.removeItemsPersisted(response["detail"]);
-        }
-      ),
-      switchMap(
-        () => {
           this.length--;
-          return this.initData()
+          this.display$.next(this.display$.value)
         }
       )
     ).subscribe(
@@ -179,8 +183,9 @@ export abstract class ShowComponent implements OnInit {
     }   
   }
 
+
   queryData(): Observable<any>{
-    return this.dd.post("ids", this.entityName, this.display).pipe(
+    return this.dd.post("ids", this.entityName, this.display$.value).pipe(
       switchMap(
         ids => this.ddrf.getAllGroup(this.entityName, ids, this.configForm.controls)
       )

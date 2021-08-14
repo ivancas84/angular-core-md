@@ -63,9 +63,9 @@ export abstract class AdminComponent implements OnInit{
           icon: "arrow_back", //texto del boton
           action: "back", //accion del evento a realizar
           color: "accent",
+          fieldEvent: this.optField
         }) 
       }),
-      field: this.optField
     }),
   ]; 
   
@@ -74,15 +74,16 @@ export abstract class AdminComponent implements OnInit{
   isDeletable: boolean = false //Flag para habilitar/deshabilitar boton eliminar
   @Output() event: EventEmitter<any> = new EventEmitter() //eventos
   options: any[] = null //opciones (si es null no se visualiza)
-  display$:BehaviorSubject<any> = new BehaviorSubject(null) //parametros de consulta
-  /**
-   * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
-   */
+  
   
   isSubmitted: boolean = false //Flag para habilitar/deshabilitar boton aceptar
   params: { [x: string]: any } //parametros del componente
   loadParams$: Observable<any> //carga de parametros
   loadDisplay$: Observable<any> //carga de display
+  display$:BehaviorSubject<any> = new BehaviorSubject(null) //parametros de consulta
+  /**
+   * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
+   */
   protected subscriptions = new Subscription() //suscripciones en el ts
   persistApi: string = "persist_rel"
   queryApi: string = "unique_rel"
@@ -167,16 +168,12 @@ export abstract class AdminComponent implements OnInit{
         queryParams => { 
           this.initParams(queryParams);
           this.initDisplay();
+          return true;
         },
         error => { 
           this.snackBar.open(JSON.stringify(error), "X"); 
         }
       ),
-      map(
-        () => {
-          return true;
-        }
-      )
     )
   }
 
@@ -197,6 +194,8 @@ export abstract class AdminComponent implements OnInit{
           /**
            * @todo es posible evitar una doble asignacion?
            */
+          this.adminForm.reset()
+          this.fc.initValue(this.configForm, this.adminForm, this.fc.defaultValues(this.configForm))
           if(!isEmptyObject(data)) this.fc.initValue(this.configForm, this.adminForm, data);
           if(!isEmptyObject(this.formValues)) this.fc.initValue(this.configForm, this.adminForm, this.formValues)
           /**

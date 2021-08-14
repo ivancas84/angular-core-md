@@ -9,6 +9,7 @@ export class FormConfig {
   id: string
   position: number = 0
   validatorMsgs: ValidatorMsg[] = []
+  default:any = null
 
   constructor(attributes: any) {
     for(var a in attributes){
@@ -98,6 +99,11 @@ export class FormArrayConfig extends FormControlsConfig {
   order?: {[key: string]: string} //ordenamiento por defecto para realizar la consulta
   /**
    * @example {motivo:"asc", per-nombres:"desc"}
+   */
+  default:any = []
+  /**
+   *  NO SE RECOMIENDA DEFINIR VALORES POR DEFECTO PARA FORM ARRAY, 
+   * para cada fila se utilizaran los valores por defecto definidos en la configuracion de formgroup
    */
 
   constructor(attributes: any) {

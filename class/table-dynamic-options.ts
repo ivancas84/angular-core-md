@@ -57,6 +57,8 @@ export class TableDynamicOptions extends ComponentOptions{
 
   titleLoad: boolean = true
   sortActive: string = null;
+  showPaginator:boolean = true; //flag para visualizar el paginador
+  pageSizeOptions=[10, 25, 50, 100] //habilitar el page size
 
   constructor(attributes: any = {}) {
     super()

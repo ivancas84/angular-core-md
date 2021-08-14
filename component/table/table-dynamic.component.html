@@ -36,12 +36,12 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index"></tr>
     </table>
-    <mat-paginator *ngIf="display && length"
+    <mat-paginator *ngIf="showPaginator && length && display"
                    [length]="length"
                    [pageSize]="display.size"
                    [pageIndex]="display.page-1"
                    (page)="onChangePage($event)"
-                   [pageSizeOptions]="[10, 25, 50, 100]" 
+                   [pageSizeOptions]="pageSizeOptions" 
                    showFirstLastButtons>
     </mat-paginator>
     

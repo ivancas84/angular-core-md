@@ -384,6 +384,23 @@ export class RouteIconFieldViewOptions extends FieldViewOptions {
   }
 }
 
+export class LinkTextFieldViewOptions extends FieldViewOptions {
+  id: string = "link_text"
+  download: boolean = false
+  prefix: string = ""
+  target: string
+  title?: string
+
+  constructor(attributes: any) {
+    super()
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 
 export class EventButtonFieldViewOptions extends FieldViewOptions {
 

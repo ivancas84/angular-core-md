@@ -120,16 +120,23 @@
 
   <span *ngSwitchCase="'default'">{{field.value}}</span>
 
-  <ng-container *ngSwitchCase="'route_icon'">
-    <core-route-icon [field]="field"
-                     [icon]="config.type.icon"
-                     [routerLink]="config.type.routerLink"
-                     [key]="config.type.key"
-                     [color]="config.type.color"
-                     [target]="config.type.target"
-                     [title]="config.type.title"></core-route-icon>
-                     
-  </ng-container>
+  <core-route-icon *ngSwitchCase="'route_icon'"
+                    [field]="field"
+                    [icon]="config.type.icon"
+                    [routerLink]="config.type.routerLink"
+                    [key]="config.type.key"
+                    [color]="config.type.color"
+                    [target]="config.type.target"
+                    [title]="config.type.title"></core-route-icon>
+
+  <core-link-text *ngSwitchCase="'link_text'"
+                  [download]="config.type.download"
+                  [prefix]="config.type.prefix"
+                  [target]="config.type.target"
+                  [title]="config.type.title"
+                  [field]="field"></core-link-text>
+                    
+                    
 
 
   <ng-container *ngSwitchCase="'event_button'">

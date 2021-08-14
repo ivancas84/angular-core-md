@@ -38,8 +38,10 @@ export class TableDynamicComponent implements OnInit { //6
   @Input() sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
 
   @Input() optTitle: FormControlOption[] = []; //opciones de titulo
-  @Input() optField: FormControl; //opciones de titulo
-  
+  @Input() optField: FormControl; //field de opciones
+  /**
+   * se verifica el valueChanges y se ejecuta la accion seleccionada
+   */
 
   @Input() optColumn: any[] = []; //columna opciones
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
@@ -65,6 +67,9 @@ export class TableDynamicComponent implements OnInit { //6
   //footer: { [index: string]: any }[] = []; //
   protected subscriptions = new Subscription(); //suscripciones en el ts
   deleteApi: string = "delete";
+
+  @Input() showPaginator:boolean = true; //flag para visualizar el paginador
+  @Input() pageSizeOptions=[10, 25, 50, 100] 
 
   @ViewChild(MatTable) table: MatTable<any>;
 

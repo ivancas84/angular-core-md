@@ -2,25 +2,30 @@
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>
 
-<div *ngIf="(load$ | async); else loading">
-  <mat-progress-bar *ngIf="!load" 
-                    mode="indeterminate"></mat-progress-bar>
+<ng-container *ngIf="(loadParams$ | async); else loading">
+  <ng-container *ngIf="(loadDisplay$ | async); else loading">
+    <mat-progress-bar *ngIf="!load" 
+                      mode="indeterminate"></mat-progress-bar>
 
-  <core-search-dynamic [display]="display" 
-                       [config]="searchConfig"
-                       [form]="searchForm"></core-search-dynamic>
-  
-  <core-table-dynamic [length]="length" 
-                      [display]="display"
-                      [fieldset]="form" 
-                      [config]="configForm"
-                      [optField]="tableOptions.optField"
-                      [optTitle]="tableOptions.optTitle"
-                      [optColumn]="tableOptions.optColumn"
-                      [title]="tableOptions.title"
-                      [entityName]="tableOptions.entityName"
-                      [sortActive]="tableOptions.sortActive"
-                      [sortDirection]="tableOptions.sortDirection"
-                      [serverSortTranslate]="tableOptions.serverSortTranslate"
-                      [serverSortObligatory]="tableOptions.serverSortObligatory"></core-table-dynamic>
-</div>
+    <core-search-dynamic *ngIf="searchForm" [display]="display$.value" 
+                         [config]="searchConfig"
+                         [form]="searchForm"></core-search-dynamic>
+    
+    <core-table-dynamic [length]="length" 
+                        [display]="display$.value"
+                        [fieldset]="form" 
+                        [config]="configForm"
+                        [optField]="tableOptions.optField"
+                        [optTitle]="tableOptions.optTitle"
+                        [optColumn]="tableOptions.optColumn"
+                        [title]="tableOptions.title"
+                        [entityName]="tableOptions.entityName"
+                        [sortActive]="tableOptions.sortActive"
+                        [sortDirection]="tableOptions.sortDirection"
+                        [sortDisabled]="tableOptions.sortDisabled"
+                        [serverSortTranslate]="tableOptions.serverSortTranslate"
+                        [serverSortObligatory]="tableOptions.serverSortObligatory"
+                        [showPaginator]="tableOptions.showPaginator"
+                        [pageSizeOptions]="tableOptions.pageSizeOptions"></core-table-dynamic>
+  </ng-container>
+</ng-container>

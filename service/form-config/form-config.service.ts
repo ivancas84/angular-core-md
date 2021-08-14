@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
-import { FormArrayConfig, FormControlsConfig, FormGroupConfig } from '@class/reactive-form-config';
+import { FormArrayConfig, FormConfig, FormControlsConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 
 @Injectable({
@@ -9,6 +9,21 @@ import { fastClone } from '@function/fast-clone';
 })
 export class FormConfigService {
 
+  public defaultValues(config: FormControlsConfig): any  {
+    var dv = {}
+    Object.keys(config.controls).forEach(key => {
+      switch(config.controls[key].id){
+        case "form_control": case "form_array":
+          dv[key] = config.controls[key].default;
+        break;
+
+        case "form_group":
+          dv[key] = this.defaultValues(config.controls[key] as FormControlsConfig);
+        break;
+      }
+    })
+    return dv;
+  } 
 
   public getName(control: AbstractControl): string | null {
     let group = <FormGroup>control.parent;
