@@ -19,7 +19,7 @@ import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { FormControlConfig, FormControlOption, FormStructureConfig } from '@class/reactive-form-config';
+import { FormConfig, FormControlConfig, FormControlOption, FormControlsConfig, FormStructureConfig } from '@class/reactive-form-config';
 import { ComponentOptions } from '@class/component-options';
 import { EventButtonFieldViewOptions, EventIconFieldViewOptions } from '@class/field-type-options';
 
@@ -29,9 +29,9 @@ import { EventButtonFieldViewOptions, EventIconFieldViewOptions } from '@class/f
   template: './admin.component.html',
 })
 export abstract class AdminComponent implements OnInit{
-  adminForm: FormGroup
-  configForm: FormStructureConfig
-  configComponent: { [x: string]: ComponentOptions }
+  form: FormGroup
+  config: FormControlsConfig
+  nestedComponents: { [x: string]: ComponentOptions }
 
   optField: FormControl = new FormControl(null)//field de opciones para disparar eventos
   optComponent: FormControlOption[] = [ //opciones de componente
@@ -152,7 +152,7 @@ export abstract class AdminComponent implements OnInit{
      * Me suscribo directamente en el ts
      * @todo es posible pasarlo al html?
      */
-    var s = this.adminForm.valueChanges.subscribe (
+    var s = this.form.valueChanges.subscribe (
       formValues => {
         this.storage.setItem(this.router.url, formValues); },
       error => { 
@@ -194,10 +194,10 @@ export abstract class AdminComponent implements OnInit{
           /**
            * @todo es posible evitar una doble asignacion?
            */
-          this.adminForm.reset()
-          this.fc.initValue(this.configForm, this.adminForm, this.fc.defaultValues(this.configForm))
-          if(!isEmptyObject(data)) this.fc.initValue(this.configForm, this.adminForm, data);
-          if(!isEmptyObject(this.formValues)) this.fc.initValue(this.configForm, this.adminForm, this.formValues)
+          this.form.reset()
+          this.fc.initValue(this.config, this.form, this.fc.defaultValues(this.config))
+          if(!isEmptyObject(data)) this.fc.initValue(this.config, this.form, data);
+          if(!isEmptyObject(this.formValues)) this.fc.initValue(this.config, this.form, this.formValues)
           /**
            * Debe hacerse una doble asignacion porque no todos los valores se encuentran en el storage, solo los que no se encuentran deshabilitados
            * No se recomienda deshabilitar valores del formArray, no esta correctamente probado el storage y la inicializacion para estos valores
@@ -219,10 +219,10 @@ export abstract class AdminComponent implements OnInit{
   queryData(): Observable<any> {
     switch(this.queryApi){
       case "unique_rel_um": case "unique_rel":  
-        return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.configForm.controls).pipe(
+        return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.config.controls).pipe(
         switchMap(
           row => {
-            return this.relUm.group(this.entityName, row, this.configForm.controls)
+            return this.relUm.group(this.entityName, row, this.config.controls)
           }
         ),
       )
@@ -265,7 +265,7 @@ export abstract class AdminComponent implements OnInit{
 
   onSubmit(): void {
     this.isSubmitted = true;
-    if (!this.adminForm.valid) {
+    if (!this.form.valid) {
       this.cancelSubmit();
     } else {
       this.submit();
@@ -273,8 +273,8 @@ export abstract class AdminComponent implements OnInit{
   }
 
   cancelSubmit(){
-    markAllAsDirty(this.adminForm);
-    logValidationErrors(this.adminForm);
+    markAllAsDirty(this.form);
+    logValidationErrors(this.form);
     this.dialog.open(DialogAlertComponent, {
       data: {title: "Error", message: "El formulario posee errores."}
     });
@@ -318,7 +318,7 @@ export abstract class AdminComponent implements OnInit{
     this.isSubmitted = false;
   }
 
-  serverData() { return this.adminForm.value }
+  serverData() { return this.form.value }
 
   ngOnDestroy () { this.subscriptions.unsubscribe() }
 

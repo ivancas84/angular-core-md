@@ -20,14 +20,12 @@ import { ComponentOptions } from '@class/component-options';
 })
 export abstract class ShowComponent implements OnInit {
   /**
-   * Definir un conjunto de datos para visualizacion
-   * El componente no define la manera en que se visualizaran los datos (puede ser a traves de una tabla o del componente deseado)
-   * El componente define el codigo en comun para obtener un conjunto de datos del servidor y posteriormente visualizarlos
+   * Estructura principal para administrar un conjunto de tuplas
    */
 
   readonly entityName: string; //Nombre de la entidad principal
   form: FormArray = new FormArray([])
-  configForm: FormArrayConfig
+  config: FormArrayConfig
   length?: number; //longitud total de los datos a mostrar
   params: { [x: string]: any; } //Parametros del componente
   loadLength: boolean = true; //flag para indicar que se debe consultar longitud
@@ -40,11 +38,10 @@ export abstract class ShowComponent implements OnInit {
 
   
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
-  tableOptions: ComponentOptions = new TableDynamicOptions()
+  nestedComponent: ComponentOptions = new TableDynamicOptions()
 
   searchForm: FormGroup
   searchConfig: FormStructureConfig
-
 
   constructor(
     protected dd: DataDefinitionToolService, 
@@ -54,7 +51,6 @@ export abstract class ShowComponent implements OnInit {
     protected ddrf: DataDefinitionRelFieldsService,
     protected fc: FormConfigService
   ) {}
-
 
   loadParams(){
     this.loadParams$ = this.route.queryParams.pipe(
@@ -89,7 +85,7 @@ export abstract class ShowComponent implements OnInit {
       map(
         data => {
           if (!this.loadLength) this.length = data.length
-          this.fc.initArray(this.configForm, this.form, data)
+          this.fc.initArray(this.config, this.form, data)
           return this.load = true
         }
       ),
@@ -187,7 +183,7 @@ export abstract class ShowComponent implements OnInit {
   queryData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display$.value).pipe(
       switchMap(
-        ids => this.ddrf.getAllGroup(this.entityName, ids, this.configForm.controls)
+        ids => this.ddrf.getAllGroup(this.entityName, ids, this.config.controls)
       )
     )
   }

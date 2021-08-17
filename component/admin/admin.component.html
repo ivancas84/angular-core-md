@@ -9,16 +9,16 @@
 </mat-card>
 
 <form *ngIf="(loadParams$ | async); else loading" 
-      [formGroup]="adminForm" 
+      [formGroup]="form" 
       (ngSubmit)="onSubmit()" 
       novalidate autocomplete="off">
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
 
-    <ng-container  *ngFor="let item of configComponent | keyvalue: configForm.sort; let i = index">
+    <ng-container  *ngFor="let item of nestedComponents | keyvalue: config.sort; let i = index">
       <ng-container [ngSwitch]="item.value.id">
         <core-fieldset-dynamic *ngSwitchCase="'fieldset'" 
-                               [config]="configForm.controls[item.key]"
-                               [fieldset]="adminForm.controls[item.key]"
+                               [config]="config.controls[item.key]"
+                               [fieldset]="form.controls[item.key]"
                                [entityName]="item.value.entityName"
                                [intro]="item.value.intro"
                                [title]="item.value.title"
@@ -29,8 +29,8 @@
                                      [title]="item.value.options.title"></core-fieldset-array-dynamic-->
 
         <core-table-dynamic *ngSwitchCase="'table'"
-                            [config]="configForm.controls[item.key]"
-                            [fieldset]="adminForm.controls[item.key]"
+                            [config]="config.controls[item.key]"
+                            [fieldset]="form.controls[item.key]"
                             [title]="item.value.title"
                             [sortDisabled]="item.value.sortDisabled"
                             [optTitle]="item.value.optTitle"
@@ -53,7 +53,7 @@
     </mat-card-content>
   </mat-card>
   
-  <!--p>Debug Form value: {{ adminForm.value | json }}</p>
-  <p>Debug Form status: {{ adminForm.status | json }}</p-->
+  <!--p>Debug Form value: {{ form.value | json }}</p>
+  <p>Debug Form status: {{ form.status | json }}</p-->
   </ng-container>
 </form>
