@@ -242,4 +242,8 @@ export class Display {
     }
     return d.join("&")
   }
+
+  public hasFilters(){
+    return (isEmptyObject(this.params) && !this.condition.length)
+  }
 }
