@@ -45,13 +45,12 @@
                             [serverSortObligatory]="item.value.serverSortObligatory"></core-table-dynamic>
       </ng-container>      
     </ng-container>
-
     
-  <mat-card *ngIf="optComponent.length">
-    <mat-card-content>
-      <core-field-view *ngFor="let o of optComponent" [field]="o.field" [config]="o.config"></core-field-view>          
-    </mat-card-content>
-  </mat-card>
+    <mat-card *ngIf="optFooter.length">
+      <mat-card-content>
+        <core-field-view *ngFor="let o of optFooter" [field]="o.field" [config]="o.config"></core-field-view>          
+      </mat-card-content>
+    </mat-card>
   
   <!--p>Debug Form value: {{ form.value | json }}</p>
   <p>Debug Form status: {{ form.status | json }}</p-->

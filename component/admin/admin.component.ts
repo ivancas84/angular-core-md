@@ -1,7 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,28 +13,25 @@ import { ValidatorsService } from '@service/validators/validators.service';
 import { emptyUrl } from '@function/empty-url.function';
 import { map, switchMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
-import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { isEmptyObject } from '@function/is-empty-object.function';
-import { logValidationErrors } from '@function/log-validation-errors';
-import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { FormConfig, FormControlConfig, FormControlOption, FormControlsConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { FormControlConfig, FormControlOption, FormControlsConfig } from '@class/reactive-form-config';
 import { ComponentOptions } from '@class/component-options';
 import { EventButtonFieldViewOptions, EventIconFieldViewOptions } from '@class/field-type-options';
+import { StructureComponent } from '@component/structure/structure.component';
 
 
 @Component({
   selector: 'core-admin',
   template: './admin.component.html',
 })
-export abstract class AdminComponent implements OnInit{
+export abstract class AdminComponent extends StructureComponent implements OnInit{
   form: FormGroup
   config: FormControlsConfig
   nestedComponents: { [x: string]: ComponentOptions }
 
-  optField: FormControl = new FormControl(null)//field de opciones para disparar eventos
-  optComponent: FormControlOption[] = [ //opciones de componente
+  optFooter: FormControlOption[] = [ //opciones de componente
     new FormControlOption({
       config: new FormControlConfig({ 
         type: new EventButtonFieldViewOptions({
@@ -69,26 +66,6 @@ export abstract class AdminComponent implements OnInit{
     }),
   ]; 
   
-  readonly entityName: string //entidad principal
-  title: string //titulo principal
-  isDeletable: boolean = false //Flag para habilitar/deshabilitar boton eliminar
-  @Output() event: EventEmitter<any> = new EventEmitter() //eventos
-  options: any[] = null //opciones (si es null no se visualiza)
-  
-  
-  isSubmitted: boolean = false //Flag para habilitar/deshabilitar boton aceptar
-  params: { [x: string]: any } //parametros del componente
-  loadParams$: Observable<any> //carga de parametros
-  loadDisplay$: Observable<any> //carga de display
-  display$:BehaviorSubject<any> = new BehaviorSubject(null) //parametros de consulta
-  /**
-   * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
-   */
-  protected subscriptions = new Subscription() //suscripciones en el ts
-  persistApi: string = "persist_rel"
-  queryApi: string = "unique_rel"
-  defaultValues: {[key:string]: any} = {}
-  formValues = this.storage.getItem(this.router.url);
   inputSearchGo: boolean = true; //flag para activar / desactivar componente inputSearchGo
 
   constructor(
@@ -105,76 +82,8 @@ export abstract class AdminComponent implements OnInit{
     protected relUm: DataDefinitionUmObjService,
     protected ddrl: DataDefinitionRelLabelService, 
     protected fc: FormConfigService
-  ) { }
-  
-
-  ngAfterViewInit(): void {
-    this.storage.removeItemsPrefix(emptyUrl(this.router.url));
-    /**
-     * Si no se incluye, nunca se limpia el formulario. 
-     * Si se asignan otros parametros a la url quedan todas las alternativas de una misma interface en la cache, pudiendo resultar confuso para el que lo utiliza
-     * De esta forma cada vez que se asigna a una interfaz inicialmente se borra la cache
-     * Si el usuario realiza una modificacion se carga nuevamente la cache
-     * Al rutear a una interface diferente y volver se carga el valor de la cache y nuevamente se borra logrando el comportamiento deseado
-     */
-  }
-
-  ngOnInit() {
-    this.loadParams();  
-    this.loadStorage();
-    this.loadOptField();
-    this.loadDisplay(); 
-    /**
-     * Se define el display aparte para poder asignar valores directamente al display, por ejemplo en las funciones clear y reset
-     */
-  }
-
-  loadOptField(){
-    var s = this.optField.valueChanges.subscribe (
-      value => this.switchOptField(value),
-      error =>  this.snackBar.open(JSON.stringify(error), "X") 
-    );
-    this.subscriptions.add(s);
-  }
-
-  switchOptField(value: any){
-    switch(value.action){
-      case "submit": this.onSubmit(); break;
-      case "clear": this.clear(); break;
-      case "back": this.back(); break;
-      case "reset": this.reset(); break;
-      case "delete": this.delete(); break;
-    }
-  }
-
-  loadStorage() {
-    /**
-     * Me suscribo directamente en el ts
-     * @todo es posible pasarlo al html?
-     */
-    var s = this.form.valueChanges.subscribe (
-      formValues => {
-        this.storage.setItem(this.router.url, formValues); },
-      error => { 
-        this.snackBar.open(JSON.stringify(error), "X"); 
-      }
-    );
-    this.subscriptions.add(s);
-  }
-
-  loadParams(){
-    this.loadParams$ = this.route.queryParams.pipe(
-      map(
-        queryParams => { 
-          this.initParams(queryParams);
-          this.initDisplay();
-          return true;
-        },
-        error => { 
-          this.snackBar.open(JSON.stringify(error), "X"); 
-        }
-      ),
-    )
+  ) { 
+    super(dialog, storage, dd, snackBar, router, location, route)
   }
 
   
@@ -197,7 +106,7 @@ export abstract class AdminComponent implements OnInit{
           this.form.reset()
           this.fc.initValue(this.config, this.form, this.fc.defaultValues(this.config))
           if(!isEmptyObject(data)) this.fc.initValue(this.config, this.form, data);
-          if(!isEmptyObject(this.formValues)) this.fc.initValue(this.config, this.form, this.formValues)
+          if(!isEmptyObject(this.storageValues)) this.fc.initValue(this.config, this.form, this.storageValues)
           /**
            * Debe hacerse una doble asignacion porque no todos los valores se encuentran en el storage, solo los que no se encuentran deshabilitados
            * No se recomienda deshabilitar valores del formArray, no esta correctamente probado el storage y la inicializacion para estos valores
@@ -208,8 +117,6 @@ export abstract class AdminComponent implements OnInit{
     )
   }
 
-  initParams(params: any){ this.params = params; }
-
   initDisplay(){ this.display$.next(this.params);  }
 
   initData(): Observable<any> {
@@ -217,95 +124,24 @@ export abstract class AdminComponent implements OnInit{
   }
 
   queryData(): Observable<any> {
-    switch(this.queryApi){
-      case "unique_rel_um": case "unique_rel":  
-        return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.config.controls).pipe(
-        switchMap(
-          row => {
-            return this.relUm.group(this.entityName, row, this.config.controls)
-          }
-        ),
-      )
-      case "unique": return this.dd.unique(this.entityName, this.display$.value) 
-      default: return this.dd.post(this.queryApi, this.entityName, this.display$.value);
-    }
+    return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.config.controls).pipe(
+      switchMap(
+        row => {
+          return this.relUm.group(this.entityName, row, this.config.controls)
+        }
+      ),
+    )
+    //return this.dd.unique(this.entityName, this.display$.value) 
+    //return this.dd.post(this.queryApi, this.entityName, this.display$.value);
   }
 
-  back() { this.location.back(); }
-
-  delete() { 
-    this.snackBar.open("No implementado", "X"); 
-  }
-
-  clear(): void {
-    /**
-     * Limpiar url y reinicializa datos
-     * si la ruta es diferente, se reasignaran los parametros de la url y se repetira el proceso de inicializacion
-     * si la ruta es la misma, se limpia el storage y se asignan parametros en null
-     */
-    let route = emptyUrl(this.router.url);
-    if(route != this.router.url) this.router.navigateByUrl('/' + route);
-    else this.display$.next(this.display$.value);
-    
-  }
-
-  reset(): void{
-    //this.storage.removeItemsPrefix(emptyUrl(this.router.url));
-    this.display$.next(this.display$.value);
-  }
-  
   persist(): Observable<any> {
     /**
      * Persistencia
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array de logs)"
      */
-    return this.dd._post(this.persistApi, this.entityName, this.serverData())
-  }
-
-  onSubmit(): void {
-    this.isSubmitted = true;
-    if (!this.form.valid) {
-      this.cancelSubmit();
-    } else {
-      this.submit();
-    }
-  }
-
-  cancelSubmit(){
-    markAllAsDirty(this.form);
-    logValidationErrors(this.form);
-    this.dialog.open(DialogAlertComponent, {
-      data: {title: "Error", message: "El formulario posee errores."}
-    });
-    this.isSubmitted = false;
-  }
-
-  submit(){
-    var s = this.persist().subscribe(
-      response => {
-        this.submitted(response)        
-      },
-      error => { 
-        this.dialog.open(DialogAlertComponent, {
-          data: {title: "Error", message: error.error}
-        });
-        this.isSubmitted = false;
-      }
-    );
-    this.subscriptions.add(s);
-  }
-
-  submitted(response){
-    this.snackBar.open("Registro realizado", "X");
-    this.removeStorage(response);
-    this.reload(response);
-  }
-  
-  removeStorage(response){
-    this.storage.removeItemsContains(".");
-    this.storage.removeItemsPersisted(response["detail"]);
-    this.storage.removeItemsPrefix(emptyUrl(this.router.url));
+    return this.dd._post("persist_rel", this.entityName, this.serverData())
   }
 
   reload(response){
@@ -318,30 +154,4 @@ export abstract class AdminComponent implements OnInit{
     this.isSubmitted = false;
   }
 
-  serverData() { return this.form.value }
-
-  ngOnDestroy () { this.subscriptions.unsubscribe() }
-
-  switchAction($event:any){ 
-    /**
-     * Acciones de opciones
-     * Sobescribir si se necesita utilizar eventos
-     * Utilizar $event.action para la accion a ejecutar (corresponde a opt.action)
-     * Utilizar $event.data para los datos a utilizar (corresponde a row)
-     */  
-    switch($event.action){
-      case "delete":
-        this.delete()
-      break;
-      default:
-        throw new Error("Not Implemented");
-    }   
-  }
-
-  emitEvent($event){
-    switch($event.action){
-      default:
-        this.event.emit($event);
-    }
-  }
 }

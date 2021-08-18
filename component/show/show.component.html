@@ -2,7 +2,10 @@
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>
 
-<ng-container *ngIf="(loadParams$ | async); else loading">
+<form *ngIf="(loadParams$ | async); else loading" 
+      [formGroup]="form" 
+      (ngSubmit)="onSubmit()" 
+      novalidate autocomplete="off">  
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
     <mat-progress-bar *ngIf="!load" 
                       mode="indeterminate"></mat-progress-bar>
@@ -27,5 +30,12 @@
                         [serverSortObligatory]="nestedComponent.serverSortObligatory"
                         [showPaginator]="nestedComponent.showPaginator"
                         [pageSizeOptions]="nestedComponent.pageSizeOptions"></core-table-dynamic>
+
+    <mat-card *ngIf="optFooter.length">
+      <mat-card-content>
+        <core-field-view *ngFor="let o of optFooter" [field]="o.field" [config]="o.config"></core-field-view>          
+      </mat-card-content>
+    </mat-card>
   </ng-container>
-</ng-container>
+
+</form>
