@@ -1,9 +1,10 @@
-import { FormControl, FormGroup } from "@angular/forms"
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms"
 import { FieldDefaultOptions, FieldViewOptions } from "./field-type-options"
 import { FieldWrapOptions } from "./field-wrap-options"
 import { FieldWidthOptions } from "./field-width-options"
 import { ValidatorMsg } from "./validator-msg"
 import { KeyValue } from "@angular/common"
+import { AbstractControlViewOptions, StructureViewOptions } from "./abstract-control-view-options"
 
 export class FormConfig {
   id: string
@@ -31,6 +32,7 @@ export interface SortControl {
 
 
 export class FormControlsConfig extends FormConfig {
+  //@todo es posible eliminar el sort
   controls: { [index: string]: FormConfig }
   sort = (a: KeyValue<string,SortControl>, b: KeyValue<string,SortControl>): number => {
     return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0)
@@ -80,11 +82,26 @@ export class FormStructureConfig extends FormGroupConfig {
   }
 }
 
-export class FormControlOption {
-  config: FormControlConfig
+export class AbstractControlOption {
+  viewOptions: AbstractControlViewOptions
+  config?: FormConfig
+  control?: AbstractControl
+
+  constructor(attributes: any) {
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+export class FormControlOption extends AbstractControlOption {
+  config: FormControlConfig 
   field?: FormControl = null
 
   constructor(attributes: any) {
+    super(attributes)
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -125,10 +142,7 @@ export class FormControlConfig extends FormConfig {
    */
 
   type: FieldViewOptions = new FieldDefaultOptions()
-  showLabel: boolean = false //indica si debe mostrarse el label o no
-  /**
-   * no siempre se puede indicar label = null para esconder el label
-   */
+  showLabel: boolean = true //indica si debe mostrarse el label o no
 
   readonly: boolean = false
   placeholder: string = null

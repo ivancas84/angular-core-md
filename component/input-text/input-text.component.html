@@ -1,5 +1,5 @@
 <mat-form-field [style.width]="width"> 
-  <mat-label *ngIf="title">{{title}}</mat-label>
+  <mat-label *ngIf="title && showTitle">{{title}}</mat-label>
   
   <input matInput
          [readonly]="readonly"

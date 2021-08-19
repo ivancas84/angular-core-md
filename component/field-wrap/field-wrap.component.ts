@@ -1,5 +1,6 @@
 import { Component, Input, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { FieldViewOptions } from '@class/field-type-options';
 import { FieldWrapOptions } from '@class/field-wrap-options';
 import { FormControlConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
@@ -16,7 +17,9 @@ export class FieldWrapComponent implements OnInit{
   @Input() config: FormControlConfig //configuracion
   @Input() field: FormControl //campo
   @Input() index: number = 0 //indice
-
+  //@Input() viewOptions: FieldViewOptions //configuracion
+  //@Input() wrapOptions: FieldWrapOptions //configuracion
+  
   wrap: FieldWrapOptions
   ngOnInit(): void {
     if (Array.isArray(this.config.wrap) && this.index < this.config.wrap.length) this.wrap = this.config.wrap[this.index] 

@@ -1,5 +1,5 @@
-import { Component, Input, OnInit} from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Input} from '@angular/core';
+import { AbstractControl, FormControl } from '@angular/forms';
  
 @Component({
   selector: 'core-event-icon',
@@ -7,17 +7,24 @@ import { FormControl } from '@angular/forms';
 })
 export class EventIconComponent {
   /**
-   * Visualizar opciones
+   * Visualizar opciones 
+   * Este componente puede ser utilizado para un AbstractControl
    */
 
   @Input() icon: string //icono del boton
   @Input() action: string //accion del evento a realizar
-  @Input() color: string
-  @Input() title?: string
-  @Input() field?: FormControl = null
   @Input() fieldEvent: FormControl
+  @Input() color?: string
+  @Input() title?: string
+  @Input() control?: AbstractControl = null
+  @Input() index?: number //indice opcional para el caso de utilizar FormArray
+  
 
   setValue(){
-    this.fieldEvent.setValue({action:this.action,field:this.field})
+    this.fieldEvent.setValue({
+      action:this.action,
+      control:this.control,
+      index:this.index
+    })
   }
 }

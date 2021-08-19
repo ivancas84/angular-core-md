@@ -74,6 +74,7 @@
   <core-input-text *ngSwitchCase="'input_text'" 
                    [field]="field" 
                    [title]="config.label" 
+                   [showTitle]="config.showLabel" 
                    [width]="config.type.width"
                    [readonly]="config.readonly"
                    [validatorMsgs]="config.validatorMsgs"
@@ -136,22 +137,11 @@
                   [title]="config.type.title"
                   [field]="field"></core-link-text>
                     
-                    
-
-
-  <ng-container *ngSwitchCase="'event_button'">
-    <core-event-button [field]="field"
-                       [fieldEvent]="config.type.fieldEvent"
-                     [text]="config.type.text"
-                     [color]="config.type.color"
-                     [action]="config.type.action"
-                     [ariaLabel]="config.type.ariaLabel"
-                     [title]="config.type.title"></core-event-button>
+ 
                      
-  </ng-container>
 
   <ng-container *ngSwitchCase="'event_icon'">
-    <core-event-icon [field]="field"
+    <core-event-icon [control]="field"
                      [fieldEvent]="config.type.fieldEvent"
                      [icon]="config.type.icon"
                      [color]="config.type.color"

@@ -12,14 +12,13 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
 import { ValidatorsService } from '@service/validators/validators.service';
 import { emptyUrl } from '@function/empty-url.function';
 import { map, switchMap } from 'rxjs/operators';
-import { Location } from '@angular/common';
+import { KeyValue, Location } from '@angular/common';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { FormControlConfig, FormControlOption, FormControlsConfig } from '@class/reactive-form-config';
-import { ComponentOptions } from '@class/component-options';
-import { EventButtonFieldViewOptions, EventIconFieldViewOptions } from '@class/field-type-options';
+import { AbstractControlOption, FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
+import { AbstractControlViewOptions, EventButtonViewOptions, EventIconViewOptions } from '@class/abstract-control-view-options';
 
 
 @Component({
@@ -28,41 +27,42 @@ import { StructureComponent } from '@component/structure/structure.component';
 })
 export abstract class AdminComponent extends StructureComponent implements OnInit{
   form: FormGroup
-  config: FormControlsConfig
-  nestedComponents: { [x: string]: ComponentOptions }
+  config: FormStructureConfig
+  nestedComponentsSort = (a: KeyValue<string,AbstractControlViewOptions>, b: KeyValue<string,AbstractControlViewOptions>): number => {
+    return a.value.pos > b.value.pos ? 1 : (b.value.pos > a.value.pos ? -1 : 0)
+  }
 
-  optFooter: FormControlOption[] = [ //opciones de componente
-    new FormControlOption({
-      config: new FormControlConfig({ 
-        type: new EventButtonFieldViewOptions({
-          text: "Aceptar", //texto del boton
-          action: "submit", //accion del evento a realizar
-          color: "primary",
-          fieldEvent: this.optField
-        }) 
+  nestedComponents: { [x: string]: AbstractControlViewOptions } = {}
+
+  optFooter: AbstractControlOption[] = [ //opciones de componente
+    new AbstractControlOption({
+      viewOptions: new EventButtonViewOptions({
+        text: "Aceptar", //texto del boton
+        action: "submit", //accion del evento a realizar
+        color: "primary",
+        fieldEvent: this.optField
       }),
+      config: new FormGroupConfig({}),
     }),
 
-    new FormControlOption({
-      config: new FormControlConfig({ 
-        type: new EventIconFieldViewOptions({
-          icon: "add", //texto del boton
-          action: "clear", //accion del evento a realizar
-          color: "accent",
-          fieldEvent: this.optField
-        }) 
-      }),
+    new AbstractControlOption({
+      viewOptions: new EventIconViewOptions({
+        icon: "add", //texto del boton
+        action: "clear", //accion del evento a realizar
+        color: "accent",
+        fieldEvent: this.optField
+      }) ,
+      config: new FormGroupConfig({}),
     }),
 
-    new FormControlOption({
-      config: new FormControlConfig({ 
-        type: new EventIconFieldViewOptions({
-          icon: "arrow_back", //texto del boton
-          action: "back", //accion del evento a realizar
-          color: "accent",
-          fieldEvent: this.optField
-        }) 
+    new AbstractControlOption({
+      viewOptions: new EventIconViewOptions({
+        icon: "arrow_back", //texto del boton
+        action: "back", //accion del evento a realizar
+        color: "accent",
+        fieldEvent: this.optField
       }),
+      config: new FormGroupConfig({}),
     }),
   ]; 
   
@@ -144,11 +144,11 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
     return this.dd._post("persist_rel", this.entityName, this.serverData())
   }
 
-  reload(response){
+  reload(){
     /**
      * Recargar una vez persistido
      */
-    let route = emptyUrl(this.router.url) + "?id="+response["id"];
+    let route = emptyUrl(this.router.url) + "?id="+this.response["id"];
     if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
     else this.display$.next(this.display$.value);
     this.isSubmitted = false;

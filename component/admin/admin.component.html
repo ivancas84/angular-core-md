@@ -13,42 +13,18 @@
       (ngSubmit)="onSubmit()" 
       novalidate autocomplete="off">
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
-
-    <ng-container  *ngFor="let item of nestedComponents | keyvalue: config.sort; let i = index">
-      <ng-container [ngSwitch]="item.value.id">
-        <core-fieldset-dynamic *ngSwitchCase="'fieldset'" 
-                               [config]="config.controls[item.key]"
-                               [fieldset]="form.controls[item.key]"
-                               [entityName]="item.value.entityName"
-                               [intro]="item.value.intro"
-                               [title]="item.value.title"
-                               [optTitle]="item.value.optTitle"></core-fieldset-dynamic>
-      
-        <!--core-fieldset-array-dynamic *ngSwitchCase="'fieldset-array'" 
-                                     [fieldset]="item.value"
-                                     [title]="item.value.options.title"></core-fieldset-array-dynamic-->
-
-        <core-table-dynamic *ngSwitchCase="'table'"
-                            [config]="config.controls[item.key]"
-                            [fieldset]="form.controls[item.key]"
-                            [title]="item.value.title"
-                            [sortDisabled]="item.value.sortDisabled"
-                            [optTitle]="item.value.optTitle"
-                            [titleLoad]="item.value.titleLoad"
-                            [optField]="item.value.optField"
-                            [optTitle]="item.value.optTitle"
-                            [optColumn]="item.value.optColumn"
-                            [entityName]="item.value.entityName"
-                            [sortActive]="item.value.sortActive"
-                            [sortDirection]="item.value.sortDirection"
-                            [serverSortTranslate]="item.value.serverSortTranslate"
-                            [serverSortObligatory]="item.value.serverSortObligatory"></core-table-dynamic>
-      </ng-container>      
+    <ng-container  *ngFor="let item of nestedComponents | keyvalue: nestedComponentsSort; let i = index">
+      <core-abstract-control-view [viewOptions]="item.value" 
+                                  [config]="config.controls[item.key]" 
+                                  [control]="form.controls[item.key]"></core-abstract-control-view>
     </ng-container>
     
     <mat-card *ngIf="optFooter.length">
       <mat-card-content>
-        <core-field-view *ngFor="let o of optFooter" [field]="o.field" [config]="o.config"></core-field-view>          
+        <core-abstract-control-view *ngFor="let o of optFooter" 
+                                    [control]="o.control" 
+                                    [config]="o.config" 
+                                    [viewOptions]="o.viewOptions"></core-abstract-control-view>          
       </mat-card-content>
     </mat-card>
   

@@ -1,7 +1,4 @@
-import { ComponentOptions } from "./component-options";
-import { ValidatorMsg } from "./validator-msg";
-
-export class FieldsetArrayDynamicOptions extends ComponentOptions{
+export class FieldsetArrayDynamicOptions{
   /**
    * Opciones de FieldsetDynamicComponent
    * Definir una clase de opciones facilita la asignacion de valores.
@@ -11,7 +8,6 @@ export class FieldsetArrayDynamicOptions extends ComponentOptions{
   id: string = "fieldset-array"
 
   constructor(attributes: any = {}) {
-    super()
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]

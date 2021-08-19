@@ -32,7 +32,7 @@ export abstract class AdminArrayComponent extends AdminComponent { //2
     return this.dd.post("persist_array", this.entityName, this.serverData())
   }
 
-  reload(response){
+  reload(){
     this.display$.next(this.display$.value);
     this.isSubmitted = false;
   }

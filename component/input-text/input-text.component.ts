@@ -10,6 +10,7 @@ export class InputTextComponent {
 
   @Input() field: FormControl
   @Input() title?: string
+  @Input() showTitle: boolean = true
   @Input() placeholder?: string = ""
   @Input() type?: string = "text"
   @Input() width?: string = null

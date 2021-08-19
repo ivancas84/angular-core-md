@@ -8,15 +8,14 @@ import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.compo
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
-import { FormArrayConfig, FormControlConfig, FormControlOption, FormStructureConfig } from '@class/reactive-form-config';
+import { FormArrayConfig, FormControlOption, FormStructureConfig } from '@class/reactive-form-config';
 import { FormArray, FormGroup } from '@angular/forms';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { TableDynamicOptions } from '@class/table-dynamic-options';
-import { ComponentOptions } from '@class/component-options';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { StructureComponent } from '@component/structure/structure.component';
-import { EventButtonFieldViewOptions, EventIconFieldViewOptions } from '@class/field-type-options';
+import { ValidatorsService } from '@service/validators/validators.service';
+import { AbstractControlViewOptions, TableViewOptions } from '@class/abstract-control-view-options';
 
 
 @Component({
@@ -34,48 +33,13 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
   loadLength: boolean = true; //flag para indicar que se debe consultar longitud
   
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
-  nestedComponent: ComponentOptions = new TableDynamicOptions()
+  nestedComponent: AbstractControlViewOptions = new TableViewOptions() //Debe implementar AbstractControlViewOptionsArray
 
   searchForm: FormGroup
   searchConfig: FormStructureConfig
 
   display$:BehaviorSubject<Display> = new BehaviorSubject(null) //parametros de consulta
 
-  optFooter: FormControlOption[] = [ //opciones de componente
-    new FormControlOption({
-      config: new FormControlConfig({ 
-        type: new EventButtonFieldViewOptions({
-          text: "Aceptar", //texto del boton
-          action: "submit", //accion del evento a realizar
-          color: "primary",
-          fieldEvent: this.optField
-        }) 
-      }),
-    }),
-
-    new FormControlOption({
-      config: new FormControlConfig({ 
-        type: new EventIconFieldViewOptions({
-          icon: "add", //texto del boton
-          action: "clear", //accion del evento a realizar
-          color: "accent",
-          fieldEvent: this.optField
-        }) 
-      }),
-    }),
-
-    new FormControlOption({
-      config: new FormControlConfig({ 
-        type: new EventIconFieldViewOptions({
-          icon: "arrow_back", //texto del boton
-          action: "back", //accion del evento a realizar
-          color: "accent",
-          fieldEvent: this.optField
-        }) 
-      }),
-    }),
-  ]; 
-  
 
   constructor(
     protected dd: DataDefinitionToolService, 
@@ -87,7 +51,7 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
     protected router: Router, 
     protected snackBar: MatSnackBar,
     protected location: Location, 
-
+    protected validators: ValidatorsService
   ) {
     super(dialog, storage, dd, snackBar, router, location, route)
   }
@@ -126,6 +90,9 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
         data => {
           if (!this.loadLength) this.length = data.length
           this.fc.initArray(this.config, this.form, data)
+          this.nestedComponent["loadLength"] = this.loadLength
+          this.nestedComponent["length"] = this.length
+          this.nestedComponent["display"] = this.display$.value
           return this.load = true
         }
       ),
@@ -152,8 +119,10 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
          return of(0);
         }
       ),    
-      tap(
-        count => { this.length = count; }
+      map(
+        count => {
+          return this.length = count; 
+        }
       )
     );
   }
@@ -203,7 +172,14 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array de logs)"
      */
-    return this.dd._post("persist_rel_array", this.entityName, this.serverData())
+    return this.dd._post("persist_rel_rows", this.entityName, this.serverData())
   }
 
+  reload(){
+    /**
+     * Recargar una vez persistido
+     */
+    this.display$.next(this.display$.value);
+    this.isSubmitted = false;
+  }
 }

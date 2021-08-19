@@ -2,14 +2,15 @@
   <mat-card-header *ngIf="title || optTitle.length">
     <mat-card-title fxFlex="auto">
       {{title}}    
-      <core-field-view *ngFor="let o of optTitle" [field]="o.field" [config]="o.config"></core-field-view>          
+      
+      <core-abstract-control-view *ngFor="let o of optTitle" [control]="o.control" [config]="o.config" [viewOptions]="o.viewOptions"></core-abstract-control-view>          
     </mat-card-title>
   </mat-card-header>
 
   <mat-card-content fxLayout="row wrap" [formGroup]="fieldset">
     <div class="mat-subheading-2 highlightText" [innerHTML]="intro" fxFlex="100%"></div>
 
-    <ng-container *ngFor="let item of config.controls | keyvalue: config.sort">
+    <ng-container *ngFor="let item of config.controls | keyvalue: sort">
       <div *ngIf="item.value.type.id != 'hidden'" 
           class="item" 
           [fxFlex.xs]="item.value.width.xs" 

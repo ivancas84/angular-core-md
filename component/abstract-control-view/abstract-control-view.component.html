@@ -1,0 +1,57 @@
+<ng-container *ngIf="config.id == 'form_control'; else abstract">
+  <core-field-wrap [config]="config" [field]="control"></core-field-wrap>
+</ng-container>
+
+<ng-template #abstract>
+<ng-container  [ngSwitch]="viewOptions.id">
+
+  <core-fieldset-dynamic *ngSwitchCase="'fieldset'"
+                       [fieldset]="control"
+                       [config]="config"
+                       [sort]="viewOptions.sort"
+                       [title]="viewOptions.title"
+                       [entityName]="viewOptions.entityName"
+                       [intro]="viewOptions.intro"
+                       [optTitle]="viewOptions.optTitle"></core-fieldset-dynamic>
+
+  <core-table-dynamic *ngSwitchCase="'table'"
+                      [config]="config"
+                      [fieldset]="control"
+                      [title]="viewOptions.title"
+                      [sortDisabled]="viewOptions.sortDisabled"
+                      [optTitle]="viewOptions.optTitle"
+                      [titleLoad]="viewOptions.titleLoad"
+                      [optField]="viewOptions.optField"
+                      [optTitle]="viewOptions.optTitle"
+                      [optColumn]="viewOptions.optColumn"
+                      [entityName]="viewOptions.entityName"
+                      [sortActive]="viewOptions.sortActive"
+                      [sortDirection]="viewOptions.sortDirection"
+                      [serverSortTranslate]="viewOptions.serverSortTranslate"
+                      [serverSortObligatory]="viewOptions.serverSortObligatory"
+                      [length]="viewOptions.length"
+                      [loadLength]="viewOptions.loadLength"
+                      [display]="viewOptions.display"></core-table-dynamic>
+
+  <core-event-icon *ngSwitchCase="'event_icon'"
+                         [control]="control"
+                         [index]="index"
+                         [fieldEvent]="viewOptions.fieldEvent"
+                         [icon]="viewOptions.icon"
+                         [color]="viewOptions.color"
+                         [action]="viewOptions.action"
+                         [ariaLabel]="viewOptions.ariaLabel"
+                         [title]="viewOptions.title"
+                         ></core-event-icon>
+
+  <core-event-button *ngSwitchCase="'event_button'"
+                      [control]="control"
+                      [fieldEvent]="viewOptions.fieldEvent"
+                      [text]="viewOptions.text"
+                      [color]="viewOptions.color"
+                      [action]="viewOptions.action"
+                      [ariaLabel]="viewOptions.ariaLabel"
+                      [title]="viewOptions.title"></core-event-button>                       
+</ng-container>
+
+</ng-template>

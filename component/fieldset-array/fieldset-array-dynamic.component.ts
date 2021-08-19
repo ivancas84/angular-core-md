@@ -38,9 +38,9 @@ export class FieldsetArrayDynamicComponent {
  
   remove(index) { 
     if(!this.fieldset.controls[index].get("id").value) this.fieldset.removeAt(index); 
-    else this.fieldset.controls[index].get("_delete").setValue(true);
+    else this.fieldset.controls[index].get("_controller").setValue("delete");
   }
 
-  _delete(index: number) { return this.fieldset.controls[index].get('_delete')}
+  _controller(index: number) { return this.fieldset.controls[index].get('_controller')}
   
 }

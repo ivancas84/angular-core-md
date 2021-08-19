@@ -1,5 +1,5 @@
 import { Component, Input, OnInit} from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { startWith } from 'rxjs/operators';
  
 @Component({
@@ -15,11 +15,11 @@ export class EventButtonComponent {
   @Input() action: string //accion del evento a realizar
   @Input() color: string
   @Input() title?: string
-  @Input() field?: FormControl = null
+  @Input() control?: AbstractControl = null
   @Input() fieldEvent: FormControl
 
 
   setValue(){
-    this.fieldEvent.setValue({action:this.action,field:this.field})
+    this.fieldEvent.setValue({action:this.action,control:this.control})
   }
 }

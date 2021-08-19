@@ -10,32 +10,21 @@
     <mat-progress-bar *ngIf="!load" 
                       mode="indeterminate"></mat-progress-bar>
 
-    <core-search-dynamic *ngIf="searchForm" [display]="display$.value" 
+    <core-search-dynamic *ngIf="searchForm" 
+                         [display]="display$.value" 
                          [config]="searchConfig"
                          [form]="searchForm"></core-search-dynamic>
     
-    <core-table-dynamic [length]="length" 
-                        [display]="display$.value"
-                        [fieldset]="form" 
-                        [config]="config"
-                        [optField]="nestedComponent.optField"
-                        [optTitle]="nestedComponent.optTitle"
-                        [optColumn]="nestedComponent.optColumn"
-                        [title]="nestedComponent.title"
-                        [entityName]="nestedComponent.entityName"
-                        [sortActive]="nestedComponent.sortActive"
-                        [sortDirection]="nestedComponent.sortDirection"
-                        [sortDisabled]="nestedComponent.sortDisabled"
-                        [serverSortTranslate]="nestedComponent.serverSortTranslate"
-                        [serverSortObligatory]="nestedComponent.serverSortObligatory"
-                        [showPaginator]="nestedComponent.showPaginator"
-                        [pageSizeOptions]="nestedComponent.pageSizeOptions"></core-table-dynamic>
+    <core-abstract-control-view [config]="config"
+                                [viewOptions]="nestedComponent"
+                                [control]="form"></core-abstract-control-view>
 
     <mat-card *ngIf="optFooter.length">
       <mat-card-content>
-        <core-field-view *ngFor="let o of optFooter" [field]="o.field" [config]="o.config"></core-field-view>          
+        <core-abstract-control-view *ngFor="let o of optFooter" [control]="o.control" [config]="o.config" [viewOptions]="o.viewOptions"></core-abstract-control-view>          
       </mat-card-content>
     </mat-card>
   </ng-container>
-
+  <p>Debug Form value: {{ form.value | json }}</p>
+  <p>Debug Form status: {{ form.status | json }}</p>
 </form>

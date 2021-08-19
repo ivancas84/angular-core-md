@@ -7,7 +7,7 @@ import { Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Display } from '@class/display';
-import { FormArrayConfig, FormControlConfig, FormControlOption } from '@class/reactive-form-config';
+import { FormArrayConfig, FormConfig, FormControlConfig, FormControlOption, FormGroupFactory, AbstractControlOption } from '@class/reactive-form-config';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { emptyUrl } from '@function/empty-url.function';
@@ -31,19 +31,21 @@ declare function printHtml(html): any;
 export class TableDynamicComponent implements OnInit { //6
   @Input() entityName?: string
   @Input() config: FormArrayConfig
+  @Input() factory: FormGroupFactory //es necesario definir una clase concreta de FormGroupFactory que permita definir el FormGroup del FormArray
+
   @Input() fieldset: FormArray
   @Input() title: string //titulo del componente
   @Input() sortActive: string = null;
   @Input() sortDirection: string = "asc";
   @Input() sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
 
-  @Input() optTitle: FormControlOption[] = []; //opciones de titulo
+  @Input() optTitle: AbstractControlOption[] = []; //opciones de titulo
   @Input() optField: FormControl; //field de opciones
   /**
    * se verifica el valueChanges y se ejecuta la accion seleccionada
    */
 
-  @Input() optColumn: any[] = []; //columna opciones
+  @Input() optColumn: AbstractControlOption[] = []; //columna opciones
   @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
   @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
   @Input() serverSortTranslate: { [index: string]: string[] } = {}; //traduccion de campos de ordenamiento
@@ -66,7 +68,6 @@ export class TableDynamicComponent implements OnInit { //6
   @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
   //footer: { [index: string]: any }[] = []; //
   protected subscriptions = new Subscription(); //suscripciones en el ts
-  deleteApi: string = "delete";
 
   @Input() showPaginator:boolean = true; //flag para visualizar el paginador
   @Input() pageSizeOptions=[10, 25, 50, 100] 
@@ -106,6 +107,7 @@ export class TableDynamicComponent implements OnInit { //6
     this.initOptField();
     this.initFieldset();
     this.initDisplayedColumns();
+
     if(!this.length) this.length = this.fieldset.controls.length;    
   }
 
@@ -134,20 +136,14 @@ export class TableDynamicComponent implements OnInit { //6
   } 
 
   switchOptField($event){
-    console.log($event)
     switch($event.action){
+      case "remove": this.remove($event.index); break;
       case "copy_content": this.copyContent(); break;
       case "print_content": this.printContent(); break;
-      case "table_delete": this.onRemove($event.field); break;
+      case "add": this.add(); break;
     }
   }
 
-
-
-
-
-
-  
   onChangePage($event: PageEvent){
     this.display.setPage($event.pageIndex+1);
     this.display.setSize($event.pageSize);
@@ -208,7 +204,7 @@ export class TableDynamicComponent implements OnInit { //6
     //this.subscriptions.add(s)
   }
 
-  remove(index: number) {
+  removePersist(index: number) {
     /**
      * Acción de eliminación
      */
@@ -229,7 +225,7 @@ export class TableDynamicComponent implements OnInit { //6
     /**
      * Invocar api de eliminación indicda en atributo deleteApi
      */
-    return this.dd.post(this.deleteApi, this.entityName, [this.fieldset.controls[index].get("id")])
+    return this.dd.post("delete", this.entityName, [this.fieldset.controls[index].get("id")])
   }
 
   deleted(index, response){
@@ -247,8 +243,29 @@ export class TableDynamicComponent implements OnInit { //6
   }
 
 
-  
+  fg(index) { return this.fieldset.controls[index]; }
+  /**
+   * Metodo utilizado para indicar el formGroup en el template
+   */
+   
+  add() {
+    var fg = this.config.factory.formGroup();
+    this.fieldset.push(fg); 
+  }
+ 
+  remove(index) { 
+    /**
+     * Incorporar el control _mode al fieldset!
+     */
+    if(!this.fieldset.controls[index].get("id").value) this.fieldset.removeAt(index); 
+    else this.fieldset.controls[index].get("_mode").setValue("delete");
+  }
 
   
   
 }
+
+
+ // _controller(index: number) { return this.fieldset.controls[index].get('_mode')}
+  
+  

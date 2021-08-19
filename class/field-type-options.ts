@@ -1,36 +1,10 @@
-import { FormControl } from "@angular/forms";
 import { FieldTreeElement } from "./field-tree-element";
 
 
 export class FieldViewOptions {
   id: string =  "default"
-  /**
-   * hidden
-   * input_checkbox
-   * input_time
-   * input_date
-   * input_year
-   * input_year_month
-   * tree
-   * input_select_param
-   * input_select
-   * input_select_checkbox
-   * textarea
-   * input_autocomplete
-   * input_upload
-   * um
-   * input_text
-   * date
-   * yes_no
-   * summary
-   * download
-   * label
-   * field_label
-   * 
-   * 
-   * 
-   */
 }
+
 export class FieldDefaultOptions extends FieldViewOptions { //1
   id: string = "default"
 
@@ -363,82 +337,4 @@ export class FieldLabelOptions extends FieldViewOptions { //1
     }
   }
 }
-
-export class RouteIconFieldViewOptions extends FieldViewOptions {
-
-  id: string = "route_icon"
-  icon: string = "info";
-  target: string = "_self";
-	key: string = "id"
-  color:string="primary"
-  routerLink: string;
-  title?: string;
-
-  constructor(attributes: any) {
-    super()
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
-}
-
-export class LinkTextFieldViewOptions extends FieldViewOptions {
-  id: string = "link_text"
-  download: boolean = false
-  prefix: string = ""
-  target: string
-  title?: string
-
-  constructor(attributes: any) {
-    super()
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
-}
-
-
-export class EventButtonFieldViewOptions extends FieldViewOptions {
-
-  id: string = "event_button"
-  text: string;
-  color:string="primary"
-  action: string;
-  title?: string;
-  fieldEvent: FormControl;
-
-  constructor(attributes: any) {
-    super()
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
-}
-
-
-export class EventIconFieldViewOptions extends FieldViewOptions {
-
-  id: string = "event_icon"
-  icon: string;
-  color:string="primary"
-  action: string;
-  title?: string;
-  fieldEvent: FormControl;
-
-  constructor(attributes: any) {
-    super()
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
-}
-
 

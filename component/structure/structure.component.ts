@@ -3,7 +3,7 @@ import { AbstractControl, FormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
-import { FormControlOption } from "@class/reactive-form-config";
+import { AbstractControlOption } from "@class/reactive-form-config";
 import { DialogAlertComponent } from "@component/dialog-alert/dialog-alert.component";
 import { emptyUrl } from "@function/empty-url.function";
 import { logValidationErrors } from "@function/log-validation-errors";
@@ -32,12 +32,13 @@ export abstract class StructureComponent implements OnInit {
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
    */
    optField: FormControl = new FormControl(null)//field de opciones para disparar eventos
-   optFooter: FormControlOption[] = [] //opciones de componente
+   optFooter: AbstractControlOption[] = [] //opciones de componente
    loadParams$: Observable<any> //carga de parametros
    loadDisplay$: Observable<any> //carga de display
    params: { [x: string]: any } //parametros del componente
    storageValues = this.storage.getItem(this.router.url);
    isSubmitted: boolean = false //Flag para habilitar/deshabilitar boton aceptar
+   response: any //respuesta de procesamiento
 
    constructor(
     protected dialog: MatDialog,
@@ -95,7 +96,8 @@ export abstract class StructureComponent implements OnInit {
   submit(){
     var s = this.persist().subscribe(
       response => {
-        this.submitted(response)        
+        this.response = response
+        this.submitted()        
       },
       error => { 
         this.dialog.open(DialogAlertComponent, {
@@ -107,23 +109,23 @@ export abstract class StructureComponent implements OnInit {
     this.subscriptions.add(s);
   }
 
-  submitted(response){
+  submitted(){
     this.snackBar.open("Registro realizado", "X");
-    this.removeStorage(response);
-    this.reload(response);
+    this.removeStorage();
+    this.reload();
   }
 
-  removeStorage(response){
+  removeStorage(){
     this.storage.removeItemsContains(".");
-    this.storage.removeItemsPersisted(response["detail"]);
+    this.storage.removeItemsPersisted(this.response["detail"]);
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
   }
 
-  reload(response){
+  reload(){
     /**
      * Recargar una vez persistido
      */
-    let route = emptyUrl(this.router.url) + "?id="+response["id"];
+    let route = emptyUrl(this.router.url) + "?id="+this.response["id"];
     if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
     else this.display$.next(this.display$.value);
     this.isSubmitted = false;
@@ -165,6 +167,7 @@ export abstract class StructureComponent implements OnInit {
   initParams(params: any){ this.params = params; }
 
   switchOptField(value: any){
+    console.log(value);
     switch(value.action){
       case "submit": this.onSubmit(); break;
       case "clear": this.clear(); break;
