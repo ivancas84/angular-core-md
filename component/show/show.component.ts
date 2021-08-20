@@ -1,14 +1,14 @@
 import { OnInit, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Observable, BehaviorSubject } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
-import { FormArrayConfig, FormControlOption, FormStructureConfig } from '@class/reactive-form-config';
+import { FormArrayConfig, FormStructureConfig } from '@class/reactive-form-config';
 import { FormArray, FormGroup } from '@angular/forms';
 import { FormConfigService } from '@service/form-config/form-config.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -28,6 +28,7 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
    */
 
   form: FormArray = new FormArray([])
+
   config: FormArrayConfig
   length?: number; //longitud total de los datos a mostrar
   loadLength: boolean = true; //flag para indicar que se debe consultar longitud
@@ -39,7 +40,6 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
   searchConfig: FormStructureConfig
 
   display$:BehaviorSubject<Display> = new BehaviorSubject(null) //parametros de consulta
-
 
   constructor(
     protected dd: DataDefinitionToolService, 
@@ -55,7 +55,7 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
   ) {
     super(dialog, storage, dd, snackBar, router, location, route)
   }
-
+  
   loadParams(){
     this.loadParams$ = this.route.queryParams.pipe(
       map(
@@ -90,14 +90,19 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
         data => {
           if (!this.loadLength) this.length = data.length
           this.fc.initArray(this.config, this.form, data)
-          this.nestedComponent["loadLength"] = this.loadLength
-          this.nestedComponent["length"] = this.length
-          this.nestedComponent["display"] = this.display$.value
+          this.initNestedComponent()
           return this.load = true
         }
       ),
     )
   }
+
+  initNestedComponent(){
+    this.nestedComponent["loadLength"] = this.loadLength
+    this.nestedComponent["length"] = this.length
+    this.nestedComponent["display"] = this.display$.value
+  }
+
 
   initDisplay() {
     var display = new Display();

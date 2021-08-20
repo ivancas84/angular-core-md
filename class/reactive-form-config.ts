@@ -34,10 +34,11 @@ export interface SortControl {
 export class FormControlsConfig extends FormConfig {
   //@todo es posible eliminar el sort
   controls: { [index: string]: FormConfig }
-  sort = (a: KeyValue<string,SortControl>, b: KeyValue<string,SortControl>): number => {
-    return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0)
-  }
   
+  contains(key: string){
+    return this.controls.hasOwnProperty(key)
+  }  
+
   constructor(attributes: any) {
     super({})
     for(var a in attributes){
@@ -47,7 +48,6 @@ export class FormControlsConfig extends FormConfig {
     }
   } 
 }
-
 
 export interface FormGroupFactory{
   formGroup(): FormGroup
@@ -96,6 +96,7 @@ export class AbstractControlOption {
   }
 }
 
+/*
 export class FormControlOption extends AbstractControlOption {
   config: FormControlConfig 
   field?: FormControl = null
@@ -108,7 +109,7 @@ export class FormControlOption extends AbstractControlOption {
       }
     }
   }
-}
+}*/
 
 export class FormArrayConfig extends FormControlsConfig {
   id: string = "form_array"

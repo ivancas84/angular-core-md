@@ -1,5 +1,5 @@
 import { Input, Component, OnInit, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
-import { FormArray, FormControl } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -7,7 +7,7 @@ import { Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Display } from '@class/display';
-import { FormArrayConfig, FormConfig, FormControlConfig, FormControlOption, FormGroupFactory, AbstractControlOption } from '@class/reactive-form-config';
+import { FormArrayConfig, FormControlConfig,  AbstractControlOption, FormGroupConfig } from '@class/reactive-form-config';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { emptyUrl } from '@function/empty-url.function';
@@ -31,8 +31,9 @@ declare function printHtml(html): any;
 export class TableDynamicComponent implements OnInit { //6
   @Input() entityName?: string
   @Input() config: FormArrayConfig
-  @Input() factory: FormGroupFactory //es necesario definir una clase concreta de FormGroupFactory que permita definir el FormGroup del FormArray
-
+  @Input() footer: FormGroup 
+  @Input() footerConfig: FormGroupConfig 
+  
   @Input() fieldset: FormArray
   @Input() title: string //titulo del componente
   @Input() sortActive: string = null;
@@ -64,9 +65,11 @@ export class TableDynamicComponent implements OnInit { //6
    */
 
   displayedColumns: string[]; //columnas a visualizar
+  footerColumns: string[]; //columnas de footer a visualizar
+
   @ViewChild(MatPaginator) paginator: MatPaginator; //paginacion
   @ViewChild("content", {read: ElementRef}) content: ElementRef; //contenido para copiar o imprimir
-  //footer: { [index: string]: any }[] = []; //
+
   protected subscriptions = new Subscription(); //suscripciones en el ts
 
   @Input() showPaginator:boolean = true; //flag para visualizar el paginador
@@ -107,7 +110,7 @@ export class TableDynamicComponent implements OnInit { //6
     this.initOptField();
     this.initFieldset();
     this.initDisplayedColumns();
-
+    console.log(this.footer);
     if(!this.length) this.length = this.fieldset.controls.length;    
   }
 
@@ -118,7 +121,9 @@ export class TableDynamicComponent implements OnInit { //6
         this.displayedColumns.push(key)
     })
     if(this.optColumn.length) this.displayedColumns.push("options");
+    if(this.footer && this.footerConfig) this.footerColumns = this.displayedColumns
   }
+
 
   initFieldset(){
     this.fieldset.valueChanges.pipe(

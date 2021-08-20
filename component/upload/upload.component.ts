@@ -15,11 +15,9 @@ import { markAllAsDirty } from '@function/mark-all-as-dirty';
 })
 export abstract class UploadComponent {
   /**
-   * Comportamiento basico para subir archivos para ser procesados
+   * Comportamiento basico para subir archivos para ser procesados.
    * A través del atributo entityName se define el controlador de procesamiento del archivo
-   * La idea es subir un archivo que sera procesado en un controlador,
-   * no se debe confundir con el Input Upload cuyo proposito es subir el archivo 
-   * y asignarlo como valor fk de una entidad
+   * La idea es subir un archivo que sera procesado en un controlador, no se debe confundir con el Input Upload cuyo proposito es subir el archivo y asignarlo como valor fk de una entidad
    */
 
   uploadForm: FormGroup = this.fb.group(
@@ -62,11 +60,8 @@ export abstract class UploadComponent {
   formData(): FormData{
     /**
      * Crear FormData
-     * Se define un metodo independiente para facilitar la redefinicion
-     * 
      * Los objetos FormData le permiten compilar un conjunto de pares clave/valor para enviar mediante XMLHttpRequest. 
-     * Están destinados principalmente para el envío de los datos del formulario, 
-     * pero se pueden utilizar de forma independiente con el fin de transmitir los datos tecleados. 
+     * Están destinados principalmente para el envío de los datos del formulario, pero se pueden utilizar de forma independiente con el fin de transmitir los datos tecleados. 
      * Los datos transmitidos estarán en el mismo formato que usa el método submit() del formulario
      * para enviar los datos si el tipo de codificación del formulario se establece en "multipart/form-data".
      * 

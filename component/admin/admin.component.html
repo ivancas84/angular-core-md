@@ -14,9 +14,7 @@
       novalidate autocomplete="off">
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
     <ng-container  *ngFor="let item of nestedComponents | keyvalue: nestedComponentsSort; let i = index">
-      <core-abstract-control-view [viewOptions]="item.value" 
-                                  [config]="config.controls[item.key]" 
-                                  [control]="form.controls[item.key]"></core-abstract-control-view>
+      <core-abstract-control-view [viewOptions]="item.value"></core-abstract-control-view>
     </ng-container>
     
     <mat-card *ngIf="optFooter.length">

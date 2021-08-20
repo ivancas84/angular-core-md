@@ -15,9 +15,7 @@
                          [config]="searchConfig"
                          [form]="searchForm"></core-search-dynamic>
     
-    <core-abstract-control-view [config]="config"
-                                [viewOptions]="nestedComponent"
-                                [control]="form"></core-abstract-control-view>
+    <core-abstract-control-view [viewOptions]="nestedComponent"></core-abstract-control-view>
 
     <mat-card *ngIf="optFooter.length">
       <mat-card-content>
@@ -25,6 +23,6 @@
       </mat-card-content>
     </mat-card>
   </ng-container>
-  <p>Debug Form value: {{ form.value | json }}</p>
-  <p>Debug Form status: {{ form.status | json }}</p>
+  <!--p>Debug Form value: {{ form.value | json }}</p>
+  <p>Debug Form status: {{ form.status | json }}</p-->
 </form>

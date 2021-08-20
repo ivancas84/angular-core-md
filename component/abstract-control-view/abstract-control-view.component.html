@@ -1,4 +1,4 @@
-<ng-container *ngIf="config.id == 'form_control'; else abstract">
+<ng-container *ngIf="config && (config.id == 'form_control'); else abstract">
   <core-field-wrap [config]="config" [field]="control"></core-field-wrap>
 </ng-container>
 
@@ -6,8 +6,8 @@
 <ng-container  [ngSwitch]="viewOptions.id">
 
   <core-fieldset-dynamic *ngSwitchCase="'fieldset'"
-                       [fieldset]="control"
-                       [config]="config"
+                       [fieldset]="viewOptions.fieldset"
+                       [config]="viewOptions.config"
                        [sort]="viewOptions.sort"
                        [title]="viewOptions.title"
                        [entityName]="viewOptions.entityName"
@@ -15,8 +15,8 @@
                        [optTitle]="viewOptions.optTitle"></core-fieldset-dynamic>
 
   <core-table-dynamic *ngSwitchCase="'table'"
-                      [config]="config"
-                      [fieldset]="control"
+                      [config]="viewOptions.config"
+                      [fieldset]="viewOptions.fieldset"
                       [title]="viewOptions.title"
                       [sortDisabled]="viewOptions.sortDisabled"
                       [optTitle]="viewOptions.optTitle"
@@ -31,7 +31,11 @@
                       [serverSortObligatory]="viewOptions.serverSortObligatory"
                       [length]="viewOptions.length"
                       [loadLength]="viewOptions.loadLength"
-                      [display]="viewOptions.display"></core-table-dynamic>
+                      [display]="viewOptions.display"
+                      [showPaginator]="viewOptions.showPaginator"
+                      [footerConfig]="viewOptions.footerConfig"
+                      [footer]="viewOptions.footer"
+                      ></core-table-dynamic>
 
   <core-event-icon *ngSwitchCase="'event_icon'"
                          [control]="control"

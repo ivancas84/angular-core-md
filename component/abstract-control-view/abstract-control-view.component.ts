@@ -13,8 +13,8 @@ export class AbstractControlViewComponent {
    * utilizado principalmente para FormArray y FormGroup, los FormControl tienen su propia implementacion
    */
 
-  @Input() config: FormConfig;
-  @Input() control: AbstractControl;
+  @Input() config?: FormConfig;
+  @Input() control?: AbstractControl;
   @Input() viewOptions?: AbstractControlViewOptions; //para el caso de config.id == form_control se define en el config.viewOptions
   @Input() index?: number;
 

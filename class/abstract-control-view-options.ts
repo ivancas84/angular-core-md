@@ -1,7 +1,7 @@
 import { KeyValue } from "@angular/common";
-import { FormControl } from "@angular/forms";
+import { FormArray, FormControl, FormGroup } from "@angular/forms";
 import { Display } from "./display";
-import { AbstractControlOption, SortControl, FormArrayConfig } from "./reactive-form-config";
+import { AbstractControlOption, SortControl, FormArrayConfig, FormGroupConfig } from "./reactive-form-config";
 import { ValidatorMsg } from "./validator-msg";
 
 export interface AbstractControlViewOptionsArray{
@@ -124,12 +124,15 @@ export class TableViewOptions extends AbstractControlViewOptions implements Abst
   pageSizeOptions=[10, 25, 50, 100] //habilitar el page size
   length?:number
   loadLength:boolean = true
-  display?:Display
-
-  sort = (a: KeyValue<string,SortControl>, b: KeyValue<string,SortControl>): number => {
-    return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0)
-  }
-
+  display?:Display  
+  fieldset: FormArray //datos principales
+  config: FormArrayConfig //configuracion principal
+  footer: FormGroup //inicizar luego de asigar config.factory -> this.footer = this.config.factory.formGroup()
+  /**
+   * se puede utilizar config.factory para inicializar -> this.footer = this.config.factory.formGroup()
+   * ojo con los valores por defecto, se recomienda this.footer.reset()
+   */
+  footerConfig: FormGroupConfig 
 
   constructor(attributes: any = {}) {
     super()
@@ -156,10 +159,8 @@ export class FieldsetViewOptions extends AbstractControlViewOptions{
   optTitle: AbstractControlOption[] = []; //opciones de titulo
   title?: string;
   entityName?: string;
-
-  sort = (a: KeyValue<string,SortControl>, b: KeyValue<string,SortControl>): number => {
-    return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0)
-  }
+  fieldset: FormGroup //datos principales
+  config: FormGroupConfig //configuracion principal
 
   constructor(attributes: any = {}) {
     super()
