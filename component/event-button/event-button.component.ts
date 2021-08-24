@@ -1,25 +1,35 @@
-import { Component, Input, OnInit} from '@angular/core';
+import { Component, Input, Type} from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
-import { startWith } from 'rxjs/operators';
+import { ControlComponent, FormConfig } from '@class/reactive-form-config';
  
+export class EventButtonConfig extends FormConfig {
+  componentId: string = "event_button"
+  text: string //texto del boton
+  action: string //accion del evento a realizar
+  color: string
+  title?: string
+  fieldEvent: FormControl
+
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 @Component({
   selector: 'core-event-button',
   templateUrl: './event-button.component.html',
 })
-export class EventButtonComponent {
-  /**
-   * Visualizar opciones
-   */
-
-  @Input() text: string //texto del boton
-  @Input() action: string //accion del evento a realizar
-  @Input() color: string
-  @Input() title?: string
-  @Input() control?: AbstractControl = null
-  @Input() fieldEvent: FormControl
+export class EventButtonComponent implements ControlComponent{
+  @Input() config: EventButtonConfig;
+  @Input() control: AbstractControl;
 
 
   setValue(){
-    this.fieldEvent.setValue({action:this.action,control:this.control})
+    this.config.fieldEvent.setValue({action:this.config.action,control:this.control})
   }
 }

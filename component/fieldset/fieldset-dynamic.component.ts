@@ -1,7 +1,26 @@
 import { KeyValue } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Type } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AbstractControlOption, FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
+import { ControlComponent, FormConfig, FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
+
+export class FieldsetDynamicConfig extends FormGroupConfig {
+  componentId:string = "fieldset"
+  controls: { [index: string]: FormControlConfig }
+  title?: string;
+  entityName?: string;
+  intro?: string;
+  optTitle: FormConfig[] = []; //opciones de titulo
+
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 
 @Component({
   selector: 'core-fieldset-dynamic',
@@ -11,18 +30,9 @@ import { AbstractControlOption, FormControlConfig, FormGroupConfig } from '@clas
     .highlightText { background: yellow; }
   `]
 })
-export class FieldsetDynamicComponent {
-
-  /**
-   * Componente para construir fieldsets dinamicos.
-   */
-  //@Input() config: FormGroupConfig;
-  @Input() config: FormGroupConfig
-  @Input() fieldset: FormGroup;
-  @Input() title?: string;
-  @Input() entityName?: string;
-  @Input() intro?: string;
-  @Input() optTitle: AbstractControlOption[] = []; //opciones de titulo
+export class FieldsetDynamicComponent implements ControlComponent {
+  @Input() config: FormGroupConfig;
+  @Input() control: FormGroup;
 
   sort = (a: KeyValue<string,FormControlConfig>, b: KeyValue<string,FormControlConfig>): number => {
     return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0)

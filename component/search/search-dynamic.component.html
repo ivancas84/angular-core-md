@@ -5,9 +5,9 @@
     </mat-expansion-panel-header>
     <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()"> 
 
-      <core-fieldset-dynamic *ngIf="form.contains('params')"
-                             [config]="config.controls['params']"
-                             [fieldset]="form.controls['params']"></core-fieldset-dynamic>
+      <core-abstract-control-view *ngIf="form.contains('params')"
+                                       [config]="config.controls['params']"
+                                       [control]="form.controls['params']"></core-abstract-control-view>
 
       <!--core-search-all *ngIf="searchAll" [form]="searchForm" [display]="display"></core-search-all-->
       <!--core-search-params-dynamic *ngIf="searchParams" [form]="searchForm" [display]="display" [fieldsViewOptions]="fieldsViewOptionsSp"></core-search-params-dynamic-->

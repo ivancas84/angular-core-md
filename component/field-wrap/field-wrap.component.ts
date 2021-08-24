@@ -1,31 +1,18 @@
 import { Component, Input, OnInit} from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { FieldViewOptions } from '@class/field-type-options';
-import { FieldWrapOptions } from '@class/field-wrap-options';
-import { FormControlConfig } from '@class/reactive-form-config';
-import { fastClone } from '@function/fast-clone';
+import { AbstractControl } from '@angular/forms';
+import { ControlComponent, FormConfig } from '@class/reactive-form-config';
  
+
 @Component({
   selector: 'core-field-wrap',
-  templateUrl: './field-wrap.component.html',
+  template: '',
 })
-export class FieldWrapComponent implements OnInit{
+export class FieldWrapComponent implements ControlComponent{
   /**
    * Envoltura para visualizar el campo
    */
   
-  @Input() config: FormControlConfig //configuracion
-  @Input() field: FormControl //campo
-  @Input() index: number = 0 //indice
-  //@Input() viewOptions: FieldViewOptions //configuracion
-  //@Input() wrapOptions: FieldWrapOptions //configuracion
-  
-  wrap: FieldWrapOptions
-  ngOnInit(): void {
-    if (Array.isArray(this.config.wrap) && this.index < this.config.wrap.length) this.wrap = this.config.wrap[this.index] 
-    else if(!Array.isArray(this.config.wrap) && this.index == 0) this.wrap = this.config.wrap
-
-  }
-  
+  @Input() config: FormConfig //configuracion
+  @Input() control: AbstractControl //configuracion
 
 }

@@ -1,6 +1,5 @@
-<a *ngIf="field.value"
-   [download]="download"  
+<a *ngIf="control.value"
+   [download]="config.download"  
    [href]="href" 
-   [target]="target"
-   [title]="title"> {{field.value}} </a>
-
+   [target]="config.target"
+   [title]="title"> {{control.value}} </a>

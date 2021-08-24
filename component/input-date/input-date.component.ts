@@ -1,9 +1,25 @@
-import { Input, Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Input, Component, Type, OnInit } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DATE_FORMATS } from 'app/core/const/DATE_FORMATS';
-import { ValidatorMsg } from '@class/validator-msg';
+import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive-form-config';
+import { FormControl } from '@angular/forms';
+
+export class InputDateConfig extends FormControlConfig {
+  componentId: string = "input_date"
+  title?: string;
+  placeholder?: string = "Seleccione fecha";
+  readonly?: boolean = false;
+
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
 
 @Component({
   selector: 'core-input-date',
@@ -23,11 +39,9 @@ import { ValidatorMsg } from '@class/validator-msg';
     {provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS},
   ]
 })
-export class InputDateComponent {
-  @Input() field: FormControl;
-  @Input() title?: string;
-  @Input() placeholder?: string = "Seleccione fecha";
-  @Input() readonly?: boolean = false;
-  @Input() validatorMsgs: ValidatorMsg[] = [];
+export class InputDateComponent implements ControlComponent {
+  @Input() config: FormConfig;
+  @Input() control: FormControl;
+
 
 }

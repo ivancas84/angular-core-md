@@ -1,32 +1,45 @@
-import { Input, OnInit, Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Input, OnInit, Component, Type } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
-import { ValidatorMsg } from '@class/validator-msg';
+import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControl } from '@angular/forms';
+
+export class InputSelectParamConfig extends FormControlConfig {
+  componentId: string = "input_select_param"
+  options: any[];
+  label?: string;
+  readonly?: boolean = false;
+
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
 
 @Component({
   selector: 'core-input-select-param',
   templateUrl: './input-select-param.component.html',
 })
-export class InputSelectParamComponent implements OnInit {
+export class InputSelectParamComponent implements ControlComponent, OnInit {
   /**
    * Componente de administración de fieldset. Características:
    *   El formulario y los datos son definidos en componente principal  
    *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
    */
 
-  @Input() field: FormControl;
-  @Input() options: any[];
-  @Input() title?: string;
-  @Input() readonly?: boolean = false;
-  @Input() validatorMsgs: ValidatorMsg[] = [];
+  @Input() config: InputSelectParamConfig;
+  @Input() control: FormControl;
 
   options$: Observable<Array<any>>;
 
   constructor( public dd: DataDefinitionService ) { }
 
   ngOnInit(): void {
-    if(!this.title) this.title = "Seleccione";
+    if(!this.config.label) this.config.label = "Seleccione";
   }
 
 }

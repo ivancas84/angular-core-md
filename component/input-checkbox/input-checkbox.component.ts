@@ -1,30 +1,36 @@
-import { Input, OnInit, Component } from '@angular/core';
+import { Input, Component, Type } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { getControlName } from '@function/get-control-name';
+import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+
+export class InputCheckboxConfig extends FormControlConfig {
+  component: Type<any> = InputCheckboxComponent
+  label?: string;
+  labelDisabled?: boolean = false;
+
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
 
 @Component({
   selector: 'core-input-checkbox',
   templateUrl: './input-checkbox.component.html',
 })
-export class InputCheckboxComponent implements OnInit {
+export class InputCheckboxComponent implements ControlComponent {
   /**
    * Checbox no admite placeholder, error unique, error require.
    * Se define por defecto un error general que puede ser validado como further_error
    */
-  @Input() field: FormControl;
-  @Input() title?: string;
-  @Input() titleDisabled?: boolean = false;
-  /**
-   * Para facilitar la incorporacion dinamica de componentes
-   * se incluye el flag showTitle, para aquellos casos especiales
-   * donde se necesita definir un title pero no se desea mostrar.
-   * Por ejemplo cuando se utilizar un checkbox 
-   * como celda de una columna
-   * en una tabla dinamica
-   */
+  @Input() config: InputCheckboxConfig;
+  @Input() control: FormControl;
 
-  ngOnInit(): void {
-    if(!this.title) this.title = getControlName(this.field)
-  }
+  
+
+
    
 }

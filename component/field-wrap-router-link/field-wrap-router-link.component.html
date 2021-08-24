@@ -1,5 +1,4 @@
-<a [routerLink]="'/'+path" [queryParams]="queryParams">
-  <core-field-wrap [config]="config" 
-                        [field]="field" 
-                        [index]="index+1"></core-field-wrap>
+<a [routerLink]="'/'+config.path" [queryParams]="queryParams">
+  <core-abstract-control-view [config]="config.config" 
+                              [control]="control"></core-abstract-control-view>
 </a>

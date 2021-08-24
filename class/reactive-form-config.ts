@@ -1,63 +1,22 @@
-import { AbstractControl, FormControl, FormGroup } from "@angular/forms"
-import { FieldDefaultOptions, FieldViewOptions } from "./field-type-options"
-import { FieldWrapOptions } from "./field-wrap-options"
-import { FieldWidthOptions } from "./field-width-options"
+import { AbstractControl, FormGroup } from "@angular/forms"
 import { ValidatorMsg } from "./validator-msg"
-import { KeyValue } from "@angular/common"
-import { AbstractControlViewOptions, StructureViewOptions } from "./abstract-control-view-options"
+import { Type } from "@angular/core"
+
+export interface ControlComponent {
+  config:FormConfig
+  control:AbstractControl
+}
 
 export class FormConfig {
-  id: string
+  componentId:string
+  controlId: string
   position: number = 0
   validatorMsgs: ValidatorMsg[] = []
   default:any = null
+  component: Type<any>
+  [key: string]: any
 
-  constructor(attributes: any) {
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  } 
-}
-
-export interface FormGroupFactory{
-  formGroup(): FormGroup;
-}
-
-
-export interface SortControl {
-  position: number;
-}
-
-
-export class FormControlsConfig extends FormConfig {
-  //@todo es posible eliminar el sort
-  controls: { [index: string]: FormConfig }
-  
-  contains(key: string){
-    return this.controls.hasOwnProperty(key)
-  }  
-
-  constructor(attributes: any) {
-    super({})
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  } 
-}
-
-export interface FormGroupFactory{
-  formGroup(): FormGroup
-}
-
-export class FormGroupConfig extends FormControlsConfig {
-  id: string = "form_group"
-
-  constructor(attributes: any) {
-    super({})
+  constructor(attributes: any = {}) {
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -66,14 +25,48 @@ export class FormGroupConfig extends FormControlsConfig {
   }
 }
 
+export interface FormGroupFactory{
+  formGroup(): FormGroup;
+}
+
+export interface SortControl {
+  position: number;
+}
+
+export class FormControlsConfig extends FormConfig {
+  //@todo es posible eliminar el sort
+  controls: { [index: string]: FormConfig }
+  
+  contains(key: string){
+    return this.controls.hasOwnProperty(key)
+  }
+  
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+export interface FormGroupFactory{
+  formGroup(): FormGroup
+}
+
+export class FormGroupConfig extends FormControlsConfig {
+  controlId: string = "form_group"
+}
+
 export class FormStructureConfig extends FormGroupConfig {
   /**
    * Clase especial que permite identificar una estructura principal
    */
   controls: { [index: string]: FormGroupConfig | FormArrayConfig }
 
-  constructor(attributes: any) {
-    super({})
+  constructor(attributes: any = {}) {
+    super(attributes)
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -83,7 +76,6 @@ export class FormStructureConfig extends FormGroupConfig {
 }
 
 export class AbstractControlOption {
-  viewOptions: AbstractControlViewOptions
   config?: FormConfig
   control?: AbstractControl
 
@@ -112,7 +104,7 @@ export class FormControlOption extends AbstractControlOption {
 }*/
 
 export class FormArrayConfig extends FormControlsConfig {
-  id: string = "form_array"
+  controlId: string = "form_array"
   factory: FormGroupFactory //es necesario definir una clase concreta de FormGroupFactory que permita definir el FormGroup del FormArray
   order?: {[key: string]: string} //ordenamiento por defecto para realizar la consulta
   /**
@@ -124,8 +116,8 @@ export class FormArrayConfig extends FormControlsConfig {
    * para cada fila se utilizaran los valores por defecto definidos en la configuracion de formgroup
    */
 
-  constructor(attributes: any) {
-    super({})
+   constructor(attributes: any = {}) {
+    super(attributes)
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -135,22 +127,23 @@ export class FormArrayConfig extends FormControlsConfig {
 }
 
 export class FormControlConfig extends FormConfig {
-  id: string = "form_control"
-  label: string = null //etiqueta
-  wrap?: FieldWrapOptions | FieldWrapOptions[] //envolturas
-  /**
-   * Si se utiliza un array se aplican las envolturas en el orden de definicion
-   */
+  controlId: string = "form_control"
 
-  type: FieldViewOptions = new FieldDefaultOptions()
-  showLabel: boolean = true //indica si debe mostrarse el label o no
+  // label: string = null //etiqueta
+  //wrap?: FieldWrapOptions | FieldWrapOptions[] //envolturas
+  // /**
+  //  * Si se utiliza un array se aplican las envolturas en el orden de definicion
+  //  */
 
-  readonly: boolean = false
-  placeholder: string = null
-  width:FieldWidthOptions = new FieldWidthOptions(); //ancho del contenedor
+  //type: FieldViewOptions = new FieldDefaultOptions()
+  // showLabel: boolean = true //indica si debe mostrarse el label o no
 
+  // readonly: boolean = false
+  // placeholder: string = null
+  // width:FieldWidthOptions = new FieldWidthOptions() //ancho del contenedor
+  
   constructor(attributes: any = {}) {
-    super({})
+    super(attributes)
     for(var a in attributes){
       if(attributes.hasOwnProperty(a)){
         this[a] = attributes[a]
@@ -159,3 +152,31 @@ export class FormControlConfig extends FormConfig {
   }
 }
 
+
+
+
+export class FormWrapConfig extends FormControlConfig {
+  controlId: string = "form_control"
+  config: FormControlConfig
+
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+export class NoComponentConfig extends FormConfig {
+
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}

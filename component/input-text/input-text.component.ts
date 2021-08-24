@@ -1,26 +1,37 @@
-import { Input, OnInit, Component } from '@angular/core';
+import { Input, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ValidatorMsg } from '@class/validator-msg';
+import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 
-@Component({
-  selector: 'core-input-text',
-  templateUrl: './input-text.component.html',
-})
-export class InputTextComponent {
-
-  @Input() field: FormControl
-  @Input() title?: string
-  @Input() showTitle: boolean = true
-  @Input() placeholder?: string = ""
-  @Input() type?: string = "text"
-  @Input() width?: string = null
+export class InputTextConfig extends FormControlConfig {
+  componentId: string = "input_text"
+  label?: string
+  showLabel: boolean = true
+  placeholder?: string = ""
+  type?: string = "text"
+  widthAux?: string = null
   /**
    * Ancho exclusivo del input
    * se aplica al contenedor utilizando [style.width]="width"
    * Debe indicarse la unidad de medida, ej "100%", "100px"
    */
 
-  @Input() readonly?: boolean = false;
-  @Input() validatorMsgs: ValidatorMsg[] = [];
+  readonly?: boolean = false;
 
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+@Component({
+  selector: 'core-input-text',
+  templateUrl: './input-text.component.html',
+})
+export class InputTextComponent implements ControlComponent{
+  @Input() config: InputTextConfig;
+  @Input() control: FormControl;
 }

@@ -16,9 +16,11 @@ import { KeyValue, Location } from '@angular/common';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { AbstractControlOption, FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { FormStructureConfig, SortControl } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
-import { AbstractControlViewOptions, EventButtonViewOptions, EventIconViewOptions } from '@class/abstract-control-view-options';
+import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
+import { EventButtonConfig } from '@component/event-button/event-button.component';
+import { EventIconConfig } from '@component/event-icon/event-icon.component';
 
 
 @Component({
@@ -26,44 +28,30 @@ import { AbstractControlViewOptions, EventButtonViewOptions, EventIconViewOption
   template: './admin.component.html',
 })
 export abstract class AdminComponent extends StructureComponent implements OnInit{
+
   form: FormGroup
   config: FormStructureConfig
-  nestedComponentsSort = (a: KeyValue<string,AbstractControlViewOptions>, b: KeyValue<string,AbstractControlViewOptions>): number => {
-    return a.value.pos > b.value.pos ? 1 : (b.value.pos > a.value.pos ? -1 : 0)
+  sort = (a: KeyValue<string,SortControl>, b: KeyValue<string,SortControl>): number => {
+    return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0)
   }
 
-  nestedComponents: { [x: string]: AbstractControlViewOptions } = {}
-
-  optFooter: AbstractControlOption[] = [ //opciones de componente
-    new AbstractControlOption({
-      viewOptions: new EventButtonViewOptions({
+  optFooter: AbstractControlViewOption[] = [ //opciones de componente
+    {
+      config: new EventButtonConfig({
         text: "Aceptar", //texto del boton
         action: "submit", //accion del evento a realizar
         color: "primary",
         fieldEvent: this.optField
       }),
-      config: new FormGroupConfig({}),
-    }),
-
-    new AbstractControlOption({
-      viewOptions: new EventIconViewOptions({
-        icon: "add", //texto del boton
-        action: "clear", //accion del evento a realizar
-        color: "accent",
-        fieldEvent: this.optField
-      }) ,
-      config: new FormGroupConfig({}),
-    }),
-
-    new AbstractControlOption({
-      viewOptions: new EventIconViewOptions({
+    },
+    {
+      config: new EventIconConfig({
         icon: "arrow_back", //texto del boton
         action: "back", //accion del evento a realizar
         color: "accent",
         fieldEvent: this.optField
-      }),
-      config: new FormGroupConfig({}),
-    }),
+      })
+    },
   ]; 
   
   inputSearchGo: boolean = true; //flag para activar / desactivar componente inputSearchGo
@@ -104,6 +92,7 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
            * @todo es posible evitar una doble asignacion?
            */
           this.form.reset()
+          
           this.fc.initValue(this.config, this.form, this.fc.defaultValues(this.config))
           if(!isEmptyObject(data)) this.fc.initValue(this.config, this.form, data);
           if(!isEmptyObject(this.storageValues)) this.fc.initValue(this.config, this.form, this.storageValues)
@@ -111,6 +100,7 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
            * Debe hacerse una doble asignacion porque no todos los valores se encuentran en el storage, solo los que no se encuentran deshabilitados
            * No se recomienda deshabilitar valores del formArray, no esta correctamente probado el storage y la inicializacion para estos valores
            */
+
           return true;
         }
       ),

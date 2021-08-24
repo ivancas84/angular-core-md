@@ -9,17 +9,17 @@
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
     <mat-progress-bar *ngIf="!load" 
                       mode="indeterminate"></mat-progress-bar>
-
     <core-search-dynamic *ngIf="searchForm" 
                          [display]="display$.value" 
                          [config]="searchConfig"
                          [form]="searchForm"></core-search-dynamic>
     
-    <core-abstract-control-view [viewOptions]="nestedComponent"></core-abstract-control-view>
+    <core-abstract-control-view [config]="config" [control]="form"></core-abstract-control-view>
 
     <mat-card *ngIf="optFooter.length">
       <mat-card-content>
-        <core-abstract-control-view *ngFor="let o of optFooter" [control]="o.control" [config]="o.config" [viewOptions]="o.viewOptions"></core-abstract-control-view>          
+        <core-abstract-control-view *ngFor="let o of optFooter" 
+                                    [config]="o.config" [control]="o.control" ></core-abstract-control-view>          
       </mat-card-content>
     </mat-card>
   </ng-container>

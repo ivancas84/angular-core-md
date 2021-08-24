@@ -1,16 +1,16 @@
-<a *ngIf="field.value; else disableOpt"
+<a *ngIf="control.value; else disableOpt"
   mat-mini-fab 
-  [routerLink]="'/'+routerLink"
+  [routerLink]="'/'+config.routerLink"
   [queryParams]="queryParams"
-  [target]="target"
-  [title]="title"
-  [color]="color"
+  [target]="config.target"
+  [title]="config.title"
+  [color]="config.color"
 >
-   <mat-icon>{{icon}}</mat-icon>
+   <mat-icon>{{config.icon}}</mat-icon>
  </a>
 
  <ng-template #disableOpt>
   <a mat-mini-fab 
      disabled
-     [title]="title"><mat-icon>{{icon}}</mat-icon></a>
+     [title]="config.title"><mat-icon>{{config.icon}}</mat-icon></a>
   </ng-template>

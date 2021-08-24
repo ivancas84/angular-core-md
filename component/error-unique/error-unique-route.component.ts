@@ -12,15 +12,15 @@ export class ErrorUniqueRouteComponent implements OnInit{
    */
 
   @Input() validatorMsg: UniqueValidatorMsg; //validators
-  @Input() field: FormControl
+  @Input() control: FormControl
 
   uniqueValue: string;
 
   ngOnInit(): void {
-   this.field.statusChanges.subscribe(
+   this.control.statusChanges.subscribe(
       status => {
-        if(this.field.hasError("notUnique")){
-          this.uniqueValue = this.field.getError("notUnique");
+        if(this.control.hasError("notUnique")){
+          this.uniqueValue = this.control.getError("notUnique");
               this.validatorMsg["queryParams"][this.validatorMsg["uniqueParam"]] = this.uniqueValue
           }
         }

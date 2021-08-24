@@ -1,61 +1,31 @@
-<ng-container *ngIf="config && (config.id == 'form_control'); else abstract">
-  <core-field-wrap [config]="config" [field]="control"></core-field-wrap>
-</ng-container>
 
-<ng-template #abstract>
-<ng-container  [ngSwitch]="viewOptions.id">
+<span [ngSwitch]="config.componentId">
 
-  <core-fieldset-dynamic *ngSwitchCase="'fieldset'"
-                       [fieldset]="viewOptions.fieldset"
-                       [config]="viewOptions.config"
-                       [sort]="viewOptions.sort"
-                       [title]="viewOptions.title"
-                       [entityName]="viewOptions.entityName"
-                       [intro]="viewOptions.intro"
-                       [optTitle]="viewOptions.optTitle"></core-fieldset-dynamic>
+  <core-fieldset-dynamic *ngSwitchCase="'fieldset'" [config]="config" [control]="control"></core-fieldset-dynamic>
+  <core-table-dynamic *ngSwitchCase="'table'" [config]="config" [control]="control"></core-table-dynamic>
+  <core-input-text *ngSwitchCase="'input_text'" [config]="config" [control]="control"></core-input-text>
+  <core-input-date *ngSwitchCase="'input_date'" [config]="config" [control]="control"></core-input-date>
+  <core-control-value *ngSwitchCase="'control_value'" [config]="config" [control]="control"></core-control-value>
+  <core-control-label *ngSwitchCase="'control_label'" [config]="config" [control]="control"></core-control-label>
+  <core-control-date *ngSwitchCase="'control_date'" [config]="config" [control]="control"></core-control-date>
+  <core-input-select-param *ngSwitchCase="'input_select_param'" [config]="config" [control]="control"></core-input-select-param>
+  <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" [config]="config" [control]="control"></core-input-select-checkbox>
+  <core-input-select *ngSwitchCase="'input_select'" [config]="config" [control]="control"></core-input-select>
+  <core-input-ym *ngSwitchCase="'input_ym'" [config]="config" [control]="control"></core-input-ym>
+  <core-link-text *ngSwitchCase="'link_text'" [config]="config" [control]="control"></core-link-text>
+  <core-field-wrap-router-link *ngSwitchCase="'wrap_router_link'" [config]="config" [control]="control"></core-field-wrap-router-link>
+  <core-input-select-label *ngSwitchCase="'input_select_label'" [config]="config" [control]="control"></core-input-select-label>
+  <core-event-button *ngSwitchCase="'event_button'" [config]="config" [control]="control"></core-event-button>
+  <core-event-icon *ngSwitchCase="'event_icon'" [config]="config" [control]="control" [index]="index"></core-event-icon>
+  <core-textarea *ngSwitchCase="'textarea'" [config]="config" [control]="control"></core-textarea>
+  <core-field-wrap-card *ngSwitchCase="'wrap_card'" [config]="config" [control]="control"></core-field-wrap-card>
+  
+  
+    <ng-container *ngSwitchDefault>
+      {{config.componentId}}
+                      
+    </ng-container>
+  
 
-  <core-table-dynamic *ngSwitchCase="'table'"
-                      [config]="viewOptions.config"
-                      [fieldset]="viewOptions.fieldset"
-                      [title]="viewOptions.title"
-                      [sortDisabled]="viewOptions.sortDisabled"
-                      [optTitle]="viewOptions.optTitle"
-                      [titleLoad]="viewOptions.titleLoad"
-                      [optField]="viewOptions.optField"
-                      [optTitle]="viewOptions.optTitle"
-                      [optColumn]="viewOptions.optColumn"
-                      [entityName]="viewOptions.entityName"
-                      [sortActive]="viewOptions.sortActive"
-                      [sortDirection]="viewOptions.sortDirection"
-                      [serverSortTranslate]="viewOptions.serverSortTranslate"
-                      [serverSortObligatory]="viewOptions.serverSortObligatory"
-                      [length]="viewOptions.length"
-                      [loadLength]="viewOptions.loadLength"
-                      [display]="viewOptions.display"
-                      [showPaginator]="viewOptions.showPaginator"
-                      [footerConfig]="viewOptions.footerConfig"
-                      [footer]="viewOptions.footer"
-                      ></core-table-dynamic>
+</span>
 
-  <core-event-icon *ngSwitchCase="'event_icon'"
-                         [control]="control"
-                         [index]="index"
-                         [fieldEvent]="viewOptions.fieldEvent"
-                         [icon]="viewOptions.icon"
-                         [color]="viewOptions.color"
-                         [action]="viewOptions.action"
-                         [ariaLabel]="viewOptions.ariaLabel"
-                         [title]="viewOptions.title"
-                         ></core-event-icon>
-
-  <core-event-button *ngSwitchCase="'event_button'"
-                      [control]="control"
-                      [fieldEvent]="viewOptions.fieldEvent"
-                      [text]="viewOptions.text"
-                      [color]="viewOptions.color"
-                      [action]="viewOptions.action"
-                      [ariaLabel]="viewOptions.ariaLabel"
-                      [title]="viewOptions.title"></core-event-button>                       
-</ng-container>
-
-</ng-template>

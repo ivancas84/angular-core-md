@@ -1,10 +1,10 @@
 <mat-form-field>
-  <mat-label>{{title}}</mat-label>
-  <textarea matInput [formControl]="field" placeholder="{{placeholder}}"></textarea>
-  <mat-error *ngFor="let v of validatorMsgs">
-    <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
-    <core-error-unique-route *ngIf="field.hasError('notUnique') && v.id == 'notUnique' && v.route" 
+  <mat-label>{{config.title}}</mat-label>
+  <textarea matInput [formControl]="control" placeholder="{{config.placeholder}}"></textarea>
+  <mat-error *ngFor="let v of config.validatorMsgs">
+    <span *ngIf="control.hasError(v.id)">{{v.message}}</span>
+    <core-error-unique-route *ngIf="control.hasError('notUnique') && v.id == 'notUnique' && v.route" 
                              [validatorMsg]="v" 
-                             [field]="field"></core-error-unique-route>
+                             [control]="control"></core-error-unique-route>
   </mat-error>
 </mat-form-field>

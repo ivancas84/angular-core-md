@@ -12,7 +12,7 @@ export class FormConfigService {
   public defaultValues(config: FormControlsConfig): any  {
     var dv = {}
     Object.keys(config.controls).forEach(key => {
-      switch(config.controls[key].id){
+      switch(config.controls[key].controlId){
         case "form_control": case "form_array":
           dv[key] = config.controls[key].default;
         break;
@@ -49,7 +49,7 @@ export class FormConfigService {
 
   initValue(config: FormControlsConfig, form: FormGroup, value: { [key: string]: any; }): void {
     Object.keys(value).forEach(key => { 
-      if(config.controls[key].id == "form_array"){
+      if(config.controls[key].controlId == "form_array"){
         this.initArray(
           config.controls[key] as FormArrayConfig, 
           form.controls[key] as FormArray, 

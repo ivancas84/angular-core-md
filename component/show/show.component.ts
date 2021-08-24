@@ -9,13 +9,12 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
 import { FormArrayConfig, FormStructureConfig } from '@class/reactive-form-config';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FormConfigService } from '@service/form-config/form-config.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { StructureComponent } from '@component/structure/structure.component';
 import { ValidatorsService } from '@service/validators/validators.service';
-import { AbstractControlViewOptions, TableViewOptions } from '@class/abstract-control-view-options';
 
 
 @Component({
@@ -28,13 +27,12 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
    */
 
   form: FormArray = new FormArray([])
-
   config: FormArrayConfig
   length?: number; //longitud total de los datos a mostrar
   loadLength: boolean = true; //flag para indicar que se debe consultar longitud
   
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
-  nestedComponent: AbstractControlViewOptions = new TableViewOptions() //Debe implementar AbstractControlViewOptionsArray
+  // nestedComponent: AbstractControlViewOptions = new TableViewOptions() //Debe implementar AbstractControlViewOptionsArray
 
   searchForm: FormGroup
   searchConfig: FormStructureConfig
@@ -51,7 +49,9 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
     protected router: Router, 
     protected snackBar: MatSnackBar,
     protected location: Location, 
-    protected validators: ValidatorsService
+    protected validators: ValidatorsService,
+    protected fb: FormBuilder
+
   ) {
     super(dialog, storage, dd, snackBar, router, location, route)
   }
@@ -90,17 +90,17 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
         data => {
           if (!this.loadLength) this.length = data.length
           this.fc.initArray(this.config, this.form, data)
-          this.initNestedComponent()
+          this.initConfig()
           return this.load = true
         }
       ),
     )
   }
 
-  initNestedComponent(){
-    this.nestedComponent["loadLength"] = this.loadLength
-    this.nestedComponent["length"] = this.length
-    this.nestedComponent["display"] = this.display$.value
+  initConfig(){
+    this.config["loadLength"] = this.loadLength
+    this.config["length"] = this.length
+    this.config["display"] = this.display$.value
   }
 
 

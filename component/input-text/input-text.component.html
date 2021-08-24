@@ -1,18 +1,18 @@
-<mat-form-field [style.width]="width"> 
-  <mat-label *ngIf="title && showTitle">{{title}}</mat-label>
+<mat-form-field [style.width]="config.width"> 
+  <mat-label *ngIf="config.label && config.showLabel">{{config.label}}</mat-label>
   
   <input matInput
-         [readonly]="readonly"
-         [type]="type"
-         [formControl]="field" 
-         [placeholder]="placeholder"
+         [readonly]="config.readonly"
+         [type]="config.type"
+         [formControl]="control" 
+         [placeholder]="config.placeholder"
   >
 
-  <mat-error *ngFor="let v of validatorMsgs">
-    <ng-container *ngIf="field.hasError(v.id)">{{v.message}}</ng-container>
+  <mat-error *ngFor="let v of config.validatorMsgs">
+    <ng-container *ngIf="control.hasError(v.id)">{{v.message}}</ng-container>
     <ng-container *ngIf="v.id == 'notUnique' && v.route">&nbsp;
       <core-error-unique-route [validatorMsg]="v" 
-                               [field]="field"></core-error-unique-route>
+                               [control]="control"></core-error-unique-route>
     </ng-container>
   </mat-error>
 </mat-form-field>

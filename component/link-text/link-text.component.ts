@@ -1,29 +1,41 @@
-import { Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit, Type} from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 import { startWith } from 'rxjs/operators';
  
+export class LinkTextConfig extends FormControlConfig {
+  componentId: string = "link_text"
+  download: boolean = false
+  prefix: string
+  target: string
+  title?: string
+
+  constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
 @Component({
   selector: 'core-link-text',
   templateUrl: './link-text.component.html',
 })
-export class LinkTextComponent implements OnInit {
-  /**
-   * Visualizar opciones
-   */
+export class LinkTextComponent implements ControlComponent, OnInit {
+  @Input() config: LinkTextConfig;
+  @Input() control: FormControl;
 
-  @Input() download: boolean = false
-  @Input() prefix: string
-  @Input() target: string
-  @Input() title?: string
-  @Input() field: FormControl
   href: string
 
   ngOnInit(): void {
-    this.field.valueChanges.pipe(
-        startWith(this.field.value)
+    this.control.valueChanges.pipe(
+        startWith(this.control.value)
       ).subscribe(
-        () => {
-          this.href = this.prefix+this.field.value
+        value => {
+          this.href = this.config.prefix+value
           //this.queryParams[this.key] = this.field.value
         }
       )

@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, EventEmitter, Output, ElementRef, ViewChild } from '@angular/core';
+import { Input, Component, OnInit, ElementRef, ViewChild, Type } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -7,9 +7,11 @@ import { Sort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Display } from '@class/display';
-import { FormArrayConfig, FormControlConfig,  AbstractControlOption, FormGroupConfig } from '@class/reactive-form-config';
+import { FormArrayConfig, FormGroupConfig, FormGroupFactory, FormConfig, ControlComponent } from '@class/reactive-form-config';
+import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
+import { EventIconComponent } from '@component/event-icon/event-icon.component';
 import { emptyUrl } from '@function/empty-url.function';
 import { naturalCompare } from '@function/natural-compare';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
@@ -20,40 +22,61 @@ import { debounceTime, map } from 'rxjs/operators';
 declare function copyFormatted(html): any;
 declare function printHtml(html): any;
 
-@Component({
-  selector: 'core-table-dynamic',
-  templateUrl: './table-dynamic.component.html',
-  styles:[`
-  .mat-card-content { overflow-x: auto; }
-  .mat-table.mat-table { min-width: 500px; }
-  `],
-})
-export class TableDynamicComponent implements OnInit { //6
-  @Input() entityName?: string
-  @Input() config: FormArrayConfig
-  @Input() footer: FormGroup 
-  @Input() footerConfig: FormGroupConfig 
-  
-  @Input() fieldset: FormArray
-  @Input() title: string //titulo del componente
-  @Input() sortActive: string = null;
-  @Input() sortDirection: string = "asc";
-  @Input() sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
+export class TableDynamicConfig extends FormArrayConfig {
+  componentId: string = "table"
 
-  @Input() optTitle: AbstractControlOption[] = []; //opciones de titulo
-  @Input() optField: FormControl; //field de opciones
+  entityName?: string
+  factory: FormGroupFactory //es necesario definir una clase concreta de FormGroupFactory que permita definir el FormGroup del FormArray
+  controls: { [index: string]: FormGroupConfig | FormArrayConfig }
+
+  footer?: FormGroup 
+  footerConfig?: FormGroupConfig 
+  
+  title?: string //titulo del componente
+  sortActive: string = null;
+  sortDirection: string = "asc";
+  sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
+  optField: FormControl = new FormControl(); //field de opciones
+  optTitle: FormConfig[] = [ //opciones de titulo
+    new FormArrayConfig({
+      component:EventIconComponent,
+      icon: "content_copy", 
+      action: "copy_content", 
+      color: "primary",
+      title:"Copiar",
+      fieldEvent: this.optField,
+    }),
+    new FormArrayConfig({
+      component:EventIconComponent,
+      icon: "print", 
+      action: "print_content",
+      color: "primary",
+      title:"Copiar",
+      fieldEvent: this.optField
+    }),
+  ]; 
   /**
    * se verifica el valueChanges y se ejecuta la accion seleccionada
    */
 
-  @Input() optColumn: AbstractControlOption[] = []; //columna opciones
-  @Input() display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
-  @Input() length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
-  @Input() serverSortTranslate: { [index: string]: string[] } = {}; //traduccion de campos de ordenamiento
+  optColumn: AbstractControlViewOption[] = []; //columna opciones
+  /**
+   {  //boton eliminar 
+      config: new EventIconConfig({
+        action:"remove",
+        color: "accent",
+        fieldEvent:this.optField,
+        icon:"delete"
+      }),
+    }
+   */
+  display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
+  length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
+  serverSortTranslate: { [index: string]: string[] } = {}; //traduccion de campos de ordenamiento
   /**
    * @example {"nombre":["per-apellidos","per-nombres"], "departamento_judicial":["per_dj-codigo"]}
    */
-   @Input() serverSortObligatory: string[] = []; //ordenamiento obligatorio en el servidor
+   serverSortObligatory: string[] = []; //ordenamiento obligatorio en el servidor
    /**
     * Ciertos campos que son utilizados en subcomponentes y traducidos a otros valores puede ser necesario ordenarlos siempre en el servidor
     * Si se ordenan en el cliente, no se proporcionara un ordenamiento correcto
@@ -63,6 +86,31 @@ export class TableDynamicComponent implements OnInit { //6
   /**
    * Cada elemento debe ser uno de los siguientes OptRouteIcon | OptLinkIcon | OptRouteText | OptLinkText
    */
+   showPaginator:boolean = true; //flag para visualizar el paginador
+   pageSizeOptions=[10, 25, 50, 100] 
+ 
+   constructor(attributes: any = {}) {
+    super(attributes)
+    for(var a in attributes){
+      if(attributes.hasOwnProperty(a)){
+        this[a] = attributes[a]
+      }
+    }
+  }
+}
+
+
+@Component({
+  selector: 'core-table-dynamic',
+  templateUrl: './table-dynamic.component.html',
+  styles:[`
+  .mat-card-content { overflow-x: auto; }
+  .mat-table.mat-table { min-width: 500px; }
+  `],
+})
+export class TableDynamicComponent implements ControlComponent, OnInit { //6
+  @Input() config: TableDynamicConfig;
+  @Input() control: FormArray;
 
   displayedColumns: string[]; //columnas a visualizar
   footerColumns: string[]; //columnas de footer a visualizar
@@ -72,28 +120,7 @@ export class TableDynamicComponent implements OnInit { //6
 
   protected subscriptions = new Subscription(); //suscripciones en el ts
 
-  @Input() showPaginator:boolean = true; //flag para visualizar el paginador
-  @Input() pageSizeOptions=[10, 25, 50, 100] 
-
   @ViewChild(MatTable) table: MatTable<any>;
-
-
-  /**
-   * si no se define display o length no se muestra la paginacion
-   */
-
-
-
-  @Output() eventTable: EventEmitter<any> = new EventEmitter();
-  
-
-  initOptField(){
-    var s = this.optField.valueChanges.subscribe (
-      value => this.switchOptField(value),
-      error =>  this.snackBar.open(JSON.stringify(error), "X") 
-    );
-    this.subscriptions.add(s);
-  }
 
   constructor(
     protected router: Router,
@@ -103,31 +130,35 @@ export class TableDynamicComponent implements OnInit { //6
     protected storage: SessionStorageService
   ) {}
 
-
-  //load$: Observable<any>
   
+  initOptField(){
+    var s = this.config.optField.valueChanges.subscribe (
+      value => this.switchOptField(value),
+      error =>  this.snackBar.open(JSON.stringify(error), "X") 
+    );
+    this.subscriptions.add(s);
+  }
+
   ngOnInit(): void {
     this.initOptField();
     this.initFieldset();
     this.initDisplayedColumns();
-    console.log(this.footer);
-    if(!this.length) this.length = this.fieldset.controls.length;    
+    if(!this.config.length) this.config.length = this.control.controls.length;    
   }
 
   initDisplayedColumns(){
     this.displayedColumns = []
     Object.keys(this.config.controls).forEach(key => {
-      if((this.config.controls[key] as FormControlConfig).type.id != "hidden")
-        this.displayedColumns.push(key)
+      if(this.config.controls[key].componentId) this.displayedColumns.push(key)
     })
-    if(this.optColumn.length) this.displayedColumns.push("options");
-    if(this.footer && this.footerConfig) this.footerColumns = this.displayedColumns
+    if(this.config.optColumn.length) this.displayedColumns.push("options");
+    if(this.config.footer && this.config.footerConfig) this.footerColumns = this.displayedColumns
   }
 
 
   initFieldset(){
-    this.fieldset.valueChanges.pipe(
-      //startWith(this.fieldset.value),
+    this.control.valueChanges.pipe(
+      //startWith(this.control.value),
       debounceTime(100),
       map(
         () => {
@@ -141,6 +172,7 @@ export class TableDynamicComponent implements OnInit { //6
   } 
 
   switchOptField($event){
+    console.log($event)
     switch($event.action){
       case "remove": this.remove($event.index); break;
       case "copy_content": this.copyContent(); break;
@@ -150,20 +182,20 @@ export class TableDynamicComponent implements OnInit { //6
   }
 
   onChangePage($event: PageEvent){
-    this.display.setPage($event.pageIndex+1);
-    this.display.setSize($event.pageSize);
-    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
+    this.config.display.setPage($event.pageIndex+1);
+    this.config.display.setSize($event.pageSize);
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.config.display.encodeURI());  
   }
 
   serverSort(sort: Sort): boolean{ 
-    if((!this.length || !this.display || this.fieldset.controls.length >= this.length)) {
-      if(!this.serverSortObligatory.includes(sort.active)) return false;
+    if((!this.config.length || !this.config.display || this.control.controls.length >= this.config.length)) {
+      if(!this.config.serverSortObligatory.includes(sort.active)) return false;
     }
-    this.display.setOrderByKeys(
-      this.serverSortTranslate.hasOwnProperty(sort.active) ? this.serverSortTranslate[sort.active] : [sort.active]
+    this.config.display.setOrderByKeys(
+      this.config.serverSortTranslate.hasOwnProperty(sort.active) ? this.config.serverSortTranslate[sort.active] : [sort.active]
     )
-    this.display.setPage(1)
-    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
+    this.config.display.setPage(1)
+    this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.config.display.encodeURI());  
     return true;
   }
 
@@ -174,13 +206,13 @@ export class TableDynamicComponent implements OnInit { //6
 
     if (!sort.active || sort.direction === '') return;
     
-    const data = this.fieldset.value;
+    const data = this.control.value;
     
     data.sort((a, b) => {    
       return (sort.direction === 'asc') ? naturalCompare(a[sort.active],b[sort.active]) : naturalCompare(b[sort.active],a[sort.active])
     });
 
-    this.fieldset.patchValue(data)
+    this.control.patchValue(data)
     //this.table.renderRows(); se ejecuta el renderRows del valueChanges definido en el OnInit
   }
  
@@ -230,16 +262,16 @@ export class TableDynamicComponent implements OnInit { //6
     /**
      * Invocar api de eliminación indicda en atributo deleteApi
      */
-    return this.dd.post("delete", this.entityName, [this.fieldset.controls[index].get("id")])
+    return this.dd.post("delete", this.config.entityName, [this.control.controls[index].get("id")])
   }
 
   deleted(index, response){
     /**
      * Acciones una vez realizada la eliminación
      */
-    this.fieldset.removeAt(index);
+    this.control.removeAt(index);
     this.snackBar.open("Registro eliminado", "X")
-    this.length--
+    this.config.length--
   }
 
   removeStorage(response){
@@ -248,22 +280,24 @@ export class TableDynamicComponent implements OnInit { //6
   }
 
 
-  fg(index) { return this.fieldset.controls[index]; }
+  fg(index) { return this.control.controls[index]; }
   /**
    * Metodo utilizado para indicar el formGroup en el template
    */
    
   add() {
     var fg = this.config.factory.formGroup();
-    this.fieldset.push(fg); 
+    this.control.push(fg); 
   }
  
   remove(index) { 
     /**
      * Incorporar el control _mode al fieldset!
      */
-    if(!this.fieldset.controls[index].get("id").value) this.fieldset.removeAt(index); 
-    else this.fieldset.controls[index].get("_mode").setValue("delete");
+
+    console.log(this.control)
+    if(!this.control.controls[index].get("id").value) this.control.removeAt(index); 
+    else this.control.controls[index].get("_mode").setValue("delete");
   }
 
   
@@ -271,6 +305,6 @@ export class TableDynamicComponent implements OnInit { //6
 }
 
 
- // _controller(index: number) { return this.fieldset.controls[index].get('_mode')}
+ // _controller(index: number) { return this.control.controls[index].get('_mode')}
   
   

@@ -3,7 +3,7 @@ import { AbstractControl, FormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AbstractControlOption } from "@class/reactive-form-config";
+import { AbstractControlOption, FormConfig, FormControlConfig } from "@class/reactive-form-config";
 import { DialogAlertComponent } from "@component/dialog-alert/dialog-alert.component";
 import { emptyUrl } from "@function/empty-url.function";
 import { logValidationErrors } from "@function/log-validation-errors";
@@ -13,6 +13,7 @@ import { SessionStorageService } from "@service/storage/session-storage.service"
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { Location } from '@angular/common';
 import { map } from "rxjs/operators";
+import { AbstractControlViewOption } from "@component/abstract-control-view/abstract-control-view.component";
 
 
 
@@ -32,7 +33,41 @@ export abstract class StructureComponent implements OnInit {
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
    */
    optField: FormControl = new FormControl(null)//field de opciones para disparar eventos
-   optFooter: AbstractControlOption[] = [] //opciones de componente
+   optFooter: AbstractControlViewOption[] = [] //opciones de componente
+   /**
+    { //boton aceptar
+      config: new EventButtonConfig({
+        text: "Aceptar", 
+        action: "submit",
+        color: "primary",
+        fieldEvent: this.optField
+      }),
+    },
+    { //boton agregar
+      config: new EventIconConfig({
+        icon: "add", //texto del boton
+        action: "add", //accion del evento a realizar
+        color: "primary",
+        fieldEvent: this.config.optField
+      })
+    },
+    { //boton volver
+      config: new EventIconConfig({
+        icon: "arrow_back", //texto del boton
+        action: "back", //accion del evento a realizar
+        color: "accent",
+        fieldEvent: this.optField
+      })
+    },
+    { //boton reset
+      config: new EventIconConfig({
+        icon: "autorenew", //texto del boton
+        action: "reset", //accion del evento a realizar
+        color: "accent",
+        fieldEvent: this.optField
+      })
+    },
+    */
    loadParams$: Observable<any> //carga de parametros
    loadDisplay$: Observable<any> //carga de display
    params: { [x: string]: any } //parametros del componente

@@ -1,15 +1,15 @@
 <mat-form-field>
-  <mat-label>{{title}}</mat-label>
-  <input matInput [matDatepicker]="fieldPicker" [formControl]="field" placeholder="{{placeholder}}">
+  <mat-label>{{config.title}}</mat-label>
+  <input matInput [matDatepicker]="fieldPicker" [formControl]="control" placeholder="{{config.placeholder}}">
   <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
-  <mat-datepicker-toggle matSuffix (click)="field.setValue(null)">
+  <mat-datepicker-toggle matSuffix (click)="control.setValue(null)">
     <mat-icon matDatepickerToggleIcon>clear</mat-icon>
   </mat-datepicker-toggle>
   <mat-datepicker #fieldPicker></mat-datepicker>
-  <mat-error *ngFor="let v of validatorMsgs">
-    <span *ngIf="field.hasError(v.id)">{{v.message}}</span>
-    <core-error-unique-route *ngIf="field.hasError('notUnique') && v.id == 'notUnique' && v.route" 
+  <mat-error *ngFor="let v of config.validatorMsgs">
+    <span *ngIf="control.hasError(v.id)">{{v.message}}</span>
+    <core-error-unique-route *ngIf="control.hasError('notUnique') && v.id == 'notUnique' && v.route" 
                              [validatorMsg]="v" 
-                             [field]="field"></core-error-unique-route>
+                             [field]="control"></core-error-unique-route>
   </mat-error>  
 </mat-form-field>

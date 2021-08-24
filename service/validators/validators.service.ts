@@ -40,6 +40,12 @@ export class ValidatorsService { //1.1
     return Validators.pattern("[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}");
   }
 
+  static real(decimal:number = 2): ValidatorFn {
+    return Validators.pattern('^-?[0-9]+(\\.[0-9]{1,'+decimal+'})?$');
+
+
+  }
+
   year(): ValidatorFn {
     /**
      * Validar año (nonNumeric, notYear)
