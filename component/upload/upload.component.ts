@@ -8,6 +8,8 @@ import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.compo
 import { Location } from '@angular/common';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
+import { FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { FieldsetDynamicConfig } from '@component/fieldset/fieldset-dynamic.component';
 
 @Component({
   selector: 'core-upload',
@@ -20,16 +22,14 @@ export abstract class UploadComponent {
    * La idea es subir un archivo que sera procesado en un controlador, no se debe confundir con el Input Upload cuyo proposito es subir el archivo y asignarlo como valor fk de una entidad
    */
 
-  uploadForm: FormGroup = this.fb.group(
+  uploadForm: FormGroup = this.fb.group( //formulario principal
     {
       file: [null, {
         validators: [Validators.required],
       }],
     }
   );
-  /**
-   * Formulario principal
-   */
+
 
   readonly entityName: string;
   /**
