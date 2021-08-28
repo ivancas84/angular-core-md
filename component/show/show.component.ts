@@ -8,7 +8,7 @@ import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.compo
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
-import { FormArrayConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { ConfigFormGroupFactory, FormArrayConfig, FormStructureConfig } from '@class/reactive-form-config';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FormConfigService } from '@service/form-config/form-config.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -54,6 +54,17 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
 
   ) {
     super(dialog, storage, dd, snackBar, router, location, route)
+  }
+
+  ngOnInit(){
+    if(!this.config.factory) this.config.factory = new ConfigFormGroupFactory(this.config)
+    if(this.searchConfig && !this.searchForm) {
+      var c = new ConfigFormGroupFactory(this.searchConfig.controls["params"])
+      this.searchForm = this.fb.group({
+        "params": c.formGroup()
+      })
+    }
+    super.ngOnInit()
   }
   
   loadParams(){
