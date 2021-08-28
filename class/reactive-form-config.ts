@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup } from "@angular/forms"
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms"
 import { ValidatorMsg } from "./validator-msg"
 import { Type } from "@angular/core"
 
@@ -8,6 +8,7 @@ export interface ControlComponent {
 }
 
 export class FormConfig {
+  parent:FormConfig = null
   componentId:string
   controlId: string
   position: number = 0
@@ -17,16 +18,31 @@ export class FormConfig {
   [key: string]: any
 
   constructor(attributes: any = {}) {
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
+    Object.assign(this, attributes)
   }
 }
 
 export interface FormGroupFactory{
-  formGroup(): FormGroup;
+  formGroup(): FormGroup
+}
+
+export class ConfigFormGroupFactory implements FormGroupFactory{
+  config: FormGroupConfig
+
+  public constructor(config: FormGroupConfig){
+    this.config = config;
+  }
+
+  formGroup(): FormGroup {
+    var fg = new FormGroup({});
+    
+    for(var key in this.config.controls) {
+      if(this.config.controls.hasOwnProperty(key)) fg.addControl(key, new FormControl(this.config.controls[key].default))
+    }
+
+    return fg;
+  }
+
 }
 
 export interface SortControl {
@@ -35,24 +51,25 @@ export interface SortControl {
 
 export class FormControlsConfig extends FormConfig {
   //@todo es posible eliminar el sort
-  controls: { [index: string]: FormConfig }
+  controls: { [index: string]: FormConfig } = {}
   
-  contains(key: string){
-    return this.controls.hasOwnProperty(key)
-  }
-  
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
-}
+  contains(key: string){ return this.controls.hasOwnProperty(key) }
 
-export interface FormGroupFactory{
-  formGroup(): FormGroup
+  get(key){ return this.controls[key]  }
+
+  addControl(key: string, control: FormConfig){
+    control.parent = this
+    this.controls[key] = control
+  }
+
+  setControls(controls: { [index: string]: FormConfig }){
+    for(var key in controls) this.addControl(key, controls[key])
+  }
+  
+  constructor(attributes: any = {}, controls:{ [index: string]: FormConfig } = {}) {
+    super(attributes)
+    if(controls) this.setControls(controls)
+  }
 }
 
 export class FormGroupConfig extends FormControlsConfig {
@@ -65,13 +82,8 @@ export class FormStructureConfig extends FormGroupConfig {
    */
   controls: { [index: string]: FormGroupConfig | FormArrayConfig }
 
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
+  constructor(attributes: any = {},controls:{ [index: string]: FormGroupConfig | FormArrayConfig } = {}) {
+    super(attributes, controls)
   }
 }
 
@@ -115,15 +127,6 @@ export class FormArrayConfig extends FormControlsConfig {
    *  NO SE RECOMIENDA DEFINIR VALORES POR DEFECTO PARA FORM ARRAY, 
    * para cada fila se utilizaran los valores por defecto definidos en la configuracion de formgroup
    */
-
-   constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 export class FormControlConfig extends FormConfig {
@@ -142,14 +145,6 @@ export class FormControlConfig extends FormConfig {
   // placeholder: string = null
   // width:FieldWidthOptions = new FieldWidthOptions() //ancho del contenedor
   
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 
@@ -158,25 +153,8 @@ export class FormControlConfig extends FormConfig {
 export class FormWrapConfig extends FormControlConfig {
   controlId: string = "form_control"
   config: FormControlConfig
-
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 export class NoComponentConfig extends FormConfig {
 
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
