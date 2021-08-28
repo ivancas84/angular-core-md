@@ -10,15 +10,6 @@ export class FieldsetDynamicConfig extends FormGroupConfig {
   entityName?: string;
   intro?: string;
   optTitle: FormConfig[] = []; //opciones de titulo
-
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 
