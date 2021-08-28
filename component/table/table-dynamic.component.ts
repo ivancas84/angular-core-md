@@ -27,7 +27,7 @@ export class TableDynamicConfig extends FormArrayConfig {
 
   entityName?: string
   factory: FormGroupFactory //es necesario definir una clase concreta de FormGroupFactory que permita definir el FormGroup del FormArray
-  controls: { [index: string]: FormGroupConfig | FormArrayConfig }
+  controls: { [index: string]: FormGroupConfig }
 
   footer?: FormGroup 
   footerConfig?: FormGroupConfig 
@@ -88,15 +88,6 @@ export class TableDynamicConfig extends FormArrayConfig {
    */
    showPaginator:boolean = true; //flag para visualizar el paginador
    pageSizeOptions=[10, 25, 50, 100] 
- 
-   constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 
