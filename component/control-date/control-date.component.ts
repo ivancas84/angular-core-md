@@ -5,15 +5,6 @@ import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive
 export class ControlDateConfig extends FormControlConfig {
   componentId: string = "control_date"
   format: string = "dd/MM/yyyy"
-
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 @Component({
