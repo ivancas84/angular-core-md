@@ -70,8 +70,10 @@ import { DataDefinitionService } from "@service/data-definition/data-definition.
 import { SessionStorageService } from "@service/storage/session-storage.service";
 import { ValidatorsService } from "@service/validators/validators.service";
 import { CookieService } from "ngx-cookie-service";
-import { CommonModule } from "@angular/common";
+import { CommonModule, registerLocaleData } from "@angular/common";
 
+import localeEsAr from '@angular/common/locales/es-AR';
+registerLocaleData(localeEsAr, 'es-AR');
 
 @NgModule({
   declarations: [
