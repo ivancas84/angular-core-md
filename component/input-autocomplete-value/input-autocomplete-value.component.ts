@@ -5,7 +5,13 @@ import { DataDefinitionService } from '@service/data-definition/data-definition.
 import { map, startWith, mergeMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
+import { FormControlConfig } from '@class/reactive-form-config';
 
+export class InputAutocompleteValueConfig extends FormControlConfig{
+  entityName: string;
+  fieldName: string;
+  label?: string;
+}
 
 @Component({
   selector: 'core-input-autocomplete-value',
@@ -17,10 +23,8 @@ export class InputAutocompleteValueComponent implements OnInit {
    * Define un input independiente para facilitar la incorporacion de funcionalidad adicional (validación de seteo, clear, etc)
    */
 
-  @Input() field: FormControl;
-  @Input() entityName: string;
-  @Input() fieldName: string;
-  @Input() title?: string;
+  @Input() control: FormControl;
+  @Input() config: InputAutocompleteValueConfig;
 
   filteredOptions: Observable<Array<{[key:string]: any}>>;
 
@@ -29,9 +33,9 @@ export class InputAutocompleteValueComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if(!this.title) this.title = this.fieldName;
+    if(!this.config.label) this.config.label = this.config.fieldName;
 
-    this.filteredOptions = this.field.valueChanges.pipe(
+    this.filteredOptions = this.control.valueChanges.pipe(
       startWith(""),
       debounceTime(300),
       distinctUntilChanged(),
@@ -47,12 +51,12 @@ export class InputAutocompleteValueComponent implements OnInit {
   private _filter(value: string): Observable<any> {
     if(value === "") return of([]);
     var display = new Display();
-    display.addField(this.fieldName)    
-    display.addCondition([this.fieldName,"=~",value]);
-    display.setOrderByKeys([this.fieldName]);
-    return this.dd.post("advanced", this.entityName, display).pipe(
+    display.addField(this.config.fieldName)    
+    display.addCondition([this.config.fieldName,"=~",value]);
+    display.setOrderByKeys([this.config.fieldName]);
+    return this.dd.post("advanced", this.config.entityName, display).pipe(
       map(
-        rows => arrayColumn(rows, this.fieldName)
+        rows => arrayColumn(rows, this.config.fieldName)
       )
     );
   }

@@ -1,6 +1,6 @@
-import { Input, Component, Type } from '@angular/core';
+import { Input, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive-form-config';
+import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 
 export class InputSelectCheckboxConfig extends FormControlConfig {
   componentId: string = "input_select_checkbox"

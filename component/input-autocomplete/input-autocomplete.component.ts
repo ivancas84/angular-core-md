@@ -2,12 +2,18 @@ import { Input, OnInit, Component, DoCheck, OnDestroy} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subscription, of } from 'rxjs';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
-import { first, map, startWith, mergeMap, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
+import { map, startWith, mergeMap, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
 import { Display } from '../../class/display';
 import { getControlName } from '@function/get-control-name';
 import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
 import { ValidatorMsg } from '@class/validator-msg';
+import { FormControlConfig } from '@class/reactive-form-config';
 
+export class InputAutocompleteConfig extends FormControlConfig {
+  entityName: string;
+  label?: string;
+  validatorMsgs: ValidatorMsg[] = [];
+}
 
 @Component({
   selector: 'core-input-autocomplete',
@@ -36,11 +42,8 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
    * En versiones posteriores, una vez que displayFn permita Observables, se puede reimplementar esta funcionalidad
    */
 
-  @Input() field: FormControl;
-  @Input() entityName: string;
-  @Input() title?: string;
-  @Input() validatorMsgs: ValidatorMsg[] = [];
-
+  @Input() config: InputAutocompleteConfig
+  @Input() control: FormControl;
 
   public label: string = null;
   /**
@@ -61,8 +64,8 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   ) { }
 
   ngDoCheck(): void {
-    if(this.field.errors && !this.searchControl.errors) this.searchControl.setErrors(this.field.getError);
-    if(this.field.dirty && !this.searchControl.dirty) this.searchControl.markAsDirty();
+    if(this.control.errors && !this.searchControl.errors) this.searchControl.setErrors(this.control.getError);
+    if(this.control.dirty && !this.searchControl.dirty) this.searchControl.markAsDirty();
   }
   
   get uniqueParams() {
@@ -70,20 +73,18 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
      * Definir parametros de administracion si se ingresa un valor unico
      */
     let queryParams = {};    
-    queryParams[getControlName(this.field)] = this.field.value;
+    queryParams[getControlName(this.control)] = this.control.value;
     return queryParams;
   }
 
   ngOnInit(): void {
-    if(!this.title) this.title = this.entityName;
-
-    this.searchControl.setValidators(this.field.validator)
+    this.searchControl.setValidators(this.control.validator)
 
     this.filteredOptions = this.searchControl.valueChanges.pipe(
       startWith(""),
       tap(value => {
-        if(value && (typeof value != "string" ) && (value.id != this.field.value)) {
-          this.field.setValue(value.id)  
+        if(value && (typeof value != "string" ) && (value.id != this.control.value)) {
+          this.control.setValue(value.id)  
         }
       }),
       debounceTime(300),
@@ -98,8 +99,8 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
       })
     )
 
-    this.load$ = this.field.valueChanges.pipe(
-      startWith(this.field.value),
+    this.load$ = this.control.valueChanges.pipe(
+      startWith(this.control.value),
       tap(
         value => {
           if(!this.searchControl.value
@@ -111,7 +112,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
       ),
       switchMap(
         value => {
-          return this.ddl.label(this.entityName, value)
+          return this.ddl.label(this.config.entityName, value)
         }
       ),
       map(
@@ -124,14 +125,14 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   }
   
   initValue(value){
-    var s =this.dd.get(this.entityName, value).subscribe(
+    var s =this.dd.get(this.config.entityName, value).subscribe(
       row => {
         if(row) { 
           this.searchControl.setValue(row);
           this.searchControl.disable();
         } else {
           this.searchControl.setValue("");
-          if(!this.field.disabled) this.searchControl.enable();
+          if(!this.control.disabled) this.searchControl.enable();
         }
       }
     );
@@ -142,7 +143,7 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
     if(value === "") return of([]);
     var display = new Display();
     display.addCondition(["_label","=~",value]);
-    return this.dd.all(this.entityName, display);
+    return this.dd.all(this.config.entityName, display);
   }
   
   ngOnDestroy () { this.subscriptions.unsubscribe() }

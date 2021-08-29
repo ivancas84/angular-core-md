@@ -9,6 +9,7 @@ export interface ControlComponent {
 
 export class FormConfig {
   parent:FormConfig = null
+  label?:string
   componentId:string
   controlId: string
   position: number = 0

@@ -10,15 +10,6 @@ export class InputDateConfig extends FormControlConfig {
   title?: string;
   placeholder?: string = "Seleccione fecha";
   readonly?: boolean = false;
-
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 @Component({
