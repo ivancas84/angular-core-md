@@ -1,6 +1,7 @@
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms"
 import { ValidatorMsg } from "./validator-msg"
 import { Type } from "@angular/core"
+import { isEmptyObject } from "@function/is-empty-object.function"
 
 export interface ControlComponent {
   config:FormConfig
@@ -68,8 +69,10 @@ export class FormControlsConfig extends FormConfig {
   }
   
   constructor(attributes: any = {}, controls:{ [index: string]: FormConfig } = {}) {
-    super(attributes)
-    if(controls) this.setControls(controls)
+    super({})
+    Object.assign(this, attributes)
+    if(!isEmptyObject(controls)) this.setControls(controls)
+    
   }
 }
 
@@ -93,11 +96,7 @@ export class AbstractControlOption {
   control?: AbstractControl
 
   constructor(attributes: any) {
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
+    Object.assign(this, attributes)
   }
 }
 
