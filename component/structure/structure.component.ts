@@ -201,9 +201,8 @@ export abstract class StructureComponent implements OnInit {
 
   initParams(params: any){ this.params = params; }
 
-  switchOptField(value: any){
-    console.log(value);
-    switch(value.action){
+  switchOptField(data: any){
+    switch(data.action){
       case "submit": this.onSubmit(); break;
       case "clear": this.clear(); break;
       case "back": this.back(); break;
