@@ -31,10 +31,7 @@ export class InputYearConfig extends FormControlConfig {
     {provide: MAT_DATE_FORMATS, useValue: Y_FORMATS},
   ],
 })
-export class InputYearComponent implements ControlComponent, OnInit {
-  ngOnInit(): void {
-    console.log(this.control)
-  }
+export class InputYearComponent implements ControlComponent {
  
   /**
    * Si se desea inicializar con el valor por defecto de mes y año actual
