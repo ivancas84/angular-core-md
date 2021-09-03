@@ -38,7 +38,7 @@ export class FieldWrapRouterLinkComponent extends FieldWrapComponent implements 
         var key = this.config.params[i].match(/\{\{(.*?)\}\}/)
         if(key) this.queryParams[i] = this.control.parent.controls[key[1]].value;
       }
-      }
+    }
   }
 
 }
