@@ -2,9 +2,9 @@
   <mat-card-header>
     <mat-card-title>
       {{config.title}}
-      <!-- <core-abstract-control-view *ngFor="let o of config.optTitle" 
+      <core-abstract-control-view *ngFor="let o of config.optTitle" 
                                   [config]="o.config"
-                                  [control="o.title"]></core-abstract-control-view>           -->
+                                  [control]="o.control"></core-abstract-control-view>
     </mat-card-title>
   </mat-card-header>
   <mat-card-content #content>
