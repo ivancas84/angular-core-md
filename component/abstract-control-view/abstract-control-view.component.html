@@ -3,6 +3,7 @@
 
   <core-fieldset-dynamic *ngSwitchCase="'fieldset'" [config]="config" [control]="control"></core-fieldset-dynamic>
   <core-table-dynamic *ngSwitchCase="'table'" [config]="config" [control]="control"></core-table-dynamic>
+  <core-input-autocomplete *ngSwitchCase="'input_autocomplete'" [config]="config" [control]="control"></core-input-autocomplete>
   <core-input-date *ngSwitchCase="'input_date'" [config]="config" [control]="control"></core-input-date>
   <core-input-select *ngSwitchCase="'input_select'" [config]="config" [control]="control"></core-input-select>
   <core-input-select-checkbox *ngSwitchCase="'input_select_checkbox'" [config]="config" [control]="control"></core-input-select-checkbox>
@@ -14,16 +15,18 @@
   <core-control-value *ngSwitchCase="'control_value'" [config]="config" [control]="control"></core-control-value>
   <core-control-label *ngSwitchCase="'control_label'" [config]="config" [control]="control"></core-control-label>
   <core-control-date *ngSwitchCase="'control_date'" [config]="config" [control]="control"></core-control-date>
+  <core-control-boolean *ngSwitchCase="'control_boolean'" [config]="config" [control]="control"></core-control-boolean>
   <core-field-wrap-router-link *ngSwitchCase="'wrap_router_link'" [config]="config" [control]="control"></core-field-wrap-router-link>
   <core-link-text *ngSwitchCase="'link_text'" [config]="config" [control]="control"></core-link-text>
   <core-event-button *ngSwitchCase="'event_button'" [config]="config" [control]="control"></core-event-button>
   <core-event-icon *ngSwitchCase="'event_icon'" [config]="config" [control]="control" [index]="index"></core-event-icon>
   <core-textarea *ngSwitchCase="'textarea'" [config]="config" [control]="control"></core-textarea>
   <core-field-wrap-card *ngSwitchCase="'wrap_card'" [config]="config" [control]="control"></core-field-wrap-card>
+  <core-route-icon *ngSwitchCase="'route_icon'" [config]="config" [control]="control"></core-route-icon>
   
   
     <ng-container *ngSwitchDefault>
-      {{config.componentId}}
+      componentId no implementado: {{config.componentId}}
                       
     </ng-container>
   
