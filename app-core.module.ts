@@ -73,6 +73,7 @@ import { CookieService } from "ngx-cookie-service";
 import { CommonModule, registerLocaleData } from "@angular/common";
 
 import localeEsAr from '@angular/common/locales/es-AR';
+import { ControlBooleanComponent } from "@component/control-boolean/control-boolean.component";
 registerLocaleData(localeEsAr, 'es-AR');
 
 @NgModule({
@@ -131,7 +132,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     ErrorUniqueRouteComponent,
     RelLabelComponent,
     ControlDirective,
-   
+    ControlBooleanComponent,
   ],
   exports: [
     ToDatePipe, 
@@ -151,6 +152,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     ControlValueComponent,
     ControlLabelComponent,
     ControlDateComponent,
+    ControlBooleanComponent,
     InputTextComponent,
     InputYearComponent,
     TextareaComponent,
