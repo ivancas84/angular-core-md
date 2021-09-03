@@ -11,7 +11,7 @@ import { FormArrayConfig, FormGroupConfig, FormGroupFactory, FormConfig, Control
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
-import { EventIconComponent } from '@component/event-icon/event-icon.component';
+import { EventIconComponent, EventIconConfig } from '@component/event-icon/event-icon.component';
 import { emptyUrl } from '@function/empty-url.function';
 import { naturalCompare } from '@function/natural-compare';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
@@ -37,29 +37,31 @@ export class TableDynamicConfig extends FormArrayConfig {
   sortDirection: string = "asc";
   sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
   optField: FormControl = new FormControl(); //field de opciones
-  optTitle: FormConfig[] = [ //opciones de titulo
-    new FormArrayConfig({
-      component:EventIconComponent,
-      icon: "content_copy", 
-      action: "copy_content", 
-      color: "primary",
-      title:"Copiar",
-      fieldEvent: this.optField,
-    }),
-    new FormArrayConfig({
-      component:EventIconComponent,
-      icon: "print", 
-      action: "print_content",
-      color: "primary",
-      title:"Copiar",
-      fieldEvent: this.optField
-    }),
+  optTitle: AbstractControlViewOption[] = [ //opciones de titulo
+    {
+      config: new EventIconConfig({
+        icon: "content_copy", 
+        action: "copy_content", 
+        color: "primary",
+        title:"Copiar",
+        fieldEvent: this.optField,
+      })
+    },
+    {
+      config: new EventIconConfig({
+        icon: "print", 
+        action: "print_content",
+        color: "primary",
+        title:"Copiar",
+        fieldEvent: this.optField
+      }),
+    }
   ]; 
-  /**
-   * se verifica el valueChanges y se ejecuta la accion seleccionada
-   */
 
   optColumn: AbstractControlViewOption[] = []; //columna opciones
+  /**
+   * el control y el index se definen por cada fila, no deben ser completados
+   */
   /**
    {  //boton eliminar 
       config: new EventIconConfig({
@@ -88,6 +90,12 @@ export class TableDynamicConfig extends FormArrayConfig {
    */
    showPaginator:boolean = true; //flag para visualizar el paginador
    pageSizeOptions=[10, 25, 50, 100] 
+
+
+   constructor(attributes: any = {}, controls:{ [index: string]: FormConfig } = {}) {
+    super({}, controls)
+    Object.assign(this, attributes)
+  }
 }
 
 
@@ -163,7 +171,6 @@ export class TableDynamicComponent implements ControlComponent, OnInit { //6
   } 
 
   switchOptField($event){
-    console.log($event)
     switch($event.action){
       case "remove": this.remove($event.index); break;
       case "copy_content": this.copyContent(); break;
@@ -212,7 +219,6 @@ export class TableDynamicComponent implements ControlComponent, OnInit { //6
   }
 
   printContent(): void {
-    console.log(this.content);
     if(this.content) printHtml(this.content.nativeElement.innerHTML);
   }
 
@@ -286,7 +292,6 @@ export class TableDynamicComponent implements ControlComponent, OnInit { //6
      * Incorporar el control _mode al fieldset!
      */
 
-    console.log(this.control)
     if(!this.control.controls[index].get("id").value) this.control.removeAt(index); 
     else this.control.controls[index].get("_mode").setValue("delete");
   }
