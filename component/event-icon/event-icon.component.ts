@@ -9,15 +9,6 @@ export class EventIconConfig extends FormConfig {
   fieldEvent: FormControl
   color?: string
   title?: string
-
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 @Component({
@@ -36,7 +27,6 @@ export class EventIconComponent implements ControlComponent {
    */
 
   setValue(){
-    console.log(this.config.fieldEvent)
     this.config.fieldEvent.setValue({
       action:this.config.action,
       control:this.control,
