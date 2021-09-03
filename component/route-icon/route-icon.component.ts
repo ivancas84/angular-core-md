@@ -1,35 +1,26 @@
 import { Component, Input, OnInit, Type} from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { fastClone } from '@function/fast-clone';
 import { startWith } from 'rxjs/operators';
  
 export class RouteIconConfig extends FormControlConfig {
   componentId: string = "route_icon"
   icon: string
   routerLink: string
-  key: string
   color: string
   target: string
   title?: string
-
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
+  params: { [index: string]: any }
 }
 
-  @Component({
+@Component({
   selector: 'core-route-icon',
   templateUrl: './route-icon.component.html',
 })
 export class RouteIconComponent implements ControlComponent, OnInit {
   @Input() config: RouteIconConfig;
-  @Input() control: FormControl;
-
+  @Input() control: FormGroup;
 
   queryParams: any = {};
 
@@ -39,9 +30,20 @@ export class RouteIconComponent implements ControlComponent, OnInit {
     this.control.valueChanges.pipe(
         startWith(this.control.value)
       ).subscribe(
-        () => {
-          this.queryParams[this.config.key] = this.control.value
+        value => {
+          this.setQueryParams(value)
         }
       )
+  }
+
+  setQueryParams(value){
+    this.queryParams = fastClone(this.config.params);
+    for(var i in this.config.params){
+      if(this.config.params.hasOwnProperty(i)){
+        var key = this.config.params[i].match(/\{\{(.*?)\}\}/)
+        if(key) this.queryParams[i] = value[key[1]];
+      }
+    }
+
   }
 }
