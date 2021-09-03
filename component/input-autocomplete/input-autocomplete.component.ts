@@ -10,6 +10,7 @@ import { ValidatorMsg } from '@class/validator-msg';
 import { FormControlConfig } from '@class/reactive-form-config';
 
 export class InputAutocompleteConfig extends FormControlConfig {
+  componentId: string = "input_autocomplete"
   entityName: string;
   label?: string;
   validatorMsgs: ValidatorMsg[] = [];
