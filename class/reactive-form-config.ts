@@ -16,6 +16,7 @@ export class FormConfig {
   position: number = 0
   validatorMsgs: ValidatorMsg[] = []
   default:any = null
+  disabled:boolean = false //valor opcional, puede definirse directamente en el AbstractControl
   component: Type<any>
   [key: string]: any
 
@@ -39,7 +40,9 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
     var fg = new FormGroup({});
     
     for(var key in this.config.controls) {
-      if(this.config.controls.hasOwnProperty(key)) fg.addControl(key, new FormControl(this.config.controls[key].default))
+      if(this.config.controls.hasOwnProperty(key)) fg.addControl(key, 
+        new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
+      )
     }
 
     return fg;
