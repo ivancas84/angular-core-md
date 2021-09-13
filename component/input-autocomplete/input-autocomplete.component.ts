@@ -14,6 +14,12 @@ export class InputAutocompleteConfig extends FormControlConfig {
   entityName: string;
   label?: string;
   validatorMsgs: ValidatorMsg[] = [];
+
+  constructor(attributes: any = {}) {
+    super({})
+    Object.assign(this, attributes)
+  }
+
 }
 
 @Component({

@@ -29,7 +29,6 @@ export abstract class ShowAdminComponent extends ShowComponent implements OnInit
         icon: "add", //texto del boton
         action: "add", //accion del evento a realizar
         color: "primary",
-        fieldEvent: this.config.optField
       })
     },
     { //boton volver
@@ -54,6 +53,9 @@ export abstract class ShowAdminComponent extends ShowComponent implements OnInit
 
     if(!this.config.contains("_mode")) this.config.addControl("_mode", new FormControlConfig(null))
     if(!this.config.contains("id")) this.config.addControl("id", new FormControlConfig(null))
+
+    this.optFooter[1].config.fieldEvent = this.config.optField
+
 
     this.config.optColumn = [ //columna opciones
       {  //boton eliminar 

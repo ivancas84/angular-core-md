@@ -9,6 +9,11 @@ export class EventIconConfig extends FormConfig {
   fieldEvent: FormControl
   color?: string
   title?: string
+
+  constructor(attributes: any = {}) {
+    super({})
+    Object.assign(this, attributes)
+  }
 }
 
 @Component({

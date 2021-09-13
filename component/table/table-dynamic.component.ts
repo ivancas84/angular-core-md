@@ -1,4 +1,4 @@
-import { Input, Component, OnInit, ElementRef, ViewChild, Type } from '@angular/core';
+import { Input, Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -11,7 +11,7 @@ import { FormArrayConfig, FormGroupConfig, FormGroupFactory, FormConfig, Control
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
-import { EventIconComponent, EventIconConfig } from '@component/event-icon/event-icon.component';
+import { EventIconConfig } from '@component/event-icon/event-icon.component';
 import { emptyUrl } from '@function/empty-url.function';
 import { naturalCompare } from '@function/natural-compare';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
@@ -216,6 +216,7 @@ export class TableDynamicComponent implements ControlComponent, OnInit { //6
  
   copyContent(): void {
     if(this.content) copyFormatted(this.content.nativeElement.innerHTML);
+
   }
 
   printContent(): void {

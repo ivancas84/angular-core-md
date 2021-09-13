@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, Type} from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, Input, OnInit} from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 import { startWith } from 'rxjs/operators';
@@ -11,7 +11,12 @@ export class RouteIconConfig extends FormControlConfig {
   color: string
   target: string
   title?: string
-  params: { [index: string]: any }
+  params: { [index: string]: any } = {}
+
+  constructor(attributes: any = {}) {
+    super({})
+    Object.assign(this, attributes)
+  }
 }
 
 @Component({
@@ -26,6 +31,7 @@ export class RouteIconComponent implements ControlComponent, OnInit {
 
   ngOnInit(): void {
     if(!this.config.title) this.config.title = this.config.routerLink;
+  
     
     this.control.valueChanges.pipe(
         startWith(this.control.value)

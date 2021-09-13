@@ -3,18 +3,9 @@ import { FormControl } from '@angular/forms';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 
 export class InputCheckboxConfig extends FormControlConfig {
-  component: Type<any> = InputCheckboxComponent
+  componentId: string = "input_checkbox"
   label?: string;
   labelDisabled?: boolean = false;
-
-  constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
 }
 
 @Component({
