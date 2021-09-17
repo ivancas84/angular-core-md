@@ -1,18 +1,15 @@
-import { Input, Component } from '@angular/core';
+import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { getControlName } from '@function/get-control-name';
 
 export class ControlLabelConfig extends FormControlConfig {
   componentId: string = "control_label"
   entityName: string
 
   constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
+    super({})
+    Object.assign(this, attributes)
   }
 }
 
@@ -20,9 +17,12 @@ export class ControlLabelConfig extends FormControlConfig {
   selector: 'core-control-label',
   templateUrl: './control-label.component.html',
 })
-export class ControlLabelComponent implements ControlComponent {
+export class ControlLabelComponent implements ControlComponent, OnInit {
   @Input() config: ControlLabelConfig;
   @Input() control: FormControl;
 
+  ngOnInit(): void {
+    if(!this.config.entityName) this.config.entityName = getControlName(this.control)
+  }
 
 }
