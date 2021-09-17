@@ -1,4 +1,4 @@
-import { AbstractControl, FormControl, FormGroup } from "@angular/forms"
+import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms"
 import { ValidatorMsg } from "./validator-msg"
 import { Type } from "@angular/core"
 import { isEmptyObject } from "@function/is-empty-object.function"
@@ -40,9 +40,11 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
     var fg = new FormGroup({});
     
     for(var key in this.config.controls) {
-      if(this.config.controls.hasOwnProperty(key)) fg.addControl(key, 
-        new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
-      )
+      if(this.config.controls.hasOwnProperty(key)) {
+        var fc = new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
+        if(this.config.controls[key].required) fc.setValidators(Validators.required)
+        fg.addControl(key, fc)
+      }
     }
 
     return fg;
@@ -75,7 +77,6 @@ export class FormControlsConfig extends FormConfig {
     super({})
     Object.assign(this, attributes)
     if(!isEmptyObject(controls)) this.setControls(controls)
-    
   }
 }
 
@@ -89,7 +90,7 @@ export class FormStructureConfig extends FormGroupConfig {
    */
   controls: { [index: string]: FormGroupConfig | FormArrayConfig }
 
-  constructor(attributes: any = {},controls:{ [index: string]: FormGroupConfig | FormArrayConfig } = {}) {
+  constructor(attributes: any = {}, controls:{ [index: string]: FormGroupConfig | FormArrayConfig } = {}) {
     super(attributes, controls)
   }
 }

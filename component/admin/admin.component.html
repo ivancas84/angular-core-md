@@ -13,6 +13,7 @@
       (ngSubmit)="onSubmit()" 
       novalidate autocomplete="off">
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
+
     <ng-container  *ngFor="let item of config.controls | keyvalue: sort; let i = index">
       <core-abstract-control-view [config]="item.value" [control]="form.controls[item.key]"></core-abstract-control-view>
     </ng-container>
