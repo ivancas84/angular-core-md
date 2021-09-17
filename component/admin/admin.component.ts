@@ -16,7 +16,7 @@ import { KeyValue, Location } from '@angular/common';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { FormStructureConfig, SortControl } from '@class/reactive-form-config';
+import { ConfigFormGroupFactory, FormStructureConfig, SortControl } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 import { EventButtonConfig } from '@component/event-button/event-button.component';
@@ -52,6 +52,14 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
         fieldEvent: this.optField
       })
     },
+    {
+      config: new EventIconConfig({
+        icon: "add", //texto del boton
+        action: "clear", //accion del evento a realizar
+        color: "accent",
+        fieldEvent: this.optField
+      })
+    },
   ]; 
   
   inputSearchGo: boolean = true; //flag para activar / desactivar componente inputSearchGo
@@ -74,6 +82,7 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
     super(dialog, storage, dd, snackBar, router, location, route)
   }
 
+ 
   
   loadDisplay(){
     /**
