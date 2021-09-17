@@ -85,6 +85,9 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
   }
 
   ngOnInit(): void {
+    if(!this.config.label) this.config.label = getControlName(this.control);
+    if(!this.config.entityName) this.config.entityName = getControlName(this.control);
+    
     this.searchControl.setValidators(this.control.validator)
 
     this.filteredOptions = this.searchControl.valueChanges.pipe(
