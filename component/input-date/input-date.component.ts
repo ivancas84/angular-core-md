@@ -4,10 +4,11 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/mat
 import { DATE_FORMATS } from 'app/core/const/DATE_FORMATS';
 import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive-form-config';
 import { FormControl } from '@angular/forms';
+import { getControlName } from '@function/get-control-name';
 
 export class InputDateConfig extends FormControlConfig {
   componentId: string = "input_date"
-  title?: string;
+  label?: string;
   placeholder?: string = "Seleccione fecha";
   readonly?: boolean = false;
 }
@@ -30,9 +31,12 @@ export class InputDateConfig extends FormControlConfig {
     {provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS},
   ]
 })
-export class InputDateComponent implements ControlComponent {
+export class InputDateComponent implements ControlComponent, OnInit {
+  
   @Input() config: FormConfig;
   @Input() control: FormControl;
 
-
+  ngOnInit(): void {
+    if(!this.config.label) this.config.label = getControlName(this.control)
+  }
 }

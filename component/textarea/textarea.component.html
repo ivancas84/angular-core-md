@@ -1,5 +1,5 @@
 <mat-form-field>
-  <mat-label>{{config.title}}</mat-label>
+  <mat-label>{{config.label}}</mat-label>
   <textarea matInput [formControl]="control" placeholder="{{config.placeholder}}"></textarea>
   <mat-error *ngFor="let v of config.validatorMsgs">
     <span *ngIf="control.hasError(v.id)">{{v.message}}</span>

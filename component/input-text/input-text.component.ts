@@ -1,6 +1,7 @@
-import { Input, Component } from '@angular/core';
+import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { getControlName } from '@function/get-control-name';
 
 export class InputTextConfig extends FormControlConfig {
   componentId: string = "input_text"
@@ -18,12 +19,8 @@ export class InputTextConfig extends FormControlConfig {
   readonly?: boolean = false;
 
   constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
+    super({})
+    Object.assign(this, attributes)
   }
 }
 
@@ -31,7 +28,12 @@ export class InputTextConfig extends FormControlConfig {
   selector: 'core-input-text',
   templateUrl: './input-text.component.html',
 })
-export class InputTextComponent implements ControlComponent{
+export class InputTextComponent implements ControlComponent, OnInit{
+  
   @Input() config: InputTextConfig;
   @Input() control: FormControl;
+
+  ngOnInit(): void {
+    if(!this.config.label) this.config.label = getControlName(this.control)
+  }
 }

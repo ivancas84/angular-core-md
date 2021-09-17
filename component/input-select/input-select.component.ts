@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { Display } from '@class/display';
 import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive-form-config';
+import { getControlName } from '@function/get-control-name';
 
 export class InputSelectConfig extends FormControlConfig{
   componentId: string = "input_select"
@@ -13,12 +14,8 @@ export class InputSelectConfig extends FormControlConfig{
   readonly: boolean = false;
 
   constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
+    super({})
+    Object.assign(this, attributes)
   }
 }
 
@@ -41,6 +38,9 @@ export class InputSelectComponent implements ControlComponent, OnInit {
   constructor( public dd: DataDefinitionService ) { }
 
   ngOnInit(): void {
+    if(!this.config.label) this.config.label = getControlName(this.control);
+    if(!this.config.entityName) this.config.entityName = getControlName(this.control);
+    
     this.options$ = this.dd.all(this.config.entityName, new Display)
   }
 

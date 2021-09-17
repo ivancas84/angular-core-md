@@ -1,5 +1,5 @@
 <mat-form-field>
-  <mat-label>{{config.title}}</mat-label>
+  <mat-label>{{config.label}}</mat-label>
   <input matInput [matDatepicker]="fieldPicker" [formControl]="control" placeholder="{{config.placeholder}}">
   <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
   <mat-datepicker-toggle matSuffix (click)="control.setValue(null)">
