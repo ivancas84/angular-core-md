@@ -6,12 +6,8 @@ export class ControlValueConfig extends FormConfig {
   componentId: string =  "control_value"
 
   constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
+    super({})
+    Object.assign(this, attributes)
   }
 }
 
@@ -22,5 +18,4 @@ export class ControlValueConfig extends FormConfig {
 export class ControlValueComponent implements ControlComponent {
   @Input() config: ControlValueConfig;
   @Input() control: FormControl;
-
 }
