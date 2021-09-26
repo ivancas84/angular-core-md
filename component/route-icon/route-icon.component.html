@@ -1,4 +1,4 @@
-<a *ngIf="control.value; else disableOpt"
+<a *ngIf="!this.config.disabled; else disableOpt"
   mat-mini-fab 
   [routerLink]="'/'+config.routerLink"
   [queryParams]="queryParams"

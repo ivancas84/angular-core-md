@@ -3,7 +3,7 @@
     <mat-card-title fxFlex="auto">
       {{config.title}}    
       
-      <core-abstract-control-view *ngFor="let o of config.optTitle" [config]="o"></core-abstract-control-view>          
+      <core-abstract-control-view *ngFor="let o of config.optTitle" [config]="o.config" [control]="o.control"></core-abstract-control-view>          
     </mat-card-title>
   </mat-card-header>
 
