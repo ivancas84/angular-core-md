@@ -74,6 +74,7 @@ import { CommonModule, registerLocaleData } from "@angular/common";
 
 import localeEsAr from '@angular/common/locales/es-AR';
 import { ControlBooleanComponent } from "@component/control-boolean/control-boolean.component";
+import { DownloadComponent } from "@component/download/download.component";
 registerLocaleData(localeEsAr, 'es-AR');
 
 @NgModule({
@@ -102,6 +103,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputDateComponent,
     FieldWrapComponent,
     AbstractControlViewComponent,
+    DownloadComponent,
     InputAutocompleteComponent,
     InputAutocompleteValueComponent,
     InputSelectCheckboxComponent,
@@ -153,6 +155,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     ControlLabelComponent,
     ControlDateComponent,
     ControlBooleanComponent,
+    DownloadComponent,
     InputTextComponent,
     InputYearComponent,
     TextareaComponent,

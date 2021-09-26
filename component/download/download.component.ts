@@ -1,50 +1,58 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
-import { FormControl } from '@angular/forms';
-import { first, map, startWith, switchMap } from 'rxjs/operators';
-import { Observable, Subscription } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { UPLOAD_URL } from 'app/app.config';
-import { fastClone } from '@function/fast-clone';
+import { FormControlConfig } from '@class/reactive-form-config';
+import { FormControl } from '@angular/forms';
+import { of } from 'rxjs';
 
+export class DownloadConfig extends FormControlConfig {
+  componentId: string = "download"
+  entityName?: string = "file";
+  
+  constructor(attributes: any = {}) {
+    super({})
+    Object.assign(this, attributes)
+  }
+}
 
 @Component({
   selector: 'core-download',
   templateUrl: './download.component.html',
   
 })
-export class DownloadComponent implements OnChanges {
+export class DownloadComponent implements OnInit {
   /**
    * Definir link para descargar archivos
    */
- 
 
-  @Input() entityName?: string = "file";
-  @Input() id: string;
+  @Input() config: DownloadConfig;
+  @Input() control: FormControl;
   file: any;
-
 
   constructor(protected dd: DataDefinitionService, protected storage: SessionStorageService) { }
 
-  ngOnChanges(changes: SimpleChanges){
-    if( changes['id'] && changes['id'].previousValue != changes['id'].currentValue ) {
-      if(!changes['id'].currentValue) this.file = null;
-      else {
-        this.dd.get(this.entityName, this.id).pipe(
-          map(
-            row => {
-              if(row) {
-                this.file = row;
-                this.file["link"] = UPLOAD_URL+this.file.content; 
-              } else {
-                this.file = null;
-              }
-            }
-          )
-        ).subscribe(
-          () => {return true;}
-        );;
+
+  ngOnInit(){
+    this.control.valueChanges.pipe(
+      startWith(this.control.value),
+      switchMap(
+        value => {
+          if(!value) return of(null);
+          else return this.dd.get(this.config.entityName, value)
+        }
+      )
+    ).subscribe(
+      row => {
+        if(row) {
+          this.file = row;
+          this.file["link"] = UPLOAD_URL+this.file.content; 
+        } else {
+          this.file = null;
+        }
       }
-    }
+    )
   }
+
 }

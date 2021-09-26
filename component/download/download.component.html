@@ -1,7 +1,7 @@
 <ng-template #loading>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <mat-icon>file_download_off</mat-icon>
 </ng-template>
 
 <div *ngIf="file; else loading">
-  <a [href]="file.link" target="_blank" [download]="file.name"><mat-icon>cloud_download</mat-icon></a>
+  <a [href]="file.link" target="_blank" [download]="file.name"><mat-icon>file_download</mat-icon></a>
 </div>
