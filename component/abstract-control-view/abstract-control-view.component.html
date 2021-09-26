@@ -1,6 +1,6 @@
 
 <span [ngSwitch]="config.componentId">
-
+  <core-download *ngSwitchCase="'download'" [config]="config" [control]="control"></core-download>
   <core-fieldset-dynamic *ngSwitchCase="'fieldset'" [config]="config" [control]="control"></core-fieldset-dynamic>
   <core-table-dynamic *ngSwitchCase="'table'" [config]="config" [control]="control"></core-table-dynamic>
   <core-input-autocomplete *ngSwitchCase="'input_autocomplete'" [config]="config" [control]="control"></core-input-autocomplete>
