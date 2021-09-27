@@ -31,9 +31,11 @@ export interface FormGroupFactory{
 
 export class ConfigFormGroupFactory implements FormGroupFactory{
   config: FormGroupConfig
+  disabled: boolean = false
 
-  public constructor(config: FormGroupConfig){
+  public constructor(config: FormGroupConfig, disabled: boolean = false){
     this.config = config;
+    this.disabled = disabled
   }
 
   formGroup(): FormGroup {
@@ -44,6 +46,7 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
         var fc = new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
         if(this.config.controls[key].required) fc.setValidators(Validators.required)
         fg.addControl(key, fc)
+        if(this.disabled) fg.disable()
       }
     }
 
