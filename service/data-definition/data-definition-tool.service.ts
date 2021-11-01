@@ -77,50 +77,51 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     }
   }
 
-  getTree(
-    tree:string[], //arbol ["identificador1","identificador2",...]
-    data: { [index: string]: any }[], //datos
-    method:string, //nombre del metodo a ejecutar
-    params:any = null //objeto con parametros de method 
-  ){
-    /**
-     * Recorrer arbol y ejecutar metodo indicado
-     * Utiliza funcion externa "recursiveData" para obtener la hoja indicada de "tree" en "data"
-     * Ejecuta metodo "method" con parametros "params"
-     * Los valores se asignan al resultado de "recursiveData" y se reflejan en "data" ya que js trabaja por referencia
-     */
-    switch(method){
-      case "getAllColumnDataUm":
-        return this.getAllColumnDataUm(recursiveData(tree, data),params["fieldName"], params["fkName"],params["entityName"]).pipe(map(
-          () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
-        ));
-      case "getPostAllColumnData":
-        var join = (params.hasOwnProperty("join")) ? params["join"] : ", "; 
-        return this.getPostAllColumnData(
-          recursiveData(tree, data),
-          params["method"],
-          params["fieldNameData"],
-          params["fieldNameResponse"],
-          params["entityName"],
-          params["fields"],
-          join
-        ).pipe(map(
-          () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
-        ))
-      case "advancedColumnDataGroup":
-        var join = (params.hasOwnProperty("join")) ? params["join"] : ", "; 
-        return this.advancedColumnDataGroup(
-          recursiveData(tree, data),
-          params["fieldName"],
-          params["entityName"],
-          params["fields"],
-        ).pipe(map(
-          () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
-        ))
-    }
-  }
+  // ***** OBSOLETO *****
+  // getTree(
+  //   tree:string[], //arbol ["identificador1","identificador2",...]
+  //   data: { [index: string]: any }[], //datos
+  //   method:string, //nombre del metodo a ejecutar
+  //   params:any = null //objeto con parametros de method 
+  // ){
+  //   /**
+  //    * Recorrer arbol y ejecutar metodo indicado
+  //    * Utiliza funcion externa "recursiveData" para obtener la hoja indicada de "tree" en "data"
+  //    * Ejecuta metodo "method" con parametros "params"
+  //    * Los valores se asignan al resultado de "recursiveData" y se reflejan en "data" ya que js trabaja por referencia
+  //    */
+  //   switch(method){
+  //     case "getAllConnectionUm":
+  //       return this.getAllConnectionUm(recursiveData(tree, data),params["fieldName"], params["fkName"],params["entityName"]).pipe(map(
+  //         () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
+  //       ));
+  //     case "postAllConnection":
+  //       var join = (params.hasOwnProperty("join")) ? params["join"] : ", "; 
+  //       return this.postAllConnection(
+  //         recursiveData(tree, data),
+  //         params["method"],
+  //         params["fieldNameData"],
+  //         params["fieldNameResponse"],
+  //         params["entityName"],
+  //         params["fields"],
+  //         join
+  //       ).pipe(map(
+  //         () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
+  //       ))
+  //     case "selectConnectionGroup":
+  //       var join = (params.hasOwnProperty("join")) ? params["join"] : ", "; 
+  //       return this.selectConnectionGroup(
+  //         recursiveData(tree, data),
+  //         params["fieldName"],
+  //         params["entityName"],
+  //         params["fields"],
+  //       ).pipe(map(
+  //         () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
+  //       ))
+  //   }
+  // }
 
-  getAllColumnData(
+  getAllConnection(
     data: { [index: string]: any }[], 
     fkName: string, 
     entityName: string, 
@@ -161,8 +162,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
-
-  allColumnData( //1
+  allConnection( //1
     data: { [index: string]: any }[], 
     fkName: string,
     entityName: string, 
@@ -171,7 +171,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     join: string = ", ",
   ): Observable<{ [index: string]: any }[]>{
     /**
-     * Similar a getAllColumnData pero utiliza un "fieldName", en vez del "id" para realizar la consulta
+     * Similar a getAllConnection pero utiliza un "fieldName", en vez del "id" para realizar la consulta
      */
     if(!data.length) return of([]);
     var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; });
@@ -201,9 +201,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
   
-    
-  
-  getPostAllColumnData(
+  postAllConnection(
     data: { [index: string]: any }[], 
     method:string,
     fieldNameData: string,
@@ -214,7 +212,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta de relaciones directas para metodos no habituales
-     * Procedimiento similar a getAllColumnData
+     * Procedimiento similar a getAllConnection
      * Define un array de identificadores "ids" a partir de los parametros "data[fieldNameData]"
      * Consulta todos los campos del parametro "entityName" utilizando "ids" y parametro "method" para obtener "response"
      * Recorre "data" y "response", compara "data[i][fieldNameData]" con "response[j][fieldNameResponse]" y realiza una asociacion
@@ -222,6 +220,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      * En la medida de lo posible evitar el uso de este metodo ya que no utiliza storage
      */
+
     if(!data.length) return of([]);
     var ids = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; });
     if(!ids.length) return of(data);
@@ -247,7 +246,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
   
-  getAllColumnDataUm(
+  getAllConnectionUm(
     data: { [index: string]: any }[], 
     fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
     fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
@@ -286,9 +285,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
-  
-
-  selectColumnDataUm(
+  selectConnectionUm(
     data: { [index: string]: any }[], 
     fields: { [index: string]: string }, //fields a consultar (no deben ser funciones de agregacion)
     fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
@@ -316,7 +313,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
      * Se utiliza la nomenclartura "_"+fkName para diferenciarla de fkName+"_" 
      * utilizada para almacenar un json de la relacion de datos consultada
      * 
-     * Siempre que se pueda utilizar el metodo getAllColumnDataUm,
+     * Siempre que se pueda utilizar el metodo getAllConnectionUm,
      * ya que implementa storage 
      */
     if(!data.length) return of([]);
@@ -348,7 +345,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
-  getColumnData(
+  getConnection(
     data: { [index: string]: any }, 
     fkName: string, 
     entityName: string, 
@@ -376,7 +373,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
-  getColumnDataUm(
+  getConnectionUm(
     data: { [index: string]: any }, 
     fkName: string, 
     entityName: string, 
@@ -404,7 +401,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
-  getColumnDataObj(
+  getConnectionObj(
     data: { [index: string]: { [index: string]: any } },
     id: string,
     idResponse: string, 
@@ -414,7 +411,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     join:string=", "
   ): Observable<{ [index: string]: { [index: string]: any } }>{
     /**
-     * Similar a getColumnData pero utiliza una estructura de datos diferente de la forma
+     * Similar a getConnection pero utiliza una estructura de datos diferente de la forma
      * data["alumno"] = {id:"value",activo:"value"} 
      * data["per"] = {id:"value",activo:"value"}
      */
@@ -432,7 +429,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
-  advancedColumnData(
+  selectConnection(
     data: { [index: string]: any }[], 
     fieldName: string, 
     entityName: string, 
@@ -477,7 +474,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     );  
   }
 
-  advancedColumnDataGroup(
+  selectConnectionGroup(
     data: { [index: string]: any }[], 
     fieldName: string, 
     entityName: string, 

@@ -31,8 +31,7 @@ export class DataDefinitionRelFieldsService {
      * 
      * Inicializar los campos de una entidad y sus relaciones
      * No se inicializan todas las relaciones, solo las que se determinan en "fields"
-     * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, 
-     * para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
+     * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      */
     return combineLatest([
       this.initializeFields(entityName, fields),
@@ -78,7 +77,7 @@ export class DataDefinitionRelFieldsService {
      * Metodo independiente para encadenar observables
      */
     if(i == elements.length) return of(data);
-    return this.dd.getAllColumnData(data, elements[i]["fkName"], elements[i]["entityName"], elements[i]["fields"]).pipe(
+    return this.dd.getAllConnection(data, elements[i]["fkName"], elements[i]["entityName"], elements[i]["fields"]).pipe(
       switchMap(
         response => this.chaining(response, elements, ++i)
       )
@@ -87,18 +86,20 @@ export class DataDefinitionRelFieldsService {
     
   public getAllGroup(entityName: string, ids: string[], controls:{ [index: string]: FormConfig }){
     /**
-     * Analiza el parametro fieldsViewOptions para obtener los fields 
+     * Analiza el parametro controls para identificar los fields (se utiliza el caracter "-" para identificar las relaciones)
      * y ejecutar getAll (si corresponde)
      * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      * 
-     * Se recorren los keys obtenidos de group y se verifica la existencia del caracter "-".
-     * Si existe el caracter "-" significa que se está queriendo manipular un fields de una relación, por lo tanto debe inicializarse
+     * NOTA Si existe el caracter "-" significa que se está queriendo manipular un fields de una relación, por lo tanto debe inicializarse
+     *
+     * @return Ejemplo de retorno (para la entidad principal alumno)
+     *   [{id:"value", activo:true, per-id:"value", per-numero_documento:"value"},...]
+     * 
      */
-     var fields = [];
+    var fields = [];
 
-     Object.keys(controls).forEach(key => {
+    Object.keys(controls).forEach(key => {
       if(key.includes("-")) fields.push(key);
-
     });
      return (!fields.length) ? 
        this.dd.getAll(entityName, ids) : 
@@ -167,7 +168,7 @@ export class DataDefinitionRelFieldsService {
                     // fields: { [index: string]: any },
                     // join:string=", "
                   
-                    obs = this.dd.getColumnData(
+                    obs = this.dd.getConnection(
                       row, 
                       ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
                       rel[keys[j]]["entity_name"], 
@@ -177,7 +178,7 @@ export class DataDefinitionRelFieldsService {
                     obs = obs.pipe(
                       switchMap(
                         (d:any) => {
-                          return this.dd.getColumnData(d, 
+                          return this.dd.getConnection(d, 
                             ((keys[j].includes("_")) ? keys[j].substr(0, keys[j].lastIndexOf('_'))+"-" : "") + rel[keys[j]]["field_name"],
                             rel[keys[j]]["entity_name"], 
                             this.filterFields(fields, keys[j]+"-"))}
