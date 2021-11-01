@@ -13,10 +13,10 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 export class DataDefinitionFkObjService {
   /**
    * Servicio de inicializacion de una entidad y sus relaciones fk
-   * El metodo principal "uniqueStructure" recibe
+   * El metodo principal "uniqueGroup" recibe
    *   1) el nombre de una entidad 
    *   2) un conjunto de parametros de inicializacion 
-   *   3) una estructura de administracion
+   *   3) una estructura de configuracion
    * Se obtiene una tupla de 1 utilizando 2, luego se obtienen las relaciones utilizando 3
    * El resultado es un objeto con keys (nombre de la relacion) y values (valor correspondiente)
    * Ej. para la entidad "alumno" {
@@ -62,7 +62,7 @@ export class DataDefinitionFkObjService {
 
   public group(entityName:string, row: any, controls: { [index: string]: FormConfig }){
     /**
-     * Definir relaciones a partir de la estructura y armar el arbol de datos
+     * Definir relaciones a partir de la estructura de configuracion y armar el arbol de datos
      */
     var relationsFk = [];
     Object.keys(controls).forEach(key => {
