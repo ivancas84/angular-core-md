@@ -24,7 +24,8 @@
   <core-textarea *ngSwitchCase="'textarea'" [config]="config" [control]="control"></core-textarea>
   <core-field-wrap-card *ngSwitchCase="'wrap_card'" [config]="config" [control]="control"></core-field-wrap-card>
   <core-route-icon *ngSwitchCase="'route_icon'" [config]="config" [control]="control"></core-route-icon>
-  
+  <core-input-upload *ngSwitchCase="'input_upload'" [config]="config" [control]="control"></core-input-upload>
+
   
     <ng-container *ngSwitchDefault>
       componentId no implementado: {{config.componentId}}

@@ -8,10 +8,12 @@
   </mat-card-content>
 </mat-card>
 
+
 <form *ngIf="(loadParams$ | async); else loading" 
       [formGroup]="form" 
       (ngSubmit)="onSubmit()" 
       novalidate autocomplete="off">
+
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
 
     <ng-container  *ngFor="let item of config.controls | keyvalue: sort; let i = index">

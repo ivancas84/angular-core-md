@@ -42,6 +42,7 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
     for(var key in this.config.controls) {
       if(this.config.controls.hasOwnProperty(key)) {
         var fc = new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
+        if(!this.config.controls[key].label) this.config.controls[key].label = key;
         if(this.config.controls[key].required) fc.setValidators(Validators.required)
         fg.addControl(key, fc)
       }
