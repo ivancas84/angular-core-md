@@ -12,6 +12,7 @@ export class RouteIconConfig extends FormControlConfig {
   target: string
   title?: string
   params: { [index: string]: any } = {}
+  disabled: false
 
   constructor(attributes: any = {}) {
     super({})
