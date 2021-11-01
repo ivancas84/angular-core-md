@@ -1,11 +1,25 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { FormControl } from '@angular/forms';
-import { first, map, startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { Observable, Subscription } from 'rxjs';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { UPLOAD_URL } from 'app/app.config';
-import { fastClone } from '@function/fast-clone';
+import { FormControlConfig } from '@class/reactive-form-config';
+
+export class InputUploadConfig extends FormControlConfig {
+  componentId: string = "input_upload"
+  label:string
+  entityName?: string = "file";
+  /**
+   * entityName hace referencia a la entidad donde se almacenara el archivo
+   */
+  
+  constructor(attributes: any = {}) {
+    super({})
+    Object.assign(this, attributes)
+  }
+}
 
 
 @Component({
@@ -15,17 +29,9 @@ import { fastClone } from '@function/fast-clone';
 })
 export class InputUploadComponent implements OnInit { //2
 
-  @Input() title?: string
-  @Input() field: FormControl;
-  /**
-   * Field correspondiente a la entidad padre con el id del archivo
-   */
+  @Input() config: InputUploadConfig;
+  @Input() control: FormControl;
 
-  @Input() entityName?: string = "file";
-  /**
-   * Permite seleccionar una alternativa entre diferentes controladores de procesamiento
-   * sin necesidad de reimplementar el componente
-   */
 
   fileControl: FormControl = new FormControl();
   
@@ -38,8 +44,8 @@ export class InputUploadComponent implements OnInit { //2
   load$: Observable<any>
 
  ngOnInit(): void {
-    this.load$ = this.field.valueChanges.pipe(
-      startWith(this.field.value),
+    this.load$ = this.control.valueChanges.pipe(
+      startWith(this.control.value),
       switchMap(
         value => {
           return this.dd.get("file", value)
@@ -54,7 +60,7 @@ export class InputUploadComponent implements OnInit { //2
             this.fileControl.disable();
           } else {
             this.file = null;
-            if(this.field.enabled) this.fileControl.enable();
+            if(this.control.enabled) this.fileControl.enable();
           }
           return true;
         }
@@ -78,14 +84,14 @@ export class InputUploadComponent implements OnInit { //2
       /**
        * El controlador procesa un unico archivo identificado como file, no confundir con el entityName
        */
-      this.field.markAsPending();
-      this.dd.upload(this.entityName, formData).subscribe(
+      this.control.markAsPending();
+      this.dd.upload(this.config.entityName, formData).subscribe(
         (res) => {
           //this.file = fastClone(res.file);
           //this.file["link"]= UPLOAD_URL+this.file["content"]
           this.storage.setItem("file" + res.id, res.file);
-          this.field.setValue(res.id);
-          this.field.markAsDirty();
+          this.control.setValue(res.id);
+          this.control.markAsDirty();
           // this.field.setErrors({'incorrect': true});
         },
         (err) => {  

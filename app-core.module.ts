@@ -75,6 +75,7 @@ import { CommonModule, registerLocaleData } from "@angular/common";
 import localeEsAr from '@angular/common/locales/es-AR';
 import { ControlBooleanComponent } from "@component/control-boolean/control-boolean.component";
 import { DownloadComponent } from "@component/download/download.component";
+import { InputUploadComponent } from "@component/input-upload/input-upload.component";
 registerLocaleData(localeEsAr, 'es-AR');
 
 @NgModule({
@@ -113,6 +114,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputSelectValueComponent,
     InputSelectLabelComponent,
     InputSearchGoComponent,
+    InputUploadComponent,
     InputPersistComponent,
     FieldWrapCardComponent,
     FieldWrapRouterLinkComponent,
@@ -173,6 +175,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputSelectLabelComponent,
     InputSearchGoComponent,
     InputPersistComponent,
+    InputUploadComponent,
     FieldWrapCardComponent,
     FieldWrapRouterLinkComponent,
     RouteIconComponent,
