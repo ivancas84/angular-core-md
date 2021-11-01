@@ -29,8 +29,16 @@ import { EventIconConfig } from '@component/event-icon/event-icon.component';
 })
 export abstract class AdminComponent extends StructureComponent implements OnInit{
 
-  form: FormGroup
   config: FormStructureConfig
+  /**
+   * debe definirse obligatoriamente en subclases
+   */
+
+  form: FormGroup
+  /**
+   * si no existe form, se crea en base a config
+   */
+
   sort = (a: KeyValue<string,SortControl>, b: KeyValue<string,SortControl>): number => {
     return a.value.position > b.value.position ? 1 : (b.value.position > a.value.position ? -1 : 0)
   }
@@ -83,6 +91,23 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
   }
 
  
+  ngOnInit(){
+    if(!this.form) this.form = this.fb.group({})
+    for(var key in this.config.controls){
+      if(!this.form.contains(key))
+        switch(this.config.controls[key].controlId){
+          case "form_group":
+            var c = new ConfigFormGroupFactory(this.config.controls[key])
+            this.form.addControl(key, c.formGroup())
+            break;
+          case "form_array":
+            if(!this.config.controls[key].factory) this.config.controls[key].factory = new ConfigFormGroupFactory(this.config.controls[key])
+            break;
+        }
+    }
+
+    super.ngOnInit()
+  }
   
   loadDisplay(){
     /**
