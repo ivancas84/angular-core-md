@@ -32,7 +32,6 @@ export class RouteIconComponent implements ControlComponent, OnInit {
 
   ngOnInit(): void {
     if(!this.config.title) this.config.title = this.config.routerLink;
-  
     
     this.control.valueChanges.pipe(
         startWith(this.control.value)
@@ -51,6 +50,5 @@ export class RouteIconComponent implements ControlComponent, OnInit {
         if(key) this.queryParams[i] = value[key[1]];
       }
     }
-
   }
 }
