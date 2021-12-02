@@ -227,6 +227,15 @@ export class DataDefinitionRelFieldsService {
   }
 
 
+  protected initializeFieldsRel(key, f, rel){
+    var subkey =  key.substr(0, key.lastIndexOf('_'));
+    var s = "";
+    if(key.includes("_")) {
+      this.initializeFieldsRel(subkey, f, rel)
+      s = subkey + "-"
+    } 
+    if(f.indexOf(s+rel[key]["field_name"]) === -1) f.push(s+rel[key]["field_name"])
+  }
 
   protected initializeFields(entityName: string, fields: string[]): Observable<any> {
     /**
@@ -236,17 +245,18 @@ export class DataDefinitionRelFieldsService {
      * por ejemplo, si desde alumno_comision, queremos recorrer persona, debemos pasar por alumno, entonces debe existir alu-persona por mas que no se incluya
      * a diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      */
+
     return this.dd.post("rel",entityName).pipe( //se consultan las relaciones de la entidad para armar el grupo de fields
       map(
         rel => {
           var f = []
+
           for(var i = 0; i < fields.length; i++){ //se recorren los fields a consultar para identificar las relaciones faltantes
-              if(fields[i].includes("-")) {
-                var k = fields[i].substr(0, fields[i].indexOf('-'));
-                var s = (k.includes("_")) ? k.substr(0, k.lastIndexOf('_'))+"-" : "";
-                if(f.indexOf(s+rel[k]["field_name"]) === -1) f.push(s+rel[k]["field_name"])
-              }
-              if(f.indexOf(fields[i]) === -1) f.push(fields[i])  
+            if(fields[i].includes("-")) {
+              var k = fields[i].substr(0, fields[i].indexOf('-'));
+              this.initializeFieldsRel(k,f,rel)
+            }
+            if(f.indexOf(fields[i]) === -1) f.push(fields[i])  
           }
           return f
         }

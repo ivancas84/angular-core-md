@@ -66,7 +66,7 @@ export class DataDefinitionFkObjService {
      */
     var relationsFk = [];
     Object.keys(controls).forEach(key => {
-      if(!key.includes("/")) relationsFk.push(key)
+      if(!key.includes("/") && entityName != key)  relationsFk.push(key)
     });
     return this.fk(entityName, row, relationsFk)
   }

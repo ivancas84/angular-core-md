@@ -1,6 +1,9 @@
 <mat-form-field>
   <mat-label>{{config.label}}</mat-label>
-  <textarea matInput [formControl]="control" placeholder="{{config.placeholder}}"></textarea>
+  <textarea matInput 
+            [formControl]="control"
+            [readonly]="config.readonly"
+            placeholder="{{config.placeholder}}"></textarea>
   <mat-error *ngFor="let v of config.validatorMsgs">
     <span *ngIf="control.hasError(v.id)">{{v.message}}</span>
     <core-error-unique-route *ngIf="control.hasError('notUnique') && v.id == 'notUnique' && v.route" 

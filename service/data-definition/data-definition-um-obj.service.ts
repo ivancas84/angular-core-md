@@ -14,7 +14,7 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 export class DataDefinitionUmObjService {
   /**
    * Servicio de inicializacion de una entidad y sus relaciones um
-   * El metodo principal "structure" recibe
+   * El metodo principal "group" recibe
    *   1) el nombre de una entidad 
    *   2) un conjunto de datos de inicializacion (tupla de entityName)
    *   3) una estructura de administracion
@@ -33,6 +33,9 @@ export class DataDefinitionUmObjService {
   ) { }
 
   public uniqueGroup(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
+    /**
+     * Realiza una llamada a unique anets de invocar a group
+     */
     return this.dd.unique(entityName, params).pipe(
       switchMap(
         (row) => {
@@ -50,6 +53,9 @@ export class DataDefinitionUmObjService {
 
 
   public group(entityName:string, row: any, controls:{ [index: string]: FormConfig }){
+    /**
+     * Metodo principal
+     */
     var obs = {}
     
     Object.keys(controls).forEach(key => {

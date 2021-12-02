@@ -6,8 +6,13 @@ import { getControlName } from '@function/get-control-name';
 export class TextareaConfig extends FormControlConfig {
   componentId: string = "textarea"
   label?: string;
-  placeholder?: string = "";
-  readonly?: boolean = false;
+  placeholder: string = "";
+  readonly: boolean = false;
+
+  constructor(attributes: any = {}) {
+    super({})
+    Object.assign(this, attributes)
+  }
 }
 
 @Component({
