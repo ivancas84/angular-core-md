@@ -1,7 +1,23 @@
 import { Component, Input } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { FormArrayConfig } from '@class/reactive-form-config';
+import { FormArrayConfig, FormConfig } from '@class/reactive-form-config';
 import { FormConfigService } from '@service/form-config/form-config.service';
+
+/**
+ * EN CONSTRUCCION
+ */
+export class FieldsetArrayDynamicConfig extends FormArrayConfig {
+  componentId:string = "fieldset_array"
+  title?: string;
+  // entityName?: string;
+  // intro?: string;
+  // optTitle: FormConfig[] = []; //opciones de titulo
+
+  constructor(attributes: any = {}) {
+    super({})
+    Object.assign(this, attributes)
+  }
+}
 
 @Component({
   selector:   'core-fieldset-array-dynamic',
@@ -15,17 +31,15 @@ export class FieldsetArrayDynamicComponent {
    * Componente dinamico de administración de fieldset array
    * La estructura por defecto del componente de implementacion es la misma que para FieldsetDynamicComponent, simplemente se debe cambiar la superclase
    **/
-  @Input() title?: string; //titulo
-  @Input() fieldset: FormArray; //formulario
-  @Input() config: FormArrayConfig; //formulario
-
+  @Input() config: FieldsetArrayDynamicConfig;
+  @Input() control: FormArray;
 
   constructor(
     protected fc: FormConfigService
   ) { }
   
 
-  fg(index) { return this.fieldset.controls[index]; }
+  fg(index) { return this.control.controls[index]; }
   /**
    * Metodo utilizado para indicar el formGroup en el template
    */
@@ -33,14 +47,14 @@ export class FieldsetArrayDynamicComponent {
   
   add() {
     var fg = this.config.factory.formGroup();
-    this.fieldset.push(fg); 
+    this.control.push(fg); 
   }
  
   remove(index) { 
-    if(!this.fieldset.controls[index].get("id").value) this.fieldset.removeAt(index); 
-    else this.fieldset.controls[index].get("_controller").setValue("delete");
+    if(!this.control.controls[index].get("id").value) this.control.removeAt(index); 
+    else this.control.controls[index].get("_controller").setValue("delete");
   }
 
-  _controller(index: number) { return this.fieldset.controls[index].get('_controller')}
+  _controller(index: number) { return this.control.controls[index].get('_controller')}
   
 }
