@@ -9,8 +9,8 @@ import { getControlName } from '@function/get-control-name';
 export class InputDateConfig extends FormControlConfig {
   componentId: string = "input_date"
   label?: string;
-  placeholder?: string = "Seleccione fecha";
-  readonly?: boolean = false;
+  placeholder: string = "Seleccione fecha";
+  readonly: boolean = false;
 }
 
 @Component({
