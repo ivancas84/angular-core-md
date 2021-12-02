@@ -71,7 +71,8 @@ export abstract class StructureComponent implements OnInit {
    loadParams$: Observable<any> //carga de parametros
    loadDisplay$: Observable<any> //carga de display
    params: { [x: string]: any } //parametros del componente
-   storageValues = this.storage.getItem(this.router.url);
+   storageValues: any = null
+  //  storageValues = this.storage.getItem(this.router.url);
    isSubmitted: boolean = false //Flag para habilitar/deshabilitar boton aceptar
    response: any //respuesta de procesamiento
 
@@ -90,8 +91,8 @@ export abstract class StructureComponent implements OnInit {
   abstract initDisplay();
 
   ngOnInit() {
-    this.loadParams();  
-    this.loadStorage();
+    this.loadParams(); //al cambiar los parametros se carga el storage, debe ir antes de inicializarse el storage
+    this.loadStorage(); //se carga el storage con los valores del formulario indicando la url con parametros
     this.loadOptField();
     this.loadDisplay(); 
     /**
@@ -99,17 +100,7 @@ export abstract class StructureComponent implements OnInit {
      */
   }
 
-  ngAfterViewInit(): void {
-    this.storage.removeItemsPrefix(emptyUrl(this.router.url));
-    /**
-     * Si no se incluye, nunca se limpia el formulario. 
-     * Si se asignan otros parametros a la url quedan todas las alternativas de una misma interface en la cache, pudiendo resultar confuso para el que lo utiliza
-     * De esta forma cada vez que se asigna a una interfaz inicialmente se borra la cache
-     * Si el usuario realiza una modificacion se carga nuevamente la cache
-     * Al rutear a una interface diferente y volver se carga el valor de la cache y nuevamente se borra logrando el comportamiento deseado
-     */
-  }
-
+  
   onSubmit(): void {
     this.isSubmitted = true;
     if (!this.form.valid) {
@@ -186,6 +177,8 @@ export abstract class StructureComponent implements OnInit {
     this.loadParams$ = this.route.queryParams.pipe(
       map(
         queryParams => { 
+          // this.storageValues = this.storage.getItem(this.router.url)
+          // this.storage.removeItemsPrefix(emptyUrl(this.router.url))
           this.initParams(queryParams);
           this.initDisplay();
           return true;
@@ -217,7 +210,8 @@ export abstract class StructureComponent implements OnInit {
      */
     var s = this.form.valueChanges.subscribe (
       storageValues => {
-        this.storage.setItem(this.router.url, storageValues); },
+        this.storage.setItem(this.router.url, storageValues)
+      },
       error => { 
         this.snackBar.open(JSON.stringify(error), "X"); 
       }
@@ -231,6 +225,7 @@ export abstract class StructureComponent implements OnInit {
      * si la ruta es diferente, se reasignaran los parametros de la url y se repetira el proceso de inicializacion
      * si la ruta es la misma, se limpia el storage y se asignan parametros en null
      */
+     
     let route = emptyUrl(this.router.url);
     if(route != this.router.url) this.router.navigateByUrl('/' + route);
     else this.display$.next(this.display$.value); 
