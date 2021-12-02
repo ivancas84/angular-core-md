@@ -91,13 +91,13 @@ export class TableDynamicConfig extends FormArrayConfig {
    showPaginator:boolean = true; //flag para visualizar el paginador
    pageSizeOptions=[10, 25, 50, 100] 
 
+   optFooter: AbstractControlViewOption[] = []
 
    constructor(attributes: any = {}, controls:{ [index: string]: FormConfig } = {}) {
     super({}, controls)
     Object.assign(this, attributes)
   }
 }
-
 
 @Component({
   selector: 'core-table-dynamic',
@@ -129,7 +129,6 @@ export class TableDynamicComponent implements ControlComponent, OnInit { //6
     protected storage: SessionStorageService
   ) {}
 
-  
   initOptField(){
     var s = this.config.optField.valueChanges.subscribe (
       value => this.switchOptField(value),
