@@ -43,14 +43,26 @@
       <tr mat-footer-row *matFooterRowDef="footerColumns; sticky:true"></tr>
 
     </table>
-    <mat-paginator *ngIf="config.showPaginator && config.length && config.display"
+    <mat-toolbar>
+      <mat-toolbar-row>
+        <core-abstract-control-view *ngFor="let o of config.optFooter" 
+                                    [config]="o.config"
+                                    [control]="o.control"></core-abstract-control-view>
+          
+
+        <span class="example-spacer"></span>
+        
+        <mat-paginator *ngIf="config.showPaginator && config.length && config.display"
                    [length]="config.length"
                    [pageSize]="config.display.size"
                    [pageIndex]="config.display.page-1"
                    (page)="onChangePage($event)"
                    [pageSizeOptions]="config.pageSizeOptions" 
                    showFirstLastButtons>
-    </mat-paginator>
+        </mat-paginator>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    
     
   </mat-card-content>
 </mat-card>
