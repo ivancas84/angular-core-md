@@ -16,7 +16,7 @@ import { KeyValue, Location } from '@angular/common';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { ConfigFormGroupFactory, FormStructureConfig, SortControl } from '@class/reactive-form-config';
+import { ConfigFormGroupFactory, FormArrayConfig, FormStructureConfig, SortControl } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 import { EventButtonConfig } from '@component/event-button/event-button.component';
@@ -31,7 +31,26 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
 
   config: FormStructureConfig
   /**
-   * debe definirse obligatoriamente en subclases
+   * debe definirse obligatoriamente
+   * @example
+   * config: FormStructureConfig = new FormStructureConfig({}, {
+   *    "per": new FieldsetDynamicConfig({title:"Datos personales"},{
+   *      "id": new FormControlConfig({}),
+   *      "nombres": new InputTextConfig({}),
+   *      ...
+   *    }),
+   *    "alumno": new FieldsetDynamicConfig({title:"Datos de alumno"},{
+   *        "id": new FormControlConfig({}),
+   *        "anio_ingreso": new InputSelectParamConfig({options:["1","2","3"]}),
+   *        ...
+   *    }),
+   *    "per-detalle_persona/persona": new TableDynamicConfig({title:"Legajo"}, {
+   *        "id": new FormControlConfig(),
+   *        "descripcion": new  InputTextConfig(),
+   *      }
+   *    )
+   * }
+   * 
    */
 
   form: FormGroup
@@ -98,14 +117,14 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
         switch(this.config.controls[key].controlId){
           case "form_group":
             var c = new ConfigFormGroupFactory(this.config.controls[key])
-            this.form.addControl(key, c.formGroup())
-            break;
+            this.form.addControl(key, this.fc.formGroupAdmin(this.config.controls[key]))
+          break;
           case "form_array":
-            if(!this.config.controls[key].factory) this.config.controls[key].factory = new ConfigFormGroupFactory(this.config.controls[key])
-            break;
+            this.fc.initFormArrayConfigAdmin(this.config.controls[key] as FormArrayConfig)
+            this.form.addControl(key, this.fb.array([]))
+          break;
         }
     }
-
     super.ngOnInit()
   }
   
@@ -125,15 +144,22 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
           /**
            * @todo es posible evitar una doble asignacion?
            */
+          this.storageValues = this.storage.getItem(this.router.url)
+          this.storage.removeItemsPrefix(emptyUrl(this.router.url))
           this.form.reset()
           
           this.fc.initValue(this.config, this.form, this.fc.defaultValues(this.config))
           if(!isEmptyObject(data)) this.fc.initValue(this.config, this.form, data);
-          if(!isEmptyObject(this.storageValues)) this.fc.initValue(this.config, this.form, this.storageValues)
+          if(!isEmptyObject(this.storageValues)) {
+            console.log(this.storageValues)
+            this.fc.initValue(this.config, this.form, this.storageValues)
+          }
           /**
            * Debe hacerse una doble asignacion porque no todos los valores se encuentran en el storage, solo los que no se encuentran deshabilitados
            * No se recomienda deshabilitar valores del formArray, no esta correctamente probado el storage y la inicializacion para estos valores
            */
+
+           //this.storage.removeItemsPrefix(emptyUrl(this.router.url));
 
           return true;
         }
