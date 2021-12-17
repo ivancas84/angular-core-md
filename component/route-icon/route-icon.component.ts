@@ -12,6 +12,19 @@ export class RouteIconConfig extends FormControlConfig {
   target: string
   title?: string
   params: { [index: string]: any } = {}
+  /**
+   * @example 
+   *   params: {
+   *     comision:"{{id}}"
+   *     descripcion:"{{alumno}}"
+   *   }
+   * 
+   * @description
+   * El atributo control corresponde a un FormGroup formado por controls.
+   * Para utilizar un valor particular de controls, se debe indicar entre doble llaves.
+   * En el ejemplo se utilizara control.value["id"] y control.value["alumno"]
+   * Asegurarse de que el atributo incluido exista en el conjunto de valores de control
+   */
   disabled: false
 
   constructor(attributes: any = {}) {
@@ -29,6 +42,11 @@ export class RouteIconComponent implements ControlComponent, OnInit {
   @Input() control: FormGroup;
 
   queryParams: any = {};
+  /**
+   * Reconfiguracion de config.params
+   * En base al valor de config.params se define queryParams evitando editar config.params
+   * queryParams es directamente utilizado en el template
+   */
 
   ngOnInit(): void {
     if(!this.config.title) this.config.title = this.config.routerLink;

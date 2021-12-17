@@ -60,17 +60,18 @@ export class TableDynamicConfig extends FormArrayConfig {
 
   optColumn: AbstractControlViewOption[] = []; //columna opciones
   /**
-   * el control y el index se definen por cada fila, no deben ser completados
-   */
-  /**
-   {  //boton eliminar 
-      config: new EventIconConfig({
-        action:"remove",
-        color: "accent",
-        fieldEvent:this.optField,
-        icon:"delete"
-      }),
-    }
+   * Columna opciones.
+   * El "control" y el "index" se definen por cada fila, no deben ser completados
+   *
+   * @example boton eliminar
+   * {
+   *   config: new EventIconConfig({
+   *     action:"remove",
+   *     color: "accent",
+   *     fieldEvent:this.optField,
+   *     icon:"delete"
+   *   }),
+   * }
    */
   display?: Display; //busqueda susceptible de ser modificada por ordenamiento o paginacion
   length?: number; //cantidad total de elementos, puede ser mayor que los datos a visualizar
