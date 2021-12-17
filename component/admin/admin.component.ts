@@ -31,7 +31,6 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
 
   config: FormStructureConfig
   /**
-   * debe definirse obligatoriamente
    * @example
    * config: FormStructureConfig = new FormStructureConfig({}, {
    *    "per": new FieldsetDynamicConfig({title:"Datos personales"},{
