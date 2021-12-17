@@ -32,7 +32,12 @@ export abstract class StructureComponent implements OnInit {
    /**
    * se define como BehaviorSubject para facilitar la definicion de funciones avanzadas, por ejemplo reload, clear, restart, etc.
    */
-   optField: FormControl = new FormControl(null)//field de opciones para disparar eventos
+   optField: FormControl = new FormControl(null)
+   /**
+    * field de opciones para disparar eventos
+    * Los eventos se definenen en switchOptField
+    */
+
    optFooter: AbstractControlViewOption[] = [] //opciones de componente
    /**
     { //boton aceptar
@@ -91,9 +96,19 @@ export abstract class StructureComponent implements OnInit {
   abstract initDisplay();
 
   ngOnInit() {
-    this.loadParams(); //al cambiar los parametros se carga el storage, debe ir antes de inicializarse el storage
-    this.loadStorage(); //se carga el storage con los valores del formulario indicando la url con parametros
+    this.loadParams(); 
+    /**
+     * al cambiar los parametros se carga el storage, 
+     * debe ir antes de inicializarse el storage
+     */
+
+    this.loadStorage(); 
+    /**
+     * se carga el storage con los valores del formulario indicando la url con parametros
+     */
+
     this.loadOptField();
+
     this.loadDisplay(); 
     /**
      * Se define el display aparte para poder asignar valores directamente al display, por ejemplo en las funciones clear y reset
