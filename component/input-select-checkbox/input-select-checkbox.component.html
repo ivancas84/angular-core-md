@@ -1,11 +1,18 @@
 <mat-form-field >
   <mat-label>{{config.label}}</mat-label>
   
-  <input *ngIf="config.readonly" 
+  <input *ngIf="config.readonly && control.value" 
          matInput 
-         [formControl]="control" 
          [readonly]="true"
+         value="{{config.options[0]}}"
   >
+
+  <input *ngIf="config.readonly && !control.value" 
+         matInput 
+         [readonly]="true"
+         value="{{config.options[1]}}"
+  >
+
   <mat-select *ngIf="!config.readonly" 
               [formControl]="control"
   >
