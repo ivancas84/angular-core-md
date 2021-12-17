@@ -50,11 +50,17 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
    *    )
    * }
    * 
+   * @description
+   * "per": relacion fk (la entidad fk se traduce en base al prefijo)
+   * "alumno": entidad principal
+   * "per-detalle_persona/persona": relacion um donde alumno.persona um detalle_persona, 
+   *   ((la relacion entre persona y detalle_persona se traduce en base al prefijo "per")) 
    */
 
   form: FormGroup
   /**
-   * si no existe form, se crea en base a config
+   * si no existe, se crea.
+   * si no existe alguna subestructura, se crea en base a config.
    */
 
   sort = (a: KeyValue<string,SortControl>, b: KeyValue<string,SortControl>): number => {
@@ -110,6 +116,9 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
 
  
   ngOnInit(){
+    /**
+     * construccion de form en base a config 
+     */
     if(!this.form) this.form = this.fb.group({})
     for(var key in this.config.controls){
       if(!this.form.contains(key))
