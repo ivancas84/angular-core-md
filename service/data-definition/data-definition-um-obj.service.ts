@@ -13,11 +13,12 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 })
 export class DataDefinitionUmObjService {
   /**
+   * @todo renombrar a DataDefinitionUmService
    * Servicio de inicializacion de una entidad y sus relaciones um
-   * El metodo principal "group" recibe
+   * El metodo principal "data" (actualmente llamado "group") recibe
    *   1) el nombre de una entidad 
    *   2) un conjunto de datos de inicializacion (tupla de entityName)
-   *   3) una estructura de administracion
+   *   3) un array de configuracion
    * Se recorre la estructura para identificar las relaciones um.
    * Si existen relaciones um se realiza una consulta a la base de datos y se asocia al conjunto de datos de inicializacion
    * Ej. para la entidad "alumno" {
@@ -34,7 +35,8 @@ export class DataDefinitionUmObjService {
 
   public uniqueGroup(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
     /**
-     * Realiza una llamada a unique anets de invocar a group
+     * @todo renombrar a unique
+     * Realiza una llamada a unique anets de invocar a data
      */
     return this.dd.unique(entityName, params).pipe(
       switchMap(
@@ -54,7 +56,12 @@ export class DataDefinitionUmObjService {
 
   public group(entityName:string, row: any, controls:{ [index: string]: FormConfig }){
     /**
-     * Metodo principal
+     * @todo group confunde, renombrar a "data"
+     * 
+     * @summary 
+     * 1) Recorrer  array de configuracion (controls)
+     * 2) Para cada rel um, invocar a queryDataUm, almacenar el resultado en un array de observables
+     * 3) combinar los resultados del paso 2 en la consulta original
      */
     var obs = {}
     

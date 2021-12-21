@@ -122,14 +122,15 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
   // }
 
   getAllConnection(
-    data: { [index: string]: any }[], 
-    fkName: string, 
-    entityName: string, 
-    fields: { [index: string]: any } | string[],
-    join: string = ", ",
+    data: { [index: string]: any }[], //array de datos que se utilizaran para consultar y luego seran asociados
+    fkName: string, //se utiliza para definir ids = data[fkName]
+    entityName: string, //nombre de la entidad principal
+    fields: { [index: string]: any } | string[], //objeto para realizar la asociacion de resultados
+    join: string = ", ", //concatenacion en cado de que fields tenga un array como elemento
   ): Observable<{ [index: string]: any }[]>{
     var d = fastClone(data);
     /**
+     * @summary
      * Consulta de relaciones directas
      * Define un array de identificadores "ids" a partir de los parametros "data[fkName]"
      * Consulta todos los campos del parametro "entityName" utilizando "ids" para obtener "response"
