@@ -12,7 +12,7 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 })
 export class DataDefinitionRelFieldsService {
   /**
-   * Servicio de inicializacion de fields de una entidad y sus relaciones
+   * Servicio de inicializacion de campos de una entidad y sus relaciones
    */
 
   constructor(
@@ -21,17 +21,31 @@ export class DataDefinitionRelFieldsService {
 
   public getAll(entityName: string, ids: string[], fields: string[]): Observable<any> {
     /**
+     * @todo Renombrar a getAllFields
+     * 
      * @param entityName Nombre de la entidad
-     * @param ids Identificadores de entityName
-     * @param fields Campos de entityName y sus relaciones, las relaciones se definen con "prefix-"
-     *    Ejemplo de fields (per-numero_documento)
+     * @param ids ids de entityName
+     * @param fields Campos de entityName y sus relaciones obtenidos de configuracion,
+     *   las relaciones se definen con "prefix-"
+     *   Ejemplo de fields (per-numero_documento)
      *
-     * @return Ejemplo de retorno (para la entidad principal alumno)
+     * @example Ejemplo de retorno (para la entidad principal alumno)
      *   [{id:"value", activo:true, per-id:"value", per-numero_documento:"value"},...]
      * 
-     * Inicializar los campos de una entidad y sus relaciones
-     * No se inicializan todas las relaciones, solo las que se determinan en "fields"
-     * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
+     * @summary
+     * Se efectuan tres acciones principales:
+     *   1) Inicializar los campos de una entidad y sus relaciones
+     *      No se inicializan todas las relaciones, 
+     *      solo las que se determinan en el parametor "fields"
+     *   2) Obtener los datos de entityName en base a ids
+     *   3) Obtener el mapa de las relaciones ("rel")
+     *   4) Combinar y armar una respuesta en base a 1, 2 y 3.
+     *
+     * @description
+     * A diferencia de las consultas retornadas del servidor, 
+     * se utiliza el caracter - (guion medio) como separador 
+     * para facilitar posteriormente la identificacion de fields 
+     * y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      */
     return combineLatest([
       this.initializeFields(entityName, fields),
@@ -39,12 +53,12 @@ export class DataDefinitionRelFieldsService {
     ]).pipe(
       switchMap(
         response => {
-          var fieldsFilter = response[0];
+          var fieldsInitialized = response[0];
           var data = response[1];
           return this.dd.post("rel",entityName).pipe(
             switchMap(
               rel => {
-                return this.getAllLoop(data, rel, fieldsFilter)
+                return this.getAllLoop(data, rel, fieldsInitialized)
               }
             )
           )
@@ -53,12 +67,35 @@ export class DataDefinitionRelFieldsService {
     )
   }
 
-  protected getAllLoop(data, rel, fieldsFilter) {
+  protected getAllLoop(
+    data, //resultado de consulta para initializar 
+    rel, //objeto con el arbol de relaciones
+    fieldsInitialized:string[] //campos inicializados con relaciones
+  ) {
+    /**
+     * @summary
+     * Metodo complementario de inicializacion
+     * 
+     * @description
+     * 1) Recorre el arbol de relaciones
+     * 2) Para cada relacion obtiene los fields de la correspondiente entidad
+     * 3) Define un elemento formado por campos de la entidad de la relacion recorrida, nombre entidad recorrida y prefijo de clave foranea
+     * 4) Invoca a metodo recursivo chainging para recorrer el conjunto de elementos definido 
+     * 
+     * @description 2
+     * Para definir el prefijo de la clave foranea verifica la existencia del caracter _
+     * Si existe _ significa que se esta recorriendo una fk indirecto, 
+     * por lo tanto debe inlcuirse el correspondiente prefijo en la clave foranea 
+     * Ejemplo per_dom, se define como per-domicilio
+     * 
+     * Si no existe _ significa que se esta recorriendo una fk directa,
+     * Ejemplo per, se define como persona  
+     */
     var keys =  Object.keys(rel);
     var elements = []
     for(var j = 0; j < keys.length; j++) {
       if(rel.hasOwnProperty(keys[j])) {
-        var fields = this.filterFields(fieldsFilter, keys[j]+"-");
+        var fields = this.filterFields(fieldsInitialized, keys[j]+"-");
         if(!isEmptyObject(fields)) {
           var e = {
             "fields":fields,
@@ -72,11 +109,20 @@ export class DataDefinitionRelFieldsService {
     return this.chaining(data,elements, 0)
   }
 
-  protected chaining(data, elements, i){
+  protected chaining(
+    data, //conjunto de datos 
+    elements, //conjunto de elementos formado por fields: string de campos, entityName: nombre de la entidad, fkName: nombre de la fk (con prefijo)
+    i //indice recorrido
+  ){
     /**
-     * Metodo independiente para encadenar observables
+     * @summary
+     * Recorrer datos en base a una serie de elementos y encadenar observables
      */
     if(i == elements.length) return of(data);
+    /**
+     * si el indice es igual a la cantidad de elementos, ya no queda nada por recorrer, 
+     * se retornan los datos y se finaliza con la recursion
+     */ 
     return this.dd.getAllConnection(data, elements[i]["fkName"], elements[i]["entityName"], elements[i]["fields"]).pipe(
       switchMap(
         response => this.chaining(response, elements, ++i)
@@ -84,15 +130,26 @@ export class DataDefinitionRelFieldsService {
     )
   }
     
-  public getAllGroup(entityName: string, ids: string[], controls:{ [index: string]: FormConfig }){
+  public getAllGroup(
+    entityName: string, //entidad principal
+    ids: string[], //ids de entityName
+    controls:{ [index: string]: FormConfig } //objeto de configuracion
+  ){
     /**
-     * Analiza el parametro controls para identificar los fields (se utiliza el caracter "-" para identificar las relaciones)
-     * y ejecutar getAll (si corresponde)
-     * A diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
+     * @todo Renombrar a getAll (ojo que ya existe getAll que debe ser renombrada a getAllFields)
      * 
-     * NOTA Si existe el caracter "-" significa que se está queriendo manipular un fields de una relación, por lo tanto debe inicializarse
+     * @summary
+     * Analiza el parametro de configuracion controls para identificar los campos existentes.
+     * Se utiliza el caracter "-" para identificar las relaciones um.
+     * Si existen campos um ejecuta this.getAll (inicializa relaciones) 
+     * sino this.dd.getAll (no hace falta inicializar relaciones) 
+     * 
+     * A diferencia de las consultas retornadas del servidor, 
+     * se utiliza en las respuestas el caracter "-" (guion medio) como separador, 
+     * para facilitar posteriormente la identificacion de fields 
+     * y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      *
-     * @return Ejemplo de retorno (para la entidad principal alumno)
+     * @example Ejemplo de retorno (para la entidad principal alumno)
      *   [{id:"value", activo:true, per-id:"value", per-numero_documento:"value"},...]
      * 
      */
@@ -217,9 +274,9 @@ export class DataDefinitionRelFieldsService {
     ]).pipe(
       switchMap(
         response => {
-          var fieldsFilter = response[0];
+          var fieldsInitialized = response[0];
           var data = response[1];
-          return this.fields(entityName, fieldsFilter, data)
+          return this.fields(entityName, fieldsInitialized, data)
           
         }
       )
@@ -227,7 +284,18 @@ export class DataDefinitionRelFieldsService {
   }
 
 
-  protected initializeFieldsRel(key, f, rel){
+  protected initializeFieldsRel(
+    key: string, 
+    f:string[], 
+    rel:any
+  ){
+    /**
+     * @summary
+     * Metodo recursivo para complementar a initializeFieds
+     * 
+     * @description
+     * Permite recorrer el arbol de relaciones mediante una recursion
+     */
     var subkey =  key.substr(0, key.lastIndexOf('_'));
     var s = "";
     if(key.includes("_")) {
@@ -239,11 +307,20 @@ export class DataDefinitionRelFieldsService {
 
   protected initializeFields(entityName: string, fields: string[]): Observable<any> {
     /**
+     * @summary
      * Para realizar correctamente las relaciones entre las distintas entidades
-     * es necesario que existan ciertos campos de relacion que pueden no estar incluidos en la consulta original
-     * el metodo initializeFields recorre los campos indicados en el parametro e inicializa los fields de relacion
-     * por ejemplo, si desde alumno_comision, queremos recorrer persona, debemos pasar por alumno, entonces debe existir alu-persona por mas que no se incluya
-     * a diferencia de las consultas retornadas del servidor, se utiliza el caracter - (guion medio) como separador, para facilitar posteriormente la identificacion de fields y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
+     * es necesario que existan ciertos campos de relacion
+     * que pueden no estar incluidos en la consulta original
+     * el metodo initializeFields recorre los campos indicados en el parametro
+     * e inicializa los fields de relacion
+     * por ejemplo, si desde alumno_comision, queremos recorrer persona, debemos pasar por alumno, 
+     * entonces debe existir alu-persona por mas que no se incluya
+     * 
+     * @description
+     * A diferencia de las consultas retornadas del servidor, 
+     * se utiliza el caracter - (guion medio) como separador, 
+     * para facilitar posteriormente la identificacion de fields 
+     * y la aplicacion de ciertas caracteristicas como por ejemplo ordenamiento
      */
 
     return this.dd.post("rel",entityName).pipe( //se consultan las relaciones de la entidad para armar el grupo de fields
