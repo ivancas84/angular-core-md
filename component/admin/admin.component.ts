@@ -53,10 +53,19 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
    * @description
    * "per": relacion fk (la entidad fk se traduce en base al prefijo)
    * "alumno": entidad principal
-   * "per-detalle_persona/persona": relacion um donde alumno.persona um detalle_persona, 
+   * "per-detalle_persona/persona": relacion um que se muestra donde persona um detalle_persona,
+   *   los valores de detalle_persona se obtienen a partir de alumno fk persona que se traduce de per 
    *   ((la relacion entre persona y detalle_persona se traduce en base al prefijo "per")) 
+   * 
+   * @example 2
+   *   "comision" ...
+   *   "curso/comision"
+   * 
+   * @description 2
+   *   Se visualiza comision u:m curso, para acceder a los datos se utiliza curso.comision
+   *   
    */
-
+   
   form: FormGroup
   /**
    * si no existe, se crea.
@@ -138,7 +147,8 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
   
   loadDisplay(){
     /**
-     * Se define un load independiente para el display, es util para reasignar valores directamente al display y reinicializar
+     * Se define un load independiente para el display.
+     * Es util para reasignar valores directamente al display y reinicializar
      * por ejemplo al limpiar o resetear el formulario
      */
     this.loadDisplay$ = this.display$.pipe(
@@ -159,7 +169,6 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
           this.fc.initValue(this.config, this.form, this.fc.defaultValues(this.config))
           if(!isEmptyObject(data)) this.fc.initValue(this.config, this.form, data);
           if(!isEmptyObject(this.storageValues)) {
-            console.log(this.storageValues)
             this.fc.initValue(this.config, this.form, this.storageValues)
           }
           /**
@@ -182,6 +191,12 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
   }
 
   queryData(): Observable<any> {
+    /**
+     * Consulta y definicion de datos
+     * Se utilizan dos servicios para definir datos, 
+     * cada servicio identifica las relaciones correspondientes de la configuracion (fk o um) 
+     * y efectua las acciones correspondientes para obtener y asociar datos
+     */
     return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.config.controls).pipe(
       switchMap(
         row => {
