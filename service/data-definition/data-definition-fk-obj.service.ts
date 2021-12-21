@@ -12,11 +12,14 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 })
 export class DataDefinitionFkObjService {
   /**
-   * Servicio de inicializacion de una entidad y sus relaciones fk
-   * El metodo principal "uniqueGroup" recibe
+   * @todo renombrar a DataDefinitionFkService
+   * 
+   * @summary
+   * Servicio de inicializacion de una entidad y sus relaciones fk a partir de un array de controls de configuracion
+   * El metodo principal "unique" recibe
    *   1) el nombre de una entidad 
    *   2) un conjunto de parametros de inicializacion 
-   *   3) una estructura de configuracion
+   *   3) array de controls de configuracion
    * Se obtiene una tupla de 1 utilizando 2, luego se obtienen las relaciones utilizando 3
    * El resultado es un objeto con keys (nombre de la relacion) y values (valor correspondiente)
    * Ej. para la entidad "alumno" {
@@ -24,71 +27,75 @@ export class DataDefinitionFkObjService {
    *   "per" => {id:"1", nombres:"Juan"}
    *   "per_dom" => {id:"1", calle:"33"}
    * }  
+   * 
+   * @description
+   * Este metodo trabaja con el arbol de relaciones tree y rel para definir y asociar datos
+   * No puede ser utilizado para relaciones derivadas
    */
 
   constructor(
     protected dd: DataDefinitionToolService, 
   ) { }
 
-  public uniqueGroup(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
+  public unique(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
+    /**
+     * @todo renombrar a unique
+     * 
+     * @summary
+     * 1) Realiza una consulta "unique" a partir de los "params"
+     * 2) Invoca al metodo principal "data"
+     * 
+     * @example Ejemplo de conjunto de datos de retorno (data)
+     * {
+     *   "alumno" => {"id":"value",...}
+     *   "per" => {"id":"value",...}
+     *   "per_dom" => {"id":"value",...}
+     * }
+     */
+    if(!params) return of(null);
     return this.dd.unique(entityName, params).pipe(
       switchMap(
         (row) => {
-          if(!row) return this.initGroup(entityName, params, controls);
-          var r = {};
-          r[entityName] = fastClone(row)
+          var data = {};
+          data[entityName] (!row) ?  fastClone(params) : fastClone(row)
           /**
            * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
            */
-          return this.group(entityName, r, controls)
+          return this.data(entityName, data, controls)
         }
       )
     )
   }
 
-  public initGroup(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
+  public data(entityName:string, data: any, controls: { [index: string]: FormConfig }){
     /**
-     * Recorre parametros e inicializa relaciones
-     */
-    if(!params) return of(null);
-    var r = {};
-    r[entityName] = fastClone(params)
-    /**
-     * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
-     */
-    return this.group(entityName, r, controls)
-  }
-
-
-  public group(entityName:string, row: any, controls: { [index: string]: FormConfig }){
-    /**
-     * Definir relaciones a partir de la estructura de configuracion y armar el arbol de datos
+     * @todo renombrar a data
+     * 
+     * @summary
+     * 1) Recorrer el array de configuracion (controls) y obtener los campos de relacion
+     * 2) Recorrer las relaciones fk indicadas en relationsFk
+     * 3) Inicializar las relaciones faltantes (initializeRelations)
+     * 4) Definir arbol de relaciones (tree)
+     * 5) Definir los datos de las relaciones fk a partir del arbol (chaining)
+     * 
+     * @example Ejemplo de conjunto de datos de retorno
+     * {
+     *   "alumno" => {"id":"value",...}
+     *   "per" => {"id":"value",...}
+     *   "per_dom" => {"id":"value",...}
+     * }
      */
     var relationsFk = [];
     Object.keys(controls).forEach(key => {
       if(!key.includes("/") && entityName != key)  relationsFk.push(key)
     });
-    return this.fk(entityName, row, relationsFk)
-  }
-
-  protected fk(entityName:string, row, relationsFk:string[]){
-    /**
-     * @param entityName Nombre de la entidad
-     * @param row Tupla de entityName
-     * @param relationsFk Relaciones de entityName
-     * 
-     * Recorrer las relaciones fk indicadas en relationsFk
-     * para definir los valores de las relaciones,
-     * se asignan a row
-     */
-
-    if(!relationsFk.length) return of(row); 
+    if(!relationsFk.length) return of(data); 
     return combineLatest([
       this.initializeRelations(entityName, relationsFk),
       this.dd.post("tree", entityName)
     ]).pipe(
       mergeMap(
-        response => this.fkTree(entityName, row, response[1], response[0])
+        response => this.chaining(entityName, data, response[1], response[0], 0)
       )
     )
   }
@@ -120,76 +127,80 @@ export class DataDefinitionFkObjService {
     )
   }
 
-  protected recursive(id, row, key, tree, relationsFk){
+  protected recursive(
+    entityKey, //identificador de la entidad (prefijo o entidad principal)
+    data, //conjunto de datos (se procesara data[entityKey])
+    key,  //Llave del tree que debe procesarse
+    tree, //arbol de relaciones
+    relationsFk //string con el nombre de las relaciones
+  ){
     /**
-     * @param row Datos correspondientes a la entidad origen (la entidad que posee a key como clave foranea)
-     * @param key Llave del tree que debe procesarse
-     * @param tree Arbol de relaciones
-     * @param relationsFk Relaciones que deben procesarse
+     * @summary
+     * 1) Si existe data[entityKey][tree[key]["field_name"]] retorna this.dd.get(tree[key]["entity_name"], data[entityKey][tree[key]["field_name"]]) 
+     * 2) Aplica recursion invocando a chaining utilizando los mismos parametros pero con tree = tree["children"]
+     * 
+     * @description
+     * Se utiliza conjuntamente con chaining para aplicar recursion a los subarboles
      */
      return of({}).pipe(
       switchMap(() => {
-        if(row[id].hasOwnProperty(tree[key]["field_name"]) && row[id][tree[key]["field_name"]])  return this.dd.get(tree[key]["entity_name"], row[id][tree[key]["field_name"]])
+        if(data[entityKey].hasOwnProperty(tree[key]["field_name"]) && data[entityKey][tree[key]["field_name"]])  return this.dd.get(tree[key]["entity_name"], data[entityKey][tree[key]["field_name"]])
         else return of(null);
       }),
       map(
         response => {
-          row[key] = response
-          return row
+          data[key] = response
+          return data
         }
       ),
       switchMap(
-        row => {
+        data => {
           if(!isEmptyObject(tree[key]["children"])){
-            return this.fkTree(key, row, tree[key]["children"], relationsFk)
+            return this.chaining(key, data, tree[key]["children"], relationsFk, 0)
           } else {
-            return of(row)
+            return of(data)
           }
         }
       )
     )
   }
-
-  protected fkTree(id, row, tree, relationsFk) {
+  
+  protected chaining(
+    entityKey, //nombre de la entidad a procesar
+    data, //conjunto de datos (se procesara data[entityKey])
+    tree, //arbol de relaciones 
+    relationsFk, //string con las relaciones a procesar
+    i //indice de keys que se esta procesando 
+  ){
     /**
-     * @param id Identificador de row que debe ser tenido en cuenta para obtener los datos
-     * @param row Datos
-     * @param tree Arbol de relaciones
-     * @param relationsFk Relaciones que deben inicializarse
+     * @summary
+     * 1) Recorre uno a uno los keys de tree para definir los datos 
+     * de las relaciones y asociarlos al conjunto de datos principal
+     * 2) Invoca a recursive para consultar datos y aplicar chaining a cada subarbol: tree[keys[i]]
+     * 
+     * @description
+     * Se utiliza conjuntamente con metodo recursivo para consultar los datos e invocar nuevamente a chaining con tree["children"]
      */
     var keys = Object.keys(tree);
-    return this.chaining(id, row, tree, relationsFk, keys, 0)
-/*
-    for(var key in tree){
-      
-        DEPRECATED?
-      if(relationsFk.includes(key)){
-        if(!obs) obs = this.recursive(id, row, key, tree, relationsFk);
-        else obs.pipe(
-          switchMap(
-            row => {
-              return this.recursive(id, row, key, tree, relationsFk)
-            }
-          )
-        )
-      }
-    }
-    return (obs) ? obs : of(row);
-    }*/
-  }
-
-  protected chaining(id, row, tree, relationsFk, keys, i){
-    if(i == keys.length) return of(row);
-    else return this.subchaining(id, row, tree, relationsFk, keys[i]).pipe(
+    if(i == keys.length) return of(data);
+    else return of({}).pipe(
       switchMap(
-        row => this.chaining(id, row, tree, relationsFk, keys, ++i)
+        data => {
+          if(!relationsFk.includes(keys[i])) return of(data);
+          return this.recursive(entityKey, data, keys[i], tree, relationsFk)
+          /**
+           * Consultar datos de data[entityKey] e invocar a chaining para tree[keys[i]]["children"]
+           */
+        } 
+      ),
+      switchMap(
+        data => this.chaining(entityKey, data, tree, relationsFk, ++i) 
+        /**
+         * Continuar con el siguiente valor de tree
+         */
       )
     )
   }
 
 
-  protected subchaining(id, row, tree, relationsFk, key){
-    if(!relationsFk.includes(key)) return of(row);
-    return this.recursive(id, row, key, tree, relationsFk)
-  }
 }
