@@ -11,7 +11,7 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 })
 export class DataDefinitionFkAllService {
   /**
-   * Servicio de inicializacion de un conjunto de campos de una entidad y sus relaciones
+   * Servicio de inicializacion de un conjunto de campos de una entidad y sus relaciones fk
    * Los metodos de este servicio retornan un array de resultados de la forma
    *   [{id:"value", activo:true, per-id:"value", per-numero_documento:"value"},...]
    */

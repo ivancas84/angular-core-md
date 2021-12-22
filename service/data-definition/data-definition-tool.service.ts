@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
 import { fastClone } from '@function/fast-clone';
-import { recursiveData } from '@function/recursive-data';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
@@ -10,9 +9,9 @@ import { DataDefinitionService } from './data-definition.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionToolService extends DataDefinitionService{ //3
+export class DataDefinitionToolService extends DataDefinitionService{
   
-  public initFields( //2
+  public initFields(
     data: { [index: string]: any },
     fields:{ [index: string]: string } | string[],
   ){
@@ -26,7 +25,7 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
 
   }
 
-  public assignFields( //2
+  public assignFields(
     data: { [index: string]: any }, 
     response: { [index: string]: any }, 
     fields:{ [index: string]: string } | string[], 
@@ -77,50 +76,6 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     }
   }
 
-  // ***** OBSOLETO *****
-  // getTree(
-  //   tree:string[], //arbol ["identificador1","identificador2",...]
-  //   data: { [index: string]: any }[], //datos
-  //   method:string, //nombre del metodo a ejecutar
-  //   params:any = null //objeto con parametros de method 
-  // ){
-  //   /**
-  //    * Recorrer arbol y ejecutar metodo indicado
-  //    * Utiliza funcion externa "recursiveData" para obtener la hoja indicada de "tree" en "data"
-  //    * Ejecuta metodo "method" con parametros "params"
-  //    * Los valores se asignan al resultado de "recursiveData" y se reflejan en "data" ya que js trabaja por referencia
-  //    */
-  //   switch(method){
-  //     case "getAllConnectionUm":
-  //       return this.getAllConnectionUm(recursiveData(tree, data),params["fieldName"], params["fkName"],params["entityName"]).pipe(map(
-  //         () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
-  //       ));
-  //     case "postAllConnection":
-  //       var join = (params.hasOwnProperty("join")) ? params["join"] : ", "; 
-  //       return this.postAllConnection(
-  //         recursiveData(tree, data),
-  //         params["method"],
-  //         params["fieldNameData"],
-  //         params["fieldNameResponse"],
-  //         params["entityName"],
-  //         params["fields"],
-  //         join
-  //       ).pipe(map(
-  //         () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
-  //       ))
-  //     case "selectConnectionGroup":
-  //       var join = (params.hasOwnProperty("join")) ? params["join"] : ", "; 
-  //       return this.selectConnectionGroup(
-  //         recursiveData(tree, data),
-  //         params["fieldName"],
-  //         params["entityName"],
-  //         params["fields"],
-  //       ).pipe(map(
-  //         () => {return data;} //se vuelve a retornar data, gracias a la referencia js tendran los valores reasignados en el metodo
-  //       ))
-  //   }
-  // }
-
   getAllConnection(
     data: { [index: string]: any }[], //array de datos que se utilizaran para consultar y luego seran asociados
     fkName: string, //se utiliza para definir ids = data[fkName]
@@ -128,7 +83,6 @@ export class DataDefinitionToolService extends DataDefinitionService{ //3
     fields: { [index: string]: any } | string[], //objeto para realizar la asociacion de resultados
     join: string = ", ", //concatenacion en cado de que fields tenga un array como elemento
   ): Observable<{ [index: string]: any }[]>{
-    var d = fastClone(data);
     /**
      * @summary
      * Consulta de relaciones directas

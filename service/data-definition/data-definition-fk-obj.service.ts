@@ -12,29 +12,14 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 })
 export class DataDefinitionFkObjService {
   /**
-   * La leyenda Obj, significa que este metodo maniupla un objeto formado por prefijos de relaciones y sus datos, ejemplo
-   * {
-   *   "alumno":{"id":"value1", ...}, "per":{"nombres":"value", ...}, ... 
-   * }
-   * 
-   * 
    * @summary
-   * Servicio de inicializacion de una entidad y sus relaciones fk con agrupacion de relaciones mediante prefijos
-   * El metodo principal "unique" recibe
-   *   1) el nombre de una entidad 
-   *   2) un conjunto de parametros de inicializacion 
-   *   3) array de controls de configuracion
-   * Se obtiene una tupla de 1 utilizando 2, luego se obtienen las relaciones utilizando 3
-   * El resultado es un objeto con keys (nombre de la relacion) y values (valor correspondiente)
-   * Ej. para la entidad "alumno" {
+   * Servicio de inicializacion de una entidad y sus relaciones fk 
+   * Los metodos de este servicio retornan un objeto de resultados de la forma
+   * {
    *   "alumno" => {id:"1", activo:true, ...}
    *   "per" => {id:"1", nombres:"Juan"}
    *   "per_dom" => {id:"1", calle:"33"}
-   * }  
-   * 
-   * @description
-   * Este metodo trabaja con el arbol de relaciones tree y rel para definir y asociar datos
-   * No puede ser utilizado para relaciones derivadas
+   * }
    */
 
   constructor(
@@ -43,8 +28,6 @@ export class DataDefinitionFkObjService {
 
   public uniqueConfig(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
     /**
-     * @todo renombrar a unique
-     * 
      * @summary
      * 1) Realiza una consulta "unique" a partir de los "params"
      * 2) Invoca al metodo principal "data"
@@ -86,6 +69,10 @@ export class DataDefinitionFkObjService {
      *   "per" => {"id":"value",...}
      *   "per_dom" => {"id":"value",...}
      * }
+     * 
+     * @description
+     * Este metodo trabaja con el arbol de relaciones tree y rel para definir y asociar datos
+     * No puede ser utilizado para relaciones derivadas
      */
     var relationsFk = [];
     Object.keys(controls).forEach(key => {
