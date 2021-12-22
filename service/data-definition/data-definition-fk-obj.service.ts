@@ -12,10 +12,14 @@ import { DataDefinitionToolService } from './data-definition-tool.service';
 })
 export class DataDefinitionFkObjService {
   /**
-   * @todo renombrar a DataDefinitionFkService
+   * La leyenda Obj, significa que este metodo maniupla un objeto formado por prefijos de relaciones y sus datos, ejemplo
+   * {
+   *   "alumno":{"id":"value1", ...}, "per":{"nombres":"value", ...}, ... 
+   * }
+   * 
    * 
    * @summary
-   * Servicio de inicializacion de una entidad y sus relaciones fk a partir de un array de controls de configuracion
+   * Servicio de inicializacion de una entidad y sus relaciones fk con agrupacion de relaciones mediante prefijos
    * El metodo principal "unique" recibe
    *   1) el nombre de una entidad 
    *   2) un conjunto de parametros de inicializacion 
@@ -37,7 +41,7 @@ export class DataDefinitionFkObjService {
     protected dd: DataDefinitionToolService, 
   ) { }
 
-  public unique(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
+  public uniqueConfig(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
     /**
      * @todo renombrar a unique
      * 
@@ -57,20 +61,18 @@ export class DataDefinitionFkObjService {
       switchMap(
         (row) => {
           var data = {};
-          data[entityName] (!row) ?  fastClone(params) : fastClone(row)
+          data[entityName] = (!row) ?  fastClone(params) : fastClone(row)
           /**
            * @todo se cargan todos los campos, deberian filtrarse solo los de la entidad
            */
-          return this.data(entityName, data, controls)
+          return this.dataConfig(entityName, data, controls)
         }
       )
     )
   }
 
-  public data(entityName:string, data: any, controls: { [index: string]: FormConfig }){
+  public dataConfig(entityName:string, data: any, controls: { [index: string]: FormConfig }){
     /**
-     * @todo renombrar a data
-     * 
      * @summary
      * 1) Recorrer el array de configuracion (controls) y obtener los campos de relacion
      * 2) Recorrer las relaciones fk indicadas en relationsFk

@@ -5,7 +5,7 @@ import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { DataDefinitionRelFieldsService } from './data-definition-rel-fields.service';
+import { DataDefinitionFkAllService } from './data-definition-fk-all.service';
 import { DataDefinitionToolService } from './data-definition-tool.service';
 
 @Injectable({
@@ -30,7 +30,7 @@ export class DataDefinitionUmObjService {
 
   constructor(
     protected dd: DataDefinitionToolService, 
-    protected rel: DataDefinitionRelFieldsService
+    protected rel: DataDefinitionFkAllService
   ) { }
 
   public uniqueGroup(entityName:string, params:any, controls:{ [index: string]: FormConfig }){
@@ -59,9 +59,12 @@ export class DataDefinitionUmObjService {
      * @todo group confunde, renombrar a "data"
      * 
      * @summary 
-     * 1) Recorrer  array de configuracion (controls)
+     * 1) Recorrer array de configuracion (controls)
      * 2) Para cada rel um, invocar a queryDataUm, almacenar el resultado en un array de observables
-     * 3) combinar los resultados del paso 2 en la consulta original
+     * 3) combinar los resultados del paso 2 en la consulta original (mediante this.combineDataUm)
+     * 
+     * @description
+     * Para saber si es un relacion um, actualmente se verifica la existencia del caracter "/"
      */
     var obs = {}
     
@@ -101,7 +104,7 @@ export class DataDefinitionUmObjService {
     if(formArray.order) display.setOrder(formArray.order);
     return this.dd.post("ids",entityName, display).pipe(
       switchMap(
-        ids => this.rel.getAllGroup(entityName, ids, formArray.controls)
+        ids => this.rel.getAllConfig(entityName, ids, formArray.controls)
       ),
 
     )  

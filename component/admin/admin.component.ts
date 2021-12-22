@@ -197,7 +197,7 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
      * cada servicio identifica las relaciones correspondientes de la configuracion (fk o um) 
      * y efectua las acciones correspondientes para obtener y asociar datos
      */
-    return this.relFk.uniqueGroup(this.entityName, this.display$.value, this.config.controls).pipe(
+    return this.relFk.uniqueConfig(this.entityName, this.display$.value, this.config.controls).pipe(
       switchMap(
         row => {
           return this.relUm.group(this.entityName, row, this.config.controls)

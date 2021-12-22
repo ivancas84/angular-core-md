@@ -76,6 +76,10 @@ import localeEsAr from '@angular/common/locales/es-AR';
 import { ControlBooleanComponent } from "@component/control-boolean/control-boolean.component";
 import { DownloadComponent } from "@component/download/download.component";
 import { InputUploadComponent } from "@component/input-upload/input-upload.component";
+import { DataDefinitionRelInitialize } from "@service/data-definition/data-definition-rel-initialize.service";
+import { DataDefinitionFkAllService } from "@service/data-definition/data-definition-fk-all.service";
+import { DataDefinitionFkService } from "@service/data-definition/data-definition-fk.service";
+import { DataDefinitionUmService } from "@service/data-definition/data-definition-um.service";
 registerLocaleData(localeEsAr, 'es-AR');
 
 @NgModule({
@@ -230,6 +234,10 @@ registerLocaleData(localeEsAr, 'es-AR');
     DataDefinitionStorageService, 
     DataDefinitionLabelService,
     DataDefinitionRelLabelService, 
+    DataDefinitionRelInitialize,
+    DataDefinitionFkAllService,
+    DataDefinitionFkService,
+    DataDefinitionUmService,
 
     /*{provide: 'SocialAuthServiceConfig', useValue: { autoLogin: false,  providers: [
       {

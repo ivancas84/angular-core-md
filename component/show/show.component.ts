@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
-import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
+import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
 import { ConfigFormGroupFactory, FormArrayConfig, FormStructureConfig } from '@class/reactive-form-config';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FormConfigService } from '@service/form-config/form-config.service';
@@ -44,7 +44,7 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
     protected route: ActivatedRoute, 
     protected dialog: MatDialog,
     protected storage: SessionStorageService,
-    protected ddrf: DataDefinitionRelFieldsService,
+    protected ddrf: DataDefinitionFkAllService,
     protected fc: FormConfigService,
     protected router: Router, 
     protected snackBar: MatSnackBar,
@@ -177,7 +177,7 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
   queryData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display$.value).pipe(
       switchMap(
-        ids => this.ddrf.getAllGroup(this.entityName, ids, this.config.controls)
+        ids => this.ddrf.getAllConfig(this.entityName, ids, this.config.controls)
       )
     )
   }

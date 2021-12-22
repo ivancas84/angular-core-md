@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { isEmptyObject } from '@function/is-empty-object.function';
-import { DataDefinitionRelFieldsService } from '@service/data-definition/data-definition-rel-fields.service';
+import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { ValidatorsService } from '@service/validators/validators.service';
@@ -25,7 +25,7 @@ export abstract class ShowAdminRelDynamicComponent extends ShowAdminDynamicCompo
     protected dialog: MatDialog,
     protected validators: ValidatorsService,
     protected storage: SessionStorageService,
-    protected ddrf: DataDefinitionRelFieldsService
+    protected ddrf: DataDefinitionFkAllService
 
   ) {
     super(dd,route,dialog, storage, validators)
