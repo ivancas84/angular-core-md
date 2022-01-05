@@ -90,6 +90,7 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
         icon: "arrow_back", //texto del boton
         action: "back", //accion del evento a realizar
         color: "accent",
+        title:"Volver",
         fieldEvent: this.optField
       })
     },
@@ -98,6 +99,7 @@ export abstract class AdminComponent extends StructureComponent implements OnIni
         icon: "add", //texto del boton
         action: "clear", //accion del evento a realizar
         color: "accent",
+        title:"Nuevo",
         fieldEvent: this.optField
       })
     },
