@@ -4,11 +4,17 @@ import { ControlComponent, FormControlConfig } from '@class/reactive-form-config
 import { getControlName } from '@function/get-control-name';
 
 export class InputTextConfig extends FormControlConfig {
+  /**
+   * Configuracion de Input Text
+   */
   componentId: string = "input_text"
   label?: string
   showLabel: boolean = true
   placeholder?: string = ""
   type?: string = "text"
+  /**
+   * Atributo type: Se asocia al parametro type del tag input de html 
+   */
   widthAux?: string = null
   /**
    * Ancho exclusivo del input
