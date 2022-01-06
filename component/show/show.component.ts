@@ -23,7 +23,7 @@ import { ValidatorsService } from '@service/validators/validators.service';
 })
 export abstract class ShowComponent extends StructureComponent implements OnInit {
   /**
-   * Estructura principal para administrar un conjunto de tuplas
+   * Estructura principal para administrar un array de elementos
    */
 
   form: FormArray = new FormArray([])

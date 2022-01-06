@@ -12,10 +12,21 @@ import { FormArrayConfig, FormControlConfig } from '@class/reactive-form-config'
   template: './show.component.html',
 })
 export abstract class ShowAdminComponent extends ShowComponent implements OnInit {
-
+  
   config: FormArrayConfig = new TableDynamicConfig()
+  /**
+   * @property config: Configuracion del form
+   * 
+   * Habitualmente es una instancia de TableDynamicConfig, pero puede ser
+   * cualquier tipo de configuracion que administre un array.   
+   **/
 
-  optFooter: AbstractControlViewOption[] = [ //opciones de componente
+  optFooter: AbstractControlViewOption[] = [
+  /**
+   * @property optFooter: Opciones del footer
+   * 
+   * Se redefine para incluir elementos habituales de administracion
+   */
     { //boton aceptar
       config: new EventButtonConfig({
         text: "Aceptar", 
