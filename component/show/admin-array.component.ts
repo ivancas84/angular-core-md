@@ -11,7 +11,7 @@ import { FormArrayConfig, FormControlConfig } from '@class/reactive-form-config'
   selector: 'core-show',
   template: './show.component.html',
 })
-export abstract class ShowAdminComponent extends ShowComponent implements OnInit {
+export abstract class AdminArrayComponent extends ShowComponent implements OnInit {
   
   config: FormArrayConfig = new TableDynamicConfig()
   /**

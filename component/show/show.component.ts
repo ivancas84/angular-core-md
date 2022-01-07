@@ -16,7 +16,6 @@ import { Location } from '@angular/common';
 import { StructureComponent } from '@component/structure/structure.component';
 import { ValidatorsService } from '@service/validators/validators.service';
 
-
 @Component({
   selector: 'core-show',
   template: './show.component.html',
