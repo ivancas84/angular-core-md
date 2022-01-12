@@ -5,6 +5,7 @@ import { ConfigFormGroupFactory, FormArrayConfig, FormConfig, FormControlConfig,
 import { EventButtonConfig } from '@component/event-button/event-button.component';
 import { EventIconConfig } from '@component/event-icon/event-icon.component';
 import { TableDynamicConfig } from '@component/table/table-dynamic.component';
+import { arrayColumn } from '@function/array-column';
 import { fastClone } from '@function/fast-clone';
 
 @Injectable({
@@ -68,16 +69,17 @@ export class FormConfigService {
     });
   }
   
-  initArray(config: FormArrayConfig, form: FormArray, value: [{ [key: string]: any; }]): void {
-    form.clear();
-    for(var i = 0; i <value.length; i++) form.push(config.factory.formGroup());
-    form.patchValue(value)
+  initArray(config: FormArrayConfig, formArray: FormArray, value: [{ [key: string]: any; }]): void {
+    formArray.clear();
+    for(var i = 0; i <value.length; i++) formArray.push(config.factory.formGroup());
+    formArray.patchValue(value)
   }
 
-  /**
-   * Se realiza una traduccion del atributo params que contienen {{key}}
-   */
    public matchParams(params: any, form:FormGroup){
+    /**
+     * Se realiza una traduccion del atributo params que contienen {{key}}
+     */
+
     var p = fastClone(params)
     for(var i in p){
       if(p.hasOwnProperty(i)){

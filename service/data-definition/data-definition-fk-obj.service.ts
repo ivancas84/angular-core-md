@@ -39,6 +39,7 @@ export class DataDefinitionFkObjService {
      *   "per_dom" => {"id":"value",...}
      * }
      */
+
     if(!params) return of(null);
     return this.dd.unique(entityName, params).pipe(
       switchMap(
@@ -174,7 +175,7 @@ export class DataDefinitionFkObjService {
     if(i == keys.length) return of(data);
     else return of({}).pipe(
       switchMap(
-        data => {
+        () => {
           if(!relationsFk.includes(keys[i])) return of(data);
           return this.recursive(entityKey, data, keys[i], tree, relationsFk)
           /**
