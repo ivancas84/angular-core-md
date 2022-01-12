@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AbstractControl, FormControl } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -12,7 +12,7 @@ import { DataDefinitionToolService } from "@service/data-definition/data-definit
 import { SessionStorageService } from "@service/storage/session-storage.service";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { Location } from '@angular/common';
-import { map } from "rxjs/operators";
+import { map, startWith } from "rxjs/operators";
 import { AbstractControlViewOption } from "@component/abstract-control-view/abstract-control-view.component";
 
 
@@ -75,6 +75,7 @@ export abstract class StructureComponent implements OnInit {
     */
    loadParams$: Observable<any> //carga de parametros
    loadDisplay$: Observable<any> //carga de display
+   loadStorage$: Observable<any>
    params: { [x: string]: any } //parametros del componente
    storageValues: any = null
   //  storageValues = this.storage.getItem(this.router.url);
@@ -96,10 +97,12 @@ export abstract class StructureComponent implements OnInit {
   abstract initDisplay();
 
   ngOnInit() {
+    
     this.loadParams(); 
     /**
      * al cambiar los parametros se carga el storage, 
      * debe ir antes de inicializarse el storage
+     * @todo no es correcto pensar que se ejecuta loadParams antes de loadStorage
      */
 
     this.loadStorage(); 
@@ -218,21 +221,34 @@ export abstract class StructureComponent implements OnInit {
     }
   }
 
+  
   loadStorage() {
-    /**
-     * Me suscribo directamente en el ts
-     * @todo es posible pasarlo al html?
-     */
-    var s = this.form.valueChanges.subscribe (
+    this.loadStorage$ = this.form.valueChanges.pipe(
+      startWith(this.getStorageValues()),
+      map(
       storageValues => {
-        this.storage.setItem(this.router.url, storageValues)
+        console.log(storageValues)
+        this.storage.setItem(this.router.url, this.getStorageValues())
+        return true;
       },
       error => { 
         this.snackBar.open(JSON.stringify(error), "X"); 
       }
-    );
-    this.subscriptions.add(s);
+    ))
+
+
+    // var s = this.form.valueChanges.subscribe (
+    //   storageValues => {
+    //     this.storage.setItem(this.router.url, this.getStorageValues())
+    //   },
+    //   error => { 
+    //     this.snackBar.open(JSON.stringify(error), "X"); 
+    //   }
+    // );
+    // this.subscriptions.add(s);
   }
+
+  abstract getStorageValues();
   
   clear(): void {
     /**
