@@ -8,7 +8,8 @@ export class InputSelectParamConfig extends FormControlConfig {
   componentId: string = "input_select_param"
   options: any[];
   label?: string;
-  readonly?: boolean = false;
+  readonly: boolean = false;
+  multiple: boolean = false;
 
   constructor(attributes: any = {}) {
     super(attributes)
