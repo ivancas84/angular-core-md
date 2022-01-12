@@ -15,21 +15,22 @@
       novalidate autocomplete="off">
 
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
+    <ng-container *ngIf="(loadStorage$ | async); else loading">
+      <ng-container  *ngFor="let item of config.controls | keyvalue: sort; let i = index">
+        <core-abstract-control-view [config]="item.value" [control]="form.controls[item.key]"></core-abstract-control-view>
+      </ng-container>
 
-    <ng-container  *ngFor="let item of config.controls | keyvalue: sort; let i = index">
-      <core-abstract-control-view [config]="item.value" [control]="form.controls[item.key]"></core-abstract-control-view>
-    </ng-container>
-
+      
+      <mat-card *ngIf="optFooter.length">
+        <mat-card-content>
+          <core-abstract-control-view *ngFor="let o of optFooter" 
+                                      [config]="o.config"
+                                      [control]="o.control"></core-abstract-control-view>
+        </mat-card-content>
+      </mat-card>
     
-    <mat-card *ngIf="optFooter.length">
-      <mat-card-content>
-        <core-abstract-control-view *ngFor="let o of optFooter" 
-                                    [config]="o.config"
-                                    [control]="o.control"></core-abstract-control-view>
-      </mat-card-content>
-    </mat-card>
-  
-  <p>Debug Form value: {{ form.value | json }}</p>
-  <p>Debug Form status: {{ form.status | json }}</p>
+      <p>Debug Form value: {{ form.value | json }}</p>
+      <p>Debug Form status: {{ form.status | json }}</p>
+    </ng-container>  
   </ng-container>
 </form>

@@ -118,6 +118,10 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
     super(dialog, storage, dd, snackBar, router, location, route)
   }
 
+  getStorageValues(): any {
+    return this.form.getRawValue()
+  }
+
   ngOnInit(){
     /**
      * Construccion de form en base a config.
@@ -148,74 +152,32 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
      * por ejemplo al limpiar o resetear la propiedad "form"
      * 
      * @summary Procedimiento de definicion de datos:
-     * 0) Se inicializan los datos principales (initData) 
-     * 
-     * 1) se obtienen y elminan los valores del storage
-     * 
-     * 2) se resetea el formulario
-     * 
-     * 3) se asigna a form los valores por defecto (definidos en con-
-     * fig)
-     * 
-     * 4) Se asigna a form los valores consultados (indicados en "data").
-     * 
-     * 5) Se asigna a form los valores definidos en el storage.
+     * Si existen valores del storage, se inicializa el formulario utilizan-
+     * zando el storage,  si no existen valores del storage se invoca al meto
+     * do initData para inicializar los datos.
      *
      * @description 0: El metodo initData realiza una inicializacion de datos
      * simple, que consulta los datos de la base de datos o define datos por 
      * defecto (habitualmente un conjunto vacio de datos). loadDisplay es un
      * metodo mas avanzado de definicion de datos que utiliza el resultado de
-     * initData, el storage y valores por defecto
-     *  
-     * @description 1: Es necesario definir data y luego storage? Si 
-     * existen valores del storage, hace falta definir data? 
-     * La propiedad "form" puede tener valores "deshabilitados", este 
-     * tipo de valores no se almacena en el storage.
+     * initData, el storage y valores por defecto de formConfig
      * 
-     * @description 2: Si siempre se consulta a data, es necesario alma-
-     * cenar el storage? 
-     * El storage se utiliza principalmente para permitir al usuario al-
-     * ternar entre distintas interfaces y poder visualizar los cambios
-     * realizados en el formulario sin tener que volver a completar. El 
-     * objetivo inicial del storage fue para evitar el uso de pop-ups
-     * y facilitar la definicion de interfaces directamente.
-     * El uso del storage es una caracteristica que funciona, pero aun
-     * se encuentra en construccion
-     * 
-     * @description 3 es posible evitar una triple asignacion? Default, 
-     * data y storage? 
-     * Por lo indicado en la "description 1", es necesario definir data
-     * y luego storage. En cuanto a los valores por defecto, se conside-
-     * ra que, el componente puede ser dinamico en cuanto a los datos 
-     * que visualiza/administra, no siempre se corresponden directamente
-     * con la entidad principal. En este sentido, puede haber campos de-
-     * finidos que no se obtengan directamente de una consulta y convie-
-     * ne inicializarlos
-     * 
-     * @description 4: Deshabilitar valores del formArray.
-     * Por el momento no se recomienda, no esta correctamente probado el
-     * storage y la inicializacion para estos valores 
      */
     this.loadDisplay$ = this.display$.pipe(
       switchMap(
         () => {
-          return this.initData();
+          this.form.reset()
+          this.storageValues = this.storage.getItem(this.router.url)
+          this.storage.removeItemsPrefix(emptyUrl(this.router.url))
+          if(!isEmptyObject(this.storageValues)) return of(this.storageValues)
+          else return this.initData();
         }
       ),
       map(
         data => {
-          
           this.form.reset()
-          
           this.fc.initValue(this.config, this.form, this.fc.defaultValues(this.config))
-          
           if(!isEmptyObject(data)) this.fc.initValue(this.config, this.form, data);
-          
-          this.storageValues = this.storage.getItem(this.router.url)
-          this.storage.removeItemsPrefix(emptyUrl(this.router.url))
-          if(!isEmptyObject(this.storageValues)) 
-            this.fc.initValue(this.config, this.form, this.storageValues)
-
           return true;
         }
       ),
