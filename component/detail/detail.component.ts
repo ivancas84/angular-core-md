@@ -124,7 +124,14 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
 
   ngOnInit(){
     /**
-     * Construccion de form en base a config.
+     * Inicilizaar interfaz
+     * 
+     * Si no esta definido el subformulario, se crea, y se define configura-
+     * cion por defecto en base a la clase de configuracion.
+     * 
+     * Si existe el subformulario, no se define configuracion por defecto.
+     * Este comportamiento esta definido de esta forma para facilitar la 
+     * cancelación de valores por defecto, en caso de que se requiera.
      */
     if(!this.form) this.form = this.fb.group({})
     for(var key in this.config.controls){

@@ -55,6 +55,10 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
     super(dialog, storage, dd, snackBar, router, location, route)
   }
 
+  getStorageValues(): any {
+    return this.form.getRawValue()
+  }
+
   ngOnInit(){
     if(!this.config.factory) this.config.factory = new ConfigFormGroupFactory(this.config)
     if(this.searchConfig && !this.searchForm) {
@@ -108,7 +112,7 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
   }
 
   initConfig(){
-    this.config["loadLength"] = this.loadLength
+    //this.config["loadLength"] = this.loadLength
     this.config["length"] = this.length
     this.config["display"] = this.display$.value
   }
