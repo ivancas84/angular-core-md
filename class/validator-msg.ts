@@ -10,9 +10,23 @@ export class ValidatorMsg {
 
 export class UniqueValidatorMsg extends ValidatorMsg {
   id:string="notUnique"
+  
   route:string
+  /**
+   * @member route: ruteo en caso de que exista valor unico.
+   *
+   * Si no esta definido route, no se define enlace para valor unico y se ig-
+   * noran los atributos queryParams y uniqueParam. 
+   */
+
   uniqueParam:any = "id" 
-  queryParams = {} //uniqueParam se asigna a queryParams con el valor del error, adicionalmente se pueden definir queryParams alternativos
+  queryParams = {}
+  /**
+   * @member queryParams: uniqueParam se asigna a queryParams con el valor del error
+   * adicionalmente se pueden definir queryParams alternativos.
+   * Si no se necesitan queryParams alternativos, no hace falta definir este valor
+   * se asignara directamente {uniqueParam:uniqueValue}
+   */
   message:string = "El valor ya se encuentra en uso" //mensaje a visualizar
 
   constructor(attributes: any = {}) {
