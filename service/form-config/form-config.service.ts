@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { ConfigFormGroupFactory, FormArrayConfig, FormConfig, FormControlConfig, FormControlsConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { EventButtonConfig } from '@component/event-button/event-button.component';
@@ -93,43 +93,20 @@ export class FormConfigService {
     return p;
   }
 
-  initFormArrayConfigAdmin(config: FormArrayConfig){
+  addFormGroupConfig(formGroup: FormGroup, config: FormConfig, disabled:boolean = false){
     /**
-     * Inicializar elementos de administracion de un FormArrayConfig
+     * Agregar al formGroup, los campos faltantes de config
      */
-    if(!config.factory) config.factory = new ConfigFormGroupFactory(config)
-    if(!config.contains("_mode")) config.addControl("_mode", new FormControlConfig(null))
-    if(!config.contains("id")) config.addControl("id", new FormControlConfig(null))
-    config.optTitle = [] //opciones de titulo
-
-    config.optColumn = [ //columna opciones
-      {  //boton eliminar 
-        config: new EventIconConfig({
-          action:"remove",
-          color: "accent",
-          fieldEvent:config.optField,
-          icon:"delete"
-        }),
+    for(var key in config.controls) {
+      if(config.controls.hasOwnProperty(key) && !formGroup.contains(key)) {
+        var fc = new FormControl({value: config.controls[key].default, disabled: config.controls[key].disabled})
+        if(!config.controls[key].label) config.controls[key].label = key;
+        if(config.controls[key].required) fc.setValidators(Validators.required)
+        formGroup.addControl(key, fc)
+        if(disabled) formGroup.disable()
       }
-    ]
-
-    config.optFooter = [ //opciones de pie
-      {
-        config: new EventIconConfig({
-          icon: "add", //icono del boton
-          action: "add", //accion del evento a realizar
-          fieldEvent: config.optField,
-          title: "Agregar"
-        }),
-      },
-    ]
-
+    }
   }
 
-  formGroupAdmin(config:  FormGroupConfig){
-    if(!config.contains("id")) config.addControl("id", new FormControlConfig(null))
-    var c = new ConfigFormGroupFactory(config)
-    return c.formGroup();
-  }
-
+  
 }
