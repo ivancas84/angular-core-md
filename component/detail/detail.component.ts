@@ -16,9 +16,10 @@ import { KeyValue, Location } from '@angular/common';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { DataDefinitionRelLabelService } from '@service/data-definition/data-definition-rel-label.service';
 import { FormConfigService } from '@service/form-config/form-config.service';
-import { ConfigFormGroupFactory, FormArrayConfig, FormStructureConfig, SortControl } from '@class/reactive-form-config';
+import { ConfigFormGroupFactory, FormArrayConfig, FormControlConfig, FormStructureConfig, SortControl } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
+import { EventIconConfig } from '@component/event-icon/event-icon.component';
 
 
 @Component({
@@ -135,21 +136,61 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
      */
     if(!this.form) this.form = this.fb.group({})
     for(var key in this.config.controls){
-      if(!this.form.contains(key))
         switch(this.config.controls[key].controlId){
           case "form_group":
+            if(!this.form.contains(key)) this.form.addControl(key, this.fb.group({}))
+            if(!this.config.controls[key].contains("id")) this.config.controls[key].addControl("id", new FormControlConfig(null))
             var c = new ConfigFormGroupFactory(this.config.controls[key])
-            this.form.addControl(key, this.fc.formGroupAdmin(this.config.controls[key]))
+            c.formGroupAssign(this.form.controls[key] as FormGroup);
           break;
           case "form_array":
-            this.fc.initFormArrayConfigAdmin(this.config.controls[key] as FormArrayConfig)
-            this.form.addControl(key, this.fb.array([]))
+            if(!this.form.contains(key)) this.form.addControl(key, this.fb.array([]))
+            this.initFormArray(this.config.controls[key] as FormArrayConfig)
           break;
         }
     }
     super.ngOnInit()
   }
   
+  initFormArray(config: FormArrayConfig){
+    /**
+     * Inicializar elementos de administracion de un FormArrayConfig
+     * 
+     * @todo Deberia reducirse la cantidad de caracteristicas, muchas pertenencen a 
+     * Admin. Deben reimplementarse el metodo en Admin
+     */
+    if(!config.factory) config.factory = new ConfigFormGroupFactory(config)
+    if(!config.contains("_mode")) config.addControl("_mode", new FormControlConfig(null))
+    if(!config.contains("id")) config.addControl("id", new FormControlConfig(null))
+    config.optTitle = [] //opciones de titulo
+
+    config.optColumn = [ //columna opciones
+      {  //boton eliminar 
+        config: new EventIconConfig({
+          action:"remove",
+          color: "accent",
+          fieldEvent:config.optField,
+          icon:"delete"
+        }),
+      }
+    ]
+
+    config.optFooter = [ //opciones de pie
+      {
+        config: new EventIconConfig({
+          icon: "add", //icono del boton
+          action: "add", //accion del evento a realizar
+          fieldEvent: config.optField,
+          title: "Agregar"
+        }),
+      },
+    ]
+
+  }
+
+  
+
+
   loadDisplay(){
     /**
      * Definicion de valores en base al display.
@@ -173,8 +214,8 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
     this.loadDisplay$ = this.display$.pipe(
       switchMap(
         () => {
-          this.form.reset()
           this.storageValues = this.storage.getItem(this.router.url)
+          this.form.reset()
           this.storage.removeItemsPrefix(emptyUrl(this.router.url))
           if(!isEmptyObject(this.storageValues)) return of(this.storageValues)
           else return this.initData();
