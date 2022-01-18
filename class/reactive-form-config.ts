@@ -2,6 +2,7 @@ import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/fo
 import { ValidatorMsg } from "./validator-msg"
 import { Type } from "@angular/core"
 import { isEmptyObject } from "@function/is-empty-object.function"
+import { ValidatorsService } from "@service/validators/validators.service"
 
 export interface ControlComponent {
   config:FormConfig
@@ -38,20 +39,40 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
     this.disabled = disabled
   }
 
+  initFormGroup(): FormGroup{
+    /**
+     * En el caso de que se requieran propiedades adicionales de FormGroup, se
+     * debe crear una subclase de ConfigFormGroupFactory y sobrescribir este
+     * metodo.
+     */
+    return new FormGroup({});
+  }
+
   formGroup(): FormGroup {
-    var fg = new FormGroup({});
-    
-    for(var key in this.config.controls) {
-      if(this.config.controls.hasOwnProperty(key)) {
-        var fc = new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
-        if(!this.config.controls[key].label) this.config.controls[key].label = key;
-        if(this.config.controls[key].required) fc.setValidators(Validators.required)
-        fg.addControl(key, fc)
-        if(this.disabled) fg.disable()
-      }
-    }
+    /**
+     * deberia ser final! no deberia sobrescribirse
+     */
+    var fg = this.initFormGroup();
+
+    this.formGroupAssign(fg)
 
     return fg;
+  }
+
+  formGroupAssign(fg: FormGroup){
+    /**
+     * deberia ser final! no deberia sobrescribirse
+     */
+     for(var key in this.config.controls) {
+       if(this.config.controls.hasOwnProperty(key) && !fg.contains(key)) {
+         var fc = new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
+         if(!this.config.controls[key].label) this.config.controls[key].label = key;
+         if(this.config.controls[key].required) fc.setValidators(Validators.required)
+         fg.addControl(key, fc)
+       } 
+     }
+ 
+     if(this.disabled) fg.disable()
   }
 
 }
