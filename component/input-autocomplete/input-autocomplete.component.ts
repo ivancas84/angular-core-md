@@ -8,11 +8,20 @@ import { getControlName } from '@function/get-control-name';
 import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
 import { ValidatorMsg } from '@class/validator-msg';
 import { FormControlConfig } from '@class/reactive-form-config';
+import { titleCase } from '@function/title-case';
 
 export class InputAutocompleteConfig extends FormControlConfig {
   componentId: string = "input_autocomplete"
-  entityName: string;
+  entityName?: string;
+  /**
+   * @member entityName: Nombre de la entidad para consultar datos.
+   * Por defecto se define con el nombre del controlador
+   */
   label?: string;
+  /**
+   * @member label: Etiqueta de presentación.
+   * Por defecto se define con el nombre del controlador en un formato Xx Yy
+   */
   validatorMsgs: ValidatorMsg[] = [];
 
   constructor(attributes: any = {}) {
@@ -34,11 +43,17 @@ export class InputAutocompleteConfig extends FormControlConfig {
 })
 export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy { //1.1
   /**
-   * Input autocomplete reutilizable
-   * Define un input independiente para facilitar la incorporacion de funcionalidad adicional (validación de seteo, clear, etc)
+   * Input autocomplete reutilizable.
    * 
-   * Para las consultas realiza un dd.all utilizando el campo "label" (label debe estar correctamente definido en el servidor)
-   * Para visualizar el resultado utiliza el ddl.label (label del cliente, se recomienda que coincida con el del servidor)
+   * Define un input independiente para facilitar la incorporacion de funcio-
+   * nalidad adicional (validación de seteo, clear, etc).
+   * 
+   * Para las consultas realiza un dd.all utilizando el campo "label" (label 
+   * debe estar correctamente definido en el servidor)
+   * 
+   * Para visualizar el resultado utiliza el ddl.label (label del cliente, se 
+   * recomienda que coincida con el del servidor)
+   * 
    * Para inicializar utiliza dd.get
    * 
    * @todo
@@ -84,20 +99,17 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
     return queryParams;
   }
 
-  initConfig(){
+
+  ngOnInit(): void {
     if(!this.config.label) {
       var n = getControlName(this.control)
-      this.config.label = n.substring(n.indexOf("-")+1)
+      this.config.label = titleCase(n.substring(n.indexOf("-")+1).replace("_"," "))
     }
     
     if(!this.config.entityName) {
       if(!n) var n = getControlName(this.control)
       this.config.entityName = n.substring(n.indexOf("-")+1)
     }
-  }
-
-  ngOnInit(): void {
-    this.initConfig()
 
     this.searchControl.setValidators(this.control.validator)
 
