@@ -197,6 +197,7 @@ export abstract class StructureComponent implements OnInit {
         queryParams => { 
           // this.storageValues = this.storage.getItem(this.router.url)
           // this.storage.removeItemsPrefix(emptyUrl(this.router.url))
+          console.log(queryParams);
           this.initParams(queryParams);
           this.initDisplay();
           return true;
@@ -212,7 +213,19 @@ export abstract class StructureComponent implements OnInit {
 
   initParams(params: any){ this.params = params; }
 
-  switchOptField(data: any){
+  switchOptField(data: { action: string; [x: string]: any; }){
+    /**
+     * Ejecutar opcion de evento
+     * 
+     * @param data: Es un objeto cuyos atributos pueden variar dependiendo de 
+     * donde se llame, siempre posee el elemento "action" para indicar la ac-
+     * cion a ejecutar. Si se llama desde una fila de un array, posee los si-
+     * guientes elementos:
+     *   "action" Accion a ejecutar.
+     *   "control" FormGroup correspondiente a la fila.
+     *   "index" Indice de la fila que se esta llamando.  
+     *   
+     */
     switch(data.action){
       case "submit": this.onSubmit(); break;
       case "clear": this.clear(); break;

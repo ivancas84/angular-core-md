@@ -61,12 +61,10 @@ export abstract class AdminArrayComponent extends ShowComponent implements OnIni
   ]
   
   ngOnInit(){
-
     if(!this.config.contains("_mode")) this.config.addControl("_mode", new FormControlConfig(null))
     if(!this.config.contains("id")) this.config.addControl("id", new FormControlConfig(null))
 
     this.optFooter[1].config.fieldEvent = this.config.optField
-
 
     this.config.optColumn = [ //columna opciones
       {  //boton eliminar 
