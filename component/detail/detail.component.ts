@@ -215,7 +215,7 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
       switchMap(
         () => {
           this.storageValues = this.storage.getItem(this.router.url)
-          this.form.reset()
+          // this.form.reset() comente el reset porque no se si aporta alguna funcionalidad
           this.storage.removeItemsPrefix(emptyUrl(this.router.url))
           if(!isEmptyObject(this.storageValues)) return of(this.storageValues)
           else return this.initData();
