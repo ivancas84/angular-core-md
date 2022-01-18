@@ -97,7 +97,7 @@ export class ValidatorsService { //1.1
     } 
   }
 
-  unique(fieldName: string, entityName: string): AsyncValidatorFn {
+  unique(fieldName: string, entityName: string, idName: string = "id"): AsyncValidatorFn {
     /**
      * Verificar campo unico
      * Se puede evitar el fieldName a traves de un metodo de busqueda
@@ -113,7 +113,7 @@ export class ValidatorsService { //1.1
         return this.dd.id(entityName, display).pipe(
           map(
             id => {
-              return (id && (id != control.parent.get("id").value)) ? { notUnique: id } : null
+              return (id && (id != control.parent.get(idName).value)) ? { notUnique: id } : null
             }
           )
         );
