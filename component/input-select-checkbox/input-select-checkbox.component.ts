@@ -29,9 +29,11 @@ export class InputSelectCheckboxConfig extends FormControlConfig {
 })
 export class InputSelectCheckboxComponent implements ControlComponent, OnInit {
   /**
-   * Componente de administración de fieldset. Características:
-   *   El formulario y los datos son definidos en componente principal  
-   *   Puede inicializar datos adicionales susceptibles de ser utilizados en componentes anidados
+   * Componente select checkbox reutilizable
+   * 
+   * Los valores true y false se asignan como strings. Si no se define como 
+   * string no funciona el false (no es enviado al servidor)
+   * 
    */
 
   @Input() config: InputSelectCheckboxConfig;
