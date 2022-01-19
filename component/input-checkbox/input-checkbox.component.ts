@@ -1,7 +1,8 @@
-import { Input, Component, Type, OnInit } from '@angular/core';
+import { Input, Component, Type, OnInit, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
+import { startWith } from 'rxjs/operators';
 
 export class InputCheckboxConfig extends FormControlConfig {
   componentId: string = "input_checkbox"
@@ -24,6 +25,18 @@ export class InputCheckboxComponent implements ControlComponent, OnInit {
   
   ngOnInit(){
     if(!this.config.label) this.config.label = getControlName(this.control)
+
+    this.control.valueChanges.pipe(
+      startWith(this.control.value),
+    ).subscribe(
+      value => {
+        console.log(getControlName(this.control))
+        console.log(value)
+        if(typeof value != "boolean") {
+            this.control.setValue(false)
+        }
+      }
+    )
   }
 
    
