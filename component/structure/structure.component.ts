@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AbstractControlOption, FormConfig, FormControlConfig } from "@class/reactive-form-config";
 import { DialogAlertComponent } from "@component/dialog-alert/dialog-alert.component";
 import { emptyUrl } from "@function/empty-url.function";
 import { logValidationErrors } from "@function/log-validation-errors";
@@ -197,7 +196,6 @@ export abstract class StructureComponent implements OnInit {
         queryParams => { 
           // this.storageValues = this.storage.getItem(this.router.url)
           // this.storage.removeItemsPrefix(emptyUrl(this.router.url))
-          console.log(queryParams);
           this.initParams(queryParams);
           this.initDisplay();
           return true;
@@ -240,7 +238,6 @@ export abstract class StructureComponent implements OnInit {
       startWith(this.getStorageValues()),
       map(
       storageValues => {
-        console.log(storageValues)
         this.storage.setItem(this.router.url, this.getStorageValues())
         return true;
       },
