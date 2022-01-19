@@ -223,9 +223,13 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
       ),
       map(
         data => {
-          this.form.reset()
+          // this.form.reset() comente el reset porque no se si aporta alguna funcionalidad
           this.fc.initValue(this.config, this.form, this.fc.defaultValues(this.config))
-          if(!isEmptyObject(data)) this.fc.initValue(this.config, this.form, data);
+          /**
+           * Se asigna inicialmente los valores por defecto, nada me garantiza
+           * que el parametro "data" posea todos los valores definidos.
+           */
+          if(!isEmptyObject(data)) this.fc.initValue(this.config, this.form, data)
           return true;
         }
       ),
