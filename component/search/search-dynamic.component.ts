@@ -45,13 +45,13 @@ export class SearchDynamicComponent implements OnInit {
     if(this.config.controls.hasOwnProperty("params") && !isEmptyObject(this.display.getParams()))
       this.form.controls["params"].reset(this.display.getParams()) 
 
-    var c = this.display.getCondition()
-    if(this.config.controls.hasOwnProperty("params") && !isEmptyObject(c)){
-       /*for(let i = 0; i < c.length; i++){
-         let elFG = this.formGroup(c[i][0], c[i][1], c[i][2]);
-         elementsFGs.push(elFG);
-       }*/
-    }
+    // var c = this.display.getCondition()
+    // if(this.config.controls.hasOwnProperty("params") && !isEmptyObject(c)){
+    //    for(let i = 0; i < c.length; i++){
+    //      let elFG = this.formGroup(c[i][0], c[i][1], c[i][2]);
+    //      elementsFGs.push(elFG);
+    //    }
+    // }
   }
 
   onSubmit(): void {
