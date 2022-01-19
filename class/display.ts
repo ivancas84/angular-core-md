@@ -129,7 +129,7 @@ export class Display {
     this.params = {};
     for(var i in params){
       if (params.hasOwnProperty(i)){
-        if(params[i]) this.params[i] = params[i];
+        if(params[i] != undefined && params[i] != null && params[i] != "" ) this.params[i] = params[i];
       }
     }    
   }
