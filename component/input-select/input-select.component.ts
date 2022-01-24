@@ -9,10 +9,10 @@ import { titleCase } from '@function/title-case';
 
 export class InputSelectConfig extends FormControlConfig{
   componentId: string = "input_select"
-  entityName: string;
-  label?: string = "Seleccione";
-  multiple: boolean = false;
-  readonly: boolean = false;
+  entityName: string
+  label?: string
+  multiple: boolean = false
+  readonly: boolean = false
 
   constructor(attributes: any = {}) {
     super({})
