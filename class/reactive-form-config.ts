@@ -66,7 +66,13 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
      for(var key in this.config.controls) {
        if(this.config.controls.hasOwnProperty(key) && !fg.contains(key)) {
          var fc = new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
-         if(!this.config.controls[key].label) this.config.controls[key].label = key;
+         //if(!this.config.controls[key].label) this.config.controls[key].label = key;
+         /**
+          * La asignacion por defecto del label se derivo directamente a cada 
+          * componente. La decision se basa en que la definicion de 
+          * FormControl puede realizarse de diferentes lugares y ademas se es-
+          * ta asignando valor a un "config" en un metodo que define "form" 
+          */
          if(this.config.controls[key].required) fc.setValidators(Validators.required)
          fg.addControl(key, fc)
        } 
