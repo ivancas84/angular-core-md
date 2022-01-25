@@ -134,6 +134,11 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
      * Este comportamiento esta definido de esta forma para facilitar la 
      * cancelación de valores por defecto, en caso de que se requiera.
      */
+    this.ngOnInitDetail()
+    super.ngOnInit()
+  }
+
+  ngOnInitDetail(){
     if(!this.form) this.form = this.fb.group({})
     for(var key in this.config.controls){
         switch(this.config.controls[key].controlId){
@@ -149,7 +154,6 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
           break;
         }
     }
-    super.ngOnInit()
   }
   
   initFormArray(config: FormArrayConfig){
