@@ -5,6 +5,7 @@ import { DATE_FORMATS } from 'app/core/const/DATE_FORMATS';
 import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive-form-config';
 import { FormControl } from '@angular/forms';
 import { getControlName } from '@function/get-control-name';
+import { titleCase } from '@function/title-case';
 
 export class InputDateConfig extends FormControlConfig {
   componentId: string = "input_date"
@@ -37,6 +38,9 @@ export class InputDateComponent implements ControlComponent, OnInit {
   @Input() control: FormControl;
 
   ngOnInit(): void {
-    if(!this.config.label) this.config.label = getControlName(this.control)
+    if(!this.config.label) {
+      var n = getControlName(this.control)
+      this.config.label = titleCase(n.substring(n.indexOf("-")+1).replace("_"," "))
+    }
   }
 }
