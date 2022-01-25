@@ -2,6 +2,7 @@ import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
+import { titleCase } from '@function/title-case';
 
 export class InputTextConfig extends FormControlConfig {
   /**
@@ -40,6 +41,11 @@ export class InputTextComponent implements ControlComponent, OnInit{
   @Input() control: FormControl;
 
   ngOnInit(): void {
-    if(!this.config.label) this.config.label = getControlName(this.control)
+    if(!this.config.label) {
+      var n = getControlName(this.control)
+      this.config.label = titleCase(n.substring(n.indexOf("-")+1).replace("_"," "))
+    }
   }
 }
+
+
