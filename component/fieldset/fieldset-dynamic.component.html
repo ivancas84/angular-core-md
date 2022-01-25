@@ -37,5 +37,8 @@
     <!--div *ngFor="let v of control.validatorMsgs">
       <mat-error *ngIf="control.hasError(v.id)">{{v.message}}</mat-error>
     </div-->
+    <mat-error *ngFor="let v of config.validatorMsgs">
+      <span *ngIf="control.hasError(v.id)">{{v.message}}</span>
+    </mat-error>  
   </mat-card-content>
 </mat-card>
