@@ -6,6 +6,8 @@ import { Observable, Subscription } from 'rxjs';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { UPLOAD_URL } from 'app/app.config';
 import { FormControlConfig } from '@class/reactive-form-config';
+import { getControlName } from '@function/get-control-name';
+import { titleCase } from '@function/title-case';
 
 export class InputUploadConfig extends FormControlConfig {
   componentId: string = "input_upload"
@@ -44,6 +46,10 @@ export class InputUploadComponent implements OnInit { //2
   load$: Observable<any>
 
  ngOnInit(): void {
+  if(!this.config.label) {
+    var n = getControlName(this.control)
+    this.config.label = titleCase(n.substring(n.indexOf("-")+1).replace("_"," "))
+  }
     this.load$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
       switchMap(
