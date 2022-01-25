@@ -87,7 +87,7 @@ export class MaxValidatorMsg extends ValidatorMsg {
 }
 
 export class EmailValidatorMsg extends ValidatorMsg {
-  id:string = "email"
+  id:string = "pattern"
   message:string = "El formato es incorrecto"
 
   constructor(attributes: any = {}) {
