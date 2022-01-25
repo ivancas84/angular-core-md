@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { ConfigFormGroupFactory, FormArrayConfig, FormConfig, FormControlConfig, FormControlsConfig, FormGroupConfig } from '@class/reactive-form-config';
-import { EventButtonConfig } from '@component/event-button/event-button.component';
-import { EventIconConfig } from '@component/event-icon/event-icon.component';
-import { TableDynamicConfig } from '@component/table/table-dynamic.component';
-import { arrayColumn } from '@function/array-column';
+import { FormArrayConfig, FormConfig, FormControlsConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 
 @Injectable({
@@ -64,7 +60,7 @@ export class FormConfigService {
           value[key]
         )
       } else {
-        form.controls[key].patchValue(value[key])
+        (value[key]) ?  form.controls[key].patchValue(value[key]) : form.controls[key].patchValue({}) 
       }
     });
   }
