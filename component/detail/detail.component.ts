@@ -217,7 +217,7 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
      */
     this.loadDisplay$ = this.display$.pipe(
       switchMap(
-        () => {
+        data => {
           this.storageValues = this.storage.getItem(this.router.url)
           // this.form.reset() comente el reset porque no se si aporta alguna funcionalidad
           this.storage.removeItemsPrefix(emptyUrl(this.router.url))
@@ -258,7 +258,26 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
      * @description el metodo loadDisplay realiza una inicializacion avanzada
      * que utiliza el resultado de initData, storage y valores por defecto 
      */
-    return (!isEmptyObject(this.display$.value)) ? this.queryData() : of({});
+    if (!isEmptyObject(this.display$.value)) return this.queryData().pipe(
+      /**
+       * Si existe valor de display$.value se utiliza para realizar la consul-
+       * ta. Si la consulta es vacia se utiliza display$.value para asignar
+       * los datos de retorno. 
+       */
+      map(
+        data => {
+          if (!isEmptyObject(data)) return data
+          var d = {}
+          d[this.entityName] = this.display$.value;
+          /**
+           * @todo Si existen parametros correspondientes a otras entidades no
+           * se inicializan, es posible inicializarlos? 
+           */
+          return d
+        }
+      )
+    )
+    else return of({})
   }
 
   queryData(): Observable<any> {
@@ -277,6 +296,7 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
     )
     //return this.dd.unique(this.entityName, this.display$.value) 
     //return this.dd.post(this.queryApi, this.entityName, this.display$.value);
+    //return of({})
   }
 
   persist(): Observable<any> {
