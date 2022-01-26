@@ -6,7 +6,9 @@
                                   [config]="o.config"
                                   [control]="o.control"></core-abstract-control-view>
     </mat-card-title>
-    <div class="mat-subheading-2 highlightText" [innerHTML]="config.intro" fxFlex="100%"></div>
+    <div *ngIf="config.intro" 
+         class="mat-subheading-2 highlightText" 
+         [innerHTML]="config.intro"></div>
   </mat-card-header>
   <mat-card-content #content>
     <table mat-table [dataSource]="control.controls" matSort [matSortActive]="config.sortActive" [matSortDirection]="config.sortDirection" matSortDisableClear (matSortChange)="onChangeSort($event)" class="mat-elevation-z8">
