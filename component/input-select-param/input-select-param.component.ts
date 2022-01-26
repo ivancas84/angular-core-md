@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 import { FormControl } from '@angular/forms';
+import { getControlName } from '@function/get-control-name';
+import { titleCase } from '@function/title-case';
 
 export class InputSelectParamConfig extends FormControlConfig {
   componentId: string = "input_select_param"
@@ -36,7 +38,10 @@ export class InputSelectParamComponent implements ControlComponent, OnInit {
   constructor( public dd: DataDefinitionService ) { }
 
   ngOnInit(): void {
-    if(!this.config.label) this.config.label = "Seleccione";
+    if(!this.config.label) {
+      var n = getControlName(this.control)
+      this.config.label = titleCase(n.substring(n.indexOf("-")+1).replace("_"," "))
+    }
   }
 
 }
