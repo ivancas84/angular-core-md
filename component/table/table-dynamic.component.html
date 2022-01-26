@@ -6,6 +6,7 @@
                                   [config]="o.config"
                                   [control]="o.control"></core-abstract-control-view>
     </mat-card-title>
+    <div class="mat-subheading-2 highlightText" [innerHTML]="config.intro" fxFlex="100%"></div>
   </mat-card-header>
   <mat-card-content #content>
     <table mat-table [dataSource]="control.controls" matSort [matSortActive]="config.sortActive" [matSortDirection]="config.sortDirection" matSortDisableClear (matSortChange)="onChangeSort($event)" class="mat-elevation-z8">
@@ -41,7 +42,6 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr [hidden]="row.controls.hasOwnProperty('_mode') && (row.controls['_mode'].value == 'delete')" mat-row *matRowDef="let row; columns: displayedColumns; let i = index"></tr>
       <tr mat-footer-row *matFooterRowDef="footerColumns; sticky:true"></tr>
-
     </table>
     <mat-toolbar>
       <mat-toolbar-row>
