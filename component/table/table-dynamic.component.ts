@@ -24,6 +24,10 @@ declare function printHtml(html): any;
 
 export class TableDynamicConfig extends FormArrayConfig {
   componentId: string = "table"
+  intro?: string;
+  /**
+   * @param intro: HTML de introduccion que es incluido en el template 
+   **/
 
   entityName?: string
   factory: FormGroupFactory //es necesario definir una clase concreta de FormGroupFactory que permita definir el FormGroup del FormArray
