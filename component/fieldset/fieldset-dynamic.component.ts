@@ -24,7 +24,6 @@ export class FieldsetDynamicConfig extends FormGroupConfig {
   templateUrl: './fieldset-dynamic.component.html',
   styles:[`
     .item { padding:0px 10px;  }
-    .highlightText { background: yellow; }
   `]
 })
 export class FieldsetDynamicComponent implements ControlComponent, OnInit {
