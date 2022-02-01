@@ -25,7 +25,7 @@ export abstract class ShowComponent extends StructureComponent implements OnInit
    * Estructura principal para administrar un array de elementos
    */
 
-  form: FormArray = new FormArray([])
+  form: FormArray = new FormArray([], {updateOn:"blur"})
   config: FormArrayConfig
   length?: number; //longitud total de los datos a mostrar
   loadLength: boolean = true; //flag para indicar que se debe consultar longitud
