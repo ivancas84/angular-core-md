@@ -47,7 +47,6 @@ export class InputSelectComponent implements ControlComponent, OnInit {
     if(!this.config.entityName) {
       if(!n) var n = getControlName(this.control)
       this.config.entityName = n.substring(n.indexOf("-")+1)
-      console.log(this.config.entityName)
     }
 
     

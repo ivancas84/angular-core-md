@@ -30,8 +30,6 @@ export class InputCheckboxComponent implements ControlComponent, OnInit {
       startWith(this.control.value),
     ).subscribe(
       value => {
-        console.log(getControlName(this.control))
-        console.log(value)
         if(typeof value != "boolean") {
             this.control.setValue(false)
         }

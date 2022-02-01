@@ -2,7 +2,6 @@ import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/fo
 import { ValidatorMsg } from "./validator-msg"
 import { Type } from "@angular/core"
 import { isEmptyObject } from "@function/is-empty-object.function"
-import { ValidatorsService } from "@service/validators/validators.service"
 
 export interface ControlComponent {
   config:FormConfig
