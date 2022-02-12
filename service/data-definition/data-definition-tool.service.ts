@@ -182,23 +182,37 @@ export class DataDefinitionToolService extends DataDefinitionService{
     return this._post(method,entityName,ids).pipe(
       map(
         response => {
-          if(!response.length) return data;
-          for(var i = 0; i < data.length; i++){
-            for(var f in fields){
-              if(fields.hasOwnProperty(f)) data[i][f] = null; //inicializar en null
-            }
-
-            for(var j = 0; j < response.length; j++){
-              if(data[i][fieldNameData] == response[j][fieldNameResponse]) {
-                this.assignFields(data[i],response[j],fields,join)
-                break;
-              }
-            }
-          }
-          return data;
+          return this.assignResponse(data,response,fieldNameData,fieldNameResponse,fields,join);
         }
       )
     );  
+  }
+
+  assignResponse(
+    data: { [index: string]: any }[], 
+    response: { [index: string]: any }[], 
+    fieldNameData: string,
+    fieldNameResponse: string, 
+    fields: { [index: string]: any }, 
+    join: string = ", "
+  ){
+    /**
+     * Utilizando la referencia asigna respuesta a los datos de origen
+     */
+    if(!response.length) return data;
+    for(var i = 0; i < data.length; i++){
+      for(var f in fields){
+        if(fields.hasOwnProperty(f)) data[i][f] = null; //inicializar en null
+      }
+
+      for(var j = 0; j < response.length; j++){
+        if(data[i][fieldNameData] == response[j][fieldNameResponse]) {
+          this.assignFields(data[i],response[j],fields,join)
+          break;
+        }
+      }
+    }
+    return data;
   }
   
   getAllConnectionUm(
