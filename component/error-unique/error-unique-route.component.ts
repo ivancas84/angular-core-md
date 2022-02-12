@@ -9,6 +9,12 @@ import { UniqueValidatorMsg } from '@class/validator-msg';
 export class ErrorUniqueRouteComponent implements OnInit{
   /**
    * Definir ruteo para error unique
+   * 
+   * @deprecated Este componente ya no se utiliza, la redireccion debida a va-
+   * lores unicos se realiza directamente en el switchComponent a traves de un
+   * evento. El boton para recargar se define fuera del mensaje de error.
+   * 
+   * @todo Este componente sera eliminado a la brevedadp
    */
 
   @Input() validatorMsg: UniqueValidatorMsg; //validators
