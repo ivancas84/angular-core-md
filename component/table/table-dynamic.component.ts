@@ -13,7 +13,9 @@ import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.compo
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { EventIconConfig } from '@component/event-icon/event-icon.component';
 import { emptyUrl } from '@function/empty-url.function';
+import { getControlName } from '@function/get-control-name';
 import { naturalCompare } from '@function/natural-compare';
+import { titleCase } from '@function/title-case';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Observable, Subscription } from 'rxjs';
@@ -151,8 +153,16 @@ export class TableDynamicComponent implements ControlComponent, OnInit { //6
 
   initDisplayedColumns(){
     this.displayedColumns = []
+    var fg = this.config.factory.formGroup();
+    /**
+     * Se crea una instancia de formGroup para definir el label
+     */
     Object.keys(this.config.controls).forEach(key => {
-      if(this.config.controls[key].componentId) this.displayedColumns.push(key)
+      if(this.config.controls[key].componentId) this.displayedColumns.push(key);
+      if(!this.config.controls[key].label) {
+        var n = getControlName(fg.controls[key])
+        this.config.controls[key].label = titleCase(n.substring(n.indexOf("-")+1).replace("_"," "))
+      }
     })
     if(this.config.optColumn.length) this.displayedColumns.push("options");
     if(this.config.footer && this.config.footerConfig) this.footerColumns = this.displayedColumns
