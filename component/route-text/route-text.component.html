@@ -1,0 +1,14 @@
+<a *ngIf="!this.config.disabled; else disableOpt"
+  [routerLink]="'/'+config.routerLink"
+  [queryParams]="queryParams"
+  [target]="config.target"
+  [title]="config.title"
+  [color]="config.color"
+>
+   {{config.text}}
+ </a>
+
+ <ng-template #disableOpt>
+  <a disabled
+     [title]="config.title">{{config.text}}</a>
+  </ng-template>

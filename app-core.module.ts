@@ -80,6 +80,7 @@ import { DataDefinitionRelInitialize } from "@service/data-definition/data-defin
 import { DataDefinitionFkAllService } from "@service/data-definition/data-definition-fk-all.service";
 import { DataDefinitionFkService } from "@service/data-definition/data-definition-fk.service";
 import { DataDefinitionUmService } from "@service/data-definition/data-definition-um.service";
+import { RouteTextComponent } from "@component/route-text/route-text.component";
 registerLocaleData(localeEsAr, 'es-AR');
 
 @NgModule({
@@ -123,6 +124,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     FieldWrapCardComponent,
     FieldWrapRouterLinkComponent,
     RouteIconComponent,
+    RouteTextComponent,
     LinkTextComponent,
     EventButtonComponent,
     EventIconComponent,

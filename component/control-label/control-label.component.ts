@@ -22,7 +22,13 @@ export class ControlLabelComponent implements ControlComponent, OnInit {
   @Input() control: FormControl;
 
   ngOnInit(): void {
-    if(!this.config.entityName) this.config.entityName = getControlName(this.control)
+    if(!this.config.entityName) {
+
+      var n = getControlName(this.control)
+      this.config.entityName = n.substring(n.indexOf("-")+1)
+    } 
+    
+    
   }
 
 }
