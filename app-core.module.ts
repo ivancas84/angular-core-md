@@ -81,6 +81,7 @@ import { DataDefinitionFkAllService } from "@service/data-definition/data-defini
 import { DataDefinitionFkService } from "@service/data-definition/data-definition-fk.service";
 import { DataDefinitionUmService } from "@service/data-definition/data-definition-um.service";
 import { RouteTextComponent } from "@component/route-text/route-text.component";
+import { InputTimepicker2Component } from "@component/input-timepicker2/input-timepicker2.component";
 registerLocaleData(localeEsAr, 'es-AR');
 
 @NgModule({
@@ -121,6 +122,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputSearchGoComponent,
     InputUploadComponent,
     InputPersistComponent,
+    InputTimepicker2Component,
     FieldWrapCardComponent,
     FieldWrapRouterLinkComponent,
     RouteIconComponent,
@@ -181,10 +183,12 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputSelectLabelComponent,
     InputSearchGoComponent,
     InputPersistComponent,
+    InputTimepicker2Component,
     InputUploadComponent,
     FieldWrapCardComponent,
     FieldWrapRouterLinkComponent,
     RouteIconComponent,
+    RouteTextComponent,
     LinkTextComponent,
     EventButtonComponent,
     EventIconComponent,

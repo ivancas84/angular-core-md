@@ -12,6 +12,10 @@ export class InputTimepickerComponent implements OnInit, DoCheck {
   /**
    * Se define un input independiente para incorporar la funcionalidad de inicializar a traves de string
    * La libreria solo permite valores date, se realiza un proceso de formateo interno
+   * 
+   * @deprecated La libreria esta obsoleta pero se deja como referencia, se 
+   * implemento una nueva version mas simple que utiliza un input type="time"
+   *  y realiza un formato previo de los timestamp
    */
   @Input() field: FormControl;
   @Input() title?: string;
