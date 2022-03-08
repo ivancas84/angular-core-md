@@ -87,7 +87,6 @@ export interface SortControl {
 }
 
 export class FormControlsConfig extends FormConfig {
-  //@todo es posible eliminar el sort
   controls: { [index: string]: FormConfig } = {}
   
   contains(key: string){ return this.controls.hasOwnProperty(key) }

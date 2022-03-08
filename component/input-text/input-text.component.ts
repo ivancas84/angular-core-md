@@ -16,7 +16,7 @@ export class InputTextConfig extends FormControlConfig {
   /**
    * Atributo type: Se asocia al parametro type del tag input de html 
    */
-  widthAux?: string = null
+  width?: string = null
   /**
    * Ancho exclusivo del input
    * se aplica al contenedor utilizando [style.width]="width"
