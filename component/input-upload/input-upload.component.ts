@@ -10,7 +10,7 @@ import { getControlName } from '@function/get-control-name';
 import { titleCase } from '@function/title-case';
 
 export class InputUploadConfig extends FormControlConfig {
-  componentId: string = "input_upload"
+  component: any = InputUploadComponent
   label:string
   entityName?: string = "file";
   /**

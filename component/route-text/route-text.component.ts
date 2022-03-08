@@ -5,7 +5,7 @@ import { fastClone } from '@function/fast-clone';
 import { startWith } from 'rxjs/operators';
  
 export class RouteTextConfig extends FormControlConfig {
-  componentId: string = "route_text"
+  component: any = RouteTextComponent 
   text: string
   color: string
   target: string

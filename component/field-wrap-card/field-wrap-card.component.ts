@@ -4,7 +4,7 @@ import { FieldWrapComponent } from '@component/field-wrap/field-wrap.component';
 
 
 export class FieldWrapCardConfig extends FormConfig {
-  componentId: string = "wrap_card"
+  component: any = FieldWrapCardComponent
   config: FormConfig
   backgroundColor?: string;
 }

@@ -4,7 +4,7 @@ import { ControlComponent, FormControlConfig } from '@class/reactive-form-config
 import { getControlName } from '@function/get-control-name';
 
 export class TextareaConfig extends FormControlConfig {
-  componentId: string = "textarea"
+  component: any = TextareaComponent
   label?: string;
   placeholder: string = "";
   readonly: boolean = false;

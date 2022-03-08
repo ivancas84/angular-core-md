@@ -3,7 +3,7 @@ import { AbstractControl, FormControl } from '@angular/forms';
 import { ControlComponent, FormConfig } from '@class/reactive-form-config';
  
 export class EventIconConfig extends FormConfig {
-  componentId: string = "event_icon"
+  component: any = EventIconComponent
   icon: string //icono del boton
   action: string //accion del evento a realizar
   fieldEvent: FormControl

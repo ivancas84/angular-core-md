@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive-form-config';
 
 export class ControlDateConfig extends FormControlConfig {
-  componentId: string = "control_date"
+  component: any = ControlDateComponent
   format: string = "dd/MM/yyyy"
   
   constructor(attributes: any = {}) {

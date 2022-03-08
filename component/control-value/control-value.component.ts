@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { ControlComponent, FormConfig } from '@class/reactive-form-config';
 
 export class ControlValueConfig extends FormConfig {
-  componentId: string =  "control_value"
+  component:any = ControlValueComponent
 
   constructor(attributes: any = {}) {
     super({})

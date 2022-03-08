@@ -8,7 +8,7 @@ import { getControlName } from '@function/get-control-name';
 import { titleCase } from '@function/title-case';
 
 export class InputSelectConfig extends FormControlConfig{
-  componentId: string = "input_select"
+  component: any = InputSelectComponent
   entityName: string
   label?: string
   multiple: boolean = false

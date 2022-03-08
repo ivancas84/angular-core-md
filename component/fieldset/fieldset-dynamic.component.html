@@ -3,7 +3,9 @@
     <mat-card-title fxFlex="auto">
       {{config.title}}    
       
-      <core-abstract-control-view *ngFor="let o of config.optTitle" [config]="o.config" [control]="o.control"></core-abstract-control-view>          
+      <core-abstract-control-view2 *ngFor="let o of config.optTitle" 
+                                   [config]="o.config" 
+                                   [control]="o.control"></core-abstract-control-view2>          
     </mat-card-title>
   </mat-card-header>
 
@@ -12,7 +14,7 @@
 
     <ng-container *ngFor="let item of config.controls | keyvalue: sort">
       <div 
-        *ngIf="item.value.componentId" 
+        *ngIf="item.value.component" 
         class="item" 
         [fxFlex.xs]="item.value.width.xs" 
         [fxFlex.sm]="item.value.width.sm" 
@@ -28,9 +30,9 @@
         [fxFlex.gt-md]="item.value.width.gtMd" 
         [fxFlex.gt-lg]="item.value.width.gtLg">
 
-        <core-abstract-control-view 
+        <core-abstract-control-view2 
           [control]="control.controls[item.key]" 
-          [config]="item.value"></core-abstract-control-view>  
+          [config]="item.value"></core-abstract-control-view2>  
       </div>
 
     </ng-container>

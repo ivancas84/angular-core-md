@@ -5,7 +5,7 @@ import { getControlName } from '@function/get-control-name';
 import { startWith } from 'rxjs/operators';
 
 export class InputCheckboxConfig extends FormControlConfig {
-  componentId: string = "input_checkbox"
+  component: any = InputCheckboxComponent
   label?: string;
   labelDisabled?: boolean = false;
 }

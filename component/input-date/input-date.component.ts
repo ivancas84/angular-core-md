@@ -8,7 +8,7 @@ import { getControlName } from '@function/get-control-name';
 import { titleCase } from '@function/title-case';
 
 export class InputDateConfig extends FormControlConfig {
-  componentId: string = "input_date"
+  component: any = InputDateComponent
   label?: string;
   placeholder: string = "Seleccione fecha";
   readonly: boolean = false;

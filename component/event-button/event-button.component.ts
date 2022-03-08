@@ -3,7 +3,7 @@ import { AbstractControl, FormControl } from '@angular/forms';
 import { ControlComponent, FormConfig } from '@class/reactive-form-config';
  
 export class EventButtonConfig extends FormConfig {
-  componentId: string = "event_button"
+  component: any = EventButtonComponent
   text: string //texto del boton
   action: string //accion del evento a realizar
   color: string

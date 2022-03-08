@@ -7,7 +7,7 @@ import { FormConfigService } from '@service/form-config/form-config.service';
  * EN CONSTRUCCION
  */
 export class FieldsetArrayDynamicConfig extends FormArrayConfig {
-  componentId:string = "fieldset_array"
+  component:any = FieldsetArrayDynamicComponent
   title?: string;
   // entityName?: string;
   // intro?: string;

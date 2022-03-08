@@ -6,7 +6,7 @@ import { ValidatorMsg } from '@class/validator-msg';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 
 export class InputSelectLabelConfig extends FormControlConfig {
-  componentId:string="input_select_label"
+  component:any = InputSelectLabelComponent
   options: any[]; 
   label?: string = "Seleccione";
   readonly?: boolean = false;

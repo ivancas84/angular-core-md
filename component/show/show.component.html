@@ -14,12 +14,12 @@
                          [config]="searchConfig"
                          [form]="searchForm"></core-search-dynamic>
     
-    <core-abstract-control-view [config]="config" [control]="form"></core-abstract-control-view>
+    <core-abstract-control-view2 [config]="config" [control]="form"></core-abstract-control-view2>
 
     <mat-card *ngIf="optFooter.length">
       <mat-card-content>
-        <core-abstract-control-view *ngFor="let o of optFooter" 
-                                    [config]="o.config" [control]="o.control" ></core-abstract-control-view>          
+        <core-abstract-control-view2 *ngFor="let o of optFooter" 
+                                    [config]="o.config" [control]="o.control" ></core-abstract-control-view2>          
       </mat-card-content>
     </mat-card>
   </ng-container>

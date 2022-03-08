@@ -14,7 +14,6 @@ import { ControlDateComponent } from "@component/control-date/control-date.compo
 import { ControlLabelComponent } from "@component/control-label/control-label.component";
 import { ControlValueComponent } from "@component/control-value/control-value.component";
 import { FieldWrapComponent } from "@component/field-wrap/field-wrap.component";
-import { AbstractControlViewComponent } from "@component/abstract-control-view/abstract-control-view.component";
 import { InputAutocompleteComponent } from "@component/input-autocomplete/input-autocomplete.component";
 import { InputAutocompleteValueComponent } from "@component/input-autocomplete-value/input-autocomplete-value.component";
 import { InputCheckboxComponent } from "@component/input-checkbox/input-checkbox.component";
@@ -82,6 +81,8 @@ import { DataDefinitionFkService } from "@service/data-definition/data-definitio
 import { DataDefinitionUmService } from "@service/data-definition/data-definition-um.service";
 import { RouteTextComponent } from "@component/route-text/route-text.component";
 import { InputTimepicker2Component } from "@component/input-timepicker2/input-timepicker2.component";
+import { AbstractControlView2Component } from "@component/abstract-control-view2/abstract-control-view2.component";
+
 registerLocaleData(localeEsAr, 'es-AR');
 
 @NgModule({
@@ -109,7 +110,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputCheckboxComponent,
     InputDateComponent,
     FieldWrapComponent,
-    AbstractControlViewComponent,
+    AbstractControlView2Component,
     DownloadComponent,
     InputAutocompleteComponent,
     InputAutocompleteValueComponent,
@@ -172,7 +173,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputCheckboxComponent,
     InputDateComponent,
     FieldWrapComponent,
-    AbstractControlViewComponent,
+    AbstractControlView2Component,
     InputAutocompleteComponent,
     InputAutocompleteValueComponent,
     InputSelectCheckboxComponent,

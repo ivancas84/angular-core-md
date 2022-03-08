@@ -18,7 +18,7 @@ import { DataDefinitionRelLabelService } from '@service/data-definition/data-def
 import { FormConfigService } from '@service/form-config/form-config.service';
 import { ConfigFormGroupFactory, FormArrayConfig, FormControlConfig, FormStructureConfig, SortControl } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
-import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
+import { AbstractControlViewOption } from '@component/abstract-control-view2/abstract-control-view2.component';
 import { EventIconConfig } from '@component/event-icon/event-icon.component';
 
 
@@ -162,6 +162,10 @@ export abstract class DetailComponent extends StructureComponent implements OnIn
      * 
      * @todo Deberia reducirse la cantidad de caracteristicas, muchas pertenencen a 
      * Admin. Deben reimplementarse el metodo en Admin
+     * 
+     * @todo Mas que un FormArrayConfig, el parametro es un TableAdminConfig o
+     * similar, e=se estan manipulando caracteristicas como por ejemplo optTitle y
+     * optColumn
      */
     if(!config.factory) config.factory = new ConfigFormGroupFactory(config)
     if(!config.contains("_mode")) config.addControl("_mode", new FormControlConfig(null))

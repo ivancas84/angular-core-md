@@ -8,7 +8,7 @@ export class InputTextConfig extends FormControlConfig {
   /**
    * Configuracion de Input Text
    */
-  componentId: string = "input_text"
+  component: any= InputTextComponent
   label?: string
   showLabel: boolean = true
   placeholder?: string = ""

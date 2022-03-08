@@ -8,7 +8,7 @@ import { MatTable } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Display } from '@class/display';
 import { FormArrayConfig, FormGroupConfig, FormGroupFactory, FormConfig, ControlComponent } from '@class/reactive-form-config';
-import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
+import { AbstractControlViewOption } from '@component/abstract-control-view2/abstract-control-view2.component';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { EventIconConfig } from '@component/event-icon/event-icon.component';
@@ -25,7 +25,7 @@ declare function copyFormatted(html): any;
 declare function printHtml(html): any;
 
 export class TableDynamicConfig extends FormArrayConfig {
-  componentId: string = "table"
+  component: any = TableDynamicComponent
   intro?: string;
   /**
    * @param intro: HTML de introduccion que es incluido en el template 
@@ -145,6 +145,7 @@ export class TableDynamicComponent implements ControlComponent, OnInit { //6
   }
 
   ngOnInit(): void {
+    
     this.initOptField();
     this.initFieldset();
     this.initDisplayedColumns();
@@ -158,7 +159,7 @@ export class TableDynamicComponent implements ControlComponent, OnInit { //6
      * Se crea una instancia de formGroup para definir el label
      */
     Object.keys(this.config.controls).forEach(key => {
-      if(this.config.controls[key].componentId) this.displayedColumns.push(key);
+      if(this.config.controls[key].component) this.displayedColumns.push(key);
       if(!this.config.controls[key].label) {
         var n = getControlName(fg.controls[key])
         this.config.controls[key].label = titleCase(n.substring(n.indexOf("-")+1).replace("_"," "))

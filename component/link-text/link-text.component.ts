@@ -6,7 +6,7 @@ import { startWith } from 'rxjs/operators';
 import { URL } from 'url';
  
 export class LinkTextConfig extends FormControlConfig {
-  componentId: string = "link_text"
+  component: any = LinkTextComponent
   download: boolean = false
   url: string
   target: string

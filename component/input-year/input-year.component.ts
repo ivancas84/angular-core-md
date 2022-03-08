@@ -8,7 +8,7 @@ import { Y_FORMATS } from 'app/core/const/Y_FORMATS';
 import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 
 export class InputYearConfig extends FormControlConfig {
-  componentId: string = "input_year"
+  component: any = InputYearComponent
   label?: string;
   placeholder?: string = "Ingrese año";
 }

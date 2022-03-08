@@ -4,7 +4,7 @@ import { ControlComponent, FormControlConfig } from '@class/reactive-form-config
 import { getControlName } from '@function/get-control-name';
 
 export class InputSelectCheckboxConfig extends FormControlConfig {
-  componentId: string = "input_select_checkbox"
+  component: any = InputSelectCheckboxComponent
   readonly: boolean = false;
   options: any[] = ["Sí", "No"];
   /**

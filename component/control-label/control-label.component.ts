@@ -4,7 +4,7 @@ import { ControlComponent, FormControlConfig } from '@class/reactive-form-config
 import { getControlName } from '@function/get-control-name';
 
 export class ControlLabelConfig extends FormControlConfig {
-  componentId: string = "control_label"
+  component: any = ControlLabelComponent
   entityName: string
 
   constructor(attributes: any = {}) {

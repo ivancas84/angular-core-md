@@ -5,7 +5,7 @@ import { fastClone } from '@function/fast-clone';
 import { startWith } from 'rxjs/operators';
  
 export class RouteIconConfig extends FormControlConfig {
-  componentId: string = "route_icon"
+  component: any = RouteIconComponent
   icon: string
   routerLink: string
   color: string

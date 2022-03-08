@@ -17,15 +17,15 @@
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
     <ng-container *ngIf="(loadStorage$ | async); else loading">
       <ng-container  *ngFor="let item of config.controls | keyvalue: sort; let i = index">
-        <core-abstract-control-view [config]="item.value" [control]="form.controls[item.key]"></core-abstract-control-view>
+        <core-abstract-control-view2 [config]="item.value" [control]="form.controls[item.key]"></core-abstract-control-view2>
       </ng-container>
 
       
       <mat-card *ngIf="optFooter.length">
         <mat-card-content>
-          <core-abstract-control-view *ngFor="let o of optFooter" 
+          <core-abstract-control-view2 *ngFor="let o of optFooter" 
                                       [config]="o.config"
-                                      [control]="o.control"></core-abstract-control-view>
+                                      [control]="o.control"></core-abstract-control-view2>
         </mat-card-content>
       </mat-card>
     

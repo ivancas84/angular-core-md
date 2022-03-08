@@ -8,7 +8,7 @@ export class InputTimepicker2Config extends FormControlConfig {
   /**
    * Configuracion de Input Text
    */
-  componentId: string = "input_timepicker2"
+  component: any = InputTimepicker2Config
   label?: string
   showLabel: boolean = true
   placeholder?: string = ""

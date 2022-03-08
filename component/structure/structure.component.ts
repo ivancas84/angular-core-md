@@ -12,7 +12,7 @@ import { SessionStorageService } from "@service/storage/session-storage.service"
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { Location } from '@angular/common';
 import { map, startWith } from "rxjs/operators";
-import { AbstractControlViewOption } from "@component/abstract-control-view/abstract-control-view.component";
+import { AbstractControlViewOption } from "@component/abstract-control-view2/abstract-control-view2.component";
 
 
 

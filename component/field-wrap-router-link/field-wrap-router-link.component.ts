@@ -5,7 +5,7 @@ import { FieldWrapComponent } from '@component/field-wrap/field-wrap.component';
 import { fastClone } from '@function/fast-clone';
 
 export class FieldWrapRouterLinkConfig extends FormControlConfig {
-  componentId: string = "wrap_router_link"
+  component: any = FieldWrapRouterLinkComponent
   config: FormControlConfig 
   params: {} = {id:"{{id}}"}; //utilizar {{key}} para identificar valor del conjunto de datos
   path: string;

@@ -6,18 +6,19 @@ import { isEmptyObject } from "@function/is-empty-object.function"
 export interface ControlComponent {
   config:FormConfig
   control:AbstractControl
+  index?:number
 }
 
 export class FormConfig {
   parent:FormConfig = null
   label?:string
-  componentId:string
   controlId: string
   position: number = 0
   validatorMsgs: ValidatorMsg[] = []
   default:any = null
   disabled:boolean = false //valor opcional, puede definirse directamente en el AbstractControl
-  component: Type<any>
+  // component: Type<any>
+  component: any
   [key: string]: any
 
   constructor(attributes: any = {}) {

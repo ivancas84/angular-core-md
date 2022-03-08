@@ -1,6 +1,6 @@
 import { OnInit, Component } from '@angular/core';
 import { ShowComponent } from './show.component';
-import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
+import { AbstractControlViewOption } from '@component/abstract-control-view2/abstract-control-view2.component';
 import { EventButtonConfig } from '@component/event-button/event-button.component';
 import { EventIconConfig } from '@component/event-icon/event-icon.component';
 import { TableDynamicConfig } from '@component/table/table-dynamic.component';

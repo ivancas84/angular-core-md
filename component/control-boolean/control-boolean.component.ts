@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive-form-config';
 
 export class ControlBooleanConfig extends FormControlConfig {
-  componentId: string = "control_boolean"
+  component: any = ControlBooleanComponent
   format: any[] = ["Sí","No"] //@todo por el momento el formato no esta disponible
 }
 

@@ -8,7 +8,7 @@ import { FormControl } from '@angular/forms';
 import { of } from 'rxjs';
 
 export class DownloadConfig extends FormControlConfig {
-  componentId: string = "download"
+  component: any = DownloadComponent
   entityName?: string = "file";
   
   constructor(attributes: any = {}) {

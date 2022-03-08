@@ -9,7 +9,7 @@ import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive
 import { FormControl } from '@angular/forms';
 
 export class InputYmConfig extends FormControlConfig  {
-  componentId: string = "input_ym"
+  component: any = InputYmComponent
   label?: string;
   placeholder?: string = "Ingrese año y mes";
   readonly?: boolean = false;

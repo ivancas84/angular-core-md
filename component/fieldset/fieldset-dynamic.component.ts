@@ -5,9 +5,9 @@ import { FieldWidthOptions } from '@class/field-width-options';
 import { ControlComponent, FormConfig, FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
 
 export class FieldsetDynamicConfig extends FormGroupConfig {
-  componentId:string = "fieldset"
+  component: any = FieldsetDynamicComponent
   controls: { [index: string]: FormControlConfig }
-  title?: string;
+  title?: string = null;
   entityName?: string;
   intro?: string;
   optTitle: FormConfig[] = []; //opciones de titulo

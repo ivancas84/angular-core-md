@@ -11,7 +11,7 @@ import { FormControlConfig } from '@class/reactive-form-config';
 import { titleCase } from '@function/title-case';
 
 export class InputAutocompleteConfig extends FormControlConfig {
-  componentId: string = "input_autocomplete"
+  component: any = InputAutocompleteComponent
   entityName?: string;
   /**
    * @member entityName: Nombre de la entidad para consultar datos.
