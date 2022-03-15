@@ -1,9 +1,0 @@
-<mat-form-field *ngIf="load$ | async">
-  <mat-label>{{title}}</mat-label>
-  <input matTimepicker [formControl]="searchControl" #t="matTimepicker" placeholder="{{placeholder}}" [disableDialogOpenOnClick]="true">
-  <mat-icon matSuffix (click)="t.showDialog()">access_time</mat-icon>
-  <mat-error *ngIf="field.hasError('required')">Debe completar valor</mat-error>
-  <mat-error *ngIf="field.hasError('notUnique')">
-    El valor ya se encuentra utilizado: <a routerLink="/{{adminRoute}}" [queryParams]="adminParams">Cargar</a>    
-  </mat-error>
-</mat-form-field>
