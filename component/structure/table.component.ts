@@ -25,6 +25,11 @@ declare function printHtml(html: any): any;
   `],
 })
 export class TableComponent extends ArrayComponent {
+  /**
+   * Tabla para visualizar los datos de una entidad con ordenamiento y pagina-
+   * cion
+   */
+ 
   optColumn: AbstractControlViewOption[] = []; //columna opciones
   /**
    * Columna opciones asignada a AbstractControlView

@@ -7,56 +7,58 @@
       (ngSubmit)="onSubmit()" 
       novalidate autocomplete="off">
 
-      <ng-container *ngIf="(loadDisplay$ | async); else loading">
-        <mat-progress-bar *ngIf="!load" 
-                          mode="indeterminate"></mat-progress-bar>
-    
-          <table mat-table 
-                 [dataSource]="formArray.controls" 
-                 matSort 
-                 [matSortActive]="sortActive" 
-                 [matSortDirection]="sortDirection" 
-                 matSortDisableClear (matSortChange)="onChangeSort($event)" class="mat-elevation-z8">
-            <ng-container *ngFor="let item of config.controls | keyvalue" [matColumnDef]="item.key">
-        
-              <ng-container *ngIf="sortDisabled.includes(item.key); else sort">
-                <th mat-header-cell *matHeaderCellDef> {{item.value.label}} </th>
-              </ng-container>
-        
-              <ng-template #sort>
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{item.value.label}} </th>
-              </ng-template>
-              
-              <td mat-cell *matCellDef="let row; let i = index;">
-                <core-abstract-control-view [control]="row.controls[item.key]" 
-                                            [config]="item.value"></core-abstract-control-view>
-              </td>
-              <td mat-footer-cell *matFooterCellDef> 
-                <core-abstract-control-view *ngIf="footerConfig.contains(item.key)"
-                                            [control]="footer.controls[item.key]" 
-                                            [config]="footerConfig.controls[item.key]"></core-abstract-control-view>          
-              </td>
-          </ng-container>
-        
-          <ng-container matColumnDef="options">
-            <th mat-header-cell *matHeaderCellDef> Opciones </th>
-            <td mat-cell *matCellDef="let row; let i = index;">
-              <core-abstract-control-view *ngFor="let o of optColumn" 
-                                            [control]="row" 
-                                            [config]="o.config" 
-                                            [index]="i"></core-abstract-control-view>
-            </td>
-            <td mat-footer-cell *matFooterCellDef></td>
-        
-          </ng-container>
-        
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr [hidden]="row.controls.hasOwnProperty('_mode') && (row.controls['_mode'].value == 'delete')" mat-row *matRowDef="let row; columns: displayedColumns; let i = index"></tr>
-          <tr mat-footer-row *matFooterRowDef="footerColumns; sticky:true"></tr>
-        </table>
+  <ng-container *ngIf="(loadDisplay$ | async); else loading">
+    <mat-progress-bar *ngIf="!load" 
+                      mode="indeterminate"></mat-progress-bar>
 
+    <table mat-table 
+           [dataSource]="formArray.controls" 
+           matSort 
+           [matSortActive]="sortActive" 
+           [matSortDirection]="sortDirection" 
+           matSortDisableClear
+           (matSortChange)="onChangeSort($event)" 
+           class="mat-elevation-z8">
+      <ng-container *ngFor="let item of config.controls | keyvalue" [matColumnDef]="item.key">
+  
+        <ng-container *ngIf="sortDisabled.includes(item.key); else sort">
+          <th mat-header-cell *matHeaderCellDef> {{item.value.label}} </th>
+        </ng-container>
+  
+        <ng-template #sort>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{item.value.label}} </th>
+        </ng-template>
         
+        <td mat-cell *matCellDef="let row; let i = index;">
+          <core-abstract-control-view [control]="row.controls[item.key]" 
+                                      [config]="item.value"></core-abstract-control-view>
+        </td>
+        <td mat-footer-cell *matFooterCellDef> 
+          <core-abstract-control-view *ngIf="footerConfig.contains(item.key)"
+                                      [control]="footer.controls[item.key]" 
+                                      [config]="footerConfig.controls[item.key]"></core-abstract-control-view>          
+        </td>
       </ng-container>
-      <!-- <p>Debug Form value: {{ form.value | json }}</p>
-      <p>Debug Form status: {{ form.status | json }}</p> -->
+  
+      <ng-container matColumnDef="options">
+        <th mat-header-cell *matHeaderCellDef> Opciones </th>
+        <td mat-cell *matCellDef="let row; let i = index;">
+          <core-abstract-control-view *ngFor="let o of optColumn" 
+                                        [control]="row" 
+                                        [config]="o.config" 
+                                        [index]="i"></core-abstract-control-view>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr [hidden]="row.controls.hasOwnProperty('_mode') && (row.controls['_mode'].value == 'delete')" mat-row *matRowDef="let row; columns: displayedColumns; let i = index"></tr>
+      <tr mat-footer-row *matFooterRowDef="footerColumns; sticky:true"></tr>
+    </table>
+      
+  </ng-container>
+  <!-- <p>Debug Form value: {{ form.value | json }}</p>
+  <p>Debug Form status: {{ form.status | json }}</p> -->
+
 </form>
