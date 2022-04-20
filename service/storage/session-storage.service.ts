@@ -8,7 +8,7 @@ import { StorageService } from './storage.service';
 export class SessionStorageService extends StorageService {
 
 
-  getStorage(): any {
+  override getStorage(): any {
     return sessionStorage;
   }
 

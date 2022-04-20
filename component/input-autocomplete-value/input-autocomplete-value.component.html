@@ -1,0 +1,18 @@
+<mat-form-field>
+  <mat-label>{{config.label}}</mat-label>
+
+  <input type="text" matInput [formControl]="control" [matAutocomplete]="auto">
+  <button type="button" mat-icon-button matSuffix (click)="control.setValue(null)">
+    <mat-icon>clear</mat-icon>
+  </button>
+  <mat-error *ngFor="let v of config.validatorMsgs">
+    <ng-container *ngIf="control.hasError(v.id)">{{v.message}}</ng-container>
+  </mat-error>
+  
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+      {{option}}
+    </mat-option>
+  </mat-autocomplete>
+  
+</mat-form-field>

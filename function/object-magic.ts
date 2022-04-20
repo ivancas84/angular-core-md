@@ -1,5 +1,5 @@
 
-export function objectMagic(obj, newObj){
+export function objectMagic(obj: { [x: string]: any; }, newObj: { [x: string]: any; }){
   Object.keys(obj).forEach(function(key) {
     delete obj[key];
   });

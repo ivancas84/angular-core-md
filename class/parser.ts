@@ -2,11 +2,11 @@ import { MONTH_NAMES } from '@config/core/const/MONTH_NAMES';
 
 export class Parser {
 
-  static date(value: string): Date | null {
-    if(!value) return null;
+  static date(value: string): Date | undefined {
+    if(!value) return;
 
     switch(value){
-      case null: return null;
+      case null: return;
 
       case "CURRENT_TIME": case "CURRENT_DATE": case "CURRENT_TIMESTAMP":
         var date: Date = new Date();
@@ -22,11 +22,11 @@ export class Parser {
     }
   }
 
-  static time(value: string): Date | null {
-    if(!value) return null;
+  static time(value: string): Date | undefined {
+    if(!value) return;
 
     switch(value){
-      case null: return null;
+      case null: return;
 
       case "CURRENT_TIME": case "CURRENT_DATE": case "CURRENT_TIMESTAMP":
         var date: Date = new Date();
@@ -46,7 +46,7 @@ export class Parser {
 
   //@param format (default Y-m-d)
   //  "d/m/Y",
-  static dateFormat(value:any, format?: string): any {
+  static dateFormat(value:any, format?: string): string {
     value = new Date(value);
 
     //se asigna un numero a las variables porque sino tira error en compliacion: ubsequent variable declarations must have the same type

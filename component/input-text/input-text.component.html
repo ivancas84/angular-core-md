@@ -1,0 +1,14 @@
+<mat-form-field [style.width]="config.width"> 
+  <mat-label *ngIf="config.label && config.showLabel">{{config.label}}</mat-label>
+  
+  <input matInput
+         [readonly]="config.readonly"
+         [type]="config.type"
+         [formControl]="control" 
+         [placeholder]="config.placeholder"
+  >
+
+  <mat-error *ngFor="let v of config.validatorMsgs">
+    <ng-container *ngIf="control.hasError(v.id)">{{v.message}}</ng-container>
+  </mat-error>
+</mat-form-field>

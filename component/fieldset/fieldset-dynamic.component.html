@@ -1,0 +1,46 @@
+<mat-card>
+  <mat-card-header *ngIf="config.title || config.optTitle.length">
+    <mat-card-title fxFlex="auto">
+      {{config.title}}    
+      
+      <core-abstract-control-view2 *ngFor="let o of config.optTitle" 
+                                   [config]="o.config" 
+                                   [control]="o.control"></core-abstract-control-view2>          
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content fxLayout="row wrap" [formGroup]="control">
+    <div class="mat-subheading-2 highlightText" [innerHTML]="config.intro" fxFlex="100%"></div>
+
+    <ng-container *ngFor="let item of config.controls | keyvalue: sort">
+      <div 
+        *ngIf="item.value.component" 
+        class="item" 
+        [fxFlex.xs]="item.value.width.xs" 
+        [fxFlex.sm]="item.value.width.sm" 
+        [fxFlex.md]="item.value.width.md" 
+        [fxFlex.lg]="item.value.width.lg" 
+        [fxFlex.xl]="item.value.width.xl" 
+        [fxFlex.lt-sm]="item.value.width.ltSm"
+        [fxFlex.lt-md]="item.value.width.ltMd"
+        [fxFlex.lt-lg]="item.value.width.ltLg"
+        [fxFlex.lt-xl]="item.value.width.ltXl"
+        [fxFlex.gt-xs]="item.value.width.gtXs"
+        [fxFlex.gt-sm]="item.value.width.gtSm" 
+        [fxFlex.gt-md]="item.value.width.gtMd" 
+        [fxFlex.gt-lg]="item.value.width.gtLg">
+
+        <core-abstract-control-view2 
+          [control]="control.controls[item.key]" 
+          [config]="item.value"></core-abstract-control-view2>  
+      </div>
+
+    </ng-container>
+    <!--div *ngFor="let v of control.validatorMsgs">
+      <mat-error *ngIf="control.hasError(v.id)">{{v.message}}</mat-error>
+    </div-->
+    <mat-error *ngFor="let v of config.validatorMsgs">
+      <span *ngIf="control.hasError(v.id)">{{v.message}}</span>
+    </mat-error>  
+  </mat-card-content>
+</mat-card>

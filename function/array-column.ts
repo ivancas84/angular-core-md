@@ -1,4 +1,4 @@
 
-export function arrayColumn(array, key): any[] {
+export function arrayColumn(array: any[], key: string): any[] {
     return array.map(value => value[key]);
 }

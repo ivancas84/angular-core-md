@@ -7,7 +7,7 @@ import { StorageService } from './storage.service';
 })
 export class LocalStorageService extends StorageService {
 
-  getStorage(): any {
+  override getStorage(): any {
     return localStorage;
   }
 

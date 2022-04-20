@@ -1,0 +1,17 @@
+<mat-form-field>
+  <mat-label>{{config.label}}</mat-label>
+  <input matInput 
+         [matDatepicker]="fieldPicker" 
+         [formControl]="control"
+         [readonly]="config.readonly" 
+         placeholder="{{config.placeholder}}"
+  >
+  <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
+  <mat-datepicker-toggle matSuffix (click)="control.setValue(null)">
+    <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+  </mat-datepicker-toggle>
+  <mat-datepicker #fieldPicker></mat-datepicker>
+  <mat-error *ngFor="let v of config.validatorMsgs">
+    <span *ngIf="control.hasError(v.id)">{{v.message}}</span>
+  </mat-error>  
+</mat-form-field>

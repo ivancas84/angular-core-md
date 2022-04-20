@@ -14,7 +14,7 @@ export class FormConfigService {
    */
 
   public defaultValues(config: FormControlsConfig): any  {
-    var dv = {}
+    var dv:{[key:string]:any} = {}
     Object.keys(config.controls).forEach(key => {
       switch(config.controls[key].controlId){
         case "form_control": case "form_array":
@@ -29,15 +29,13 @@ export class FormConfigService {
     return dv;
   } 
 
-  public getName(control: AbstractControl): string | null {
+  public getName(control: AbstractControl): string {
     let group = <FormGroup>control.parent;
 
-    if (!group) {
-      return null;
-    }
+    let name: string = "";
 
-    let name: string;
-
+    if (!group) return name;
+    
     Object.keys(group.controls).forEach(key => {
       let childControl = group.get(key);
 
@@ -65,9 +63,13 @@ export class FormConfigService {
     });
   }
   
-  initArray(config: FormArrayConfig, formArray: FormArray, value: [{ [key: string]: any; }]): void {
+  initArray(
+    config: FormArrayConfig, 
+    formArray: FormArray, 
+    value: [{ [key: string]: any; }]
+  ): void {
     formArray.clear();
-    for(var i = 0; i <value.length; i++) formArray.push(config.factory.formGroup());
+    for(var i = 0; i <value.length; i++) formArray.push(config.factory!.formGroup());
     formArray.patchValue(value)
   }
 
@@ -79,10 +81,10 @@ export class FormConfigService {
     var p = fastClone(params)
     for(var i in p){
       if(p.hasOwnProperty(i)){
-        var key = p[i].match(/\{\{(.*?)\}\}/)
+        var key: string = p[i].match(/\{\{(.*?)\}\}/)
         if(key) {
-          if(!form[key[1]].value) return null; //si no hay coincidencia de parametros se retorna null?
-          p[i] = form[key[1]].value;
+          if(!form.controls[key[1]].value) return null; //si no hay coincidencia de parametros se retorna null?
+          p[i] = form.controls[key[1]].value;
         }
       }
     }
@@ -93,11 +95,11 @@ export class FormConfigService {
     /**
      * Agregar al formGroup, los campos faltantes de config
      */
-    for(var key in config.controls) {
-      if(config.controls.hasOwnProperty(key) && !formGroup.contains(key)) {
-        var fc = new FormControl({value: config.controls[key].default, disabled: config.controls[key].disabled})
-        if(!config.controls[key].label) config.controls[key].label = key;
-        if(config.controls[key].required) fc.setValidators(Validators.required)
+    for(var key in config["controls"]) {
+      if(config["controls"].hasOwnProperty(key) && !formGroup.contains(key)) {
+        var fc = new FormControl({value: config["controls"][key].default, disabled: config["controls"][key].disabled})
+        if(!config["controls"][key].label) config["controls"][key].label = key;
+        if(config["controls"][key].required) fc.setValidators(Validators.required)
         formGroup.addControl(key, fc)
         if(disabled) formGroup.disable()
       }

@@ -35,14 +35,14 @@ export abstract class StorageService {
     return (key in s) ? true : false;
   }
 
-  removeItems(ids): void {
+  removeItems(ids: { [x: string]: any }): void {
     let s = this.getStorage();
     for (let i in ids){
       if (ids.hasOwnProperty(i)) s.removeItem(ids[i]);
     }
   }
 
-  removeItemsPrefix(prefix): void {
+  removeItemsPrefix(prefix: string): void {
     let s = this.getStorage(),
         keys = Object.keys(s);
 
@@ -53,7 +53,7 @@ export abstract class StorageService {
     }
   }
 
-  removeItemsContains(str): void {
+  removeItemsContains(str: string): void {
     let s = this.getStorage(),
         keys = Object.keys(s);
 
@@ -64,7 +64,7 @@ export abstract class StorageService {
     }
   }
 
-  removeItemsPersisted(response): void {
+  removeItemsPersisted(response: string[]): void {
     if(response && response.length){
       response.forEach(
         (element: string) => this.removeItem(element)

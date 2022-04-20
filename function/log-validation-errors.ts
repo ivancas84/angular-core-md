@@ -1,6 +1,6 @@
-import { ValidationErrors, FormGroup, FormArray } from "@angular/forms";
+import { ValidationErrors, FormGroup, FormArray, AbstractControl } from "@angular/forms";
 
-export function logValidationErrors(formGroup) {
+export function logValidationErrors(formGroup: FormGroup | FormArray) {
     /**
      * log de errores del formulario
      * Utilizado opcionalmente para propositos de Debug
@@ -12,7 +12,7 @@ export function logValidationErrors(formGroup) {
       if(control instanceof FormGroup ) {
         console.log("FormGroup " + key);
 
-        const controls: ValidationErrors = formGroup.get(key).controls;
+        const controls: ValidationErrors = (formGroup.get(key) as FormGroup).controls;
           Object.keys(controls).forEach(keyC => {
             if(controls[keyC].errors) {
               Object.keys(controls[keyC].errors).forEach(keyError => {
@@ -26,7 +26,7 @@ export function logValidationErrors(formGroup) {
 
         for (let i = 0; i < control.controls.length; i++){
           console.log("+ index " + i);
-          logValidationErrors(control.controls[i]);
+          logValidationErrors(control.controls[i] as FormGroup);
         }
       }
     });

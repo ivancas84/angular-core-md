@@ -6,7 +6,7 @@ export class ToDatePipe implements PipeTransform {
 
   constructor() {}
 
-  transform(value: string): Date {
+  transform(value: string): Date | undefined{
     return Parser.date(value);
   }
 }

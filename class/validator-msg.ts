@@ -1,7 +1,7 @@
 
 export class ValidatorMsg {
-  id:string //id del validador (debe ser el mismo que el identificador del error retornado)
-  message:string //mensaje a visualizar
+  id!:string  //id del validador (debe ser el mismo que el identificador del error retornado)
+  message!:string //mensaje a visualizar
 
   constructor(attributes: any = {}) {
     Object.assign(this, attributes)
@@ -9,9 +9,9 @@ export class ValidatorMsg {
 }
 
 export class UniqueValidatorMsg extends ValidatorMsg {
-  id:string="notUnique"
+  override id:string="notUnique"
   
-  route:string
+  route:string | undefined
   /**
    * @member route: ruteo en caso de que exista valor unico.
    *
@@ -27,7 +27,7 @@ export class UniqueValidatorMsg extends ValidatorMsg {
    * Si no se necesitan queryParams alternativos, no hace falta definir este valor
    * se asignara directamente {uniqueParam:uniqueValue}
    */
-  message:string = "El valor ya se encuentra en uso" //mensaje a visualizar
+  override message:string = "El valor ya se encuentra en uso" //mensaje a visualizar
 
   constructor(attributes: any = {}) {
     super({})
@@ -36,8 +36,8 @@ export class UniqueValidatorMsg extends ValidatorMsg {
 }
 
 export class RequiredValidatorMsg extends ValidatorMsg {
-  id:string = "required" //id del validador (debe ser el mismo que el identificador del error retornado)
-  message:string = "Debe completar valor" //mensaje a visualizar
+  override id:string = "required" //id del validador (debe ser el mismo que el identificador del error retornado)
+  override message:string = "Debe completar valor" //mensaje a visualizar
 
   constructor(attributes: any = {}) {
     super({})
@@ -46,8 +46,8 @@ export class RequiredValidatorMsg extends ValidatorMsg {
 }
 
 export class DateValidatorMsg extends ValidatorMsg {
-  id:string = "matDatepickerParse"
-  message:string = "El formato es incorrecto"
+  override id:string = "matDatepickerParse"
+  override message:string = "El formato es incorrecto"
   
   constructor(attributes: any = {}) {
     super({})
@@ -56,8 +56,8 @@ export class DateValidatorMsg extends ValidatorMsg {
 }
 
 export class PatternValidatorMsg extends ValidatorMsg {
-  id:string = "pattern"
-  message:string = "El formato es incorrecto"
+  override id:string = "pattern"
+  override message:string = "El formato es incorrecto"
 
   constructor(attributes: any = {}) {
     super({})
@@ -66,8 +66,8 @@ export class PatternValidatorMsg extends ValidatorMsg {
 }
 
 export class MinValidatorMsg extends ValidatorMsg {
-  id:string = "min"
-  message:string = "Inferior al mínimo permitido"
+  override id:string = "min"
+  override message:string = "Inferior al mínimo permitido"
 
   constructor(attributes: any = {}) {
     super({})
@@ -77,8 +77,8 @@ export class MinValidatorMsg extends ValidatorMsg {
 
 
 export class MaxValidatorMsg extends ValidatorMsg {
-  id:string = "max"
-  message:string = "Superior al máximo permitido"
+  override id:string = "max"
+  override message:string = "Superior al máximo permitido"
 
   constructor(attributes: any = {}) {
     super({})
@@ -87,8 +87,8 @@ export class MaxValidatorMsg extends ValidatorMsg {
 }
 
 export class EmailValidatorMsg extends ValidatorMsg {
-  id:string = "pattern"
-  message:string = "El formato es incorrecto"
+  override id:string = "pattern"
+  override message:string = "El formato es incorrecto"
 
   constructor(attributes: any = {}) {
     super({})
@@ -97,8 +97,8 @@ export class EmailValidatorMsg extends ValidatorMsg {
 } 
 
 export class MinLengthValidatorMsg extends ValidatorMsg {
-  id:string = "minlength"
-  message:string = "Longitud incorrecta"
+  override id:string = "minlength"
+  override message:string = "Longitud incorrecta"
 
   constructor(attributes: any = {}) {
     super({})
@@ -107,8 +107,8 @@ export class MinLengthValidatorMsg extends ValidatorMsg {
 } 
 
 export class MaxLengthValidatorMsg extends ValidatorMsg {
-  id:string = "maxlength"
-  message:string = "Longitud incorrecta"
+  override id:string = "maxlength"
+  override message:string = "Longitud incorrecta"
 
   constructor(attributes: any = {}) {
     super({})

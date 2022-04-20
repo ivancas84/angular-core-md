@@ -1,0 +1,15 @@
+<mat-form-field>
+  <mat-label>{{config.label}}</mat-label>
+  <input matInput [matDatepicker]="fieldPicker" [formControl]="control" placeholder="{{config.placeholder}}">
+  <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
+  <mat-datepicker-toggle matSuffix (click)="control.setValue(null)">
+    <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+  </mat-datepicker-toggle>
+  <mat-datepicker #fieldPicker
+                  startView="multi-year"
+                  (yearSelected)="chosenYearHandler($event,fieldPicker)"
+  ></mat-datepicker>
+  <mat-error *ngFor="let v of config.validatorMsgs">
+    <ng-container *ngIf="control.hasError(v.id)">{{v.message}}</ng-container>
+  </mat-error>
+</mat-form-field>

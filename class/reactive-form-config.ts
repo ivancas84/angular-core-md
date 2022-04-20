@@ -4,8 +4,8 @@ import { Type } from "@angular/core"
 import { isEmptyObject } from "@function/is-empty-object.function"
 
 export interface ControlComponent {
-  config:FormConfig
-  control:AbstractControl
+  config?:FormConfig
+  control?:AbstractControl
   index?:number
 }
 
@@ -158,7 +158,7 @@ export class FormArrayConfig extends FormControlsConfig {
   /**
    * @example {motivo:"asc", per-nombres:"desc"}
    */
-  override default:any = []
+  override default:any[] = []
   /**
    *  NO SE RECOMIENDA DEFINIR VALORES POR DEFECTO PARA FORM ARRAY, 
    * para cada fila se utilizaran los valores por defecto definidos en la configuracion de formgroup
