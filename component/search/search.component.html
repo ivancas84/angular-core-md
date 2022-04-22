@@ -1,0 +1,16 @@
+<mat-accordion>
+  <mat-expansion-panel hideToggle>
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{title}}</mat-panel-title>
+    </mat-expansion-panel-header>
+      <form [formGroup]="control" novalidate (ngSubmit)="onSubmit()"> 
+        <core-abstract-control-form-group *ngIf="control.contains('params')"
+                                          [config]="config.controls['params']"
+                                          [control]="controlParams"
+        >
+        </core-abstract-control-form-group>
+
+        <button mat-raised-button color="primary" type="submit">Buscar</button>&nbsp;
+      </form>
+  </mat-expansion-panel>
+</mat-accordion>

@@ -1,5 +1,5 @@
 import { Input, Component, ViewChild, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Form, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { Router } from '@angular/router';
@@ -12,14 +12,16 @@ import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsTouched } from '@function/mark-all-as-touched';
 
 @Component({
-  selector: 'core-search-dynamic',
-  templateUrl: './search-dynamic.component.html',
+  selector: 'core-search',
+  templateUrl: './search.component.html',
 })
-export class SearchDynamicComponent implements OnInit {
+export class SearchComponent implements OnInit {
  
-  @Input() form: FormGroup;
-  @Input() config: FormStructureConfig;
-  @Input() display: Display;
+  @Input() control!: FormGroup;
+  controlParams!: FormGroup
+
+  @Input() config!: FormStructureConfig;
+  @Input() display!: Display;
   /**
    * Busqueda a traves de condicion
    * implementacion opcional mediante componente SearchCondition
@@ -33,7 +35,7 @@ export class SearchDynamicComponent implements OnInit {
    * Flag para habilitar/deshabilitar boton aceptar
    */
 
-  @ViewChild(MatExpansionPanel) searchPanel: MatExpansionPanel;
+  @ViewChild(MatExpansionPanel) searchPanel!: MatExpansionPanel;
 
   constructor(
     protected router: Router,
@@ -43,7 +45,8 @@ export class SearchDynamicComponent implements OnInit {
 
   ngOnInit(){
     if(this.config.controls.hasOwnProperty("params") && !isEmptyObject(this.display.getParams()))
-      this.form.controls["params"].reset(this.display.getParams()) 
+      this.control.controls["params"].reset(this.display.getParams()) 
+      this.controlParams = this.control.controls["params"] as FormGroup
 
     // var c = this.display.getCondition()
     // if(this.config.controls.hasOwnProperty("params") && !isEmptyObject(c)){
@@ -61,17 +64,17 @@ export class SearchDynamicComponent implements OnInit {
 
     this.isSubmitted = true;
 
-    if (!this.form.valid) {
-      markAllAsTouched(this.form);
-      logValidationErrors(this.form);
+    if (!this.control.valid) {
+      markAllAsTouched(this.control);
+      logValidationErrors(this.control);
       this.dialog.open(DialogAlertComponent, {
         data: {title: "Error", message: "El formulario posee errores."}
       });
       this.isSubmitted = false;
     } else {
-      if(this.form.get("condition")) this.display.setConditionByFilters(this.form.get("condition").value);    
-      if(this.form.get("params")) this.display.setParams(this.form.get("params").value);    
-      if(this.form.get("order")) { this.display.setOrderByElement(this.form.get("order").value); }    
+      if(this.control.get("condition")) this.display.setConditionByFilters(this.control.get("condition")!.value);    
+      if(this.control.get("params")) this.display.setParams(this.control.get("params")!.value);    
+      if(this.control.get("order")) { this.display.setOrderByElement(this.control.get("order")!.value); }    
       this.display.setPage(1);
       this.searchPanel.close();
       this.search();
@@ -79,7 +82,9 @@ export class SearchDynamicComponent implements OnInit {
   }
   
   search(): void {
-    /** Metodo independiente para facilitar reimplementacion */
+    /** 
+     * Metodo independiente para facilitar reimplementacion 
+     **/
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + this.display.encodeURI());  
   }
 }

@@ -66,6 +66,8 @@ import { DataDefinitionRelInitialize } from "@service/data-definition/data-defin
 import { DataDefinitionFkAllService } from "@service/data-definition/data-definition-fk-all.service";
 import { DataDefinitionFkService } from "@service/data-definition/data-definition-fk.service";
 import { DataDefinitionUmService } from "@service/data-definition/data-definition-um.service";
+import { SearchComponent } from "@component/search/search.component";
+import { AbstractControlFormGroupComponent } from "@component/abstract-control-form-group/abstract-control-form-group.component";
 
 registerLocaleData(localeEsAr, 'es-AR');
 
@@ -86,6 +88,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     DialogAlertComponent,
     DialogConfirmComponent,
     InputSearchGoComponent,
+    SearchComponent,
     TableComponent,
     /**
      * No hace falta declararla ya que es una clase semiabstracta, pero si no 
@@ -102,6 +105,7 @@ registerLocaleData(localeEsAr, 'es-AR');
      * racion
      *************************************************************************/
     AbstractControlViewComponent,
+    AbstractControlFormGroupComponent,
     ControlBooleanComponent,
     ControlDateComponent,
     ControlLabelComponent,
@@ -179,9 +183,12 @@ registerLocaleData(localeEsAr, 'es-AR');
     DialogAlertComponent,
     DialogConfirmComponent,
     InputSearchGoComponent,
+    SearchComponent,
     TableComponent,
+    
 
     AbstractControlViewComponent,
+    AbstractControlFormGroupComponent,
     ControlBooleanComponent,
     ControlDateComponent,
     ControlLabelComponent,

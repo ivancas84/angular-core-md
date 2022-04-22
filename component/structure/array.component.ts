@@ -8,13 +8,15 @@ import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.compo
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
-import { ConfigFormGroupFactory, FormArrayConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { ConfigFormGroupFactory, FormArrayConfig, FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { FormConfigService } from '@service/form-config/form-config.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { StructureComponent } from '@component/structure/structure.component';
 import { ValidatorsService } from '@service/validators/validators.service';
+import { FieldWidthOptions } from '@class/field-width-options';
+import { InputTextConfig } from '@component/input-text/input-text.component';
 
 @Component({
   selector: 'core-array',
@@ -31,8 +33,8 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
 
-  searchForm?: FormGroup
-  searchConfig?: FormStructureConfig
+  searchControl!: FormGroup
+  searchConfig!: FormStructureConfig
 
   constructor(
     protected override dd: DataDefinitionToolService, 
@@ -58,7 +60,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   override ngOnInit(){
     this.control.addControl(this.entityName, this.formArray)
     this.initConfigFactory();
-    this.initSearchForm();
+    this.initSearch();
     super.ngOnInit()
   }
 
@@ -67,10 +69,20 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     if(!this.config.factory) this.config.factory = new ConfigFormGroupFactory(this.config)
   }
 
-  initSearchForm(){
-    if(this.searchConfig && !this.searchForm) {
+  initSearch(){
+    if(!this.searchConfig){
+      this.searchConfig = new FormStructureConfig({}, {
+        "params":new FormGroupConfig({title:"Opciones"},{
+          "search":new InputTextConfig({
+            label:"Buscar",
+            width: new FieldWidthOptions()
+          }),
+        })
+      }) 
+    }
+    if(!this.searchControl) {
       var c = new ConfigFormGroupFactory(this.searchConfig.controls["params"])
-      this.searchForm = this.fb.group({
+      this.searchControl = this.fb.group({
         "params": c.formGroup()
       })
     }

@@ -88,22 +88,22 @@ export interface SortControl {
 }
 
 export class FormControlsConfig extends FormConfig {
-  controls: { [index: string]: FormConfig } = {}
+  controls: { [index: string]: FormControlConfig } = {}
   
   contains(key: string){ return this.controls.hasOwnProperty(key) }
 
   get(key: string ){ return this.controls[key]  }
 
-  addControl(key: string, control: FormConfig){
+  addControl(key: string, control: FormControlConfig){
     control.parent = this
     this.controls[key] = control
   }
 
-  setControls(controls: { [index: string]: FormConfig }){
+  setControls(controls: { [index: string]: FormControlConfig }){
     for(var key in controls) this.addControl(key, controls[key])
   }
   
-  constructor(attributes: any = {}, controls:{ [index: string]: FormConfig } = {}) {
+  constructor(attributes: any = {}, controls:{ [index: string]: FormControlConfig } = {}) {
     super({})
     Object.assign(this, attributes)
     if(!isEmptyObject(controls)) this.setControls(controls)

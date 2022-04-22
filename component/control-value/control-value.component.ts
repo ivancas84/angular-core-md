@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormConfig } from '@class/reactive-form-config';
+import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
 
-export class ControlValueConfig extends FormConfig {
+export class ControlValueConfig extends FormControlConfig {
   override component:any = ControlValueComponent
 
   constructor(attributes: any = {}) {
