@@ -3,11 +3,7 @@ import { ValidatorMsg } from "./validator-msg"
 import { Type } from "@angular/core"
 import { isEmptyObject } from "@function/is-empty-object.function"
 
-export interface ControlComponent {
-  config?:FormConfig
-  control?:AbstractControl
-  index?:number
-}
+
 
 export class FormConfig {
   parent?:FormConfig
