@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { Display } from '@class/display';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
 import { titleCase } from '@function/title-case';
 
@@ -23,7 +23,7 @@ export class InputSelectConfig extends FormControlConfig{
   selector: 'core-input-select',
   templateUrl: './input-select.component.html',
 })
-export class InputSelectComponent implements ControlComponent, OnInit {
+export class InputSelectComponent implements OnInit {
   /**
    * Componente de administración de fieldset. Características:
    *   El formulario y los datos son definidos en componente principal  

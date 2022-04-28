@@ -1,6 +1,6 @@
 import { Input, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 
 export class ControlDateConfig extends FormControlConfig {
   override component: any = ControlDateComponent
@@ -16,7 +16,7 @@ export class ControlDateConfig extends FormControlConfig {
   selector: 'core-control-date',
   templateUrl: './control-date.component.html',
 })
-export class ControlDateComponent implements ControlComponent {
+export class ControlDateComponent {
   @Input() config!: ControlDateConfig;
   @Input() control!: FormControl;
 

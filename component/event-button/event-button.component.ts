@@ -1,6 +1,6 @@
 import { Component, Input} from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
-import { ControlComponent, FormConfig } from '@class/reactive-form-config';
+import { FormConfig } from '@class/reactive-form-config';
  
 export class EventButtonConfig extends FormConfig {
   override component: any = EventButtonComponent
@@ -23,7 +23,7 @@ export class EventButtonConfig extends FormConfig {
   selector: 'core-event-button',
   templateUrl: './event-button.component.html',
 })
-export class EventButtonComponent implements ControlComponent{
+export class EventButtonComponent {
   @Input() config!: EventButtonConfig;
   @Input() control!: AbstractControl;
 

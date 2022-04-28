@@ -1,6 +1,6 @@
 import { Component, Input, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 import { startWith } from 'rxjs/operators';
  
@@ -22,7 +22,7 @@ export class LinkTextConfig extends FormControlConfig {
   selector: 'core-link-text',
   templateUrl: './link-text.component.html',
 })
-export class LinkTextComponent implements ControlComponent, OnInit {
+export class LinkTextComponent implements OnInit {
   @Input() config!: LinkTextConfig;
   @Input() control!: FormControl;
 

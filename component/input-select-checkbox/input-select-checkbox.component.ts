@@ -1,6 +1,6 @@
 import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
 
 export class InputSelectCheckboxConfig extends FormControlConfig {
@@ -22,7 +22,7 @@ export class InputSelectCheckboxConfig extends FormControlConfig {
   selector: 'core-input-select-checkbox',
   templateUrl: './input-select-checkbox.component.html',
 })
-export class InputSelectCheckboxComponent implements ControlComponent, OnInit {
+export class InputSelectCheckboxComponent implements OnInit {
   /**
    * Componente select checkbox reutilizable
    */

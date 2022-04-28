@@ -1,6 +1,6 @@
 import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
 import { titleCase } from '@function/title-case';
 
@@ -34,7 +34,7 @@ export class InputTextConfig extends FormControlConfig {
   selector: 'core-input-text',
   templateUrl: './input-text.component.html',
 })
-export class InputTextComponent implements ControlComponent, OnInit{
+export class InputTextComponent implements OnInit{
   
   @Input() config!: InputTextConfig;
   @Input() control!: FormControl;

@@ -2,7 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FieldWidthOptions } from '@class/field-width-options';
-import { ControlComponent, FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
+import { FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
 
 @Component({
   selector: 'core-abstract-control-form-group',
@@ -11,7 +11,7 @@ import { ControlComponent, FormControlConfig, FormGroupConfig } from '@class/rea
     .item { padding:0px 10px;  }
   `]
 })
-export class AbstractControlFormGroupComponent implements ControlComponent, OnInit {
+export class AbstractControlFormGroupComponent implements OnInit {
   @Input() config!: FormGroupConfig;
   @Input() control!: FormGroup;
 

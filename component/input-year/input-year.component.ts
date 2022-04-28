@@ -5,7 +5,7 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/mat
 import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
 import { Y_FORMATS } from 'app/core/const/Y_FORMATS';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 
 export class InputYearConfig extends FormControlConfig {
   override component: any = InputYearComponent
@@ -35,7 +35,7 @@ export class InputYearConfig extends FormControlConfig {
     {provide: MAT_DATE_FORMATS, useValue: Y_FORMATS},
   ],
 })
-export class InputYearComponent implements ControlComponent {
+export class InputYearComponent {
  
   /**
    * Si se desea inicializar con el valor por defecto de mes y año actual

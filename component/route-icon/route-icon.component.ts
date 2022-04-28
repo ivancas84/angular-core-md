@@ -1,6 +1,6 @@
 import { Component, Input, OnInit} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 import { startWith } from 'rxjs/operators';
  
@@ -36,7 +36,7 @@ export class RouteIconConfig extends FormControlConfig {
   selector: 'core-route-icon',
   templateUrl: './route-icon.component.html',
 })
-export class RouteIconComponent implements ControlComponent, OnInit {
+export class RouteIconComponent implements OnInit {
   @Input() config!: RouteIconConfig;
   @Input() control!: FormGroup;
 

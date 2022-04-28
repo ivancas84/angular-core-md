@@ -2,7 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Component, Input, OnInit, Type } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FieldWidthOptions } from '@class/field-width-options';
-import { ControlComponent, FormConfig, FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
+import { FormConfig, FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
 
 export class FieldsetDynamicConfig extends FormGroupConfig {
   component: any = FieldsetDynamicComponent
@@ -26,7 +26,7 @@ export class FieldsetDynamicConfig extends FormGroupConfig {
     .item { padding:0px 10px;  }
   `]
 })
-export class FieldsetDynamicComponent implements ControlComponent, OnInit {
+export class FieldsetDynamicComponent implements OnInit {
   
   @Input() config: FormGroupConfig;
   @Input() control: FormGroup;

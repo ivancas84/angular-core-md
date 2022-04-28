@@ -1,6 +1,6 @@
 import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
 import { startWith } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ export class InputCheckboxConfig extends FormControlConfig {
   selector: 'core-input-checkbox',
   templateUrl: './input-checkbox.component.html',
 })
-export class InputCheckboxComponent implements ControlComponent, OnInit {
+export class InputCheckboxComponent implements OnInit {
   /**
    * Checbox no admite placeholder, error unique, error require.
    * Se define por defecto un error general que puede ser validado como further_error

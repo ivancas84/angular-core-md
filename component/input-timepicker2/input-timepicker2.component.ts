@@ -1,6 +1,6 @@
 import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
 import { titleCase } from '@function/title-case';
 
@@ -34,7 +34,7 @@ export class InputTimepicker2Config extends FormControlConfig {
   selector: 'core-input-timepicker2',
   templateUrl: './input-timepicker2.component.html',
 })
-export class InputTimepicker2Component implements ControlComponent, OnInit{
+export class InputTimepicker2Component implements OnInit{
   
   @Input() config!: InputTimepicker2Config;
   @Input() control!: FormControl;

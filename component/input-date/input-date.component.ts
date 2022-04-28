@@ -2,7 +2,7 @@ import { Input, Component, OnInit } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { DATE_FORMATS } from 'app/core/const/DATE_FORMATS';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { FormControl } from '@angular/forms';
 import { getControlName } from '@function/get-control-name';
 import { titleCase } from '@function/title-case';
@@ -36,7 +36,7 @@ export class InputDateConfig extends FormControlConfig {
     {provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS},
   ]
 })
-export class InputDateComponent implements ControlComponent, OnInit {
+export class InputDateComponent implements OnInit {
   
   @Input() config!: InputDateConfig;
   @Input() control!: FormControl;

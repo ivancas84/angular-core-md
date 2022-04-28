@@ -4,7 +4,7 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/mat
 import { MY_FORMATS } from 'app/core/const/MY_FORMATS';
 import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
-import { ControlComponent, FormConfig, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { FormControl } from '@angular/forms';
 
 export class InputYmConfig extends FormControlConfig  {
@@ -37,7 +37,7 @@ export class InputYmConfig extends FormControlConfig  {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class InputYmComponent implements ControlComponent {
+export class InputYmComponent {
   @Input() config!: InputYmConfig;
   @Input() control!: FormControl;
 

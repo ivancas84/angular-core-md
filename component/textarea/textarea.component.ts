@@ -1,6 +1,6 @@
 import { Input, Component, Type, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
 
 export class TextareaConfig extends FormControlConfig {
@@ -19,7 +19,7 @@ export class TextareaConfig extends FormControlConfig {
   selector: 'core-textarea',
   templateUrl: './textarea.component.html',
 })
-export class TextareaComponent implements ControlComponent, OnInit {
+export class TextareaComponent implements OnInit {
   @Input() config!: TextareaConfig;
   @Input() control!: FormControl;
 

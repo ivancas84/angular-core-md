@@ -2,7 +2,7 @@ import { Input, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 
 export class InputSelectLabelConfig extends FormControlConfig {
   override component:any = InputSelectLabelComponent
@@ -20,7 +20,7 @@ export class InputSelectLabelConfig extends FormControlConfig {
   selector: 'core-input-select-label',
   templateUrl: './input-select-label.component.html',
 })
-export class InputSelectLabelComponent implements ControlComponent {
+export class InputSelectLabelComponent {
   /**
    * Componente de administración de fieldset. Características:
    *   El formulario y los datos son definidos en componente principal  

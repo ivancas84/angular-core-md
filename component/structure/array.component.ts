@@ -29,6 +29,11 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
 
   formArray: FormArray = new FormArray([]);
   config!: FormArrayConfig
+  /**
+   * A traves del atributo config se define: 
+   *   metodo para crear formGroup del formArray (config.factory)
+   *   filtro de campos para la consulta
+   */
   length?: number; //longitud total de los datos a mostrar
   
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
@@ -121,6 +126,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
       ),
       map(
         data => {
+          console.log(data);
           if (!this.length && data.length) this.length = data.length
           this.fc.initArray(this.config, this.control.get(this.entityName) as FormArray, data)
           return this.load = true
@@ -129,7 +135,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     )
   }
 
-  initDisplay() {
+  override initDisplay() {
     var display = new Display();
     display.setSize(100);
     display.setParamsByQueryParams(this.params);

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ControlComponent, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 import { startWith } from 'rxjs/operators';
  
@@ -36,7 +36,7 @@ export class RouteTextConfig extends FormControlConfig {
   selector: 'core-route-text',
   templateUrl: './route-text.component.html',
 })
-export class RouteTextComponent implements ControlComponent, OnInit {
+export class RouteTextComponent implements OnInit {
   @Input() config!: RouteTextConfig;
   @Input() control!: FormGroup;
 
