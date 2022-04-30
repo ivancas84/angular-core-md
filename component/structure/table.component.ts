@@ -1,9 +1,9 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Sort, SortDirection } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { ConfigFormGroupFactory, FormGroupConfig } from '@class/reactive-form-config';
+import { FormGroupConfig } from '@class/reactive-form-config';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { ArrayComponent } from '@component/structure/array.component';

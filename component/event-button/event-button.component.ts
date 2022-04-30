@@ -24,11 +24,12 @@ export class EventButtonConfig extends FormConfig {
   templateUrl: './event-button.component.html',
 })
 export class EventButtonComponent {
-  @Input() config!: EventButtonConfig;
+  @Input() config: EventButtonConfig | {[key:string]: any} = {};
   @Input() control!: AbstractControl;
 
 
   setValue(){
+    if(!this.config.hasOwnProperty("component")) this.config = new EventButtonConfig(this.config)
     this.config.fieldEvent.setValue({action:this.config.action,control:this.control})
   }
 }

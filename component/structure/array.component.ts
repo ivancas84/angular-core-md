@@ -28,6 +28,10 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
    */
 
   formArray: FormArray = new FormArray([]);
+  /**
+   * Referencia directa del FormArray que formara parte del control
+   */
+  
   config!: FormArrayConfig
   /**
    * A traves del atributo config se define: 
@@ -56,10 +60,6 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
 
   ) {
     super(dialog, storage, dd, snackBar, router, location, route)
-  }
-
-  getStorageValues(): any {
-    return this.control.getRawValue()
   }
 
   override ngOnInit(){
@@ -111,8 +111,9 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
 
   loadDisplay(){
     /**
-     * Se define un load independiente para el display, es util para reasignar valores directamente al display y reinicializar
-     * por ejemplo al limpiar o resetear el formulario
+     * Se define un load independiente para el display, es util para reasignar
+     * valores directamente al display y reinicializar por ejemplo al limpiar
+     * o resetear el formulario
      */
     this.loadDisplay$ = this.display$.pipe(
       switchMap(
@@ -165,11 +166,6 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
 
   initData(): Observable<any>{
     if(this.length === 0) return of([]); 
-    return this.queryData();
-  }
-
-
-  queryData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display$.value).pipe(
       switchMap(
         ids => this.ddrf.getAllConfig(this.entityName, ids, this.config.controls)

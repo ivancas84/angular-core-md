@@ -15,6 +15,7 @@ export class FormConfig {
   disabled:boolean = false //valor opcional, puede definirse directamente en el AbstractControl
   // component: Type<any>
   component: any
+  required:boolean = false;
   [key: string]: any
 
   constructor(attributes: any = {}) {
@@ -59,8 +60,8 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
     /**
      * deberia ser final! no deberia sobrescribirse
      */
-     for(var key in this.config.controls) {
-       if(this.config.controls.hasOwnProperty(key) && !fg.contains(key)) {
+    for(var key in this.config.controls) {
+      if(this.config.controls.hasOwnProperty(key) && !fg.contains(key)) {
          var fc = new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
          //if(!this.config.controls[key].label) this.config.controls[key].label = key;
          /**
@@ -69,12 +70,12 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
           * FormControl puede realizarse de diferentes lugares y ademas se es-
           * ta asignando valor a un "config" en un metodo que define "form" 
           */
-         if(this.config.controls[key]["required"]) fc.setValidators(Validators.required)
-         fg.addControl(key, fc)
-       } 
-     }
+        if(this.config.controls[key].required) fc.setValidators(Validators.required)
+        fg.addControl(key, fc)
+      } 
+    }
  
-     if(this.disabled) fg.disable()
+    //if(this.disabled) fg.disable()
   }
 
 }

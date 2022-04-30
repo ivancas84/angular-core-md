@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { FormArrayConfig, FormConfig, FormControlsConfig } from '@class/reactive-form-config';
+import { ConfigFormGroupFactory, FormArrayConfig, FormConfig, FormControlConfig, FormControlsConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { fastClone } from '@function/fast-clone';
 
 @Injectable({
@@ -91,20 +91,40 @@ export class FormConfigService {
     return p;
   }
 
-  addFormGroupConfig(formGroup: FormGroup, config: FormConfig, disabled:boolean = false){
+  addFormGroupConfig(control: FormGroup, config: FormGroupConfig){
     /**
-     * Agregar al formGroup, los campos faltantes de config
+     * Agregar al control, los campos faltantes de config
      */
-    for(var key in config["controls"]) {
-      if(config["controls"].hasOwnProperty(key) && !formGroup.contains(key)) {
-        var fc = new FormControl({value: config["controls"][key].default, disabled: config["controls"][key].disabled})
-        if(!config["controls"][key].label) config["controls"][key].label = key;
-        if(config["controls"][key].required) fc.setValidators(Validators.required)
-        formGroup.addControl(key, fc)
-        if(disabled) formGroup.disable()
-      }
-    }
+     var c = new ConfigFormGroupFactory(config)
+     c.formGroupAssign(control);
   }
+
+  addFormGroupConfigAdmin(control: FormGroup, config: FormGroupConfig){
+    if(!config.contains("id")) config.addControl("id", new FormControlConfig(null))
+    this.addFormGroupConfig(control, config);
+  }
+
+
+  initFormArrayConfigAdmin(config: FormArrayConfig){
+
+    /**
+     * Inicializar elementos de administracion de un FormArrayConfig
+     * 
+     * @todo Deberia reducirse la cantidad de caracteristicas, muchas pertenencen a 
+     * Admin. Deben reimplementarse el metodo en Admin
+     * 
+     * @todo Mas que un FormArrayConfig, el parametro es un TableAdminConfig o
+     * similar, e=se estan manipulando caracteristicas como por ejemplo optTitle y
+     * optColumn
+     */
+    if(!config.factory) config.factory = new ConfigFormGroupFactory(config)
+    if(!config.contains("_mode")) config.addControl("_mode", new FormControlConfig(null))
+    if(!config.contains("id")) config.addControl("id", new FormControlConfig(null))
+
+  }
+
+
+  
 
   
 }

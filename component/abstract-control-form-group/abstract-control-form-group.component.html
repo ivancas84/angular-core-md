@@ -1,5 +1,5 @@
 <div fxLayout="row wrap" [formGroup]="control">
-  <ng-container *ngFor="let item of config.controls | keyvalue: sort">
+  <ng-container *ngFor="let item of config.controls | keyvalue: sort; let i = index">
     <div 
       *ngIf="item.value.component" 
       class="item" 

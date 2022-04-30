@@ -158,8 +158,9 @@ export abstract class StructureComponent implements OnInit {
     this.loadParams$ = this.route.queryParams.pipe(
       map(
         queryParams => { 
+          console.log(queryParams)
           // this.storageValues = this.storage.getItem(this.router.url)
-          // this.storage.removeItemsPrefix(emptyUrl(this.router.url))
+          //this.storage.removeItemsPrefix(emptyUrl(this.router.url))
           this.initParams(queryParams);
           this.initDisplay();
           return true;
@@ -200,20 +201,20 @@ export abstract class StructureComponent implements OnInit {
   
   loadStorage() {
     this.loadStorage$ = this.control.valueChanges.pipe(
-      startWith(this.getStorageValues()),
+      startWith(this.storage.getItem(this.router.url)),
       map(
-      storageValues => {
-        this.storage.setItem(this.router.url, this.getStorageValues())
-        return true;
-      },
-        (error: any) => { 
-        this.snackBar.open(JSON.stringify(error), "X"); 
-      }
+        storageValues => {
+          console.log(storageValues)
+          this.storage.setItem(this.router.url, storageValues)
+          return true;
+        }
     ))
   }
 
-  abstract getStorageValues(): void;
-  
+  getStorageValues(): any {
+    return this.control.getRawValue()
+  }
+    
   clear(): void {
     /**
      * Limpiar url y reinicializa datos

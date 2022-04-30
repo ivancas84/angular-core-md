@@ -1,0 +1,28 @@
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
+
+<mat-card>
+  <mat-card-content>
+    <core-input-search-go fxFlex="auto" [entityName]="entityName"></core-input-search-go>    
+  </mat-card-content>
+</mat-card>
+
+<form *ngIf="(loadParams$ | async); else loading" 
+      [formGroup]="control" 
+      (ngSubmit)="onSubmit()" 
+      novalidate autocomplete="off">
+
+  <ng-container *ngIf="(loadDisplay$ | async); else loading">
+    <ng-container *ngIf="(loadStorage$ | async); else loading">
+      <core-abstract-control-form-group *ngIf="control.contains(entityName)"
+                                        [config]="config.controls[entityName]"
+                                        [control]="formGroup"
+      >
+      </core-abstract-control-form-group>
+    
+      <!-- <p>Debug Form value: {{ form.value | json }}</p>
+      <p>Debug Form status: {{ form.status | json }}</p> -->
+    </ng-container> 
+  </ng-container>
+</form>

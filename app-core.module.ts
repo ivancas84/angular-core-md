@@ -68,6 +68,7 @@ import { DataDefinitionFkService } from "@service/data-definition/data-definitio
 import { DataDefinitionUmService } from "@service/data-definition/data-definition-um.service";
 import { SearchComponent } from "@component/search/search.component";
 import { AbstractControlFormGroupComponent } from "@component/abstract-control-form-group/abstract-control-form-group.component";
+import { DetailComponent } from "@component/structure/detail.component";
 
 registerLocaleData(localeEsAr, 'es-AR');
 
@@ -85,6 +86,7 @@ registerLocaleData(localeEsAr, 'es-AR');
      * Lista de componentes
      *************************************************************************/
     HomeComponent,
+    DetailComponent,
     DialogAlertComponent,
     DialogConfirmComponent,
     InputSearchGoComponent,
@@ -180,11 +182,13 @@ registerLocaleData(localeEsAr, 'es-AR');
 
     ControlDirective,
 
+    DetailComponent,
     DialogAlertComponent,
     DialogConfirmComponent,
     InputSearchGoComponent,
     SearchComponent,
     TableComponent,
+    
     
 
     AbstractControlViewComponent,

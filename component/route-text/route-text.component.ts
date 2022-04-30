@@ -9,7 +9,7 @@ export class RouteTextConfig extends FormControlConfig {
   text!: string
   color: string = ""
   target: string = ""
-  title?: string = ""
+  title: string = ""
   routerLink!: string
   params: { [index: string]: any } = {}
   /**
@@ -37,7 +37,7 @@ export class RouteTextConfig extends FormControlConfig {
   templateUrl: './route-text.component.html',
 })
 export class RouteTextComponent implements OnInit {
-  @Input() config!: RouteTextConfig;
+  @Input() config: RouteTextConfig | {[key:string]: any} = {};
   @Input() control!: FormGroup;
 
   queryParams: any = {};
@@ -48,6 +48,8 @@ export class RouteTextComponent implements OnInit {
    */
 
   ngOnInit(): void {
+    if(!this.config.hasOwnProperty("component")) this.config = new RouteTextConfig(this.config)
+
     if(!this.config.title) this.config.title = this.config.routerLink;
     
     if(this.control)
