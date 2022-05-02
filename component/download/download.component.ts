@@ -12,7 +12,7 @@ export class DownloadConfig extends FormControlConfig {
   entityName: string = "file";
   
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

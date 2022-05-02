@@ -1,55 +1,39 @@
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms"
 import { ValidatorMsg } from "./validator-msg"
-import { Type } from "@angular/core"
 import { isEmptyObject } from "@function/is-empty-object.function"
 
 
-
-export class FormConfig {
+export abstract class FormConfig {
+  /**
+   * Configuracion de formulario
+   */
   parent?:FormConfig
-  label?:string
-  controlId?: string
-  position: number = 0
-  validatorMsgs: ValidatorMsg[] = []
-  default:any = null
-  disabled:boolean = false //valor opcional, puede definirse directamente en el AbstractControl
-  // component: Type<any>
-  component: any
-  required:boolean = false;
-  [key: string]: any
-
-  constructor(attributes: any = {}) {
-    Object.assign(this, attributes)
-  }
+  
 }
 
 export interface FormGroupFactory{
+  /**
+   * Fabrica de FormGroups
+   * Utilizada principalmente para FormArray
+   */
   formGroup(): FormGroup
 }
 
 export class ConfigFormGroupFactory implements FormGroupFactory{
-  config: FormGroupConfig
-  disabled: boolean = false
+  /**
+   * Implementacion general de FormGroupFactory
+   */
+  config: FormArrayConfig | FormGroupConfig
 
-  public constructor(config: FormGroupConfig, disabled: boolean = false){
+  public constructor(config: FormArrayConfig | FormGroupConfig){
     this.config = config;
-    this.disabled = disabled
-  }
-
-  initFormGroup(): FormGroup{
-    /**
-     * En el caso de que se requieran propiedades adicionales de FormGroup, se
-     * debe crear una subclase de ConfigFormGroupFactory y sobrescribir este
-     * metodo.
-     */
-    return new FormGroup({});
   }
 
   formGroup(): FormGroup {
     /**
      * deberia ser final! no deberia sobrescribirse
      */
-    var fg = this.initFormGroup();
+    var fg = new FormGroup({})
 
     this.formGroupAssign(fg)
 
@@ -81,50 +65,99 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
 }
 
 export interface SortControl {
+  /**
+   * @deprecated?
+   */
   position: number;
 }
 
 export class FormControlsConfig extends FormConfig {
-  controls: { [index: string]: FormControlConfig } = {}
+  /**
+   * Clase de configuración que obligatoriamente debe poseer el atributo con-
+   * trols.
+   */
+  controls: { [index: string]: FormConfig } = {}
   
   contains(key: string){ return this.controls.hasOwnProperty(key) }
 
   get(key: string ){ return this.controls[key]  }
 
-  addControl(key: string, control: FormControlConfig){
+  addControl(key: string, control: FormConfig){
     control.parent = this
     this.controls[key] = control
   }
 
-  setControls(controls: { [index: string]: FormControlConfig }){
-    for(var key in controls) this.addControl(key, controls[key])
+  setControls(controls: { [index: string]: FormConfig }){
+    this.controls = {};
+    for(var key in controls) 
+      if(controls.hasOwnProperty(key)) this.addControl(key, controls[key])
   }
   
-  constructor(attributes: any = {}, controls:{ [index: string]: FormControlConfig } = {}) {
-    super({})
-    Object.assign(this, attributes)
-    if(!isEmptyObject(controls)) this.setControls(controls)
+  constructor(controls:{ [index: string]: FormConfig } = {}) {
+    super()
+    this.setControls(controls)
   }
 }
 
 export class FormGroupConfig extends FormControlsConfig {
-  override controlId: string = "form_group"
+  /**
+   * Configuracion de un FormGroup
+   */
+
+   override controls: { [index: string]: FormControlConfig }  = {}
+
+   public defaultValues(): {[key:string]:any} {
+    var dv:{[key:string]:any} = {}
+
+    Object.keys(this.controls).forEach(key => {
+      dv[key] = this.controls[key].default;
+    });
+
+    return dv;
+  }
+
+  initAdmin(){
+    /**
+     * Inicializar FormGroup para administracion
+     * 
+     * Se verifica la existencia de campos necesarios para administracion
+     */
+    if(!this.contains("id")) this.addControl("id", new FormControlConfig())
+  }
+
+  initControl(control: FormGroup){
+      /**
+       * Agregar al control, los campos faltantes de config
+       */
+       var c = new ConfigFormGroupFactory(this)
+       c.formGroupAssign(control);
+  }
+
+  constructor(controls:{ [index: string]: FormConfig } = {}) {
+    super()
+    this.setControls(controls)
+  }
+
 }
 
-export class FormStructureConfig extends FormGroupConfig {
+export class FormStructureConfig extends FormControlsConfig {
   /**
-   * Clase especial que permite identificar una estructura principal
+   * Configuración de una estructura
+   * 
+   * La estructura es una clase especial de configuracion para componentes principales
    */
   override controls: { [index: string]: FormGroupConfig | FormArrayConfig }  = {}
 
-  constructor(attributes: any = {}, controls:{ [index: string]: FormGroupConfig | FormArrayConfig } = {}) {
-    super(attributes, controls)
-    Object.assign(this, attributes)
-    if(!isEmptyObject(controls)) this.setControls(controls)
+  constructor(controls:{ [index: string]: FormGroupConfig | FormArrayConfig } = {}) {
+    super()
+    this.setControls(controls)
   }
 }
 
 export class AbstractControlOption {
+  /**
+   * @deprecated?
+   */
   config?: FormConfig
   control?: AbstractControl
 
@@ -133,58 +166,55 @@ export class AbstractControlOption {
   }
 }
 
-/*
-export class FormControlOption extends AbstractControlOption {
-  config: FormControlConfig 
-  field?: FormControl = null
-
-  constructor(attributes: any) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
-  }
-}*/
-
 export class FormArrayConfig extends FormControlsConfig {
-  override controlId: string = "form_array"
-  factory?: FormGroupFactory //es necesario definir una clase concreta de FormGroupFactory que permita definir el FormGroup del FormArray
-  order?: {[key: string]: string} //ordenamiento por defecto para realizar la consulta
+  override controls: { [index: string]: FormControlConfig }  = {}
+  factory?: FormGroupFactory 
   /**
+   * es necesario definir una clase concreta de FormGroupFactory que permita
+   *  definir el FormGroup del FormArray
+   */
+
+  order?: {[key: string]: string}
+  /**
+   * ordenamiento por defecto para realizar la consulta
+   * 
    * @example {motivo:"asc", per-nombres:"desc"}
    */
-  override default:any[] = []
-  /**
-   *  NO SE RECOMIENDA DEFINIR VALORES POR DEFECTO PARA FORM ARRAY, 
-   * para cada fila se utilizaran los valores por defecto definidos en la configuracion de formgroup
-   */
+
+  initAdmin(){
+    if(!this.factory) this.factory = new ConfigFormGroupFactory(this)
+    if(!this.contains("_mode")) this.addControl("_mode", new FormControlConfig())
+    if(!this.contains("id")) this.addControl("id", new FormControlConfig())
+  }
+  
+  constructor(controls:{ [index: string]: FormConfig } = {}) {
+    super()
+    this.setControls(controls)
+  }
+ 
 }
 
 export class FormControlConfig extends FormConfig {
-  override controlId: string = "form_control"
-
-  // label: string = null //etiqueta
-  //wrap?: FieldWrapOptions | FieldWrapOptions[] //envolturas
-  // /**
-  //  * Si se utiliza un array se aplican las envolturas en el orden de definicion
-  //  */
-
-  //type: FieldViewOptions = new FieldDefaultOptions()
-  // showLabel: boolean = true //indica si debe mostrarse el label o no
-
-  // readonly: boolean = false
-  // placeholder: string = null
-  // width:FieldWidthOptions = new FieldWidthOptions() //ancho del contenedor
+  default:any = null
+  disabled:boolean = false //valor opcional, puede definirse directamente en el AbstractControl
+  required:boolean = false;
   
-}
-
-export class FormWrapConfig extends FormControlConfig {
-  override controlId: string = "form_control"
-  config?: FormControlConfig
-}
-
-export class NoComponentConfig extends FormConfig {
-
+  /**
+   * Atributos de presentacion, se definen a continuacion los principales
+   * Se deja abierta la posibilidad de definir atributos de presentacion adicionales
+   */
+  component: any
+  label?:string
+  validatorMsgs: ValidatorMsg[] = []
+  position: number = 0;
+  [key: string]: any
+  /**
+   * @example
+   * wrap?: FieldWrapOptions | FieldWrapOptions[] //envolturas, se definen en el orden de definicion
+   * showLabel: boolean = true //indica si debe mostrarse el label o no
+   * readonly: boolean = false
+   * placeholder: string = null
+   * width:FieldWidthOptions = new FieldWidthOptions() 
+   */
+  
 }

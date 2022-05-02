@@ -18,7 +18,7 @@ export class InputAutocompleteConfig extends FormControlConfig {
    */
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 

@@ -25,7 +25,7 @@ export class InputTimepicker2Config extends FormControlConfig {
   readonly?: boolean = false;
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

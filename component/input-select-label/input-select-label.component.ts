@@ -11,7 +11,7 @@ export class InputSelectLabelConfig extends FormControlConfig {
   readonly?: boolean = false;
 
   constructor(attributes: any = {}) {
-    super({});
+    super();
     Object.assign(this, attributes)
   }
 }

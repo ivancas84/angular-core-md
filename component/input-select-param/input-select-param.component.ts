@@ -13,7 +13,7 @@ export class InputSelectParamConfig extends FormControlConfig {
   multiple: boolean = false;
 
   constructor(attributes: any = {}) {
-    super(attributes)
+    super()
     Object.assign(this, attributes)
   }
 }

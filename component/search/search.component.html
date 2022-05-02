@@ -5,7 +5,7 @@
     </mat-expansion-panel-header>
       <form [formGroup]="control" novalidate (ngSubmit)="onSubmit()"> 
         <core-abstract-control-form-group *ngIf="control.contains('params')"
-                                          [config]="config.controls['params']"
+                                          [config]="configParams"
                                           [control]="controlParams"
         >
         </core-abstract-control-form-group>

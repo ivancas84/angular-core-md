@@ -15,14 +15,17 @@
 
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
     <ng-container *ngIf="(loadStorage$ | async); else loading">
-      <core-abstract-control-form-group *ngIf="control.contains(entityName)"
-                                        [config]="config.controls[entityName]"
-                                        [control]="formGroup"
+      <core-abstract-control-form-group [config]="config"
+                                        [control]="control"
       >
       </core-abstract-control-form-group>
     
       <!-- <p>Debug Form value: {{ form.value | json }}</p>
       <p>Debug Form status: {{ form.status | json }}</p> -->
+
+      <core-abstract-control-view *ngFor="let o of optFooter" 
+                                [config]="o.config" 
+                                [control]="o.control" ></core-abstract-control-view> 
     </ng-container> 
   </ng-container>
 </form>

@@ -11,7 +11,7 @@ export class FieldWrapRouterLinkConfig extends FormControlConfig {
   path!: string;
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

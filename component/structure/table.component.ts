@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Sort, SortDirection } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { FormGroupConfig } from '@class/reactive-form-config';
+import { FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { ArrayComponent } from '@component/structure/array.component';
@@ -30,10 +30,11 @@ export class TableComponent extends ArrayComponent {
    * cion
    */
  
-  optColumn: AbstractControlViewOption[] = []; //columna opciones
+  optColumn: FormControlConfig[] = []; //columna opciones
   /**
    * Columna opciones asignada a AbstractControlView
-   * El "control" y el "index" se definen por cada fila, no deben ser completados
+   * Solo se define config, el "control" y el "index" se definen por cada fi'
+   * la, no deben ser completados.
    *
    * @example boton eliminar
    * {
@@ -45,6 +46,9 @@ export class TableComponent extends ArrayComponent {
    *   }),
    * }
    */
+
+  optFooter: AbstractControlViewOption[] = []; //columna opciones
+
 
   serverSortTranslate: { [index: string]: string[] } = {};
   /**
@@ -71,12 +75,11 @@ export class TableComponent extends ArrayComponent {
   sortDirection: SortDirection = "asc";
   sortDisabled: string[]= []; //campos a los que se deshabilita el ordenamiento
 
-  showPaginator: boolean = true; //flag para visualizar el paginador
   pageSizeOptions: number[] =[10, 25, 50, 100] 
   
-  footerColumns!: string[]; //columnas de footer a visualizar
-  footer: FormGroup = new FormGroup({})
-  footerConfig: FormGroupConfig = new FormGroupConfig 
+  footerColumns?: string[]; //columnas de footer a visualizar
+  footer?: FormGroup
+  footerConfig?: FormGroupConfig
 
   @ViewChild(MatPaginator) paginator?: MatPaginator; //paginacion
   @ViewChild("content", {read: ElementRef}) content!: ElementRef; //contenido para copiar o imprimir
@@ -85,7 +88,7 @@ export class TableComponent extends ArrayComponent {
   
   override ngOnInit(): void {
     super.ngOnInit()
-    this.initFieldset();
+    this.renderRows();
     this.initDisplayedColumns();
   }
 
@@ -109,7 +112,7 @@ export class TableComponent extends ArrayComponent {
   }
 
 
-  initFieldset(){
+  renderRows(){
     this.control.valueChanges.pipe(
       //startWith(this.control.value),
       debounceTime(100),

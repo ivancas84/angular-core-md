@@ -1,8 +1,8 @@
 import { Component, Input} from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
-import { FormConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
  
-export class EventIconConfig extends FormConfig {
+export class EventIconConfig extends FormControlConfig {
   override component: any = EventIconComponent
   icon: string = "info" //icono del boton
   action!: string //accion del evento a realizar
@@ -11,7 +11,7 @@ export class EventIconConfig extends FormConfig {
   title: string = ""
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

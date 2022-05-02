@@ -8,7 +8,7 @@ export class ControlLabelConfig extends FormControlConfig {
   entityName!: string
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

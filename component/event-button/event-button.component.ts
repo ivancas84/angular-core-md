@@ -1,8 +1,8 @@
 import { Component, Input} from '@angular/core';
-import { AbstractControl, FormControl } from '@angular/forms';
-import { FormConfig } from '@class/reactive-form-config';
+import { FormControl } from '@angular/forms';
+import { FormControlConfig } from '@class/reactive-form-config';
  
-export class EventButtonConfig extends FormConfig {
+export class EventButtonConfig extends FormControlConfig {
   override component: any = EventButtonComponent
   text!: string //texto del boton
   action!: string //accion del evento a realizar
@@ -10,13 +10,10 @@ export class EventButtonConfig extends FormConfig {
   fieldEvent!: FormControl
 
   constructor(attributes: any = {}) {
-    super(attributes)
-    for(var a in attributes){
-      if(attributes.hasOwnProperty(a)){
-        this[a] = attributes[a]
-      }
-    }
+    super()
+    Object.assign(this, attributes)
   }
+
 }
 
 @Component({
@@ -25,7 +22,7 @@ export class EventButtonConfig extends FormConfig {
 })
 export class EventButtonComponent {
   @Input() config: EventButtonConfig | {[key:string]: any} = {};
-  @Input() control!: AbstractControl;
+  @Input() control!: FormControl;
 
 
   setValue(){

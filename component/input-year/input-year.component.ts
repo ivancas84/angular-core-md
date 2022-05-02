@@ -12,7 +12,7 @@ export class InputYearConfig extends FormControlConfig {
   placeholder?: string = "Ingrese año";
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

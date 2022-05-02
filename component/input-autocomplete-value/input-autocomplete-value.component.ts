@@ -12,7 +12,7 @@ export class InputAutocompleteValueConfig extends FormControlConfig{
   fieldName!: string;
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

@@ -27,7 +27,7 @@ export class RouteTextConfig extends FormControlConfig {
    */
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

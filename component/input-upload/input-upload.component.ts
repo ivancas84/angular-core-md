@@ -17,7 +17,7 @@ export class InputUploadConfig extends FormControlConfig {
    */
   
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

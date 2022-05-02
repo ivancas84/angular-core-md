@@ -1,10 +1,10 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { FormConfig } from '@class/reactive-form-config';
+import { FormConfig, FormControlConfig } from '@class/reactive-form-config';
 import { ControlDirective } from '@directive/control.directive';
 
 export interface AbstractControlViewOption {
-  config: FormConfig
+  config: FormControlConfig
   control?: AbstractControl
 } 
 
@@ -18,7 +18,7 @@ export class AbstractControlViewComponent {
    * utilizado principalmente para FormArray y FormGroup, los FormControl tienen su propia implementacion
    */
 
-  @Input() config!: FormConfig;
+  @Input() config!: FormControlConfig;
   @Input() control?: AbstractControl;
   @Input() index?: number; 
 

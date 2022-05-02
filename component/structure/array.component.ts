@@ -10,7 +10,6 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
 import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
 import { ConfigFormGroupFactory, FormArrayConfig, FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { FormConfigService } from '@service/form-config/form-config.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { StructureComponent } from '@component/structure/structure.component';
@@ -50,11 +49,10 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     protected override route: ActivatedRoute, 
     protected override dialog: MatDialog,
     protected override storage: SessionStorageService,
-    protected ddrf: DataDefinitionFkAllService,
-    protected fc: FormConfigService,
     protected override router: Router, 
     protected override snackBar: MatSnackBar,
     protected override location: Location, 
+    protected ddrf: DataDefinitionFkAllService,
     protected validators: ValidatorsService,
     protected fb: FormBuilder
 
@@ -76,8 +74,8 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
 
   initSearch(){
     if(!this.searchConfig){
-      this.searchConfig = new FormStructureConfig({}, {
-        "params":new FormGroupConfig({title:"Opciones"},{
+      this.searchConfig = new FormStructureConfig({
+        "params":new FormGroupConfig({
           "search":new InputTextConfig({
             label:"Buscar",
             width: new FieldWidthOptions()
@@ -86,7 +84,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
       }) 
     }
     if(!this.searchControl) {
-      var c = new ConfigFormGroupFactory(this.searchConfig.controls["params"])
+      var c = new ConfigFormGroupFactory(this.searchConfig.controls["params"] as FormGroupConfig)
       this.searchControl = this.fb.group({
         "params": c.formGroup()
       })
@@ -127,9 +125,10 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
       ),
       map(
         data => {
-          console.log(data);
           if (!this.length && data.length) this.length = data.length
-          this.fc.initArray(this.config, this.control.get(this.entityName) as FormArray, data)
+          this.formArray.clear();
+          for(var i = 0; i <data.length; i++) this.formArray.push(this.config.factory!.formGroup());
+          this.formArray.patchValue(data)
           return this.load = true
         }
       ),
@@ -153,7 +152,8 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
           this.dialog.open(DialogAlertComponent, {
             data: {title: "Error", message: error.error}
           })
-         return of(0);
+          this.length = 0
+          return of(null)
         }
       ),    
       map(
@@ -180,14 +180,6 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
      * @return "datos de respuesta (habitualmente array de logs)"
      */
     return this.dd._post("persist_rel_rows", this.entityName, this.serverData())
-  }
-
-  override reload(){
-    /**
-     * Recargar una vez persistido
-     */
-    this.display$.next(this.display$.value);
-    this.isSubmitted = false;
   }
 
   

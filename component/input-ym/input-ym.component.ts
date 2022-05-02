@@ -14,7 +14,7 @@ export class InputYmConfig extends FormControlConfig  {
   showLabel: boolean = true
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

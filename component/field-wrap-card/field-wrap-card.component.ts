@@ -1,11 +1,11 @@
 import { Component, Input} from '@angular/core';
-import { FormConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { FieldWrapComponent } from '@component/field-wrap/field-wrap.component';
 
 
-export class FieldWrapCardConfig extends FormConfig {
+export class FieldWrapCardConfig extends FormControlConfig {
   override component: any = FieldWrapCardComponent
-  config!: FormConfig
+  config!: FormControlConfig
   backgroundColor?: string;
 }
 

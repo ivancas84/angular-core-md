@@ -7,7 +7,7 @@ export class ControlDateConfig extends FormControlConfig {
   format: string = "dd/MM/yyyy"
   
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

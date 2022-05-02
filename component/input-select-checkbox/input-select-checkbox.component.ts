@@ -13,7 +13,7 @@ export class InputSelectCheckboxConfig extends FormControlConfig {
    */
 
   constructor(attributes: any = {}) {
-    super({});
+    super();
     Object.assign(this, attributes)
   }
 }

@@ -6,7 +6,7 @@ export class ControlValueConfig extends FormControlConfig {
   override component:any = ControlValueComponent
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }

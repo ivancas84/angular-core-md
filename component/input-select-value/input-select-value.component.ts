@@ -14,9 +14,8 @@ export class InputSelectValueConfig extends FormControlConfig {
   entityName!: string
   fieldName!: string
   
-
   constructor(attributes: any = {}) {
-    super(attributes)
+    super()
     Object.assign(this, attributes)
   }
 }

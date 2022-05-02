@@ -9,7 +9,7 @@ export class InputCheckboxConfig extends FormControlConfig {
   labelDisabled?: boolean = false;
 
   constructor(attributes: any = {}) {
-    super({});
+    super();
     Object.assign(this, attributes)
   }
 }

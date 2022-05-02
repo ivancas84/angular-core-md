@@ -133,9 +133,7 @@ export abstract class StructureComponent implements OnInit {
     /**
      * Recargar una vez persistido
      */
-    let route = emptyUrl(this.router.url) + "?id="+this.response["id"];
-    if(route != this.router.url) this.router.navigateByUrl('/' + route, {replaceUrl: true});
-    else this.display$.next(this.display$.value);
+    this.display$.next(this.display$.value);
     this.isSubmitted = false;
   }
 
@@ -165,9 +163,6 @@ export abstract class StructureComponent implements OnInit {
           this.initDisplay();
           return true;
         },
-        (error: any) => { 
-          this.snackBar.open(JSON.stringify(error), "X"); 
-        }
       ),
     )
   }

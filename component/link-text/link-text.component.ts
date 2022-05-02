@@ -21,7 +21,7 @@ export class LinkTextConfig extends FormControlConfig {
    */
 
   constructor(attributes: any = {}) {
-    super({})
+    super()
     Object.assign(this, attributes)
   }
 }
