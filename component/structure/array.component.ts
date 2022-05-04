@@ -25,8 +25,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   /**
    * Estructura principal para administrar un array de elementos
    */
-
-  formArray: FormArray = new FormArray([]);
+  override control: FormArray = new FormArray([]);
   /**
    * Referencia directa del FormArray que formara parte del control
    */
@@ -61,12 +60,14 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   }
 
   override ngOnInit(){
-    this.control.addControl(this.entityName, this.formArray)
     this.initConfigFactory();
     this.initSearch();
     super.ngOnInit()
   }
 
+  getStorageValues(): any {
+    return this.control.getRawValue()
+  }
 
   initConfigFactory(){
     if(!this.config.factory) this.config.factory = new ConfigFormGroupFactory(this.config)
@@ -134,9 +135,9 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
 
   setData(data: any[]){
     if (!this.length && data.length) this.length = data.length
-    this.formArray.clear();
-    for(var i = 0; i <data.length; i++) this.formArray.push(this.config.factory!.formGroup());
-    this.formArray.patchValue(data)
+    this.control.clear();
+    for(var i = 0; i <data.length; i++) this.control.push(this.config.factory!.formGroup());
+    this.control.patchValue(data)
   }
 
   override initDisplay() {

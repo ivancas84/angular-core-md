@@ -21,7 +21,7 @@ export abstract class StructureComponent implements OnInit {
   /**
    * Elementos en comun para los componentes estructurales
    */
-   control: FormGroup = new FormGroup({}, {updateOn:"blur"})
+   control!: AbstractControl
    protected subscriptions = new Subscription() //suscripciones en el ts
    readonly entityName!: string; //Nombre de la entidad principal
    
@@ -206,9 +206,7 @@ export abstract class StructureComponent implements OnInit {
     ))
   }
 
-  getStorageValues(): any {
-    return this.control.getRawValue()
-  }
+  abstract getStorageValues(): any;
     
   clear(): void {
     /**

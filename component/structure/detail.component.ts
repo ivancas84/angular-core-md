@@ -37,7 +37,7 @@ export class DetailComponent extends StructureComponent implements OnInit{
    * pla de una entidad.
    **/
 
-  override control: FormGroup = this.fb.group({})
+  override control: FormGroup = new FormGroup({}, {updateOn:"blur"})
   /**
    * Referencia directa del FormGroup que formara parte del control
    */
@@ -77,6 +77,9 @@ export class DetailComponent extends StructureComponent implements OnInit{
     this.config.initControl(this.control)
   }
 
+  getStorageValues(): any {
+    return this.control.getRawValue()
+  }
 
   loadDisplay(){
     /**

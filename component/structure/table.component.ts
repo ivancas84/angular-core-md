@@ -145,7 +145,7 @@ export class TableComponent extends ArrayComponent {
   }
 
   serverSort(sort: Sort): boolean{ 
-    if((!this.length || !this.display$.value || (this.formArray).controls.length >= this.length)) {
+    if((!this.length || !this.display$.value || (this.control).controls.length >= this.length)) {
       if(!this.serverSortObligatory.includes(sort.active)) return false;
     }
 
@@ -166,13 +166,13 @@ export class TableComponent extends ArrayComponent {
 
     if (!sort.active || sort.direction === '') return;
     
-    const data = this.formArray.value;
+    const data = this.control.value;
     
     data.sort((a: { [x: string]: any; }, b: { [x: string]: any; }) => {    
       return (sort.direction === 'asc') ? naturalCompare(a[sort.active],b[sort.active]) : naturalCompare(b[sort.active],a[sort.active])
     });
 
-    this.formArray.patchValue(data)
+    this.control.patchValue(data)
     //this.table.renderRows(); se ejecuta el renderRows del valueChanges definido en el OnInit
   }
  
@@ -208,15 +208,15 @@ export class TableComponent extends ArrayComponent {
    
   add() {
     var fg = this.config.factory!.formGroup();
-    this.formArray.push(fg); 
+    this.control.push(fg); 
   }
  
   remove(index: number) { 
     /**
      * Incorporar el control _mode al fieldset!
      */
-    if(!this.formArray.controls[index].get("id")!.value) this.formArray.removeAt(index); 
-    else this.formArray.controls[index].get("_mode")!.setValue("delete");
+    if(!this.control.controls[index].get("id")!.value) this.control.removeAt(index); 
+    else this.control.controls[index].get("_mode")!.setValue("delete");
   }
 
   
