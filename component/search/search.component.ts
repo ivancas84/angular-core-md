@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { Router } from '@angular/router';
 import { Display } from '@class/display';
-import { FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { FormGroupConfig } from '@class/reactive-form-config';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { emptyUrl } from '@function/empty-url.function';
 import { isEmptyObject } from '@function/is-empty-object.function';
@@ -21,7 +21,6 @@ export class SearchComponent implements OnInit {
   controlParams!: FormGroup
 
   configParams!: FormGroupConfig
-  @Input() config!: FormStructureConfig;
   @Input() display!: Display;
   /**
    * Busqueda a traves de condicion
@@ -45,8 +44,7 @@ export class SearchComponent implements OnInit {
   
 
   ngOnInit(){
-    if(this.config.controls.hasOwnProperty("params") && !isEmptyObject(this.display.getParams()))
-      this.configParams = this.config.controls["params"] as FormGroupConfig
+    if(!isEmptyObject(this.display.getParams()))
       this.control.controls["params"].reset(this.display.getParams()) 
       this.controlParams = this.control.controls["params"] as FormGroup
 

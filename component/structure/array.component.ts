@@ -8,7 +8,7 @@ import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.compo
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
-import { ConfigFormGroupFactory, FormArrayConfig, FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { ConfigFormGroupFactory, FormArrayConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
@@ -41,7 +41,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
 
   searchControl!: FormGroup
-  searchConfig!: FormStructureConfig
+  searchParamsConfig!: FormGroupConfig
 
   constructor(
     protected override dd: DataDefinitionToolService, 
@@ -74,18 +74,16 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   }
 
   initSearch(){
-    if(!this.searchConfig){
-      this.searchConfig = new FormStructureConfig({
-        "params":new FormGroupConfig({
-          "search":new InputTextConfig({
-            label:"Buscar",
-            width: new FieldWidthOptions()
-          }),
-        })
-      }) 
+    if(!this.searchParamsConfig){
+      this.searchParamsConfig = new FormGroupConfig({
+        "search":new InputTextConfig({
+          label:"Buscar",
+          width: new FieldWidthOptions()
+        }),
+      })
     }
     if(!this.searchControl) {
-      var c = new ConfigFormGroupFactory(this.searchConfig.controls["params"] as FormGroupConfig)
+      var c = new ConfigFormGroupFactory(this.searchParamsConfig)
       this.searchControl = this.fb.group({
         "params": c.formGroup()
       })

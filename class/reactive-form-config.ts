@@ -140,19 +140,6 @@ export class FormGroupConfig extends FormControlsConfig {
 
 }
 
-export class FormStructureConfig extends FormControlsConfig {
-  /**
-   * Configuración de una estructura
-   * 
-   * La estructura es una clase especial de configuracion para componentes principales
-   */
-  override controls: { [index: string]: FormGroupConfig | FormArrayConfig }  = {}
-
-  constructor(controls:{ [index: string]: FormGroupConfig | FormArrayConfig } = {}) {
-    super()
-    this.setControls(controls)
-  }
-}
 
 export class AbstractControlOption {
   /**

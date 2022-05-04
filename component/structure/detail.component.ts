@@ -11,7 +11,7 @@ import { emptyUrl } from '@function/empty-url.function';
 import { map, switchMap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { isEmptyObject } from '@function/is-empty-object.function';
-import { FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
+import { FormGroupConfig } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
 import { fastClone } from '@function/fast-clone';
 import { Display } from '@class/display';
