@@ -121,18 +121,22 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
         }
       ),
       switchMap(
-        () => this.initData()
+        () =>   (this.length === 0) ? of([]) : this.initData()
       ),
       map(
         data => {
-          if (!this.length && data.length) this.length = data.length
-          this.formArray.clear();
-          for(var i = 0; i <data.length; i++) this.formArray.push(this.config.factory!.formGroup());
-          this.formArray.patchValue(data)
-          return this.load = true
+          this.setData(data)
+          return this.load = true;
         }
       ),
     )
+  }
+
+  setData(data: any[]){
+    if (!this.length && data.length) this.length = data.length
+    this.formArray.clear();
+    for(var i = 0; i <data.length; i++) this.formArray.push(this.config.factory!.formGroup());
+    this.formArray.patchValue(data)
   }
 
   override initDisplay() {
@@ -165,7 +169,6 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   }
 
   initData(): Observable<any>{
-    if(this.length === 0) return of([]); 
     return this.dd.post("ids", this.entityName, this.display$.value).pipe(
       switchMap(
         ids => this.ddrf.getAllConfig(this.entityName, ids, this.config.controls)

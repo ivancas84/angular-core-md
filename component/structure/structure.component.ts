@@ -169,7 +169,7 @@ export abstract class StructureComponent implements OnInit {
 
   ngOnDestroy () { this.subscriptions.unsubscribe() }
 
-  initParams(params: any){ this.params = params; }
+  initParams(params: { [x: string]: any }){ this.params = params; }
 
   switchOptField(data: { action: string; [x: string]: any; }){
     /**

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
+import { arrayUnique } from '@function/array-unique';
 import { fastClone } from '@function/fast-clone';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -46,7 +47,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * No se recomienda utilizar selectConnection porque no usa storage.
      */
     if(!data.length) return of([]);
-    var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; });
+    var ids = arrayUnique(
+      arrayColumn(data, fkName).filter(function (el) { return el != null; })
+    );
     
     for(var i = 0; i < data.length; i++) {
       for(var f in fields){
@@ -63,6 +66,61 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
           for(var i = 0; i < data.length; i++){
             for(var j = 0; j < response.length; j++){
+              if(data[i][fkName] == response[j]["id"]) {
+                for(var f in fields){
+                  if(fields.hasOwnProperty(f))                    
+                    data[i][f] = response[j][fields[f]];
+                }
+                break;
+              }
+            }
+          }
+          return data;
+        }
+      )
+    );  
+  }
+
+  getAllConnection2(
+    data: { [index: string]: any }[], //array de datos que se utilizaran para consultar y luego seran asociados
+    entityName: string, //nombre de la entidad principal
+    fields: { [index: string]: any },
+    /**
+     * Objeto para filtrar los campos.
+     * 
+     * Ciertos campos de entityName tienen el mismo nombre que la relacion de
+     * origen, a partir del parametro fields, se puede asignar un alias.
+     * Debe tenerse el cuidado de que para data se utilice un alias diferente
+     * para cada campo.
+     * 
+     * @example {"alias":"name"}
+     */
+    fkName: string, //se utiliza para definir ids = data[fkName]
+  ): Observable<{ [index: string]: any }[]>{
+    /**
+     * @summary
+     * Variante de getAllConnection que realiza asociacion uno a uno.
+     * El objetivo es lograr una mayor eficiencia
+     */
+    if(!data.length) return of([]);
+    var ids = arrayColumn(data, fkName).filter(function (el) { return el != null; })
+    
+
+    for(var i = 0; i < data.length; i++) {
+      for(var f in fields){
+        if(fields.hasOwnProperty(f)) data[i][f] = null; //inicializar en null
+      }
+    }
+    
+    if(!ids.length) return of(data);
+    
+    return this.getAll(entityName, ids).pipe(
+      map(
+        response => {
+          if(!response.length) return data;
+
+          for(var j = 0; j < response.length; i++){
+            for(var i = 0; i < data.length; j++){
               if(data[i][fkName] == response[j]["id"]) {
                 for(var f in fields){
                   if(fields.hasOwnProperty(f))                    
@@ -142,6 +200,8 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      * En la medida de lo posible evitar el uso de este metodo ya que no utiliza storage
      */
+     console.log(entityName)
+
     if(!data.length) return of([]);
     data.forEach(element=>{
       for(var f in fields){
@@ -151,15 +211,18 @@ export class DataDefinitionToolService extends DataDefinitionService{
       }
     })
       
-    var ids = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; });
+    var ids_ = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; })
+
+    var ids = arrayUnique(ids_);
+    
     if(!ids.length) return of(data);
 
     return this._post(method,entityName,ids).pipe(
       map(
         response => {
           if(!response.length) return data;
-          for(var j = 0; j < response.length; j++){
-            for(var i = 0; i < data.length; i++){
+          for(var i = 0; i < data.length; i++){
+            for(var j = 0; j < response.length; j++){
               if(data[i][fieldNameData] == response[j][fieldNameResponse]){
                 for(var f in fields){
                   if(fields.hasOwnProperty(f)) data[i][f] = response[j][fields[f]];
@@ -185,6 +248,50 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
+  postAllConnection2(
+    data: { [index: string]: any }[], 
+    method:string,
+    entityName: string, 
+    fields: { [index: string]: any },
+    fieldNameData: string,
+    fieldNameResponse: string, 
+  ): Observable<{ [index: string]: any }[]>{
+    /**
+     * Variante de postAllConnection que espera recibir un conjunto reducido 
+     * de respuestas que puede ser utilizado en varias filas
+     */
+    if(!data.length) return of([]);
+    data.forEach(element=>{
+      for(var f in fields){
+        if(fields.hasOwnProperty(f)) {
+          element[f] = null; //inicializar en null
+        }
+      }
+    })
+      
+    var ids = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; })
+
+    if(!ids.length) return of(data);
+
+    return this._post(method,entityName,ids).pipe(
+      map(
+        response => {
+          if(!response.length) return data;
+          for(var j = 0; j < response.length; j++){
+            for(var i = 0; i < data.length; i++){
+              if(data[i][fieldNameData] == response[j][fieldNameResponse]){
+                for(var f in fields){
+                  if(fields.hasOwnProperty(f)) data[i][f] = response[j][fields[f]];
+                }
+                break
+              }
+            }
+          }
+          return data;
+        }
+      )
+    );  
+  }
   
   getAllConnectionUm(
     data: { [index: string]: any }[], 

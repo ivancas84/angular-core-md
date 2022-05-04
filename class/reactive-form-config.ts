@@ -1,4 +1,4 @@
-import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms"
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from "@angular/forms"
 import { ValidatorMsg } from "./validator-msg"
 import { isEmptyObject } from "@function/is-empty-object.function"
 
@@ -126,11 +126,11 @@ export class FormGroupConfig extends FormControlsConfig {
   }
 
   initControl(control: FormGroup){
-      /**
-       * Agregar al control, los campos faltantes de config
-       */
-       var c = new ConfigFormGroupFactory(this)
-       c.formGroupAssign(control);
+    /**
+     * Agregar al control, los campos faltantes de config
+     */
+    var c = new ConfigFormGroupFactory(this)
+    c.formGroupAssign(control);
   }
 
   constructor(controls:{ [index: string]: FormConfig } = {}) {
@@ -186,6 +186,7 @@ export class FormArrayConfig extends FormControlsConfig {
     if(!this.contains("_mode")) this.addControl("_mode", new FormControlConfig())
     if(!this.contains("id")) this.addControl("id", new FormControlConfig())
   }
+
   
   constructor(controls:{ [index: string]: FormConfig } = {}) {
     super()
