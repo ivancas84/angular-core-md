@@ -8,8 +8,6 @@ import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.compo
 import { Location } from '@angular/common';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
-import { FormGroupConfig, FormStructureConfig } from '@class/reactive-form-config';
-import { FieldsetDynamicConfig } from '@component/fieldset/fieldset-dynamic.component';
 
 @Component({
   selector: 'core-upload',
@@ -31,7 +29,7 @@ export abstract class UploadComponent {
   );
 
 
-  readonly entityName: string;
+  readonly entityName!: string;
   /**
    * La entidad hace referencia principalmente al controlador que procesara el archivo
    */
@@ -69,7 +67,7 @@ export abstract class UploadComponent {
      */
 
     const formData = new FormData();
-    const file = this.file.value._files[0];
+    const file = this.file!.value._files[0];
 
     formData.append("file", file);
     return formData;
@@ -95,13 +93,13 @@ export abstract class UploadComponent {
     this.subscriptions.add(s);
   }
 
-  submitted(response){
+  submitted(response: any){
     this.response = response;
     this.snackBar.open("Archivo subido", "X");
   }
 
   reset(): void{
-    this.file.setValue(null);
+    this.file!.setValue(null);
   }
   
   onSubmit(): void {
