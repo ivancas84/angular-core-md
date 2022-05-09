@@ -22,6 +22,8 @@ import { InputTextConfig } from '@component/input-text/input-text.component';
   template: '',
 })
 export abstract class ArrayComponent extends StructureComponent implements OnInit {
+
+  entityName!: string
   /**
    * Estructura principal para administrar un array de elementos
    */
@@ -41,7 +43,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
 
   searchControl!: FormGroup
-  searchParamsConfig!: FormGroupConfig
+  searchConfig!: FormGroupConfig
 
   constructor(
     protected override dd: DataDefinitionToolService, 
@@ -60,7 +62,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   }
 
   override ngOnInit(){
-    this.initConfigFactory();
+    this.config.initFactory();
     this.initSearch();
     super.ngOnInit()
   }
@@ -69,13 +71,9 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     return this.control.getRawValue()
   }
 
-  initConfigFactory(){
-    if(!this.config.factory) this.config.factory = new ConfigFormGroupFactory(this.config)
-  }
-
   initSearch(){
-    if(!this.searchParamsConfig){
-      this.searchParamsConfig = new FormGroupConfig({
+    if(!this.searchConfig){
+      this.searchConfig = new FormGroupConfig({
         "search":new InputTextConfig({
           label:"Buscar",
           width: new FieldWidthOptions()
@@ -83,10 +81,8 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
       })
     }
     if(!this.searchControl) {
-      var c = new ConfigFormGroupFactory(this.searchParamsConfig)
-      this.searchControl = this.fb.group({
-        "params": c.formGroup()
-      })
+      var c = new ConfigFormGroupFactory(this.searchConfig)
+      this.searchControl = c.formGroup()
     }
   }
 
@@ -167,7 +163,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     );
   }
 
-  initData(): Observable<any>{
+  override initData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display$.value).pipe(
       switchMap(
         ids => this.ddrf.getAllConfig(this.entityName, ids, this.config.controls)
@@ -175,7 +171,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     )
   }
 
-  persist(): Observable<any> {
+  override persist(): Observable<any> {
     /**
      * Persistencia
      * Se define un metodo independiente para facilitar la redefinicion
@@ -184,5 +180,28 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     return this.dd._post("persist_rel_rows", this.entityName, this.serverData())
   }
 
-  
+  override switchOptField(data: { action: string; [x: string]: any; }){
+    /**
+     * Ejecutar opcion de evento
+     * 
+     * @param data: Es un objeto cuyos atributos pueden variar dependiendo de 
+     * donde se llame, siempre posee el elemento "action" para indicar la ac-
+     * cion a ejecutar. Si se llama desde una fila de un array, posee los si-
+     * guientes elementos:
+     *   "action" Accion a ejecutar.
+     *   "control" FormGroup correspondiente a la fila.
+     *   "index" Indice de la fila que se esta llamando.  
+     *   
+     */
+    switch(data.action){
+      case "remove": 
+        var index = data["index"]
+        var fa: FormArray = data["control"].parent as FormArray
+        var fg: FormGroup = fa.controls[index] as FormGroup
+        if(!fg.get("id")!.value) fa.removeAt(index)
+        else fg.get("_mode")!.setValue("delete");
+      break;
+      default: super.switchOptField(data);
+    }
+  }
 }

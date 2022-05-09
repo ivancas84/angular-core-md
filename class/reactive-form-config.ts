@@ -174,6 +174,13 @@ export class FormArrayConfig extends FormControlsConfig {
     if(!this.contains("id")) this.addControl("id", new FormControlConfig())
   }
 
+  initFactory(){
+    /**
+     * Inicializacion de factory
+     */
+    if(!this.factory) this.factory = new ConfigFormGroupFactory(this)
+  }
+
   
   constructor(controls:{ [index: string]: FormConfig } = {}) {
     super()

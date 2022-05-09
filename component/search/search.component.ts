@@ -18,9 +18,7 @@ import { markAllAsTouched } from '@function/mark-all-as-touched';
 export class SearchComponent implements OnInit {
  
   @Input() control!: FormGroup;
-  controlParams!: FormGroup
-
-  configParams!: FormGroupConfig
+  @Input() config!: FormGroupConfig
   @Input() display!: Display;
   /**
    * Busqueda a traves de condicion
@@ -45,9 +43,7 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(){
     if(!isEmptyObject(this.display.getParams()))
-      this.control.controls["params"].reset(this.display.getParams()) 
-      this.controlParams = this.control.controls["params"] as FormGroup
-
+      this.control.reset(this.display.getParams()) 
     // var c = this.display.getCondition()
     // if(this.config.controls.hasOwnProperty("params") && !isEmptyObject(c)){
     //    for(let i = 0; i < c.length; i++){
@@ -72,9 +68,7 @@ export class SearchComponent implements OnInit {
       });
       this.isSubmitted = false;
     } else {
-      if(this.control.get("condition")) this.display.setConditionByFilters(this.control.get("condition")!.value);    
-      if(this.control.get("params")) this.display.setParams(this.control.get("params")!.value);    
-      if(this.control.get("order")) { this.display.setOrderByElement(this.control.get("order")!.value); }    
+      this.display.setParams(this.control.value);    
       this.display.setPage(1);
       this.searchPanel.close();
       this.search();

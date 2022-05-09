@@ -4,11 +4,8 @@
       <mat-panel-title>{{title}}</mat-panel-title>
     </mat-expansion-panel-header>
       <form [formGroup]="control" novalidate (ngSubmit)="onSubmit()"> 
-        <core-abstract-control-form-group *ngIf="control.contains('params')"
-                                          [config]="configParams"
-                                          [control]="controlParams"
-        >
-        </core-abstract-control-form-group>
+        <core-abstract-control-form-group [config]="config"
+                                          [control]="control"></core-abstract-control-form-group>
 
         <button mat-raised-button color="primary" type="submit">Buscar</button>&nbsp;
       </form>

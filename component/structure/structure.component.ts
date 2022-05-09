@@ -12,6 +12,8 @@ import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { Location } from '@angular/common';
 import { map, startWith } from "rxjs/operators";
 import { Display } from "@class/display";
+import { isEmptyObject } from "@function/is-empty-object.function";
+import { of } from "rxjs";
 
 @Component({
   selector: 'core-show',
@@ -22,8 +24,13 @@ export abstract class StructureComponent implements OnInit {
    * Elementos en comun para los componentes estructurales
    */
    control!: AbstractControl
+   /**
+    * Datos principales
+    * 
+    * Todos los datos se recomienda almacenarlos en un control raiz, para fa-
+    * cilitar la implementacion del storage.
+    */
    protected subscriptions = new Subscription() //suscripciones en el ts
-   readonly entityName!: string; //Nombre de la entidad principal
    
    display$:BehaviorSubject<Display> = new BehaviorSubject(new Display)
    /**
@@ -56,8 +63,26 @@ export abstract class StructureComponent implements OnInit {
   ) { }
 
   abstract loadDisplay(): void;
-  abstract persist(): Observable<any>;
   abstract initDisplay(): void;
+
+  initData(): Observable<any> {
+    /**
+     * Inicializacion de datos.
+     * 
+     * Método habitual donde se definen las consultas a la base de datos.
+     */
+    throw new Error("Method not implemented.");
+  }
+
+  persist(): Observable<any> {
+    /**
+     * Persistencia de datos.
+     * 
+     * Para aquellos componentes que requieran ser perssistidos. Debe redefi-
+     * nirse este método.
+     */
+    throw new Error("Method not implemented.");
+  }
 
   ngOnInit() {
     
@@ -140,7 +165,7 @@ export abstract class StructureComponent implements OnInit {
   serverData() { return this.control.value }
 
   reset(): void{
-    //this.storage.removeItemsPrefix(emptyUrl(this.router.url));
+    this.storage.removeItemsPrefix(emptyUrl(this.router.url))
     this.display$.next(this.display$.value);
   }
   
@@ -153,10 +178,15 @@ export abstract class StructureComponent implements OnInit {
   }
 
   loadParams(){
+    /**
+     * @description
+     * Es comun ir a otra interfaz y volver, debiendo utilizar valo-
+     * res del storage. No se recomienda eliminar el storage al car-
+     * gar los parametros.
+     */
     this.loadParams$ = this.route.queryParams.pipe(
       map(
         queryParams => { 
-          console.log(queryParams)
           // this.storageValues = this.storage.getItem(this.router.url)
           //this.storage.removeItemsPrefix(emptyUrl(this.router.url))
           this.initParams(queryParams);
@@ -167,11 +197,22 @@ export abstract class StructureComponent implements OnInit {
     )
   }
 
+  initStorage(): Observable<any>{
+    /**
+     * Comportamiento habitual de inicializacion del storage
+     */
+    this.storageValues = this.storage.getItem(this.router.url)
+    this.storage.removeItemsPrefix(emptyUrl(this.router.url))
+    if(!isEmptyObject(this.storageValues)) return of(this.storageValues)
+    else return this.initData();
+  }
+  
+
   ngOnDestroy () { this.subscriptions.unsubscribe() }
 
   initParams(params: { [x: string]: any }){ this.params = params; }
 
-  switchOptField(data: { action: string; [x: string]: any; }){
+  switchOptField(data: { action: string; [x: string]: any; }): void{
     /**
      * Ejecutar opcion de evento
      * 
@@ -199,7 +240,6 @@ export abstract class StructureComponent implements OnInit {
       startWith(this.storage.getItem(this.router.url)),
       map(
         storageValues => {
-          console.log(storageValues)
           this.storage.setItem(this.router.url, storageValues)
           return true;
         }
@@ -214,7 +254,8 @@ export abstract class StructureComponent implements OnInit {
      * si la ruta es diferente, se reasignaran los parametros de la url y se repetira el proceso de inicializacion
      * si la ruta es la misma, se limpia el storage y se asignan parametros en null
      */
-     
+ 
+    this.storage.removeItemsPrefix(emptyUrl(this.router.url));
     let route = emptyUrl(this.router.url);
     if(route != this.router.url) this.router.navigateByUrl('/' + route);
     else this.display$.next(this.display$.value); 

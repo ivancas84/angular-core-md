@@ -3,6 +3,7 @@ import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
 import { arrayUnique } from '@function/array-unique';
 import { fastClone } from '@function/fast-clone';
+import { isEmptyObject } from '@function/is-empty-object.function';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
@@ -214,7 +215,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     var ids_ = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; })
 
     var ids = arrayUnique(ids_);
-    
+
     if(!ids.length) return of(data);
 
     return this._post(method,entityName,ids).pipe(
@@ -396,9 +397,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
   getConnection(
     data: { [index: string]: any }, 
-    fkName: string, 
     entityName: string, 
     fields: { [index: string]: any },
+    fkName: string, 
   ): Observable<{ [index: string]: any }>{
     /**
      * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
@@ -406,17 +407,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      */
-    if(!data[fkName]){
-      for(var f in fields) data[f] = null;
-      return of(data);
-    }
+    if(!isEmptyObject(data)) for(var f in fields) data[f] = null;
     return this.get(entityName, data[fkName]).pipe(
       map(
         response => {
           if(!response) return data;
           for(var f in fields){
-            if(fields.hasOwnProperty(f))                    
-              data[f] = response[f];
+            if(fields.hasOwnProperty(f)) data[f] = response[f];
           }
           return data;
         }

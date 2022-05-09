@@ -1,4 +1,4 @@
-import { Component, Input} from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { AbstractControl, FormControl } from '@angular/forms';
 import { FormControlConfig } from '@class/reactive-form-config';
  
@@ -20,8 +20,8 @@ export class EventIconConfig extends FormControlConfig {
   selector: 'core-event-icon',
   templateUrl: './event-icon.component.html',
 })
-export class EventIconComponent {
-  @Input() config!: EventIconConfig;
+export class EventIconComponent implements OnInit {
+  @Input() config: EventIconConfig | {[key:string]: any} = {};
   @Input() control!: AbstractControl;
   @Input() index?: number; //debe estar afuera del archivo de configuracion porque es un dato variable
 
@@ -31,6 +31,10 @@ export class EventIconComponent {
    * Este componente puede ser utilizado para un AbstractControl
    */
 
+  ngOnInit(){
+    if(!this.config.hasOwnProperty("component")) this.config = new EventIconConfig(this.config)
+  }
+  
   setValue(){
     this.config.fieldEvent.setValue({
       action:this.config.action,

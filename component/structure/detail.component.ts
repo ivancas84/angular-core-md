@@ -13,7 +13,6 @@ import { Location } from '@angular/common';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { FormGroupConfig } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
-import { fastClone } from '@function/fast-clone';
 import { Display } from '@class/display';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 
@@ -22,10 +21,9 @@ import { AbstractControlViewOption } from '@component/abstract-control-view/abst
   templateUrl: './detail.component.html',
 })
 export class DetailComponent extends StructureComponent implements OnInit{
-  /**
-   * Componente principal
-   */
 
+  entityName!: string;
+  override control: FormGroup = new FormGroup({}, {updateOn:"blur"})
   config!: FormGroupConfig
 
   inputSearchGo: boolean = true;
@@ -37,36 +35,12 @@ export class DetailComponent extends StructureComponent implements OnInit{
    * pla de una entidad.
    **/
 
-  override control: FormGroup = new FormGroup({}, {updateOn:"blur"})
-  /**
-   * Referencia directa del FormGroup que formara parte del control
-   */
 
-   optFooter: AbstractControlViewOption[] = []; //columna opciones
-
-   constructor(
-    protected override dialog: MatDialog,
-    protected override storage: SessionStorageService,
-    protected override dd: DataDefinitionToolService, 
-    protected override snackBar: MatSnackBar,
-    protected override router: Router, 
-    protected override location: Location, 
-    protected override route: ActivatedRoute, 
-    protected fb: FormBuilder,
-  ) { 
-    super(dialog,storage,dd,snackBar,router,location,route)
-  }
+  optFooter: AbstractControlViewOption[] = []; //columna opciones
 
   override ngOnInit(){
     /**
-     * Inicilizaar interfaz
-     * 
-     * Si no esta definido el subformulario, se crea, y se define configura-
-     * cion por defecto en base a la clase de configuracion.
-     * 
-     * Si existe el subformulario, no se define configuracion por defecto.
-     * Este comportamiento esta definido de esta forma para facilitar la 
-     * cancelación de valores por defecto, en caso de que se requiera.
+     * Si no esta definido el control, se crea, en base a config.
      */
     this.initControl()
     super.ngOnInit()
@@ -98,8 +72,7 @@ export class DetailComponent extends StructureComponent implements OnInit{
      * simple, que consulta los datos de la base de datos o define datos por 
      * defecto (habitualmente un conjunto vacio de datos). loadDisplay es un
      * metodo mas avanzado de definicion de datos que utiliza el resultado de
-     * initData, el storage y valores por defecto de formConfig
-     * 
+     * initData, el storage y valores por defecto
      */
     this.loadDisplay$ = this.display$.pipe(
       //startWith(null),
@@ -110,8 +83,7 @@ export class DetailComponent extends StructureComponent implements OnInit{
           this.storage.removeItemsPrefix(emptyUrl(this.router.url))
           console.log(this.storageValues)
           if(!isEmptyObject(this.storageValues)) return of(this.storageValues)
-          else{
-            return this.initData();}
+          else return this.initData();
         }
       ),
       map(
@@ -144,7 +116,7 @@ export class DetailComponent extends StructureComponent implements OnInit{
   }
 
 
-  initData(): Observable<any> {
+  override initData(): Observable<any> {
     if(isEmptyObject(this.params)) return of({})
     return this.queryData()
   }
@@ -153,7 +125,7 @@ export class DetailComponent extends StructureComponent implements OnInit{
     return this.dd.unique(this.entityName, this.params)
   }
 
-  persist(): Observable<any> {
+  override persist(): Observable<any> {
     /**
      * Persistencia
      * Se define un metodo independiente para facilitar la redefinicion
