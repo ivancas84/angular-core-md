@@ -211,5 +211,10 @@ export class FormControlConfig extends FormConfig {
    * placeholder: string = null
    * width:FieldWidthOptions = new FieldWidthOptions() 
    */
+
+  constructor(attributes: any = {}) {
+    super()
+    Object.assign(this, attributes)
+  }
   
 }

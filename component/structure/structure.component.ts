@@ -150,7 +150,7 @@ export abstract class StructureComponent implements OnInit {
 
   removeStorage(){
     this.storage.removeItemsContains(".");
-    this.storage.removeItemsPersisted(this.response["detail"]);
+    if (this.response["detail"]) this.storage.removeItemsPersisted(this.response["detail"]);
     this.storage.removeItemsPrefix(emptyUrl(this.router.url));
   }
 
