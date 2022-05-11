@@ -255,6 +255,11 @@ registerLocaleData(localeEsAr, 'es-AR');
     
     DataDefinitionStorageService, 
     DataDefinitionLabelService,
+    /**
+
+
+     * Este servicio debe existir en la app
+     */
     DataDefinitionRelLabelService, 
     DataDefinitionRelInitialize,
     DataDefinitionFkAllService,
