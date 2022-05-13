@@ -47,7 +47,7 @@ export abstract class StructureComponent implements OnInit {
    loadParams$!: Observable<any> //carga de parametros
    loadDisplay$!: Observable<any> //carga de display
    loadStorage$!: Observable<any>
-   params?: { [x: string]: any } //parametros del componente
+   params: { [x: string]: any } = {} //parametros del componente
    storageValues: any = null
    isSubmitted: boolean = false //Flag para habilitar/deshabilitar boton aceptar
    response: any //respuesta de procesamiento
