@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
-import { SessionStorageService } from '@service/storage/session-storage.service';
+import { FormGroup } from '@angular/forms';
 import { emptyUrl } from '@function/empty-url.function';
 import { map, switchMap } from 'rxjs/operators';
-import { Location } from '@angular/common';
 import { isEmptyObject } from '@function/is-empty-object.function';
 import { FormGroupConfig } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
@@ -42,19 +36,16 @@ export class DetailComponent extends StructureComponent implements OnInit{
     /**
      * Si no esta definido el control, se crea, en base a config.
      */
-    this.initControl()
-    super.ngOnInit()
-  }
-
-  initControl(){
     this.config.initAdmin()
     this.config.initControl(this.control)
+    super.ngOnInit()
   }
 
   getStorageValues(): any {
     return this.control.getRawValue()
   }
 
+  
   loadDisplay(){
     /**
      * Definicion de valores en base al display.
@@ -78,12 +69,7 @@ export class DetailComponent extends StructureComponent implements OnInit{
       //startWith(null),
       switchMap(
         () => {
-          this.storageValues = this.storage.getItem(this.router.url)
-          // this.form.reset() comente el reset porque no se si aporta alguna funcionalidad
-          this.storage.removeItemsPrefix(emptyUrl(this.router.url))
-          console.log(this.storageValues)
-          if(!isEmptyObject(this.storageValues)) return of(this.storageValues)
-          else return this.initData();
+          return this.initStorage()
         }
       ),
       map(
@@ -94,8 +80,10 @@ export class DetailComponent extends StructureComponent implements OnInit{
            * Se asigna inicialmente los valores por defecto, nada me garantiza
            * que el parametro "data" posea todos los valores definidos.
            */
+          if(!isEmptyObject(this.params)) this.control.patchValue(this.params)
 
           if(!isEmptyObject(data)) this.control.patchValue(data)
+
           
           return true;
         }
