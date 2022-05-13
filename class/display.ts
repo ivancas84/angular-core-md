@@ -15,7 +15,7 @@ export class Display {
 
   protected order: {[key: string]: string } = {};
   protected condition: Array<any> = [];
-  protected params?: {[key: string]: any } = {} //busqueda adicional
+  protected params: {[key: string]: any } = {} //busqueda adicional
   /** 
    * El servidor limita siempre la cantidad de elementos (size) a 100
    * Si se desea un valor mayor debe definirse explicitamente en el servidor
