@@ -2,30 +2,43 @@
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>
 
-<mat-card>
-  <mat-card-content>
-    <core-input-search-go fxFlex="auto" [entityName]="entityName"></core-input-search-go>    
-  </mat-card-content>
-</mat-card>
-
-<form *ngIf="(loadParams$ | async); else loading" 
-      [formGroup]="control" 
-      (ngSubmit)="onSubmit()" 
-      novalidate autocomplete="off">
-
+<ng-container *ngIf="(loadParams$ | async); else loading">
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
     <ng-container *ngIf="(loadStorage$ | async); else loading">
-      <core-abstract-control-form-group [config]="config"
-                                        [control]="control"
-      >
-      </core-abstract-control-form-group>
-    
-      <!-- <p>Debug Form value: {{ form.value | json }}</p>
-      <p>Debug Form status: {{ form.status | json }}</p> -->
+      <mat-card *ngIf="inputSearchGo">
+        <mat-card-content>
+          <core-input-search-go fxFlex="auto" [entityName]="entityName"></core-input-search-go>    
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                {{title}}
+            </mat-card-title>
+            <core-abstract-control-view *ngFor="let o of optTitle" 
+                [config]="o.config" 
+                [control]="o.control" ></core-abstract-control-view> 
+        </mat-card-header>
+        <mat-card-content>
+          <form  
+            [formGroup]="control" 
+            (ngSubmit)="onSubmit()" 
+            novalidate autocomplete="off">
 
-      <core-abstract-control-view *ngFor="let o of optFooter" 
-                                [config]="o.config" 
-                                [control]="o.control" ></core-abstract-control-view> 
-    </ng-container> 
+                <core-abstract-control-form-group [config]="config"
+                                                  [control]="control"
+                >
+                </core-abstract-control-form-group>
+          
+                <!-- <p>Debug Form value: {{ control.value | json }}</p>
+                <p>Debug Form status: {{ control.status | json }}</p> -->
+
+                <core-abstract-control-view *ngFor="let o of optFooter" 
+                                          [config]="o.config" 
+                                          [control]="o.control" ></core-abstract-control-view> 
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
   </ng-container>
-</form>
+</ng-container>
