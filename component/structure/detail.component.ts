@@ -9,6 +9,7 @@ import { FormGroupConfig } from '@class/reactive-form-config';
 import { StructureComponent } from '@component/structure/structure.component';
 import { Display } from '@class/display';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
+import { titleCase } from '@function/title-case';
 
 @Component({
   selector: 'core-detail',
@@ -17,6 +18,8 @@ import { AbstractControlViewOption } from '@component/abstract-control-view/abst
 export class DetailComponent extends StructureComponent implements OnInit{
 
   entityName!: string;
+  title!: string;
+
   override control: FormGroup = new FormGroup({}, {updateOn:"blur"})
   config!: FormGroupConfig
 
@@ -29,13 +32,14 @@ export class DetailComponent extends StructureComponent implements OnInit{
    * pla de una entidad.
    **/
 
-
-  optFooter: AbstractControlViewOption[] = []; //columna opciones
+  optTitle: AbstractControlViewOption[] = []; //opciones titulo
+  optFooter: AbstractControlViewOption[] = []; //opciones pie
 
   override ngOnInit(){
     /**
      * Si no esta definido el control, se crea, en base a config.
      */
+    if(!this.title) this.title = titleCase(this.entityName.replace("_"," "))
     this.config.initAdmin()
     this.config.initControl(this.control)
     super.ngOnInit()
@@ -84,7 +88,6 @@ export class DetailComponent extends StructureComponent implements OnInit{
 
           if(!isEmptyObject(data)) this.control.patchValue(data)
 
-          
           return true;
         }
       ),
