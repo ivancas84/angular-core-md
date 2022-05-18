@@ -1,0 +1,16 @@
+<a *ngIf="!config.download; else download_template"
+   [href]="href" 
+   [target]="config.target"
+   [title]="config.title"> {{control.value}} </a>
+
+<ng-template #download_template>
+  <a download="download"  
+   [href]="href" 
+   [target]="config.target"
+   [title]="config.title"> {{control.value}} </a>
+</ng-template>
+
+
+
+   
+
