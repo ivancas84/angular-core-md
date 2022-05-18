@@ -33,8 +33,9 @@ export class TableComponent extends ArrayComponent {
   optColumn: FormControlConfig[] = []; //columna opciones
   /**
    * Columna opciones asignada a AbstractControlView
-   * Solo se define config, el "control" y el "index" se definen por cada fi'
+   * Solo se define config, el "control" y el "index" se definen por cada fi-
    * la, no deben ser completados.
+   * Recibe como control el FormGroup integro para procesar parametros
    *
    * @example boton eliminar
    * {
