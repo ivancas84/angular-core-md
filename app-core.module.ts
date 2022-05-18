@@ -69,6 +69,8 @@ import { SearchComponent } from "@component/search/search.component";
 import { AbstractControlFormGroupComponent } from "@component/abstract-control-form-group/abstract-control-form-group.component";
 import { DetailComponent } from "@component/structure/detail.component";
 import { TableOneComponent } from "@component/structure/table-one.component";
+import { LinkValueComponent } from "@component/link-value/link-value.component";
+import { UploadComponent } from "@component/upload/upload.component";
 
 registerLocaleData(localeEsAr, 'es-AR');
 
@@ -93,6 +95,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     SearchComponent,
     TableComponent,
     TableOneComponent,
+    UploadComponent,
     /**
      * No hace falta declararla ya que es una clase semiabstracta, pero si no 
      * se declara, tira errores el template
@@ -159,6 +162,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputUploadComponent,
     LabelComponent,
     LinkTextComponent,
+    LinkValueComponent,
     RouteIconComponent,
     RouteTextComponent,
     TextareaComponent,
@@ -190,7 +194,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     SearchComponent,
     TableComponent,
     TableOneComponent,
-    
+    UploadComponent,
 
     AbstractControlViewComponent,
     AbstractControlFormGroupComponent,
@@ -220,6 +224,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputUploadComponent,
     LabelComponent,
     LinkTextComponent,
+    LinkValueComponent,
     RouteIconComponent,
     RouteTextComponent,
     TextareaComponent,
