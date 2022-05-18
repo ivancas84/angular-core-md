@@ -1,4 +1,4 @@
-import { Input, Component } from '@angular/core';
+import { Input, Component, OnInit } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MY_FORMATS } from 'app/core/const/MY_FORMATS';
@@ -6,11 +6,13 @@ import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
 import { FormControlConfig } from '@class/reactive-form-config';
 import { FormControl } from '@angular/forms';
+import { getControlName } from '@function/get-control-name';
+import { titleCase } from '@function/title-case';
 
 export class InputYmConfig extends FormControlConfig  {
   override component: any = InputYmComponent
-  placeholder?: string = "Ingrese año y mes";
-  readonly?: boolean = false;
+  placeholder: string = "Ingrese año y mes";
+  readonly: boolean = false;
   showLabel: boolean = true
 
   constructor(attributes: any = {}) {
@@ -37,7 +39,7 @@ export class InputYmConfig extends FormControlConfig  {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class InputYmComponent {
+export class InputYmComponent implements OnInit {
   @Input() config!: InputYmConfig;
   @Input() control!: FormControl;
 
@@ -48,7 +50,12 @@ export class InputYmComponent {
    *   new FormControl(moment()) o field: fb.group({field: moment()}),
    */
 
-  
+  ngOnInit(): void {
+    if(!this.config.label) {
+      var n = getControlName(this.control)
+      this.config.label = titleCase(n!.substring(n!.indexOf("-")+1).replace("_"," "))
+    }
+  }
 
   chosenYearHandler(normalizedYear: moment.Moment) {
     let ctrlValue = this.control.value;

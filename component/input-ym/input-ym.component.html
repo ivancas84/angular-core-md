@@ -1,6 +1,6 @@
 <mat-form-field>
   <mat-label *ngIf="config.showLabel">{{config.label}}</mat-label>
-  <input matInput [matDatepicker]="fieldPicker" [formControl]="control" placeholder="{{config.placeholder}}">
+    <input matInput [matDatepicker]="fieldPicker" [formControl]="control" placeholder="{{config.placeholder}}">
   <mat-datepicker-toggle matSuffix [for]="fieldPicker"></mat-datepicker-toggle>
   <mat-datepicker-toggle matSuffix (click)="clear()">
     <mat-icon matDatepickerToggleIcon>clear</mat-icon>
