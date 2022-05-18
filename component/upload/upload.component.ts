@@ -13,14 +13,17 @@ import { markAllAsDirty } from '@function/mark-all-as-dirty';
   selector: 'core-upload',
   template: '',
 })
-export abstract class UploadComponent {
+export class UploadComponent {
   /**
    * Comportamiento basico para subir archivos para ser procesados.
-   * A través del atributo entityName se define el controlador de procesamiento del archivo
-   * La idea es subir un archivo que sera procesado en un controlador, no se debe confundir con el Input Upload cuyo proposito es subir el archivo y asignarlo como valor fk de una entidad
+   * A través del atributo entityName se define el controlador de procesamien-
+   * to del archivo.
+   * La idea es subir un archivo que sera procesado en un controlador.
+   * No se debe confundir con el componente InputUpload cuyo proposito es su-
+   * bir el archivo y asignarlo como valor FK a una entidad
    */
 
-  uploadForm: FormGroup = this.fb.group( //formulario principal
+  control: FormGroup = this.fb.group( //formulario principal
     {
       file: [null, {
         validators: [Validators.required],
@@ -51,7 +54,7 @@ export abstract class UploadComponent {
     protected location: Location, 
   ) {}
 
-  get file() { return this.uploadForm.get('file')}
+  get file() { return this.control.get('file')}
 
   back() { this.location.back(); }
 
@@ -79,17 +82,17 @@ export abstract class UploadComponent {
      * Se define un metodo independiente para facilitar la redefinicion
      * @return "datos de respuesta (habitualmente array con la informacion del archivo)"
      */    
-    var s = this.dd.upload(this.entityName, this.formData()).subscribe(
-      (res) => {
+    var s = this.dd.upload(this.entityName, this.formData()).subscribe({
+      next: (res) => {
         this.submitted(res);        
       },
-      (err) => {
+      error: (err) => {
         this.isSubmitted = false;  
         this.dialog.open(DialogAlertComponent, {
           data: {title: "Error", message: err.error}
         });
       }
-    );
+    });
     this.subscriptions.add(s);
   }
 
@@ -105,7 +108,7 @@ export abstract class UploadComponent {
   onSubmit(): void {
     this.isSubmitted = true;
     
-    if (!this.uploadForm.valid) {
+    if (!this.control.valid) {
       this.cancelSubmit();
     } else {
       this.upload();
@@ -113,8 +116,8 @@ export abstract class UploadComponent {
   }
 
   cancelSubmit(){
-    markAllAsDirty(this.uploadForm);
-    logValidationErrors(this.uploadForm);
+    markAllAsDirty(this.control);
+    logValidationErrors(this.control);
     const dialogRef = this.dialog.open(DialogAlertComponent, {
       data: {title: "Error", message: "El formulario posee errores."}
     });
