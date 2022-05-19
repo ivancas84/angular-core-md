@@ -4,7 +4,7 @@
 
 <ng-container *ngIf="(loadParams$ | async); else loading">
   <ng-container *ngIf="(loadDisplay$ | async); else loading">
-    <ng-container *ngIf="(loadStorage$ | async); else loading">
+    <!-- <ng-container *ngIf="(loadStorage$ | async); else loading"> -->
       <mat-card *ngIf="inputSearchGo">
         <mat-card-content>
           <core-input-search-go fxFlex="auto" [entityName]="entityName"></core-input-search-go>    
@@ -39,6 +39,6 @@
           </form>
         </mat-card-content>
       </mat-card>
-    </ng-container>
+    <!-- </ng-container> -->
   </ng-container>
 </ng-container>
