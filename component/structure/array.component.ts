@@ -57,10 +57,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     protected override router: Router, 
     protected override snackBar: MatSnackBar,
     protected override location: Location, 
-    protected ddrf: DataDefinitionFkAllService,
-    protected validators: ValidatorsService,
-    protected fb: FormBuilder
-
+    protected ddrf: DataDefinitionFkAllService, //@deprecated?
   ) {
     super(dialog, storage, dd, snackBar, router, location, route)
   }
