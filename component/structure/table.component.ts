@@ -11,7 +11,8 @@ import { emptyUrl } from '@function/empty-url.function';
 import { getControlName } from '@function/get-control-name';
 import { naturalCompare } from '@function/natural-compare';
 import { titleCase } from '@function/title-case';
-import { debounceTime, map } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 
 declare function copyFormatted(html: any): any;
 declare function printHtml(html: any): any;
@@ -79,8 +80,7 @@ export class TableComponent extends ArrayComponent {
   pageSizeOptions: number[] =[10, 25, 50, 100] 
   
   footerColumns?: string[]; //columnas de footer a visualizar
-  footer?: FormGroup
-  footerConfig?: FormGroupConfig
+
 
   @ViewChild(MatPaginator) paginator?: MatPaginator; //paginacion
   @ViewChild("content", {read: ElementRef}) content!: ElementRef; //contenido para copiar o imprimir
@@ -93,8 +93,6 @@ export class TableComponent extends ArrayComponent {
     this.initDisplayedColumns();
   }
 
-
-  
   initDisplayedColumns(){
     this.displayedColumns = []
     var fg = this.config.factory!.formGroup();
@@ -109,10 +107,9 @@ export class TableComponent extends ArrayComponent {
       }
     })
     if(this.optColumn.length) this.displayedColumns.push("options");
-    if(this.footer && this.footerConfig) this.footerColumns = this.displayedColumns
+    if(this.footerConfig) this.footerColumns = this.displayedColumns
   }
-
-
+  
   renderRows(){
     this.control.valueChanges.pipe(
       //startWith(this.control.value),
@@ -185,43 +182,6 @@ export class TableComponent extends ArrayComponent {
     if(this.content) printHtml(this.content.nativeElement.innerHTML);
   }
 
-  onRemove(formControl: FormControl) { 
-    /**
-     * @todo Falta terminar
-     * Evento de eliminacion, proporciona al usuario un dialogo de confimacion e invoca a remove para eliminar
-     */
-    const dialogRef = this.dialog.open(DialogConfirmComponent, {
-      data: {title: "Eliminar registro " + formControl.value, message: "Está seguro?"}
-    });
- 
-    //var s = dialogRef.afterClosed().subscribe(result => {
-      //if(result) this.remove(index)
-    //});
-    
-    //this.subscriptions.add(s)
-  }
-
-
-  fg(index: number) { return this.control.controls[index]; }
-  /**
-   * Metodo utilizado para indicar el formGroup en el template
-   */
-   
-  add() {
-    var fg = this.config.factory!.formGroup();
-    this.control.push(fg); 
-  }
- 
-  remove(index: number) { 
-    /**
-     * Incorporar el control _mode al fieldset!
-     */
-    if(!this.control.controls[index].get("id")!.value) this.control.removeAt(index); 
-    else this.control.controls[index].get("_mode")!.setValue("delete");
-  }
-
-  
-  
 }
 
 

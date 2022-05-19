@@ -95,7 +95,8 @@ export abstract class StructureComponent implements OnInit {
     this.loadStorage(); 
     /**
      * Se carga el storage con los valores del formulario indicando la url con 
-     * parametros
+     * parametros.
+     * Utilizar el storage con precaucion.
      */
 
     this.loadOptField();

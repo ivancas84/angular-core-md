@@ -9,13 +9,14 @@ import { DataDefinitionToolService } from '@service/data-definition/data-definit
 import { SessionStorageService } from '@service/storage/session-storage.service';
 import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
 import { ConfigFormGroupFactory, FormArrayConfig, FormGroupConfig } from '@class/reactive-form-config';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { StructureComponent } from '@component/structure/structure.component';
 import { ValidatorsService } from '@service/validators/validators.service';
 import { FieldWidthOptions } from '@class/field-width-options';
 import { InputTextConfig } from '@component/input-text/input-text.component';
+import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 
 @Component({
   selector: 'core-array',
@@ -45,6 +46,9 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   searchControl!: FormGroup
   searchConfig!: FormGroupConfig
 
+  footer?: FormGroup
+  footerConfig?: FormGroupConfig
+
   constructor(
     protected override dd: DataDefinitionToolService, 
     protected override route: ActivatedRoute, 
@@ -63,9 +67,23 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
 
   override ngOnInit(){
     this.config.initFactory();
+    this.initFooter();
     this.initSearch();
     super.ngOnInit()
   }
+
+  initFooter(){
+    /**
+     * Si se encuentra footerConfig configurado, se inicializan los atributos 
+     * asociados a footer.
+     * Los datos de footer no son inicializados, como alternativa puede so-
+     * brescribirse loadDisplay para incluir su inicializacion.
+     */
+    if(!this.footerConfig) return;
+    if(!this.footer) this.footer = new FormGroup({})
+    this.footerConfig.initControl(this.footer)
+  }
+
 
   getStorageValues(): any {
     return this.control.getRawValue()
@@ -80,10 +98,8 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
         }),
       })
     }
-    if(!this.searchControl) {
-      var c = new ConfigFormGroupFactory(this.searchConfig)
-      this.searchControl = c.formGroup()
-    }
+    if(!this.searchControl) this.searchControl = new FormGroup({})
+    this.searchConfig.initControl(this.searchControl)
   }
 
   
@@ -204,4 +220,39 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
       default: super.switchOptField(data);
     }
   }
+
+  fg(index: number) { return this.control.controls[index]; }
+  /**
+   * Metodo utilizado para indicar el formGroup en el template
+   */
+   
+   onRemove(formControl: FormControl) { 
+    /**
+     * @todo Falta terminar
+     * Evento de eliminacion, proporciona al usuario un dialogo de confimacion e invoca a remove para eliminar
+     */
+    const dialogRef = this.dialog.open(DialogConfirmComponent, {
+      data: {title: "Eliminar registro " + formControl.value, message: "Está seguro?"}
+    });
+ 
+    //var s = dialogRef.afterClosed().subscribe(result => {
+      //if(result) this.remove(index)
+    //});
+    
+    //this.subscriptions.add(s)
+  }
+  
+  add() {
+    var fg = this.config.factory!.formGroup();
+    this.control.push(fg); 
+  }
+ 
+  remove(index: number) { 
+    /**
+     * Incorporar el control _mode al fieldset!
+     */
+    if(!this.control.controls[index].get("id")!.value) this.control.removeAt(index); 
+    else this.control.controls[index].get("_mode")!.setValue("delete");
+  }
+
 }
