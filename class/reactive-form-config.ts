@@ -155,21 +155,22 @@ export class AbstractControlOption {
 
 export class FormArrayConfig extends FormControlsConfig {
   override controls: { [index: string]: FormControlConfig }  = {}
-  factory?: FormGroupFactory 
+  
   /**
    * es necesario definir una clase concreta de FormGroupFactory que permita
    *  definir el FormGroup del FormArray
    */
+  factory?: FormGroupFactory 
 
-  order?: {[key: string]: string}
   /**
    * ordenamiento por defecto para realizar la consulta
    * 
    * @example {motivo:"asc", per-nombres:"desc"}
    */
+  order?: {[key: string]: string}
+  
 
   initAdmin(){
-    if(!this.factory) this.factory = new ConfigFormGroupFactory(this)
     if(!this.contains("_mode")) this.addControl("_mode", new FormControlConfig())
     if(!this.contains("id")) this.addControl("id", new FormControlConfig())
   }
