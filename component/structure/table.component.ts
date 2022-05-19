@@ -30,6 +30,9 @@ export class TableComponent extends ArrayComponent {
    * Tabla para visualizar los datos de una entidad con ordenamiento y pagina-
    * cion
    */
+
+  title!: string;
+
  
   optColumn: FormControlConfig[] = []; //columna opciones
   /**
@@ -50,7 +53,7 @@ export class TableComponent extends ArrayComponent {
    */
 
   optFooter: AbstractControlViewOption[] = []; //columna opciones
-
+  optTitle: AbstractControlViewOption[] = []; //opciones titulo
 
   serverSortTranslate: { [index: string]: string[] } = {};
   /**
@@ -88,6 +91,7 @@ export class TableComponent extends ArrayComponent {
 
   
   override ngOnInit(): void {
+    if(!this.title) this.title = titleCase(this.entityName.replace("_"," "))
     super.ngOnInit()
     this.renderRows();
     this.initDisplayedColumns();
