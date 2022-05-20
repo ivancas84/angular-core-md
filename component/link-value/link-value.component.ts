@@ -36,7 +36,6 @@ export class LinkValueComponent implements OnInit {
   href!: string
 
   ngOnInit(): void {
-    console.log(this.control)
     if(!this.config.hasOwnProperty("component")) this.config = new LinkValueConfig(this.config)
   
     if(!this.config.title) this.config.title = this.control.value;
