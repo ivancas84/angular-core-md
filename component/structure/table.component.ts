@@ -11,7 +11,6 @@ import { emptyUrl } from '@function/empty-url.function';
 import { getControlName } from '@function/get-control-name';
 import { naturalCompare } from '@function/natural-compare';
 import { titleCase } from '@function/title-case';
-import { of } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 
 declare function copyFormatted(html: any): any;
