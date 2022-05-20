@@ -55,6 +55,9 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
           * ta asignando valor a un "config" en un metodo que define "form" 
           */
         if(this.config.controls[key].required) fc.setValidators(Validators.required)
+        /**
+         * @deprecated los atributos de abstractform deben ser indicados directamente en el abstractform.
+         */
         fg.addControl(key, fc)
       } 
     }
@@ -191,20 +194,57 @@ export class FormArrayConfig extends FormControlsConfig {
 }
 
 export class FormControlConfig extends FormConfig {
-  default:any = null
-  disabled:boolean = false //valor opcional, puede definirse directamente en el AbstractControl
+  /**
+   * Componente asociado a la configuracion
+   */
+  component: any;
+
+  /**
+   * Valor por defecto.
+   * 
+   * Unico atributo de control que se define en la configuracion.
+   * Se necesita para poder acceder al valor y reasignar nuevamente el control.   
+   */
+  default:any = null;
+
+  /**
+   * Deshabilitar control.
+   * 
+   * @deprecated Los atributos de controles se definen directamente en el con-
+   * trol, excepto default.
+   */
+  disabled:boolean = false;
+  
+  /**
+   * Marcar control como obligatorio.
+   * 
+   * @deprecated Los atributos de controles se definen directamente en el con-
+   * trol, excepto default.
+   */
   required:boolean = false;
   
   /**
    * Atributos de presentacion, se definen a continuacion los principales
    * Se deja abierta la posibilidad de definir atributos de presentacion adicionales
    */
-  component: any
-  label?:string
-  validatorMsgs: ValidatorMsg[] = []
-  position: number = 0;
-  [key: string]: any
+  label?:string;
+
   /**
+   * Mensajes de validacion.
+   * 
+   * Debe incluirse la correspondiente validacion en el control.
+   */
+  validatorMsgs: ValidatorMsg[] = [];
+
+  /**
+   * Ubicacion del control. Se asocia a un sort.
+   * Habitualmente no se utiliza, se deja el ordenamiento en el que se define.
+   */
+  position: number = 0;
+
+  /**
+   * Atributos adicionales.
+   * 
    * @example
    * wrap?: FieldWrapOptions | FieldWrapOptions[] //envolturas, se definen en el orden de definicion
    * showLabel: boolean = true //indica si debe mostrarse el label o no
@@ -212,7 +252,8 @@ export class FormControlConfig extends FormConfig {
    * placeholder: string = null
    * width:FieldWidthOptions = new FieldWidthOptions() 
    */
-
+  [key: string]: any;
+  
   constructor(attributes: any = {}) {
     super()
     Object.assign(this, attributes)
