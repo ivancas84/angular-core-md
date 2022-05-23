@@ -27,7 +27,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * 
      * @example {"alias":"name"}
      */
-    fkName: string, //se utiliza para definir ids = data[fkName]
+    fkName?: string, //se utiliza para definir ids = data[fkName]
   ): Observable<{ [index: string]: any }[]>{
     /**
      * @summary
@@ -47,6 +47,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * avanzados, utilizar selectConnection o procesar el resultado.
      * No se recomienda utilizar selectConnection porque no usa storage.
      */
+    if(!fkName) fkName = entityName
     if(!data.length) return of([]);
     var ids = arrayUnique(
       arrayColumn(data, fkName).filter(function (el) { return el != null; })
@@ -67,7 +68,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
           for(var i = 0; i < data.length; i++){
             for(var j = 0; j < response.length; j++){
-              if(data[i][fkName] == response[j]["id"]) {
+              if(data[i][fkName!] == response[j]["id"]) {
                 for(var f in fields){
                   if(fields.hasOwnProperty(f))                    
                     data[i][f] = response[j][fields[f]];
