@@ -71,6 +71,7 @@ import { DetailComponent } from "@component/structure/detail.component";
 import { TableOneComponent } from "@component/structure/table-one.component";
 import { LinkValueComponent } from "@component/link-value/link-value.component";
 import { UploadComponent } from "@component/upload/upload.component";
+import { BackupComponent } from "@component/backup/backup.component";
 
 registerLocaleData(localeEsAr, 'es-AR');
 
@@ -112,6 +113,7 @@ registerLocaleData(localeEsAr, 'es-AR');
      *************************************************************************/
     AbstractControlViewComponent,
     AbstractControlFormGroupComponent,
+    BackupComponent,
     ControlBooleanComponent,
     ControlDateComponent,
     ControlLabelComponent,
@@ -198,6 +200,7 @@ registerLocaleData(localeEsAr, 'es-AR');
 
     AbstractControlViewComponent,
     AbstractControlFormGroupComponent,
+    BackupComponent,
     ControlBooleanComponent,
     ControlDateComponent,
     ControlLabelComponent,
