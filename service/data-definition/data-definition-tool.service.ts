@@ -189,8 +189,8 @@ export class DataDefinitionToolService extends DataDefinitionService{
     method:string,
     entityName: string, 
     fields: { [index: string]: any },
-    fieldNameData: string,
-    fieldNameResponse: string, 
+    fieldNameData?: string,
+    fieldNameResponse?: string, 
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta de relaciones directas para metodos no habituales
@@ -202,7 +202,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      * En la medida de lo posible evitar el uso de este metodo ya que no utiliza storage
      */
-     console.log(entityName)
+
+    if(!fieldNameData) fieldNameData = entityName;
+    if(!fieldNameResponse) fieldNameResponse = fieldNameData;
 
     if(!data.length) return of([]);
     data.forEach(element=>{
@@ -225,7 +227,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
           if(!response.length) return data;
           for(var i = 0; i < data.length; i++){
             for(var j = 0; j < response.length; j++){
-              if(data[i][fieldNameData] == response[j][fieldNameResponse]){
+              if(data[i][fieldNameData!] == response[j][fieldNameResponse!]){
                 for(var f in fields){
                   if(fields.hasOwnProperty(f)) data[i][f] = response[j][fields[f]];
                 }
