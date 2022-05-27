@@ -400,7 +400,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     data: { [index: string]: any }, 
     entityName: string, 
     fields: { [index: string]: any },
-    fkName: string, 
+    fkName?: string, 
   ): Observable<{ [index: string]: any }>{
     /**
      * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
@@ -408,13 +408,14 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      */
+    if(!fkName) fkName = entityName;
     if(!isEmptyObject(data)) for(var f in fields) data[f] = null;
     return this.get(entityName, data[fkName]).pipe(
       map(
         response => {
           if(!response) return data;
           for(var f in fields){
-            if(fields.hasOwnProperty(f)) data[f] = response[f];
+            if(fields.hasOwnProperty(f)) data[f] = response[fields[f]];
           }
           return data;
         }
