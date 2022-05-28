@@ -49,19 +49,6 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   footer?: FormGroup
   footerConfig?: FormGroupConfig
 
-  constructor(
-    protected override dd: DataDefinitionToolService, 
-    protected override route: ActivatedRoute, 
-    protected override dialog: MatDialog,
-    protected override storage: SessionStorageService,
-    protected override router: Router, 
-    protected override snackBar: MatSnackBar,
-    protected override location: Location, 
-    protected ddrf: DataDefinitionFkAllService, //@deprecated?
-  ) {
-    super(dialog, storage, dd, snackBar, router, location, route)
-  }
-
   override ngOnInit(){
     this.config.initFactory();
     this.initFooter();
@@ -108,9 +95,6 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
           this.initDisplay();
           return true;
         },
-        (error: any) => { 
-          console.log(error)
-        }
       ),
     )
   }
@@ -179,7 +163,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   override initData(): Observable<any>{
     return this.dd.post("ids", this.entityName, this.display$.value).pipe(
       switchMap(
-        ids => this.ddrf.getAllConfig(this.entityName, ids, this.config.controls)
+        ids => this.dd.getAll(this.entityName, ids)
       )
     )
   }
