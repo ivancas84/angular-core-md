@@ -22,7 +22,7 @@ export class EventIconConfig extends FormControlConfig {
 })
 export class EventIconComponent implements OnInit {
   @Input() config: EventIconConfig | {[key:string]: any} = {};
-  @Input() control!: AbstractControl;
+  @Input() control?: AbstractControl;
   @Input() index?: number; //debe estar afuera del archivo de configuracion porque es un dato variable
 
 

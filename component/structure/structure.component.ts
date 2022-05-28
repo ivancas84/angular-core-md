@@ -52,14 +52,15 @@ export abstract class StructureComponent implements OnInit {
    isSubmitted: boolean = false //Flag para habilitar/deshabilitar boton aceptar
    response: any //respuesta de procesamiento
 
+
    constructor(
-    protected dialog: MatDialog,
+    protected dd: DataDefinitionToolService,
     protected storage: SessionStorageService,
-    protected dd: DataDefinitionToolService, 
+    protected dialog: MatDialog,
     protected snackBar: MatSnackBar,
     protected router: Router, 
-    protected location: Location, 
     protected route: ActivatedRoute, 
+    protected location: Location, 
   ) { }
 
   abstract loadDisplay(): void;

@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { FormConfig, FormControlConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { ControlDirective } from '@directive/control.directive';
 
 export interface AbstractControlViewOption {
