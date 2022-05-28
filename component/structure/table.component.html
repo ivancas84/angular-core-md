@@ -21,7 +21,8 @@
                     [config]="searchConfig"
                     [control]="searchControl"></core-search>
 
-      <table mat-table 
+      <div #mainTable>
+      <table  mat-table 
             [dataSource]="control.controls" 
             matSort 
             [matSortActive]="sortActive" 
@@ -66,6 +67,8 @@
         <tr mat-footer-row *matFooterRowDef="footerColumns; sticky:true"></tr>
       </table>
       
+      </div>
+
       <mat-toolbar>
         <mat-toolbar-row>
           <mat-paginator *ngIf="length && display$.value"

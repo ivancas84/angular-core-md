@@ -1,8 +1,11 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort, SortDirection } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
@@ -11,7 +14,11 @@ import { emptyUrl } from '@function/empty-url.function';
 import { getControlName } from '@function/get-control-name';
 import { naturalCompare } from '@function/natural-compare';
 import { titleCase } from '@function/title-case';
+import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
+import { SessionStorageService } from '@service/storage/session-storage.service';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { Location } from '@angular/common';
 
 declare function copyFormatted(html: any): any;
 declare function printHtml(html: any): any;
@@ -85,14 +92,25 @@ export class TableComponent extends ArrayComponent {
 
 
   @ViewChild(MatPaginator) paginator?: MatPaginator; //paginacion
-  @ViewChild("content", {read: ElementRef}) content!: ElementRef; //contenido para copiar o imprimir
-  @ViewChild(MatTable) table!: MatTable<any>;
+  @ViewChild("mainTable", {read: ElementRef}) content!: ElementRef; //contenido para copiar o imprimir
+  @ViewChild("mainTable") table!: MatTable<any>;
 
-  
+  constructor(
+    protected override dd: DataDefinitionToolService, 
+    protected override storage: SessionStorageService,
+    protected override dialog: MatDialog,
+    protected override snackBar: MatSnackBar,
+    protected override router: Router, 
+    protected override route: ActivatedRoute, 
+    protected override location: Location, 
+    protected cd:ChangeDetectorRef 
+  ) {
+    super(dd, storage, dialog, snackBar, router, route, location)
+  }
+
   override ngOnInit(): void {
     if(!this.title) this.title = titleCase(this.entityName.replace("_"," "))
     super.ngOnInit()
-    this.renderRows();
     this.initDisplayedColumns();
   }
 
@@ -178,11 +196,33 @@ export class TableComponent extends ArrayComponent {
   }
  
   copyContent(): void {
-    if(this.content) copyFormatted(this.content.nativeElement.innerHTML);
+    if(this.content) {
+      var index = this.displayedColumns.indexOf("options");
+      if (index !== -1) {
+        this.displayedColumns.splice(index, 1);
+        this.cd.detectChanges()
+      }
+      copyFormatted(this.content.nativeElement.innerHTML);
+      if (index !== -1) this.displayedColumns.splice(index, 0, "options");
+    }
   }
 
   printContent(): void {
-    if(this.content) printHtml(this.content.nativeElement.innerHTML);
+    if(this.content) {
+      var index = this.displayedColumns.indexOf("options");
+      if (index !== -1) {
+        this.displayedColumns.splice(index, 1);
+        this.cd.detectChanges()
+      }
+      printHtml(this.content.nativeElement.innerHTML);
+      if (index !== -1) this.displayedColumns.splice(index, 0, "options");
+    }
+  }
+
+  override setData(data: any[]){
+    super.setData(data);
+    this.renderRows();
+
   }
 
 }
