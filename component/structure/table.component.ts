@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -31,7 +31,7 @@ declare function printHtml(html: any): any;
   .mat-table.mat-table { min-width: 500px; }
   `],
 })
-export class TableComponent extends ArrayComponent {
+export class TableComponent extends ArrayComponent implements AfterViewInit {
   /**
    * Tabla para visualizar los datos de una entidad con ordenamiento y pagina-
    * cion
@@ -39,7 +39,6 @@ export class TableComponent extends ArrayComponent {
 
   title!: string;
 
- 
   optColumn: FormControlConfig[] = []; //columna opciones
   /**
    * Columna opciones asignada a AbstractControlView
@@ -92,8 +91,8 @@ export class TableComponent extends ArrayComponent {
 
 
   @ViewChild(MatPaginator) paginator?: MatPaginator; //paginacion
-  @ViewChild("mainTable", {read: ElementRef}) content!: ElementRef; //contenido para copiar o imprimir
-  @ViewChild("mainTable") table!: MatTable<any>;
+  @ViewChild("mainTable") content!: ElementRef; //contenido para copiar o imprimir
+  @ViewChild(MatTable) table!: MatTable<any>;
 
   constructor(
     protected override dd: DataDefinitionToolService, 
@@ -106,6 +105,10 @@ export class TableComponent extends ArrayComponent {
     protected cd:ChangeDetectorRef 
   ) {
     super(dd, storage, dialog, snackBar, router, route, location)
+  }
+
+  ngAfterViewInit(): void {
+    this.renderRows()
   }
 
   override ngOnInit(): void {
@@ -221,8 +224,6 @@ export class TableComponent extends ArrayComponent {
 
   override setData(data: any[]){
     super.setData(data);
-    this.renderRows();
-
   }
 
 }
