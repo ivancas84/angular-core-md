@@ -14,6 +14,7 @@ import { map, startWith } from "rxjs/operators";
 import { Display } from "@class/display";
 import { isEmptyObject } from "@function/is-empty-object.function";
 import { of } from "rxjs";
+import { logValidationErrors } from "@function/log-validation-errors";
 
 @Component({
   selector: 'core-show',
