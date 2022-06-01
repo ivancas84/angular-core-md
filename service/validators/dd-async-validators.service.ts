@@ -63,8 +63,11 @@ export class DdAsyncValidatorsService {
 
       return timer(1000).pipe(
         mergeMap(()=> {
-          for(let f in fields) values.push(control!.get(fields[f])!.value);          
-
+          for(let f in fields) { 
+            if(!control.get(fields[f])!.value) return of(null)
+            values.push(control.get(fields[f])!.value);          
+          }
+          
           let filters = [];
           for(let i = 0; i < fields.length; i++) filters.push([fields[i], "=", values[i]]);
          
@@ -74,7 +77,7 @@ export class DdAsyncValidatorsService {
           return this.dd.id(entity, display).pipe(
             map(
               id => {
-                return (id && (id != control!.get("id")!.value)) ? { notUnique: id } : null;
+                return (id && (id != control.get("id")!.value)) ? { notUnique: id } : null;
               },
             )
           );
