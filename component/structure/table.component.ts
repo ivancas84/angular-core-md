@@ -1,23 +1,21 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort, SortDirection } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormControlConfig, FormGroupConfig } from '@class/reactive-form-config';
+import { FormControlConfig } from '@class/reactive-form-config';
 import { AbstractControlViewOption } from '@component/abstract-control-view/abstract-control-view.component';
-import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { ArrayComponent } from '@component/structure/array.component';
 import { emptyUrl } from '@function/empty-url.function';
 import { getControlName } from '@function/get-control-name';
 import { naturalCompare } from '@function/natural-compare';
 import { titleCase } from '@function/title-case';
-import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
 import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 import { Location } from '@angular/common';
 
 declare function copyFormatted(html: any): any;
@@ -135,21 +133,21 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
   }
   
   renderRows(){
-    this.control.valueChanges.pipe(
+    var s = this.control.valueChanges.pipe(
       //startWith(this.control.value),
       debounceTime(100),
       map(
         () => {
-          this.table.renderRows()
-          return true;
+          if(this.table) this.table.renderRows()
         }
       )
     ).subscribe(
       () => {}
     );
+    this.subscriptions.add(s)
   } 
 
-  override switchOptField($event: { action: any; index: any; }){
+  override switchOptField($event:{ action: any; index?: any; control?: AbstractControl}){
     switch($event.action){
       case "remove": this.remove($event.index); break;
       case "copy_content": this.copyContent(); break;

@@ -233,6 +233,7 @@ export abstract class StructureComponent implements OnInit {
       case "clear": this.clear(); break;
       case "back": this.back(); break;
       case "reset": this.reset(); break;
+      default: console.log("No implementado: " + data.action);
       
     }
   }

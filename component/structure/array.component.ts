@@ -1,19 +1,11 @@
 import { OnInit, Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { Display } from '@class/display';
-import { MatDialog } from '@angular/material/dialog';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
-import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
-import { SessionStorageService } from '@service/storage/session-storage.service';
-import { DataDefinitionFkAllService } from '@service/data-definition/data-definition-fk-all.service';
-import { ConfigFormGroupFactory, FormArrayConfig, FormGroupConfig } from '@class/reactive-form-config';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Location } from '@angular/common';
+import { FormArrayConfig, FormGroupConfig } from '@class/reactive-form-config';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { StructureComponent } from '@component/structure/structure.component';
-import { ValidatorsService } from '@service/validators/validators.service';
 import { FieldWidthOptions } from '@class/field-width-options';
 import { InputTextConfig } from '@component/input-text/input-text.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
@@ -177,7 +169,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     return this.dd._post("persist_rel_rows", this.entityName, this.serverData())
   }
 
-  override switchOptField(data: { action: string; [x: string]: any; }){
+  override switchOptField(data: { action: any; index?: any; control?: AbstractControl}){
     /**
      * Ejecutar opcion de evento
      * 
@@ -193,7 +185,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     switch(data.action){
       case "remove": 
         var index = data["index"]
-        var fa: FormArray = data["control"].parent as FormArray
+        var fa: FormArray = data["control"]!.parent as FormArray
         var fg: FormGroup = fa.controls[index] as FormGroup
         if(!fg.get("id")!.value) fa.removeAt(index)
         else fg.get("_mode")!.setValue("delete");
