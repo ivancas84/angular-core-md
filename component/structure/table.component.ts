@@ -220,9 +220,6 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     }
   }
 
-  override setData(data: any[]){
-    super.setData(data);
-  }
 
 }
 
