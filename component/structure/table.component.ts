@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -39,7 +39,7 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
 
   optColumn: FormControlConfig[] = []; //columna opciones
   /**
-   * Columna opciones asignada a AbstractControlView
+   * Columna opciones asignada a AbstractControlView.
    * Solo se define config, el "control" y el "index" se definen por cada fi-
    * la, no deben ser completados.
    * Recibe como control el FormGroup integro para procesar parametros
@@ -86,7 +86,6 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
   pageSizeOptions: number[] =[10, 25, 50, 100] 
   
   footerColumns?: string[]; //columnas de footer a visualizar
-
 
   @ViewChild(MatPaginator) paginator?: MatPaginator; //paginacion
   @ViewChild(MatTable) table!: MatTable<any>;
