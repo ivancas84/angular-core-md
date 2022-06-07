@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -14,7 +14,9 @@ import { map, startWith } from "rxjs/operators";
 import { Display } from "@class/display";
 import { isEmptyObject } from "@function/is-empty-object.function";
 import { of } from "rxjs";
-import { logValidationErrors } from "@function/log-validation-errors";
+
+declare function copyFormatted(html: any): any;
+declare function printHtml(html: any): any;
 
 @Component({
   selector: 'core-show',
@@ -52,7 +54,7 @@ export abstract class StructureComponent implements OnInit {
    storageValues: any = null
    isSubmitted: boolean = false //Flag para habilitar/deshabilitar boton aceptar
    response: any //respuesta de procesamiento
-
+   @ViewChild("mainContent") content!: ElementRef; //contenido para copiar o imprimir
 
    constructor(
     protected dd: DataDefinitionToolService,
@@ -233,6 +235,8 @@ export abstract class StructureComponent implements OnInit {
       case "clear": this.clear(); break;
       case "back": this.back(); break;
       case "reset": this.reset(); break;
+      case "copy_content": this.copyContent(); break;
+      case "print_content": this.printContent(); break;
       default: console.log("No implementado: " + data.action);
       
     }
@@ -267,4 +271,16 @@ export abstract class StructureComponent implements OnInit {
 
   back() { this.location.back(); }
 
+
+  copyContent(): void {
+    if(this.content) {
+      copyFormatted(this.content.nativeElement.innerHTML);
+    }
+  }
+
+  printContent(): void {
+    if(this.content) {
+      printHtml(this.content.nativeElement.innerHTML);
+    }
+  }
 }

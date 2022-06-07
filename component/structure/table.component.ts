@@ -89,7 +89,6 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
 
 
   @ViewChild(MatPaginator) paginator?: MatPaginator; //paginacion
-  @ViewChild("mainTable") content!: ElementRef; //contenido para copiar o imprimir
   @ViewChild(MatTable) table!: MatTable<any>;
 
   constructor(
@@ -150,8 +149,6 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
   override switchOptField($event:{ action: any; index?: any; control?: AbstractControl}){
     switch($event.action){
       case "remove": this.remove($event.index); break;
-      case "copy_content": this.copyContent(); break;
-      case "print_content": this.printContent(); break;
       case "add": this.add(); break;
       default: super.switchOptField($event);
     }
@@ -196,7 +193,7 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     //this.table.renderRows(); se ejecuta el renderRows del valueChanges definido en el OnInit
   }
  
-  copyContent(): void {
+  override copyContent(): void {
     if(this.content) {
       var index = this.displayedColumns.indexOf("options");
       if (index !== -1) {
@@ -208,7 +205,7 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     }
   }
 
-  printContent(): void {
+  override printContent(): void {
     if(this.content) {
       var index = this.displayedColumns.indexOf("options");
       if (index !== -1) {
