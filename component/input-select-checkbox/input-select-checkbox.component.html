@@ -17,8 +17,8 @@
               [formControl]="control"
   >
     <mat-option [value]="null">--Seleccione--</mat-option>
-    <mat-option [value]="true">{{config.options[0]}}</mat-option>
-    <mat-option [value]="false">{{config.options[1]}}</mat-option>
+    <mat-option [value]="'true'">{{config.options[0]}}</mat-option>
+    <mat-option [value]="'false'">{{config.options[1]}}</mat-option>
   </mat-select>
   <mat-error *ngIf="control.hasError('required')">Debe completar valor</mat-error>
 
