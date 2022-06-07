@@ -86,12 +86,16 @@ export class DetailComponent extends StructureComponent implements OnInit{
            */
           if(!isEmptyObject(this.params)) this.control.patchValue(this.params)
 
-          if(!isEmptyObject(data)) this.control.patchValue(data)
+          this.setData(data)
 
           return true;
         }
       ),
     )
+  }
+
+  setData(data: { [key: string]: any; }){
+    if(!isEmptyObject(data)) this.control.patchValue(data)
   }
 
   override initDisplay() {
