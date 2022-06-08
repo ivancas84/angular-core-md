@@ -4,8 +4,10 @@ import { Observable, Subscription } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { Display } from '@class/display';
 import { arrayColumn } from '@function/array-column';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { FormControlConfig } from '@class/reactive-form-config';
+import { getControlName } from '@function/get-control-name';
+import { titleCase } from '@function/title-case';
 
 export class InputSelectValueConfig extends FormControlConfig {
   override component: any = InputSelectValueComponent
@@ -39,14 +41,21 @@ export class InputSelectValueComponent implements OnInit {
   constructor( public dd: DataDefinitionService ) { }
 
   ngOnInit(): void {
-    if(!this.config.label) this.config.label = this.config.fieldName;
+    var n = "";
+    if(!this.config.label) {
+      n = getControlName(this.control)
+      this.config.label = titleCase(n!.substring(n!.indexOf("-")+1).replace("_"," "))
+    }
+
+    if(!this.config.fieldName) this.config.fieldName = getControlName(this.control)
+
     let display  = new Display();
     display.setFieldsArray([this.config.fieldName]);
     display.setOrderByKeys([this.config.fieldName]);
     this.options$ = this.dd.post("advanced", this.config.entityName, display).pipe(
       map(
-        rows => arrayColumn(rows, this.config.fieldName)
-      )
+        rows => arrayColumn(rows, this.config.fieldName).filter(n => n)
+      ),
     )
   }
 

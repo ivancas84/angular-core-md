@@ -116,7 +116,10 @@ export abstract class StructureComponent implements OnInit {
   onSubmit(): void {
     this.isSubmitted = true;
     if (!this.control.valid) {
-      this.cancelSubmit();
+      if(this.control.pending) this.dialog.open(DialogAlertComponent, {
+        data: {title: "Error", message: "El formulario esta procesando, repita el proceso de envío"}
+      });
+      else this.cancelSubmit();
     } else {
       this.submit();
     }
@@ -130,6 +133,7 @@ export abstract class StructureComponent implements OnInit {
     });
     this.isSubmitted = false;
   }
+  
 
   submit(){
     var s = this.persist().subscribe({

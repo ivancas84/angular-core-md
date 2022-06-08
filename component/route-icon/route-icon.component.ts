@@ -12,6 +12,7 @@ export class RouteIconConfig extends FormControlConfig {
   target!: string
   title: string = ""
   params: { [index: string]: any } = {}
+  disabled: boolean = false
   /**
    * @example 
    *   params: {
@@ -57,6 +58,7 @@ export class RouteIconComponent implements OnInit {
           this.setQueryParams(value)
         }
       )
+
   }
 
   setQueryParams(value: {[key:string]:string}){

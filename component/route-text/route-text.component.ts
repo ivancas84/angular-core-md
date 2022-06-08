@@ -25,6 +25,8 @@ export class RouteTextConfig extends FormControlConfig {
    * En el ejemplo se utilizara control.value["id"] y control.value["alumno"]
    * Asegurarse de que el atributo incluido exista en el conjunto de valores de control
    */
+  disabled: boolean = false
+
 
   constructor(attributes: any = {}) {
     super()

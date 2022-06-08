@@ -1,6 +1,7 @@
 import { Component, Input, OnInit} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormControlConfig } from '@class/reactive-form-config';
+import { startWith } from 'rxjs';
  
 export class EventButtonConfig extends FormControlConfig {
   override component: any = EventButtonComponent
@@ -8,6 +9,7 @@ export class EventButtonConfig extends FormControlConfig {
   action!: string //accion del evento a realizar
   color: string = ""
   fieldEvent!: FormControl
+  disabled: boolean = false
 
   constructor(attributes: any = {}) {
     super()
