@@ -9,6 +9,7 @@ export class EventIconConfig extends FormControlConfig {
   fieldEvent!: FormControl
   color: string = ""
   title: string = ""
+  disabled: boolean = false
 
   constructor(attributes: any = {}) {
     super()
