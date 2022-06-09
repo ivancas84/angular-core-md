@@ -9,6 +9,7 @@ import { StructureComponent } from '@component/structure/structure.component';
 import { FieldWidthOptions } from '@class/field-width-options';
 import { InputTextConfig } from '@component/input-text/input-text.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
+import { getControlName } from '@function/get-control-name';
 
 @Component({
   selector: 'core-array',
@@ -183,9 +184,21 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
      *   
      */
     switch(data.action){
+      case "add":
+        var fg = this.config.factory!.formGroup();
+        this.control.push(fg); 
+      break;
+
       case "remove": 
-        var index = data["index"]
-        var fa: FormArray = data["control"]!.parent as FormArray
+        /**
+         * Utilizar el remove con los campos id y _mode definidos
+         */
+        var index = getControlName(data.control!) as unknown as number 
+        /**
+         * NO USAR data[index] porque al eliminar no se reflejan los cambios!
+         * En el template se ve que se modifica, pero no se traduce en el componente.
+         */
+        var fa: FormArray = data.control!.parent as FormArray
         var fg: FormGroup = fa.controls[index] as FormGroup
         if(!fg.get("id")!.value) fa.removeAt(index)
         else fg.get("_mode")!.setValue("delete");
@@ -215,17 +228,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     //this.subscriptions.add(s)
   }
   
-  add() {
-    var fg = this.config.factory!.formGroup();
-    this.control.push(fg); 
-  }
- 
-  remove(index: number) { 
-    /**
-     * Incorporar el control _mode al fieldset!
-     */
-    if(!this.control.controls[index].get("id")!.value) this.control.removeAt(index); 
-    else this.control.controls[index].get("_mode")!.setValue("delete");
-  }
+
+
 
 }
