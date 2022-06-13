@@ -146,14 +146,6 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     this.subscriptions.add(s)
   } 
 
-  override switchOptField($event:{ action: any; index?: any; control?: AbstractControl}){
-    switch($event.action){
-      case "remove": this.remove($event.index); break;
-      case "add": this.add(); break;
-      default: super.switchOptField($event);
-    }
-  }
-
   onChangePage($event: PageEvent){
     var display = this.display$.value;
     display.setPage($event.pageIndex+1);

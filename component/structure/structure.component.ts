@@ -130,6 +130,7 @@ export abstract class StructureComponent implements OnInit {
     });
     this.isSubmitted = false;
   }
+  
 
   submit(){
     var s = this.persist().subscribe({

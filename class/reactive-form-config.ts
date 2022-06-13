@@ -1,7 +1,5 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from "@angular/forms"
 import { ValidatorMsg } from "./validator-msg"
-import { isEmptyObject } from "@function/is-empty-object.function"
-
 
 export abstract class FormConfig {
   /**
@@ -33,11 +31,14 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
     /**
      * deberia ser final! no deberia sobrescribirse
      */
-    var fg = new FormGroup({})
-
+    var fg = this.formGroupCreate()
     this.formGroupAssign(fg)
 
     return fg;
+  }
+
+  formGroupCreate(){
+    return new FormGroup({})
   }
 
   formGroupAssign(fg: FormGroup){
@@ -46,23 +47,9 @@ export class ConfigFormGroupFactory implements FormGroupFactory{
      */
     for(var key in this.config.controls) {
       if(this.config.controls.hasOwnProperty(key) && !fg.contains(key)) {
-         var fc = new FormControl({value: this.config.controls[key].default, disabled: this.config.controls[key].disabled})
-         //if(!this.config.controls[key].label) this.config.controls[key].label = key;
-         /**
-          * La asignacion por defecto del label se derivo directamente a cada 
-          * componente. La decision se basa en que la definicion de 
-          * FormControl puede realizarse de diferentes lugares y ademas se es-
-          * ta asignando valor a un "config" en un metodo que define "form" 
-          */
-        if(this.config.controls[key].required) fc.setValidators(Validators.required)
-        /**
-         * @deprecated los atributos de abstractform deben ser indicados directamente en el abstractform.
-         */
-        fg.addControl(key, fc)
+         fg.addControl(key, new FormControl(this.config.controls[key].default))
       } 
     }
- 
-    //if(this.disabled) fg.disable()
   }
 
 }
@@ -213,7 +200,7 @@ export class FormControlConfig extends FormConfig {
    * @deprecated Los atributos de controles se definen directamente en el con-
    * trol, excepto default.
    */
-  disabled:boolean = false;
+  //disabled:boolean = false;
   
   /**
    * Marcar control como obligatorio.
