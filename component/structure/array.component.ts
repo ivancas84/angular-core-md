@@ -53,13 +53,12 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
      * Si se encuentra footerConfig configurado, se inicializan los atributos 
      * asociados a footer.
      * Los datos de footer no son inicializados, como alternativa puede so-
-     * brescribirse loadDisplay para incluir su inicializacion.
+     * brescribirse "setData" para incluir su inicializacion.
      */
     if(!this.footerConfig) return;
     if(!this.footer) this.footer = new FormGroup({})
     this.footerConfig.initControl(this.footer)
   }
-
 
   getStorageValues(): any {
     return this.control.getRawValue()

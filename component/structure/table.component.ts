@@ -55,7 +55,7 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
    * }
    */
 
-  optFooter: AbstractControlViewOption[] = []; //columna opciones
+  optFooter: AbstractControlViewOption[] = []; 
   optTitle: AbstractControlViewOption[] = []; //opciones titulo
 
   serverSortTranslate: { [index: string]: string[] } = {};
@@ -128,6 +128,7 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     })
     if(this.optColumn.length) this.displayedColumns.push("options");
     if(this.footerConfig) this.footerColumns = this.displayedColumns
+    console.log(this.footerColumns)
   }
   
   renderRows(){
