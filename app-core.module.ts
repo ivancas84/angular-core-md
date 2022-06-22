@@ -72,6 +72,7 @@ import { TableOneComponent } from "@component/structure/table-one.component";
 import { LinkValueComponent } from "@component/link-value/link-value.component";
 import { UploadComponent } from "@component/upload/upload.component";
 import { BackupComponent } from "@component/backup/backup.component";
+import { LinkIconComponent } from "@component/link-icon/link-icon.component";
 
 registerLocaleData(localeEsAr, 'es-AR');
 
@@ -163,6 +164,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputYmComponent,
     InputUploadComponent,
     LabelComponent,
+    LinkIconComponent,
     LinkTextComponent,
     LinkValueComponent,
     RouteIconComponent,

@@ -1,0 +1,18 @@
+<a mat-mini-fab *ngIf="!config.download; else download_template"
+   [href]="href" 
+   [target]="config.target"
+   [color]="config.color" 
+   [title]="config.title"> <mat-icon>{{config.icon}}</mat-icon> </a>
+
+<ng-template #download_template>
+  <a mat-mini-fab download="download"  
+   [href]="href" 
+   [target]="config.target"
+   [color]="config.color" 
+   [title]="config.title"> <mat-icon>{{config.icon}}</mat-icon> </a>
+</ng-template>
+
+
+
+   
+
