@@ -192,7 +192,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
         /**
          * Utilizar el remove con los campos id y _mode definidos
          */
-        var index = getControlName(data.control!) as unknown as number 
+        var index:any = getControlName(data.control!) as unknown as any
         /**
          * NO USAR data[index] porque al eliminar no se reflejan los cambios!
          * En el template se ve que se modifica, pero no se traduce en el componente.
