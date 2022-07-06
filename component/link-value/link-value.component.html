@@ -4,7 +4,7 @@
    [title]="config.title"> {{control.value}} </a>
 
 <ng-template #download_template>
-  <a download="download"  
+  <a download="{{control.value}}"  
    [href]="href" 
    [target]="config.target"
    [title]="config.title"> {{control.value}} </a>
