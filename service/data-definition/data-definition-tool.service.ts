@@ -425,7 +425,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  getConnectionUm(
+  getConnection_(
     data: { [index: string]: any }, 
     fkName: string, 
     entityName: string, 
@@ -433,7 +433,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
     join:string=", "
   ): Observable<{ [index: string]: any }>{
     /**
-     * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
+     * Consulta un conjunto de relaciones.
+     * Consulta un solo elemento del parametro "entityName" utilizando los 
+     * parametros "data[fkName]" para obtener "response" 
      * Efectua una asociacion 
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
@@ -458,19 +460,26 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
   getConnectionObj(
     data: { [index: string]: any },
-    id: string,
-    idResponse: string, 
-    fkName: string, 
-    entityName: string, 
+	entityName: string, 
     fields: { [index: string]: any },
-    join:string=", "
+    id: string,
+	fkName?: string, 
+
+    idResponse?: string, 
   ): Observable<{ [index: string]: { [index: string]: any } }>{
     /**
      * Similar a getConnection pero utiliza una estructura de datos diferente de la forma
      * data["alumno"] = {id:"value",activo:"value"} 
      * data["per"] = {id:"value",activo:"value"}
      */
-    data[idResponse] = null;
+    if(!fkName) fkName = entityName;
+    if(!idResponse) idResponse = fkName;
+    data[idResponse] = {};
+    if(!isEmptyObject(data)) {
+      for(var f in fields) data[idResponse][f] = null;
+      data[id][fkName] = null
+    }
+
     if(!data[id][fkName]) return of(data);
 
     return this.get(entityName, data[id][fkName]).pipe(
@@ -478,8 +487,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
         response => {
           if(!response) return data;
           for(var f in fields){
-            if(fields.hasOwnProperty(f))                    
-              data[f] = response[f];
+            if(fields.hasOwnProperty(f)) data[idResponse!][f] = response[fields[f]];
           }
           return data;
         }
