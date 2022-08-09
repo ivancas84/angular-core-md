@@ -20,6 +20,8 @@ export class InputSearchGoComponent implements OnInit {
   @Input() entityName!: string;
   @Input() label: string = "Buscar";
   @Input() route: string = emptyUrl(this.router.url);
+  @Input() fieldName: string = "id";
+
   //@Input() queryParamsKey: string = "id";
 
 
@@ -49,8 +51,9 @@ export class InputSearchGoComponent implements OnInit {
       mergeMap(value => {
         if (typeof value == "string" ) return this._filter(value)
         else {          
-         
-          this.router.navigate([this.route],{queryParams: {id:value.id}});
+          var qp: { [x: string]: any } = {}
+          qp[this.fieldName] = value.id
+          this.router.navigate([this.route],{queryParams: qp});
           return of([])
         }
       })
