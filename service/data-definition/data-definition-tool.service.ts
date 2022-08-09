@@ -477,11 +477,11 @@ export class DataDefinitionToolService extends DataDefinitionService{
     data[idResponse] = {};
     if(!isEmptyObject(data)) {
       for(var f in fields) data[idResponse][f] = null;
-      data[id][fkName] = null
     }
 
     if(!data[id][fkName]) return of(data);
 
+ 
     return this.get(entityName, data[id][fkName]).pipe(
       map(
         response => {

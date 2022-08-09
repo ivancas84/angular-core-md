@@ -20,6 +20,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   exports: [
@@ -44,7 +45,8 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
     //MatStepperModule,
     MatTableModule,
     MatToolbarModule,
-
+    MatSlideToggleModule,
+    
     MaterialFileInputModule,
   ]
 })
