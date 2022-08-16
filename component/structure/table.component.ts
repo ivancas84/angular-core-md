@@ -107,6 +107,21 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     this.renderRows()
   }
 
+  renderRows(){
+    var s = this.control.valueChanges.pipe(
+      //startWith(this.control.value),
+      debounceTime(100),
+      map(
+        () => {
+          if(this.table) this.table.renderRows()
+        }
+      )
+    ).subscribe(
+      () => {}
+    );
+    this.subscriptions.add(s)
+  }
+
   override ngOnInit(): void {
     if(!this.title) this.title = titleCase(this.entityName.replace("_"," "))
     super.ngOnInit()
@@ -131,21 +146,6 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     console.log(this.footerColumns)
   }
   
-  renderRows(){
-    var s = this.control.valueChanges.pipe(
-      //startWith(this.control.value),
-      debounceTime(100),
-      map(
-        () => {
-          if(this.table) this.table.renderRows()
-        }
-      )
-    ).subscribe(
-      () => {}
-    );
-    this.subscriptions.add(s)
-  } 
-
   onChangePage($event: PageEvent){
     var display = this.display$.value;
     display.setPage($event.pageIndex+1);
