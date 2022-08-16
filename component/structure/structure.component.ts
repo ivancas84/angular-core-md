@@ -67,7 +67,13 @@ export abstract class StructureComponent implements OnInit {
   ) { }
 
   abstract loadDisplay(): void;
-  abstract initDisplay(): void;
+
+  initDisplay(): void {
+    var display = new Display();
+    display.setSize(100);
+    display.setParamsByQueryParams(this.params);
+    this.display$.next(display)
+  }
 
   initData(): Observable<any> {
     /**
