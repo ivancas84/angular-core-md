@@ -123,13 +123,6 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
     this.control.patchValue(data)
   }
 
-  override initDisplay() {
-    var display = new Display();
-    display.setSize(100);
-    display.setParamsByQueryParams(this.params);
-    this.display$.next(display)
-  }
-
   initLength(): Observable<any> {
     /**
      * Si no se desea procesar la longitud, retornar of(null)
