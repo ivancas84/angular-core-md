@@ -95,7 +95,6 @@ registerLocaleData(localeEsAr, 'es-AR');
     DialogConfirmComponent,
     InputSearchGoComponent,
     SearchComponent,
-    TableComponent,
     TableOneComponent,
     UploadComponent,
     /**
@@ -169,6 +168,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     LinkValueComponent,
     RouteIconComponent,
     RouteTextComponent,
+    TableComponent,
     TextareaComponent,
     // ,
     // TableDynamicComponent,

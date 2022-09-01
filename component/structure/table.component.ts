@@ -128,6 +128,7 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     this.initDisplayedColumns();
   }
 
+
   initDisplayedColumns(){
     this.displayedColumns = []
     var fg = this.config.factory!.formGroup();

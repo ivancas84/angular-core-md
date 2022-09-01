@@ -36,6 +36,11 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   
   load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
 
+  /**
+   * Por una cuestión de facilidad, los atributos y métodos relativos a busque-
+   * da se declaran en ArrayComponent, pero no deberían estar. ArrayComponent
+   * debería ser más simple
+   */
   searchControl!: FormGroup
   searchConfig!: FormGroupConfig
 
