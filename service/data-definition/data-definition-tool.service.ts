@@ -338,6 +338,55 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
+  postAllConnectionUm(
+    data: { [index: string]: any }[], 
+    method:string,
+    entityName: string, 
+    fields: { [index: string]: any },
+    fieldNameData?: string,
+    fieldNameResponse?: string, 
+  ): Observable<{ [index: string]: any }[]>{
+    /**
+     * Consulta relaciones um de un conjunto de datos
+     * Define un conjunto de identificadores "ids", filtrando del parametro 
+     * "data" el campo "fieldName".
+     * Consulta todos los campos del parametro "entityName" utilizando el pa-
+     * rametro "fkName" "(fkName = ids)"
+     * Recorre "data" y "response", compara "data[i][fkName]" con 
+     * "response[j][id]" y realiza un push de cada coincidencia.
+     * Los elementos coincidentes se almacenan en data[i][fkName+"_"].
+     * Al no ser una "asociacion" no hace falta filtrar datos, directamente se
+     * almacena todo el cada resultado como elemento de un array
+     */
+    
+     if(!fieldNameData) fieldNameData = entityName;
+     if(!fieldNameResponse) fieldNameResponse = fieldNameData;
+     if(!data.length) return of([]);
+     data.forEach(element=>{
+       element["_"+fieldNameData] = null; //inicializar en null
+     })
+     
+    var ids_ = arrayColumn(data, fieldNameData);
+    var ids = arrayUnique(ids_);
+    if(!ids.length) return of(data);
+
+    return this._post(method,entityName,ids).pipe(
+      map(
+        response => {
+          // for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+          // if(!response.length) return data;
+          // for(var j = 0; j < response.length; j++){
+          //   for(var i = 0; i < data.length; i++) { 
+          //     if(response[j][fkName] == data[i][fieldName]) 
+          //       data[i]["_"+entityName].push(response[j]);
+          //   }
+          // }
+          return data;
+        }
+      )
+    );  
+  }
+
   selectConnectionUm(
     data: { [index: string]: any }[], 
     fields: { [index: string]: string }, //fields a consultar (no deben ser funciones de agregacion)
