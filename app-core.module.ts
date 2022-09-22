@@ -73,6 +73,7 @@ import { LinkValueComponent } from "@component/link-value/link-value.component";
 import { UploadComponent } from "@component/upload/upload.component";
 import { BackupComponent } from "@component/backup/backup.component";
 import { LinkIconComponent } from "@component/link-icon/link-icon.component";
+import { ControlNumberComponent } from "@component/control-number/control-number.component";
 
 registerLocaleData(localeEsAr, 'es-AR');
 
@@ -118,6 +119,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     ControlDateComponent,
     ControlLabelComponent,
     ControlValueComponent,
+    ControlNumberComponent,
     DownloadComponent,
     EventButtonComponent,
     EventIconComponent,
@@ -207,6 +209,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     ControlDateComponent,
     ControlLabelComponent,
     ControlValueComponent,
+    ControlNumberComponent,
     DownloadComponent,
     EventButtonComponent,
     EventIconComponent,
