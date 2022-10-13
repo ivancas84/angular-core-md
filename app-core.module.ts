@@ -61,10 +61,6 @@ import { ControlDirective } from "@directive/control.directive";
 import { ValidatorsService } from "@service/validators/validators.service";
 import { DataDefinitionStorageService } from "@service/data-definition/data-definition-storage-service";
 import { DataDefinitionLabelService } from "@service/data-definition-label/data-definition-label.service";
-import { DataDefinitionRelLabelService } from "@service/data-definition/data-definition-rel-label.service";
-import { DataDefinitionRelInitialize } from "@service/data-definition/data-definition-rel-initialize.service";
-import { DataDefinitionFkAllService } from "@service/data-definition/data-definition-fk-all.service";
-import { DataDefinitionUmService } from "@service/data-definition/data-definition-um.service";
 import { SearchComponent } from "@component/search/search.component";
 import { AbstractControlFormGroupComponent } from "@component/abstract-control-form-group/abstract-control-form-group.component";
 import { DetailComponent } from "@component/structure/detail.component";
@@ -273,11 +269,6 @@ registerLocaleData(localeEsAr, 'es-AR');
 
      * Este servicio debe existir en la app
      */
-    DataDefinitionRelLabelService, 
-    DataDefinitionRelInitialize,
-    DataDefinitionFkAllService,
-    // DataDefinitionFkService,
-    DataDefinitionUmService,
 
     /*{provide: 'SocialAuthServiceConfig', useValue: { autoLogin: false,  providers: [
       {
