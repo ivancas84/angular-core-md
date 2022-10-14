@@ -1,20 +1,26 @@
 import { Injectable } from '@angular/core';
 import { isEmptyObject } from '@function/is-empty-object.function';
-import { LocalStorageService } from '@service/storage/local-storage.service';
 import { SessionStorageService } from '@service/storage/session-storage.service';
+import { Observable } from 'rxjs';
+import { DataDefinitionService } from './data-definition.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataDefinitionStorageService {
+export class DataDefinitionLabel2Service {
   /**
    * Servicio de definicion de storage
    */
 
   constructor(
-    protected stg: LocalStorageService
-  ) { }
+    protected dd: DataDefinitionService,
+    protected stg: SessionStorageService
+  ){ }
 
+  // label(entityName: string, id: string): Observable<string> {
+    
+  // }
+  
   storage(entityName: string, row: { [index: string]: any }) {
     var tree = this.stg.getItem(entityName+".tree")
     this.recursive(row, tree)

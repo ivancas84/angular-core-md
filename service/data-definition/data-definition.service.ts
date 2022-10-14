@@ -3,12 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, first, switchMap } from 'rxjs/operators';
 import { API_URL} from '../../../app.config';
-import { SessionStorageService } from '@service/storage/session-storage.service';
 import { Display } from '@class/display';
 import { CookieService } from 'ngx-cookie-service';
 import { arrayClean } from '@function/array-clean';
 import { arrayUnique } from '@function/array-unique';
 import { DataDefinitionStorageService } from './data-definition-storage-service';
+import { SessionStorageService } from '@service/storage/session-storage.service';
+import { LocalStorageService } from '@service/storage/local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,24 @@ import { DataDefinitionStorageService } from './data-definition-storage-service'
 export class DataDefinitionService {
   constructor(
     protected http: HttpClient, 
-    protected storage: SessionStorageService, 
+    protected session: SessionStorageService, 
+    protected local: LocalStorageService, 
     protected dds: DataDefinitionStorageService,
     protected cookie: CookieService
   ) { }
 
+
+  getTree(): Observable<any> {    
+    if(this.session.keyExists("tree")) return of(this.session.getItem("tree"))
+
+    return this._post("tree", "system").pipe(map(
+      response => {
+        console.log(response)
+        this.local.setItem("tree", response)
+        return response;
+      }
+    ));
+  }
   
 
   httpOptions(contentType: boolean = true) {
@@ -53,11 +67,11 @@ export class DataDefinitionService {
     var params = (data instanceof Display) ? data.describe() : data;
     var p = (params)? JSON.stringify(params) : "";
     let key = entity + "." + api + p;
-    if(this.storage.keyExists(key)) return of(this.storage.getItem(key))
+    if(this.local.keyExists(key)) return of(this.local.getItem(key))
 
     return this._post(api, entity, data).pipe(map(
       response => {
-        this.storage.setItem(key, response)
+        this.local.setItem(key, response)
         return response;
       }
     ));
@@ -90,11 +104,11 @@ export class DataDefinitionService {
   getAll (entity: string, ids: Array<string | number>): Observable<any> { 
     /**
      * Recibe una lista de ids, y retorna sus datos en el mismo orden que se reciben los ids
-     * Realiza un storage de los elementos recibidos
+     * Realiza un session de los elementos recibidos
      * Procedimiento:
      *   Se define un array del tamanio del array de ids recibido
      *   Se define un nuevo array "rows" con los valores a retornar
-     *   Se busca la coincidencia del id en el storage, y se asigna en la posicion correspondiente de rows
+     *   Se busca la coincidencia del id en el session, y se asigna en la posicion correspondiente de rows
      *   Si no existe coincidencia se define un nuevo array "searchIds" con los ids a buscar en el servidor
      *   Se realiza una consulta al servidor con searchIds y se obtiene un "rows_" auxiliar
      *   Se recorre el resultado de la consulta comparando el id de "rows_" con el id de ids para obtener la posicion corresopndiente
@@ -108,7 +122,7 @@ export class DataDefinitionService {
     let searchIds: Array<string | number> = new Array();
 
     for(let i = 0; i < ids.length; i++) {
-      let data: { [index: string]: boolean|string|number }  = this.storage.getItem(entity + ids[i]);
+      let data: { [index: string]: boolean|string|number }  = this.local.getItem(entity + ids[i]);
 
       rows[i] = data;
       if(!data) searchIds.push(ids[i]);
