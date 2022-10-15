@@ -5,7 +5,6 @@ import { DataDefinitionService } from '../../service/data-definition/data-defini
 import { map, startWith, mergeMap, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
 import { Display } from '../../class/display';
 import { getControlName } from '@function/get-control-name';
-import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
 import { FormControlConfig } from '@class/reactive-form-config';
 import { titleCase } from '@function/title-case';
 
@@ -75,7 +74,6 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
 
   constructor(
     public dd: DataDefinitionService, 
-    public ddl: DataDefinitionLabelService,
   ) { }
 
   ngDoCheck(): void {
@@ -140,12 +138,12 @@ export class InputAutocompleteComponent implements  OnInit, DoCheck, OnDestroy {
       ),
       switchMap(
         value => {
-          return this.ddl.label(this.config.entityName, value)
+          return this.dd.post("label_get",this.config.entityName, value)
         }
       ),
       map(
         label => {
-          this.label = label;
+          this.label = label["0"];
           return true;
         }
       )

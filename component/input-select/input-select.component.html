@@ -3,7 +3,7 @@
   <mat-select [multiple]="config.multiple" [formControl]="control">
     <mat-option [value]="null" *ngIf="!config.multiple">--Seleccione--</mat-option>
     <mat-option *ngFor="let opt of (options$ | async)" [value]="opt.id">
-      <core-label [id]="opt.id" [entityName]="config.entityName"></core-label>
+      {{opt["label"]}}
     </mat-option>
   </mat-select>
 

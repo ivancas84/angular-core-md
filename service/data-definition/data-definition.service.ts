@@ -29,8 +29,7 @@ export class DataDefinitionService {
 
     return this._post("tree", "system").pipe(map(
       response => {
-        console.log(response)
-        this.local.setItem("tree", response)
+        this.session.setItem("tree", response)
         return response;
       }
     ));

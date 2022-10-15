@@ -1,6 +1,6 @@
 import { Input, OnInit, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, switchMap, tap } from 'rxjs';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { Display } from '@class/display';
 import { FormControlConfig } from '@class/reactive-form-config';
@@ -49,7 +49,11 @@ export class InputSelectComponent implements OnInit {
       this.config.entityName = n.substring(n.indexOf("-")+1)
     }
 
-    this.options$ = this.dd.all(this.config.entityName, new Display)
+    this.options$ = this.dd.post("label_all",this.config.entityName, new Display).pipe(
+      tap(
+        response => console.log(response)
+      )
+    )
   }
 
 }
