@@ -60,7 +60,6 @@ import { TableComponent } from "@component/structure/table.component";
 import { ControlDirective } from "@directive/control.directive";
 import { ValidatorsService } from "@service/validators/validators.service";
 import { DataDefinitionStorageService } from "@service/data-definition/data-definition-storage-service";
-import { DataDefinitionLabelService } from "@service/data-definition-label/data-definition-label.service";
 import { SearchComponent } from "@component/search/search.component";
 import { AbstractControlFormGroupComponent } from "@component/abstract-control-form-group/abstract-control-form-group.component";
 import { DetailComponent } from "@component/structure/detail.component";
@@ -263,7 +262,6 @@ registerLocaleData(localeEsAr, 'es-AR');
     ValidatorsService,
     
     DataDefinitionStorageService, 
-    DataDefinitionLabelService,
     /**
 
 

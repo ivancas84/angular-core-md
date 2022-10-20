@@ -144,7 +144,6 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     })
     if(this.optColumn.length) this.displayedColumns.push("options");
     if(this.footerConfig) this.footerColumns = this.displayedColumns
-    console.log(this.footerColumns)
   }
   
   onChangePage($event: PageEvent){

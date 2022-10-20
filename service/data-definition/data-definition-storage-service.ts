@@ -12,13 +12,14 @@ export class DataDefinitionStorageService {
    */
 
   constructor(
-    protected stg: LocalStorageService
+    protected local: LocalStorageService,
+    protected session: SessionStorageService
   ) { }
 
   storage(entityName: string, row: { [index: string]: any }) {
-    var tree = this.stg.getItem(entityName+".tree")
+    var tree = this.session.getItem("tree")[entityName]
     this.recursive(row, tree)
-    this.stg.setItem(entityName + row["id"], row);
+    this.local.setItem(entityName + row["id"], row);
     return row;
   }
 
@@ -32,7 +33,7 @@ export class DataDefinitionStorageService {
           if(!isEmptyObject(tree[key]["children"])){
             this.recursive(row[fn], tree[key]["children"]);
           }
-          this.stg.setItem(en + row[fn].id, row[fn]);
+          this.local.setItem(en + row[fn].id, row[fn]);
           delete row[fn];
         }
       }

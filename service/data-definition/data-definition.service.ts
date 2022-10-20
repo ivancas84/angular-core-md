@@ -24,12 +24,23 @@ export class DataDefinitionService {
   ) { }
 
 
-  getTree(): Observable<any> {    
+  getTree(): Observable<{[index:string]: any }> {    
     if(this.session.keyExists("tree")) return of(this.session.getItem("tree"))
 
     return this._post("tree", "system").pipe(map(
       response => {
         this.session.setItem("tree", response)
+        return response;
+      }
+    ));
+  }
+  
+  getRelations(): Observable<{[x:string]:any}> {    
+    if(this.session.keyExists("relations")) return of(this.session.getItem("relations"))
+
+    return this._post("relations", "system").pipe(map(
+      response => {
+        this.session.setItem("relations", response)
         return response;
       }
     ));
@@ -52,9 +63,6 @@ export class DataDefinitionService {
     return opt;      
 
   }
-
-
-
   
   _post(api: string, entity: string, data: any = null):  Observable<any> {
     var params = (data instanceof Display) ? data.describe() : data;
@@ -100,7 +108,7 @@ export class DataDefinitionService {
     )
   }
 
-  getAll (entity: string, ids: Array<string | number>): Observable<any> { 
+  getAll (entity: string, ids: Array<string | number>): Observable<{[index:string]:any}[]> { 
     /**
      * Recibe una lista de ids, y retorna sus datos en el mismo orden que se reciben los ids
      * Realiza un session de los elementos recibidos
@@ -129,10 +137,7 @@ export class DataDefinitionService {
 
     if(!searchIds.length) return of(rows);
 
-    return this.post("tree", entity).pipe(
-      switchMap(
-        () => this._post("get_all", entity, searchIds)
-      ),
+    return this._post("get_all", entity, searchIds).pipe(
       map(
         rows_ => {
           rows_.forEach((element: { [x: string]: any }) => {
@@ -148,12 +153,11 @@ export class DataDefinitionService {
     )
   }
   
-  get (entity: string, id: string|number): Observable<any> {
-    if(!id) return of(null);
+  get (entity: string, id: string|number): Observable<{[index:string]:any}> {
     return this.getAll(entity, [id]).pipe(
       map(rows => {
-        if(rows.length > 1) throw("La consulta retorno mas de un registro");
-        return (rows.length != 1) ? null : rows[0];
+        if(rows.length != 1) throw("La consulta no retorno un registro");
+        return rows[0]
       })
     )
   }

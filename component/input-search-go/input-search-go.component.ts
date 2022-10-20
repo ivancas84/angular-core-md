@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { DataDefinitionService } from '../../service/data-definition/data-definition.service';
 import { startWith, mergeMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Display } from '../../class/display';
-import { DataDefinitionLabelService } from '@service/data-definition-label/data-definition-label.service';
 import { emptyUrl } from '@function/empty-url.function';
 
 @Component({
@@ -35,7 +34,6 @@ export class InputSearchGoComponent implements OnInit {
   constructor(
     protected dd: DataDefinitionService,
     protected router: Router, 
-    protected ddl: DataDefinitionLabelService
   ) { }
 
 

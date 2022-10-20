@@ -4,14 +4,233 @@ import { arrayColumn } from '@function/array-column';
 import { arrayUnique } from '@function/array-unique';
 import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataDefinitionToolService extends DataDefinitionService{
+
+  public entityFieldsGetAll(entityName: string, ids:string[], fields:string[]):  Observable<{ [index: string]: any }[]>{
+    var t = this.getRelations();
+    var e = this.getAll(entityName, ids);
+    var fieldsId_: string[] = this.fieldIdFilterArray(fields)
+
+    return combineLatest([t, e]).pipe(
+      switchMap(
+        response => {
+          var relations: { [index: string]: any } = response[0]
+          var data:  { [index: string]: any }[] = response[1]
+          
+          return of(data)
+          // return this.traduceFieldIds(0, fieldsId_, relations[entityName], data)
+        }
+      )
+    )
+  }
+
+  protected traduceFieldIds (
+    index:number, //control de recursion
+    fields:string[], //fields solicitados
+    fieldId_:string[],  //fieldId que deben ser consultados (index se usa para recorrer este array que puede variar a medida que se realiza la recursion)
+    fieldIdAux_: string[], //fieldId consultados
+    relations: { [index: string]: any },  //relaciones de la entidad
+    data: { [index: string]: any }[], //datos consultados
+  ): Observable<{[x:string]:any}[]> {
+    return of([])
+    // var fieldId: string = fieldId_[index]
+    // var entityName:string = relations[fieldId]["entity_name"];
+    // var parentId:string = relations[fieldId]["parent_id"];
+    // var fieldName:string = relations[fieldId]["field_name"];
+    // var fkName:string = (parentId) ? parentId+"-"+fieldName : fieldName;
+    // var fields_:string[] = this.filterFiledsWithfieldId(fields, fieldId)
+
+    // fieldIdAux_.push(fieldId)
+    
+    // if(parentId && !fieldIdAux_.includes(parentId)) {
+    //   for(var i = 0; i < data.length; i++) data[i][fkName] = null; //inicializar en null
+    //   if(!fieldId_.includes(parentId)) fieldId_.push(parentId)
+    //   if(!fieldId_.includes(parentId)) fieldId_.push(parentId)
+      
+      // return this.traduceFieldIds(++index, fields, fieldId_, fieldIdAux_, relations, data).pipe(
+      //   switchMap(
+      //     data => {
+      //       this.prefixGetAll(entityName)
+      //     }
+      //   )
+      // )
+    // } else {
+    //   return this.prefixGet(entityName, fieldId, fkName, data).pipe(
+    //     switchMap(
+    //       data => {
+    //         return (++index < fieldId_.length) ? this.traduceFieldId(index, fieldId_, relations, data) : of(data)
+    //       }
+    //     )
+    //   )
+    // }
+  }
+
+  public entityFieldsGet(entityName: string, fields:string[], id:string):  Observable<{ [index: string]: any }>{
+    var t = this.getRelations();
+    var e = this.get(entityName, id);
+    var fieldsId_: string[] = this.fieldIdFilterArray(fields)
+
+    return combineLatest([t, e]).pipe(
+      switchMap(
+        response => {
+          var relations: { [index: string]: any } = response[0]
+          var data:  { [index: string]: any } = response[1]
+          return this.traduceFieldId(0, fieldsId_, relations[entityName], data)
+        }
+      ),
+      map(
+        data => {
+          var keys: string[] = Object.keys(data)
+          var data_: { [index: string]: any } = {}
+          for(var i = 0 ; i < fields.length; i++){
+            data_[fields[i]] = (keys.includes(fields[i])) ? data[fields[i]] : null
+          }
+
+           return data_
+        }
+      )
+    )
+  }
+
+  protected fieldIdFilterArray(fields: string[]): string[] {
+    var fields_: string[] = []
+    for(var f in fields){
+      var fieldId = fields[f].substring(0, fields[f].indexOf("-")) 
+      if(fieldId && !fields_.includes(fieldId)) fields_.push(fieldId)
+    }
+    return fields_
+  }
+
+  protected filterFiledsWithfieldId(fields: string[], fieldId: string): string[] {
+    var fields_: string[] = []
+    for(var f in fields){
+      var _fieldId = fields[f].substring(0, fields[f].indexOf("-"))
+      if(fieldId == _fieldId) fields_.push(fieldId)
+    }
+    return fields_
+  }
+  
+  /**
+   * @example traduceFieldId("domicilio_per", data, relations)
+   *   fkName = "persona-domicilio"
+   *   existe data["persona-domicilio"] ? 
+   *     NO traduceFieldId(persona, relations, data)
+   *        fkName = "persona"
+   */
+  protected traduceFieldId (
+    index:number,
+    fieldId_:string[], 
+    relations: { [index: string]: any }, 
+    data: { [index: string]: any }
+  ): Observable<{[x:string]:any}> {
+    var fieldId: string = fieldId_[index]
+    var entityName:string = relations[fieldId]["entity_name"];
+    var parentId:string = relations[fieldId]["parent_id"];
+    var fieldName:string = relations[fieldId]["field_name"];
+    var fkName:string = (parentId) ? parentId+"-"+fieldName : fieldName;
+    
+    if(!data.hasOwnProperty(fkName)) {
+      data[fkName]=null
+      if(!fieldId_.includes(parentId)) fieldId_.push(parentId)
+      return this.traduceFieldId(++index, fieldId_, relations, data).pipe(
+        switchMap(
+          data => this.prefixGet(entityName, fieldId, fkName, data)
+        )
+      )
+    } else {
+      return this.prefixGet(entityName, fieldId, fkName, data).pipe(
+        switchMap(
+          data => {
+            return (++index < fieldId_.length) ? this.traduceFieldId(index, fieldId_, relations, data) : of(data)
+          }
+        )
+      )
+    }
+  }
+
+  /** 
+   * Consultar datos de "entityName" utilizando "data[fkName]" como ids
+   * A cada campo consultado asignar el prefijo "fieldId"
+   * Mergear el resultado con "data"
+   */
+  protected prefixGetAll(
+    entityName: string, //entityName 
+    fieldId: string, //asignar fieldId a cada campo de resultado
+    fkName: string, //data[fkName]
+    fields: string[], //array de fields, deben obtenerse los que tienen prefijo fieldId
+    data: { [index: string]: any }[]
+  ): Observable<{[x:string]:any}[]>{
+    if(!data.length) return of([]);
+    var fields_
+    var ids = arrayUnique(
+      arrayColumn(data, fkName).filter(function (el) { return el != null; })
+    );
+    
+    for(var i = 0; i < data.length; i++) {
+      for(var f in fields){
+        if(fields.hasOwnProperty(f)) data[i][f] = null; //inicializar en null
+      }
+    }
+    
+    if(!ids.length) return of(data);
+    
+    return this.getAll(entityName, ids).pipe(
+      map(
+        response => {
+          if(!response.length) return data;
+
+          for(var i = 0; i < data.length; i++){
+            for(var j = 0; j < response.length; j++){
+              if(data[i][fkName!] == response[j]["id"]) {
+                for(var f in fields){
+                  if(fields.hasOwnProperty(f))                    
+                    data[i][f] = response[j][fields[f]];
+                }
+                break;
+              }
+            }
+          }
+          return data;
+        }
+      )
+    );
+    
+    
+    
+    
+    
+    
+  }
+
+  /** 
+   * Consultar datos de "entityName" utilizando "data[fkName]" como id
+   * A cada campo consultado asignar el prefijo "fieldId"
+   * Mergear el resultado con "data"
+   */
+  protected prefixGet(entityName: string , fieldId: string, fkName: string, data: { [index: string]: any }): Observable<{[x:string]:any}>{
+    if(!data[fkName]) return of(data)
+    return this.get(entityName, data[fkName]).pipe(
+      map(
+        response => {
+          for (var f in response){
+            if(response.hasOwnProperty(f)) data[fieldId+"-"+f] = response[f]
+          }
+          return data
+        }
+      )
+    )
+  }
+
+
+
+
 
   getAllConnection(
     data: { [index: string]: any }[], //array de datos que se utilizaran para consultar y luego seran asociados
