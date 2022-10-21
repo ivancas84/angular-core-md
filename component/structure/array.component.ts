@@ -21,7 +21,7 @@ export abstract class ArrayComponent extends StructureComponent implements OnIni
   /**
    * Estructura principal para administrar un array de elementos
    */
-  override control: FormArray = new FormArray([]);
+  override control: FormArray = new FormArray([new FormControl]);
   /**
    * Referencia directa del FormArray que formara parte del control
    */
