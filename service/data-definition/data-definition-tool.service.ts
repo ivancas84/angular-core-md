@@ -8,147 +8,144 @@ import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
 
+/**
+ * Clase para facilitar la ejecucion del metodo entityFieldGetAll
+ */
+class EntityFieldsOrganize{
+
+  /**
+   * entidad principal
+   */
+  entityName!: string 
+
+  /**
+   * Arbol de fields
+   * No incluye campos de la entidad principal
+   */
+  tree: { [index: string]: string[] } = {}
+
+  /**
+   * Campos de la entidad principal
+   * No incluye campos de la entidad principal
+   */
+  entityFields: string[] = []
+  
+  /**
+   * Fields a consultar, 
+   * Para optimizar la ejecucion pueden agregar campos fk adicionales
+   */
+  fields!:string[]
+
+  /**
+   * Relaciones de entityName
+   */
+  relations!: { [index: string]: any }
+
+  constructor(entityName: string, fields: string[]) {
+    this.entityName = entityName;
+    this.fields = fields;
+  }
+
+  setRelations(relations: { [index: string]: any; }) {
+    this.relations = relations
+  }
+
+  /**
+   * Recorrer lista de fields a consultar
+   * Agregar fields fk adicionales si es necesario
+   * Armar tree de consulta
+   * 
+   * @param index Indice para consultar, se llama recursivamente para facilitar
+   */
+  organizeFields(index: number): void{
+    var fieldId = this.fields[index].substring(0, this.fields[index].indexOf("-"))
+    if(fieldId) {
+      var field: string = this.fields[index].substring((this.fields[index].indexOf("-")+1))
+      if(!this.tree.hasOwnProperty(fieldId)) this.tree[fieldId] = []
+      if(!this.tree[fieldId].includes(field)) this.tree[fieldId].push(field)
+
+      var parentId:string = this.relations[fieldId]["parent_id"];
+      var fieldName:string = this.relations[fieldId]["field_name"];
+      var fkName:string = (parentId) ? parentId+"-"+fieldName : fieldName;
+      if(!this.fields.includes(fkName)) this.fields.push(fkName)
+    } else {
+      this.entityFields.push(this.fields[index])
+    }
+    if(++index < this.fields.length) this.organizeFields(index)
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class DataDefinitionToolService extends DataDefinitionService{
 
-  public entityFieldsGetAll(entityName: string, ids:string[], fields:string[]):  Observable<{ [index: string]: any }[]>{
-    var t = this.getRelations();
-    var e = this.getAll(entityName, ids);
-    var fieldsId_: string[] = this.fieldIdFilterArray(fields)
-
-    return combineLatest([t, e]).pipe(
+  /**
+   * Consulta de campos de una entidad
+   */
+  public entityFieldsGetAll(entityName: string, ids:string[], fields:string[]): Observable<any[]>{
+    var efo: EntityFieldsOrganize = new EntityFieldsOrganize(entityName, fields)
+    var response: {[index:string]:any}[] = []
+    
+    return this.getRelations().pipe(
       switchMap(
-        response => {
-          var relations: { [index: string]: any } = response[0]
-          var data:  { [index: string]: any }[] = response[1]
-          
-          return of(data)
-          // return this.traduceFieldIds(0, fieldsId_, relations[entityName], data)
+        relations => {
+          efo.setRelations(relations[entityName]);
+          efo.organizeFields(0)
+
+          return this.getAll(entityName, ids)
         }
+      ),
+      map(
+        data => {
+          for(var i = 0; i < data.length; i++) {
+            response[i] = {}
+            for(var j = 0; j < efo.fields.length; j++) response[i][efo.fields[j]] = null
+            for(var j = 0; j < efo.entityFields.length; j++) response[i][efo.entityFields[j]] = data[i][efo.entityFields[j]]
+          }
+          return response
+        }
+      ),
+      switchMap(
+        response =>this.traduceFieldIds(efo, response, [])
       )
     )
   }
 
   protected traduceFieldIds (
-    index:number, //control de recursion
-    fields:string[], //fields solicitados
-    fieldId_:string[],  //fieldId que deben ser consultados (index se usa para recorrer este array que puede variar a medida que se realiza la recursion)
-    fieldIdAux_: string[], //fieldId consultados
-    relations: { [index: string]: any },  //relaciones de la entidad
-    data: { [index: string]: any }[], //datos consultados
-  ): Observable<{[x:string]:any}[]> {
-    return of([])
-    // var fieldId: string = fieldId_[index]
-    // var entityName:string = relations[fieldId]["entity_name"];
-    // var parentId:string = relations[fieldId]["parent_id"];
-    // var fieldName:string = relations[fieldId]["field_name"];
-    // var fkName:string = (parentId) ? parentId+"-"+fieldName : fieldName;
-    // var fields_:string[] = this.filterFiledsWithfieldId(fields, fieldId)
-
-    // fieldIdAux_.push(fieldId)
-    
-    // if(parentId && !fieldIdAux_.includes(parentId)) {
-    //   for(var i = 0; i < data.length; i++) data[i][fkName] = null; //inicializar en null
-    //   if(!fieldId_.includes(parentId)) fieldId_.push(parentId)
-    //   if(!fieldId_.includes(parentId)) fieldId_.push(parentId)
-      
-      // return this.traduceFieldIds(++index, fields, fieldId_, fieldIdAux_, relations, data).pipe(
-      //   switchMap(
-      //     data => {
-      //       this.prefixGetAll(entityName)
-      //     }
-      //   )
-      // )
-    // } else {
-    //   return this.prefixGet(entityName, fieldId, fkName, data).pipe(
-    //     switchMap(
-    //       data => {
-    //         return (++index < fieldId_.length) ? this.traduceFieldId(index, fieldId_, relations, data) : of(data)
-    //       }
-    //     )
-    //   )
-    // }
-  }
-
-  public entityFieldsGet(entityName: string, fields:string[], id:string):  Observable<{ [index: string]: any }>{
-    var t = this.getRelations();
-    var e = this.get(entityName, id);
-    var fieldsId_: string[] = this.fieldIdFilterArray(fields)
-
-    return combineLatest([t, e]).pipe(
-      switchMap(
-        response => {
-          var relations: { [index: string]: any } = response[0]
-          var data:  { [index: string]: any } = response[1]
-          return this.traduceFieldId(0, fieldsId_, relations[entityName], data)
-        }
-      ),
-      map(
-        data => {
-          var keys: string[] = Object.keys(data)
-          var data_: { [index: string]: any } = {}
-          for(var i = 0 ; i < fields.length; i++){
-            data_[fields[i]] = (keys.includes(fields[i])) ? data[fields[i]] : null
-          }
-
-           return data_
-        }
-      )
-    )
-  }
-
-  protected fieldIdFilterArray(fields: string[]): string[] {
-    var fields_: string[] = []
-    for(var f in fields){
-      var fieldId = fields[f].substring(0, fields[f].indexOf("-")) 
-      if(fieldId && !fields_.includes(fieldId)) fields_.push(fieldId)
+    efo:EntityFieldsOrganize, //clase de definicion
+    response: { [index: string]: any }[], //datos
+    fieldIdQuery_: string[] //control de campos consultados y recursion
+  ): Observable<{ [index: string]: any }[]> {
+    var fieldId_ = Object.keys(efo.tree)
+    for(var index = 0; index < fieldId_.length; index++){
+      if(!fieldIdQuery_.includes(fieldId_[index])) break;
     }
-    return fields_
-  }
+    if(index >= fieldId_.length) return of(response); //CONTROL DE RECURSION
 
-  protected filterFiledsWithfieldId(fields: string[], fieldId: string): string[] {
-    var fields_: string[] = []
-    for(var f in fields){
-      var _fieldId = fields[f].substring(0, fields[f].indexOf("-"))
-      if(fieldId == _fieldId) fields_.push(fieldId)
-    }
-    return fields_
-  }
-  
-  /**
-   * @example traduceFieldId("domicilio_per", data, relations)
-   *   fkName = "persona-domicilio"
-   *   existe data["persona-domicilio"] ? 
-   *     NO traduceFieldId(persona, relations, data)
-   *        fkName = "persona"
-   */
-  protected traduceFieldId (
-    index:number,
-    fieldId_:string[], 
-    relations: { [index: string]: any }, 
-    data: { [index: string]: any }
-  ): Observable<{[x:string]:any}> {
-    var fieldId: string = fieldId_[index]
-    var entityName:string = relations[fieldId]["entity_name"];
-    var parentId:string = relations[fieldId]["parent_id"];
-    var fieldName:string = relations[fieldId]["field_name"];
-    var fkName:string = (parentId) ? parentId+"-"+fieldName : fieldName;
-    
-    if(!data.hasOwnProperty(fkName)) {
-      data[fkName]=null
-      if(!fieldId_.includes(parentId)) fieldId_.push(parentId)
-      return this.traduceFieldId(++index, fieldId_, relations, data).pipe(
+    var fieldId = fieldId_[index]
+    var parentId:string = efo.relations[fieldId]["parent_id"];
+    fieldIdQuery_.push(fieldId)
+
+    if(parentId && !fieldIdQuery_.includes(parentId)) { 
+      return this.traduceFieldIds(efo, response, fieldIdQuery_).pipe(
         switchMap(
-          data => this.prefixGet(entityName, fieldId, fkName, data)
+          response => {
+            return this.prefixGetAll(fieldId, efo, response).pipe(
+              switchMap(
+                response => {
+                  return (++index < efo.fields.length) ? this.traduceFieldIds(efo, response, fieldIdQuery_) : of(response)
+                }
+              )
+            )
+          }
         )
       )
     } else {
-      return this.prefixGet(entityName, fieldId, fkName, data).pipe(
+      return this.prefixGetAll(fieldId, efo, response).pipe(
         switchMap(
-          data => {
-            return (++index < fieldId_.length) ? this.traduceFieldId(index, fieldId_, relations, data) : of(data)
+          response => {
+            return (++index < efo.fields.length) ? this.traduceFieldIds(efo, response, fieldIdQuery_) : of(response)
           }
         )
       )
@@ -161,72 +158,143 @@ export class DataDefinitionToolService extends DataDefinitionService{
    * Mergear el resultado con "data"
    */
   protected prefixGetAll(
-    entityName: string, //entityName 
-    fieldId: string, //asignar fieldId a cada campo de resultado
-    fkName: string, //data[fkName]
-    fields: string[], //array de fields, deben obtenerse los que tienen prefijo fieldId
-    data: { [index: string]: any }[]
+      fieldId: string, //asignar fieldId a cada campo de resultado
+      efo: EntityFieldsOrganize,
+      response: { [index: string]: any }[],
   ): Observable<{[x:string]:any}[]>{
-    if(!data.length) return of([]);
-    var fields_
-    var ids = arrayUnique(
-      arrayColumn(data, fkName).filter(function (el) { return el != null; })
-    );
-    
-    for(var i = 0; i < data.length; i++) {
-      for(var f in fields){
-        if(fields.hasOwnProperty(f)) data[i][f] = null; //inicializar en null
-      }
-    }
-    
-    if(!ids.length) return of(data);
-    
-    return this.getAll(entityName, ids).pipe(
-      map(
-        response => {
-          if(!response.length) return data;
+      if(!response.length) return of(response);
 
-          for(var i = 0; i < data.length; i++){
-            for(var j = 0; j < response.length; j++){
-              if(data[i][fkName!] == response[j]["id"]) {
-                for(var f in fields){
-                  if(fields.hasOwnProperty(f))                    
-                    data[i][f] = response[j][fields[f]];
+      var entityName:string = efo.relations[fieldId]["entity_name"];
+      var parentId:string = efo.relations[fieldId]["parent_id"];
+      var fieldName:string = efo.relations[fieldId]["field_name"];
+      var fkName:string = (parentId) ? parentId+"-"+fieldName : fieldName;
+
+      var ids = arrayUnique(
+        arrayColumn(response, fkName).filter(function (el) { return el != null; })
+      );
+
+      return this.getAll(entityName, ids).pipe(
+        map(
+          data => {
+            if(!data.length) return response;
+
+            for(var i = 0; i < response.length; i++){
+              for(var j = 0; j < data.length; j++){
+                if(response[i][fkName] == data[j]["id"]) {
+                  for(var k = 0; k < efo.tree[fieldId].length; k++) {
+                    var n = efo.tree[fieldId][k]
+                    response[i][fieldId+"-"+n] = data[j][n]
+                  }
+                  break;
                 }
-                break;
               }
             }
+            return response;
           }
-          return data;
-        }
-      )
-    );
-    
-    
-    
-    
-    
-    
+        )
+      );
   }
 
-  /** 
-   * Consultar datos de "entityName" utilizando "data[fkName]" como id
-   * A cada campo consultado asignar el prefijo "fieldId"
-   * Mergear el resultado con "data"
-   */
-  protected prefixGet(entityName: string , fieldId: string, fkName: string, data: { [index: string]: any }): Observable<{[x:string]:any}>{
-    if(!data[fkName]) return of(data)
-    return this.get(entityName, data[fkName]).pipe(
-      map(
-        response => {
-          for (var f in response){
-            if(response.hasOwnProperty(f)) data[fieldId+"-"+f] = response[f]
-          }
-          return data
+  public entityFieldsGet(entityName: string, id:string, fields:string[],):  Observable<{ [index: string]: any }>{
+    var efo: EntityFieldsOrganize = new EntityFieldsOrganize(entityName, fields)
+    var response: {[index:string]:any} = {}
+    
+    return this.getRelations().pipe(
+      switchMap(
+        relations => {
+          efo.setRelations(relations[entityName]);
+          efo.organizeFields(0)
+
+          return this.get(entityName, id)
         }
+      ),
+      map(
+        data => {
+          for(var j = 0; j < efo.fields.length; j++) response[efo.fields[j]] = null
+          for(var j = 0; j < efo.entityFields.length; j++) response[efo.entityFields[j]] = data[efo.entityFields[j]]
+        
+          return response
+        }
+      ),
+      switchMap(
+        response =>this.traduceFieldId(efo, response, [])
       )
     )
   }
+
+  protected traduceFieldId (
+    efo:EntityFieldsOrganize, //clase de definicion
+    response: { [index: string]: any }, //datos
+    fieldIdQuery_: string[] //control de campos consultados y recursion
+  ): Observable<{ [index: string]: any }> {
+    var fieldId_ = Object.keys(efo.tree)
+    for(var index = 0; index < fieldId_.length; index++){
+      if(!fieldIdQuery_.includes(fieldId_[index])) break;
+    }
+    if(index >= fieldId_.length) return of(response); //CONTROL DE RECURSION
+
+    var fieldId = fieldId_[index]
+    var parentId:string = efo.relations[fieldId]["parent_id"];
+    fieldIdQuery_.push(fieldId)
+
+    if(parentId && !fieldIdQuery_.includes(parentId)) { 
+      return this.traduceFieldId(efo, response, fieldIdQuery_).pipe(
+        switchMap(
+          response => {
+            return this.prefixGet(fieldId, efo, response).pipe(
+              switchMap(
+                response => {
+                  return (++index < efo.fields.length) ? this.traduceFieldId(efo, response, fieldIdQuery_) : of(response)
+                }
+              )
+            )
+          }
+        )
+      )
+    } else {
+      return this.prefixGet(fieldId, efo, response).pipe(
+        switchMap(
+          response => {
+            return (++index < efo.fields.length) ? this.traduceFieldId(efo, response, fieldIdQuery_) : of(response)
+          }
+        )
+      )
+    }
+  }
+
+  /** 
+   * Consultar datos de "entityName" utilizando "data[fkName]" como ids
+   * A cada campo consultado asignar el prefijo "fieldId"
+   * Mergear el resultado con "data"
+   */
+   protected prefixGet(
+    fieldId: string, //asignar fieldId a cada campo de resultado
+    efo: EntityFieldsOrganize,
+    response: { [index: string]: any },
+): Observable<{[x:string]:any}>{
+    var entityName:string = efo.relations[fieldId]["entity_name"];
+    var parentId:string = efo.relations[fieldId]["parent_id"];
+    var fieldName:string = efo.relations[fieldId]["field_name"];
+    var fkName:string = (parentId) ? parentId+"-"+fieldName : fieldName;
+
+    var id = response[fkName]
+    if(!id) return of(response)
+    return this.get(entityName, id).pipe(
+      map(
+        data => {
+          if(response[fkName] == data["id"]) {
+            for(var k = 0; k < efo.tree[fieldId].length; k++) {
+              var n = efo.tree[fieldId][k]
+              response[fieldId+"-"+n] = data[n]
+            }                
+          }
+        
+          return response;
+        }
+      )
+    );
+}
+
 
 
 
