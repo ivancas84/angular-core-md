@@ -24,19 +24,10 @@ import { Display } from "../../class/display";
 })
 export class ComponentTableService {
       
-    constructor(
-        protected router: Router, 
-    ){}
-
+  constructor(
+      protected router: Router, 
+  ){}
       
-  /**   
-   * @param displayedColumns Columnas a visualizr
-   * @param formGroup Estructura del FormGroup de la tabla
-   */
-  ngOnInit(displayedColumns:string[],  formGroup: () => FormGroup,) {
-    displayedColumns = this.initDisplayedColumns(formGroup())
-  }
-
   initDisplayedColumns(formGroup: FormGroup) {
     return Object.keys(formGroup.controls)
   }
