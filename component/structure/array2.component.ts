@@ -25,19 +25,6 @@ import { SessionStorageService } from '@service/storage/session-storage.service'
 })
 export abstract class Array2Component extends StructureComponent implements OnInit {
 
-  constructor(
-    protected override dd: DataDefinitionToolService,
-    protected override storage: SessionStorageService,
-    protected override dialog: MatDialog,
-    protected override snackBar: MatSnackBar,
-    protected override router: Router, 
-    protected override route: ActivatedRoute, 
-    protected override location: Location, 
-    protected override fb: FormBuilder,
-  ) { 
-    super(dd,storage,dialog,snackBar,router,route,location,fb)
-  }
-
   entityName!: string
   
     /**
@@ -45,7 +32,7 @@ export abstract class Array2Component extends StructureComponent implements OnIn
    */
      override control: FormArray = this.fb.array([]);
 
-     length?: number; //longitud total de los datos a mostrar
+     length!: number; //longitud total de los datos a mostrar
      
      load: boolean = false; //Atributo auxiliar necesario para visualizar la barra de carga
    
@@ -113,7 +100,6 @@ export abstract class Array2Component extends StructureComponent implements OnIn
       this.control.clear();
       for(var i = 0; i <data.length; i++) this.control.push(this.formGroup());
       this.control.patchValue(data)
-      console.log(this.control)
     }
    
     override initData(): Observable<any>{

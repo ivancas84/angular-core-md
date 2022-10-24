@@ -33,7 +33,7 @@ export abstract class StructureComponent implements OnInit {
     * Todos los datos se recomienda almacenarlos en un control raiz, para fa-
     * cilitar la implementacion del storage.
     */
-   protected subscriptions = new Subscription() //suscripciones en el ts
+   protected subscriptions: Subscription = new Subscription() //suscripciones en el ts
    
    display$:BehaviorSubject<Display> = new BehaviorSubject(new Display)
    /**

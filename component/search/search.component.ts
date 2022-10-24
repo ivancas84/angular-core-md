@@ -16,6 +16,7 @@ import { markAllAsTouched } from '@function/mark-all-as-touched';
   templateUrl: './search.component.html',
 })
 export class SearchComponent implements OnInit {
+  
  
   @Input() control!: FormGroup;
   @Input() config!: FormGroupConfig
