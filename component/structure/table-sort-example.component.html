@@ -1,0 +1,78 @@
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
+
+<ng-container *ngIf="(loadParams$ | async); else loading">
+  <ng-container *ngIf="(loadDisplay$ | async); else loading">
+    <mat-card>
+      <mat-card-header>
+          <mat-card-title>
+              Lista de cursos
+          </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+      <mat-progress-bar *ngIf="!load" 
+                        mode="indeterminate"></mat-progress-bar>
+
+      <div #mainContent>
+        <table  mat-table
+            [dataSource]="control.controls" 
+            matSort 
+            matSortDisableClear
+            (matSortChange)="onChangeSort($event)" 
+            [matSortActive]="'sede'" 
+            [matSortDirection]="'asc'"
+            class="mat-elevation-z8">
+    
+          <ng-container matColumnDef="sede" >
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Sede </th>
+              <td mat-cell *matCellDef="let row; let i = index;">
+                {{row.controls['sede'].value}}
+              </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="comision">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Comision </th>
+            <td mat-cell *matCellDef="let row; let i = index;">
+              {{row.controls['comision'].value}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tramo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tramo </th>
+            <td mat-cell *matCellDef="let row; let i = index;">
+              {{row.controls['tramo'].value}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="domicilio">
+          <th mat-header-cell *matHeaderCellDef > Domicilio </th>
+          <td mat-cell *matCellDef="let row; let i = index;">
+            {{row.controls['domicilio'].value}}
+          </td>
+      </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      
+      </div>
+
+      <mat-toolbar>
+        <mat-toolbar-row>
+          <mat-paginator *ngIf="length && display$.value"
+                        [length]="length"
+                        [pageSize]="display$.value.getSize()"
+                        [pageIndex]="display$.value.getPage()-1"
+                        (page)="onChangePage($event)"
+                        [pageSizeOptions]="pageSizeOptions" 
+                        showFirstLastButtons>
+          </mat-paginator>
+        </mat-toolbar-row>
+      </mat-toolbar>
+
+    </mat-card-content>
+    </mat-card>
+  </ng-container>
+
+</ng-container>

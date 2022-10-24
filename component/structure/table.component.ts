@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -98,9 +98,10 @@ export class TableComponent extends ArrayComponent implements AfterViewInit {
     protected override router: Router, 
     protected override route: ActivatedRoute, 
     protected override location: Location, 
+    protected override fb: FormBuilder,
     protected cd:ChangeDetectorRef 
   ) {
-    super(dd, storage, dialog, snackBar, router, route, location)
+    super(dd, storage, dialog, snackBar, router, route, location, fb)
   }
 
   ngAfterViewInit(): void {

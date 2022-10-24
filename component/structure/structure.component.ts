@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -64,6 +64,7 @@ export abstract class StructureComponent implements OnInit {
     protected router: Router, 
     protected route: ActivatedRoute, 
     protected location: Location, 
+    protected fb: FormBuilder,
   ) { }
 
   abstract loadDisplay(): void;
@@ -95,7 +96,6 @@ export abstract class StructureComponent implements OnInit {
   }
 
   ngOnInit() {
-    
     this.loadParams(); 
     /**
      * Al cambiar los parametros se carga el storage, en el template, ejecutar

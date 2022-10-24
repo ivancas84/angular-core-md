@@ -1,21 +1,39 @@
 import { OnInit, Component } from '@angular/core';
 import { of, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Display } from '@class/display';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { FormArrayConfig, FormGroupConfig } from '@class/reactive-form-config';
-import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { StructureComponent } from '@component/structure/structure.component';
 import { FieldWidthOptions } from '@class/field-width-options';
 import { InputTextConfig } from '@component/input-text/input-text.component';
 import { DialogConfirmComponent } from '@component/dialog-confirm/dialog-confirm.component';
 import { getControlName } from '@function/get-control-name';
+import { Location } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
+import { DataDefinitionToolService } from '@service/data-definition/data-definition-tool.service';
+import { SessionStorageService } from '@service/storage/session-storage.service';
 
 @Component({
   selector: 'core-array',
   template: '',
 })
 export abstract class ArrayComponent extends StructureComponent implements OnInit {
+
+  constructor(
+    protected override dd: DataDefinitionToolService,
+    protected override storage: SessionStorageService,
+    protected override dialog: MatDialog,
+    protected override snackBar: MatSnackBar,
+    protected override router: Router, 
+    protected override route: ActivatedRoute, 
+    protected override location: Location, 
+    protected override fb: FormBuilder,
+  ) { 
+    super(dd,storage,dialog,snackBar,router,route,location,fb)
+  }
 
   entityName!: string
   /**
