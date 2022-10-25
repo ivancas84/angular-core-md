@@ -8,6 +8,7 @@ import { emptyUrl } from "@function/empty-url.function";
 import { isEmptyObject } from "@function/is-empty-object.function";
 import { logValidationErrors } from "@function/log-validation-errors";
 import { markAllAsTouched } from "@function/mark-all-as-touched";
+import { BehaviorSubject, map, Observable } from "rxjs";
 import { Display } from "../../class/display";
 
 /**
@@ -20,10 +21,22 @@ import { Display } from "../../class/display";
 export class ComponentSearchService {
 
   constructor(protected dialog: MatDialog, protected router: Router){}
-      
-  loadControl(control: FormGroup, display: Display): void{
-    if(!isEmptyObject(display.getParams()))
-    control.reset(display.getParams()) 
+
+
+  /**
+   * @example this.loadSearch$ = loadControl(...)
+   */
+  loadControl(control: FormGroup, display$: BehaviorSubject<Display>): Observable<any>{
+    return display$.pipe(
+      map(
+        display => {
+          if(!isEmptyObject(display.getParams()))
+          control.reset(display.getParams()) 
+          return true
+        }
+      )
+    )
+    
   }
 
   onSubmit(control: FormGroup, display: Display, searchPanel: MatExpansionPanel, isSubmitted: boolean ): void {

@@ -26,12 +26,21 @@ export class ComponentTableService {
     return Object.keys(formGroup.controls)
   }
 
-  ngAfterViewInit(control: FormArray, table: MatTable<any>): Subscription {
+  /**
+   * @example
+   * ngAfterViewInit(): void {
+   *   this.subscriptions.add(
+   *     this.ts.renderRowsOnValueChanges(this.control, this.table)
+   *   )
+   * }
+   */
+  renderRowsOnValueChanges(control: FormArray, table: MatTable<any>): Subscription {
     return control.valueChanges.pipe(
       //startWith(this.control.value),
       debounceTime(100),
       map(
         () => {
+
           if(table) table.renderRows()
         }
       )
