@@ -1,16 +1,10 @@
 import { Injectable } from "@angular/core";
 import { FormArray, FormGroup } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
-import { MatExpansionPanel } from "@angular/material/expansion";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { MatTable } from "@angular/material/table";
 import { Router } from "@angular/router";
-import { DialogAlertComponent } from "@component/dialog-alert/dialog-alert.component";
 import { emptyUrl } from "@function/empty-url.function";
-import { isEmptyObject } from "@function/is-empty-object.function";
-import { logValidationErrors } from "@function/log-validation-errors";
-import { markAllAsTouched } from "@function/mark-all-as-touched";
 import { naturalCompare } from "@function/natural-compare";
 import { debounceTime, map, Subscription } from "rxjs";
 import { Display } from "../../class/display";
