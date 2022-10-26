@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { FormArray, FormGroup } from "@angular/forms";
+import { ApplicationRef, ChangeDetectorRef, ElementRef, Injectable } from "@angular/core";
+import { FormArray, FormBuilder, FormGroup } from "@angular/forms";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { Sort } from "@angular/material/sort";
 import { MatTable } from "@angular/material/table";
@@ -8,6 +8,10 @@ import { emptyUrl } from "@function/empty-url.function";
 import { naturalCompare } from "@function/natural-compare";
 import { debounceTime, map, Subscription } from "rxjs";
 import { Display } from "../../class/display";
+
+
+declare function copyFormatted(html: any): any;
+declare function printHtml(html: any): any;
 
 /**
  * Comportamiento habitual de componente que incluye un formulario de busqueda
@@ -20,6 +24,7 @@ export class ComponentTableService {
       
   constructor(
       protected router: Router, 
+      protected ar:ApplicationRef,
   ){}
       
   initDisplayedColumns(formGroup: FormGroup) {
@@ -82,6 +87,31 @@ export class ComponentTableService {
     display.setPage($event.pageIndex+1);
     display.setSize($event.pageSize);
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
+  }
+
+  copyContent(content: ElementRef, displayedColumns: string[]): void {
+    if(content) {
+      var index =displayedColumns.indexOf("options");
+      if (index !== -1) {
+        displayedColumns.splice(index, 1);
+        this.ar.tick()
+      }
+      console.log(content)
+      copyFormatted(content.nativeElement.innerHTML);
+      if (index !== -1) displayedColumns.splice(index, 0, "options");
+    }
+  }
+
+  printContent(content: ElementRef, displayedColumns: string[]): void {
+    if(content) {
+      var index = displayedColumns.indexOf("options");
+      if (index !== -1) {
+        displayedColumns.splice(index, 1);
+        this.ar.tick()
+      }
+      printHtml(content.nativeElement.innerHTML);
+      if (index !== -1) displayedColumns.splice(index, 0, "options");
+    }
   }
 
 }
