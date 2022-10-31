@@ -45,24 +45,6 @@ export class ComponentLoadService {
   }
 
   /**
-   * @example this.loadParams$ = loadParams2(this.display$) 
-   */
-  loadParams2(display$:BehaviorSubject<Display>, params: { [x: string]: any }){
-    return this.route.queryParams.pipe(
-      map(
-        queryParams => { 
-          params = queryParams
-          var display = new Display();
-          display.setSize(100);
-          display.setParamsByQueryParams(queryParams);
-          display$.next(display)
-          return true;
-        },
-      ),
-    )
-  }
-
-  /**
    * @example this.loadStorage$ = ngOnInitLoadStorage(this.display$) 
    */
   loadStorage(control: AbstractControl) {
