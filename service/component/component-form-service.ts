@@ -3,6 +3,10 @@ import { FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";
 import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
+import { emptyUrl } from "@function/empty-url.function";
+import { isEmptyObject } from "@function/is-empty-object.function";
+import { of } from "rxjs";
+import { SessionStorageService } from "@service/storage/session-storage.service";
 
 /**
  * Comportamiento habitual de componente que incluye un formulario de busqueda
@@ -15,6 +19,7 @@ export class ComponentFormService {
       
   constructor(
       protected router: Router, 
+      protected session: SessionStorageService,
   ){}
       
   setNullGroupKey(group: FormGroup, key: string){
@@ -36,6 +41,12 @@ export class ComponentFormService {
     group.controls[key].setValue(ctrlValue);
     datepicker.close();
 
+  }
+
+  initStorageValues(): any{
+    var storageValues = this.session.getItem(this.router.url)
+    this.session.removeItemsPrefix(emptyUrl(this.router.url))
+    return storageValues;
   }
   
   
