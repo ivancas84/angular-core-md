@@ -794,19 +794,19 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  getConnectionObj(
+
+  getRelObject({data,entityName,fields,id,fkName,idResponse}:{
     data: { [index: string]: any },
-	entityName: string, 
+	  entityName: string, 
     fields: { [index: string]: any },
     id: string,
-	fkName?: string, 
-
-    idResponse?: string, 
-  ): Observable<{ [index: string]: { [index: string]: any } }>{
+	  fkName?: string, 
+    idResponse?: string
+  }): Observable<{ [index: string]: { [index: string]: any } }>{
     /**
      * Similar a getConnection pero utiliza una estructura de datos diferente de la forma
      * data["alumno"] = {id:"value",activo:"value"} 
-     * data["per"] = {id:"value",activo:"value"}
+     * data["persona"] = {id:"value",activo:"value"}
      */
     if(!fkName) fkName = entityName;
     if(!idResponse) idResponse = fkName;
@@ -816,7 +816,6 @@ export class DataDefinitionToolService extends DataDefinitionService{
     }
 
     if(!data[id][fkName]) return of(data);
-
  
     return this.get(entityName, data[id][fkName]).pipe(
       map(
@@ -829,6 +828,28 @@ export class DataDefinitionToolService extends DataDefinitionService{
         }
       )
     );  
+  }
+
+  /** Variante de getRelObject que trabaja sin alias */
+  getRelObject_({data, entityName, fields, id, fkName, idResponse}: {
+    data: { [index: string]: any },
+	  entityName: string, 
+    fields: string[],
+    id: string,
+	  fkName?: string, 
+    idResponse?: string}
+  ): Observable<{ [index: string]: { [index: string]: any } }>{
+
+    var fieldsObj: {[index:string]:any} = {}
+    for(var i = 0; i < fields.length; i++) fieldsObj[fields[i]] = fields[i]
+    return this.getRelObject({
+      data:data,
+      entityName:entityName,
+      fields:fieldsObj, 
+      id:id, 
+      fkName:fkName, 
+      idResponse:idResponse}
+    )
   }
 
   selectConnection(
