@@ -41,11 +41,24 @@ export class Display {
   public getGroup(): {[key: string]: string|string[] } { return this.group }
   public getHaving(){ return this.having }
 
-  public setSize(size: number) { this.size = size; }
-  public setPage(page: number) { this.page = page; }
+  public setSize(size: number) { 
+    this.size = size; 
+    return this
+  }
+  public setPage(page: number) { 
+    this.page = page;
+    return this; 
+  }
 
-  public addCondition(condition: any[]){ this.condition.push(condition); }
-  public setCondition(condition: any[]){ this.condition = condition; }
+  public addCondition(condition: any[]){ 
+    this.condition.push(condition);
+    return this; 
+  }
+
+  public setCondition(condition: any[]){ 
+    this.condition = condition; 
+    return this;
+  }
   
   public addField(field: string){
     /**
@@ -60,10 +73,12 @@ export class Display {
       }
     }
     this.fields[key]=field;
+    return this;
   }
 
   public addFieldAs(key:string,field:string){
     this.fields[key]=field;
+    return this;
   }
     
   public setFields(fields: {[key: string]: string }){
@@ -74,16 +89,26 @@ export class Display {
      * se modifica el codigo a continuacion para que no indique el error,
      * se volvera a probar en futuras versiones
      */
+    this.fields = Object.assign({}, fields) 
+    return this;
+    // this.fields = {};
+    // var obj = Object.assign({}, fields)
+    // for(var x in obj) {
+    //   if(obj.hasOwnProperty(x)) this.fields[x] = obj[x];
+    // }
+    // return this;
+  }
+
+  public setFields_(fields: string[]){
     this.fields = {};
-    var obj = Object.assign({}, fields)
-    for(var x in obj) {
-      if(obj.hasOwnProperty(x)) this.fields[x] = obj[x];
-    }
+    for(var i = 0; i < fields.length; i++) this.fields[fields[i]] = fields[i];
+    return this;
   }
 
   public setFieldsArray(fields: string[]){
     this.fields = {};
     for(var i = 0; i < fields.length; i++) this.fields[fields[i]] = fields[i];
+    return this;
   }
 
   public addGroup(field: string){
@@ -99,9 +124,11 @@ export class Display {
       }
     }
     this.group[key]=field;
+    return this;
   }
   public addGroupAs(key:string,field:string){
     this.group[key]=field;
+    return this;
   }
     
   public setGroup(fields: {[key: string]: string }){
@@ -115,15 +142,24 @@ export class Display {
     this.group = {};
     var obj = Object.assign({}, fields)
     for(var x in obj) this.group[x] = obj[x];
+    return this;
   }
 
   public setGroupArray(group: string[]){
     this.group = {};
     for(var i = 0; i < group.length; i++) this.group[group[i]] = group[i];
+    return this;
   }
 
-  public addHaving(condition: any){ this.having.push(condition); }
-  public setHaving(condition: any[]){ this.having = condition; }
+  public addHaving(condition: any){
+     this.having.push(condition);
+     return this; 
+  }
+
+  public setHaving(condition: any[]){ 
+    this.having = condition;
+    return this; 
+  }
 
   public describe(){
     let ret: {[key: string]: any } = {};
@@ -148,19 +184,23 @@ export class Display {
         } 
       }
     }    
+    return this;
   }
 
   public addOrder(key: string, value: any){
     this.order[key] = value;
+    return this;
   }
 
   public addParam(key: string, value: any){
     this.params![key] = value;
+    return this;
   }
 
   public addParamIfNot(key: string, value: any){
     if(this.params!.hasOwnProperty(key)) return;
     this.params![key] = value;
+    return this;
   }
 
   public addConditionIfNot(condition: Array<any>){
@@ -169,6 +209,7 @@ export class Display {
     }
 
     this.addCondition(condition);
+    return this;
   }
 
   public setConditionByQueryParams(params: any){
@@ -182,6 +223,7 @@ export class Display {
         else (this as any)[i] = JSON.parse(decodeURI(params[i])); //asignar parametro
       }
     }
+    return this;
   }
   
   public setConditionByFilters(filters:Array<Filter>){ 
@@ -190,6 +232,7 @@ export class Display {
       console.log(filters[i])
       if(filters[i]["value"] !== undefined) this.addCondition([filters[i]["field"], filters[i]["option"], filters[i]["value"]]);
     }    
+    return this;
   }
 
   public setOrderByElement(order:Array<{[key:string]:string}>){
@@ -199,6 +242,7 @@ export class Display {
         this.addOrder(order[i]["key"],order[i]["value"]);
      }
     }
+    return this;
   }
   
   public setParamsByQueryParams(params: any){
@@ -211,6 +255,7 @@ export class Display {
         else (this as any)[i] = JSON.parse(decodeURI(params[i])); //asignar parametro
       }
     }
+    return this;
   }
 
   public setOrder(params: {[key: string]: string }){
@@ -218,6 +263,7 @@ export class Display {
     for(var i in params){
       if (params.hasOwnProperty(i)){ this.order[i] = params[i]; }
     }    
+    return this;
   }
 
   public setOrderByKeys(params: Array<string>){
@@ -229,6 +275,7 @@ export class Display {
       for(var i in params) obj[params[i]] = "asc"
       this.setOrder(obj);
     }    
+    return this;
   }
 
   public setOrderInvert(params: {[key: string]: string }){
@@ -245,6 +292,7 @@ export class Display {
     } else {
       this.setOrder(params);
     }
+    return this;
   }
   
   public encodeURI(){
