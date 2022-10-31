@@ -4,7 +4,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Display } from "@class/display";
-import { DialogAlertComponent } from "@component/dialog-alert/dialog-alert.component";
 import { DataDefinitionToolService } from "@service/data-definition/data-definition-tool.service";
 import { SessionStorageService } from "@service/storage/session-storage.service";
 import { BehaviorSubject, catchError, map, Observable, of, startWith, Subscription, switchMap } from "rxjs";
@@ -28,15 +27,31 @@ export class ComponentLoadService {
   ){}
 
   /**
-   * @example this.loadParams$ = ngOnInitLoadParams(this.display$) 
+   * @example this.loadParams$ = loadParams(this.display$) 
    */
   loadParams(display$:BehaviorSubject<Display>){
     
     return this.route.queryParams.pipe(
       map(
         queryParams => { 
-          // this.storageValues = this.storage.getItem(this.router.url)
-          //this.storage.removeItemsPrefix(emptyUrl(this.router.url))
+          var display = new Display();
+          display.setSize(100);
+          display.setParamsByQueryParams(queryParams);
+          display$.next(display)
+          return true;
+        },
+      ),
+    )
+  }
+
+  /**
+   * @example this.loadParams$ = loadParams2(this.display$) 
+   */
+  loadParams2(display$:BehaviorSubject<Display>, params: { [x: string]: any }){
+    return this.route.queryParams.pipe(
+      map(
+        queryParams => { 
+          params = queryParams
           var display = new Display();
           display.setSize(100);
           display.setParamsByQueryParams(queryParams);
