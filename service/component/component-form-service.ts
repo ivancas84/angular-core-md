@@ -5,6 +5,9 @@ import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
 import { emptyUrl } from "@function/empty-url.function";
 import { LocalStorageService } from "@service/storage/local-storage.service";
+import { BehaviorSubject } from "rxjs";
+import { Display } from "@class/display";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 /**
  * Comportamiento habitual de componente que incluye un formulario de busqueda
@@ -18,6 +21,7 @@ export class ComponentFormService {
   constructor(
       protected router: Router, 
       protected local: LocalStorageService,
+      protected snackBar: MatSnackBar,
   ){}
       
   setNullGroupKey(group: FormGroup, key: string){
@@ -48,5 +52,13 @@ export class ComponentFormService {
   }
   
   
+  submitted(response:{[index:string]:any}, display$:BehaviorSubject<Display>){
+    this.snackBar.open("Registro realizado", "X");
+    this.local.removeItemsContains(".");
+    if (response["detail"]) this.local.removeItemsPersisted(response["detail"]);
+    this.local.removeItemsPrefix(emptyUrl(this.router.url));
+    display$.next(display$.value);
+  }
+
 
 }
