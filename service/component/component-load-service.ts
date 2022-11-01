@@ -1,13 +1,8 @@
 import { Injectable } from "@angular/core";
-import { AbstractControl } from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { Display } from "@class/display";
 import { DataDefinitionToolService } from "@service/data-definition/data-definition-tool.service";
-import { LocalStorageService } from "@service/storage/local-storage.service";
-import { SessionStorageService } from "@service/storage/session-storage.service";
-import { BehaviorSubject, map, Observable, of, startWith, switchMap } from "rxjs";
+import { BehaviorSubject, map, Observable, of, switchMap } from "rxjs";
 
 /**
  * Comportamiento habitual de componente que incluye un formulario de busqueda
@@ -20,12 +15,7 @@ export class ComponentLoadService {
 
   constructor(
     protected dd: DataDefinitionToolService, 
-    protected dialog: MatDialog,
     protected route: ActivatedRoute, 
-    protected router: Router, 
-    protected session: SessionStorageService,
-    protected local: LocalStorageService,
-    protected snackBar: MatSnackBar,
   ){}
 
   /**
@@ -46,19 +36,7 @@ export class ComponentLoadService {
     )
   }
 
-  /**
-   * @example this.loadStorage$ = ngOnInitLoadStorage(this.display$) 
-   */
-  loadStorage(control: AbstractControl) {
-    return control.valueChanges.pipe(
-      startWith(this.local.getItem(this.router.url)),
-      map(
-        sessionValues => {
-          this.local.setItem(this.router.url, sessionValues)
-          return true;
-        }
-    ))
-  }
+ 
   
 
   loadLength(entityName: string, display: Display): Observable<number> {
