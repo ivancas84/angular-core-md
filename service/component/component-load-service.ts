@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
-import { AbstractControl, FormControl } from "@angular/forms";
+import { AbstractControl } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Display } from "@class/display";
 import { DataDefinitionToolService } from "@service/data-definition/data-definition-tool.service";
+import { LocalStorageService } from "@service/storage/local-storage.service";
 import { SessionStorageService } from "@service/storage/session-storage.service";
-import { BehaviorSubject, catchError, map, Observable, of, startWith, Subscription, switchMap } from "rxjs";
+import { BehaviorSubject, map, Observable, of, startWith, switchMap } from "rxjs";
 
 /**
  * Comportamiento habitual de componente que incluye un formulario de busqueda
@@ -22,7 +23,8 @@ export class ComponentLoadService {
     protected dialog: MatDialog,
     protected route: ActivatedRoute, 
     protected router: Router, 
-    protected storage: SessionStorageService,
+    protected session: SessionStorageService,
+    protected local: LocalStorageService,
     protected snackBar: MatSnackBar,
   ){}
 
@@ -49,10 +51,10 @@ export class ComponentLoadService {
    */
   loadStorage(control: AbstractControl) {
     return control.valueChanges.pipe(
-      startWith(this.storage.getItem(this.router.url)),
+      startWith(this.local.getItem(this.router.url)),
       map(
-        storageValues => {
-          this.storage.setItem(this.router.url, storageValues)
+        sessionValues => {
+          this.local.setItem(this.router.url, sessionValues)
           return true;
         }
     ))
