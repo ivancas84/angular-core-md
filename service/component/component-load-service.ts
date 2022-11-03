@@ -49,7 +49,7 @@ export class ComponentLoadService {
   loadArrayData(entityName: string, display: Display, keys: string[]): Observable<any>{
     return this.dd.post("ids", entityName, display).pipe(
       switchMap(
-        ids => this.dd.entityFieldsGetAll(entityName, ids, keys)
+        ids => this.dd.entityFieldsGetAll({ entityName, ids, fields: keys })
       )
     )
   }

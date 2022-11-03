@@ -83,7 +83,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
   /**
    * Consulta de campos de una entidad
    */
-  public entityFieldsGetAll(entityName: string, ids:string[], fields:string[]): Observable<any[]>{
+  public entityFieldsGetAll({ entityName, ids, fields }: { entityName: string; ids: string[]; fields: string[]; }): Observable<any[]>{
     var efo: EntityFieldsOrganize = new EntityFieldsOrganize(entityName, fields)
     var response: {[index:string]:any}[] = []
     
@@ -296,25 +296,21 @@ export class DataDefinitionToolService extends DataDefinitionService{
 }
 
 
-
-
-
-
-  getAllConnection(
-    data: { [index: string]: any }[], //array de datos que se utilizaran para consultar y luego seran asociados
-    entityName: string, //nombre de la entidad principal
-    fields: { [index: string]: any },
-    /**
+  public getMergeAll({ data, entityName, fields, fkName }: {
+    data: { [index: string]: any; }[]; 
+    entityName: string; 
+    fields: { [index: string]: any; }; /**
      * Objeto para filtrar los campos.
-     * 
+     *
      * Ciertos campos de entityName tienen el mismo nombre que la relacion de
      * origen, a partir del parametro fields, se puede asignar un alias.
      * Debe tenerse el cuidado de que para data se utilice un alias diferente
      * para cada campo.
-     * 
+     *
      * @example {"alias":"name"}
      */
-    fkName?: string, //se utiliza para definir ids = data[fkName]
+    fkName?: string;
+}, //se utiliza para definir ids = data[fkName]
   ): Observable<{ [index: string]: any }[]>{
     /**
      * @summary
@@ -370,25 +366,24 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  getAllConnection2(
-    data: { [index: string]: any }[], //array de datos que se utilizaran para consultar y luego seran asociados
-    entityName: string, //nombre de la entidad principal
-    fields: { [index: string]: any },
-    /**
+  getMergeAll2({ data, entityName, fields, fkName }: {
+    data: { [index: string]: any; }[]; 
+    entityName: string; 
+    fields: { [index: string]: any; }; /**
      * Objeto para filtrar los campos.
-     * 
+     *
      * Ciertos campos de entityName tienen el mismo nombre que la relacion de
      * origen, a partir del parametro fields, se puede asignar un alias.
      * Debe tenerse el cuidado de que para data se utilice un alias diferente
      * para cada campo.
-     * 
+     *
      * @example {"alias":"name"}
      */
-    fkName: string, //se utiliza para definir ids = data[fkName]
-  ): Observable<{ [index: string]: any }[]>{
+    fkName: string;
+  }): Observable<{ [index: string]: any }[]>{
     /**
      * @summary
-     * Variante de getAllConnection que realiza asociacion uno a uno.
+     * Variante de getMergeAll que realiza asociacion uno a uno.
      * El objetivo es lograr una mayor eficiencia
      */
     if(!data.length) return of([]);
@@ -425,15 +420,16 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  allConnection(
-    data: { [index: string]: any }[], 
-    entityName: string, 
-    fields: { [index: string]: any },
-    fkName: string,
-    fieldName: string, 
+  mergeAll(
+{ data, entityName, fields, fkName, fieldName }: { 
+    data: { [index: string]: any; }[]; 
+    entityName: string; 
+    fields: { [index: string]: any; }; 
+    fkName: string; 
+    fieldName: string; }, 
   ): Observable<{ [index: string]: any }[]>{
     /**
-     * Similar a getAllConnection pero utiliza un "fieldName", en vez del "id" para realizar la consulta
+     * Similar a getMergeAll pero utiliza un "fieldName", en vez del "id" para realizar la consulta
      */
     if(!data.length) return of([]);
 
@@ -471,17 +467,17 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
   
-  postAllConnection(
-    data: { [index: string]: any }[], 
-    method:string,
-    entityName: string, 
-    fields: { [index: string]: any },
-    fieldNameData?: string,
-    fieldNameResponse?: string, 
-  ): Observable<{ [index: string]: any }[]>{
+  postMergeAll({ data, method, entityName, fields, fieldNameData, fieldNameResponse }: { 
+    data: { [index: string]: any; }[]; 
+    method: string; 
+    entityName: string; 
+    fields: { [index: string]: any; }; 
+    fieldNameData?: string; 
+    fieldNameResponse?: string; 
+  }): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta de relaciones directas para metodos no habituales
-     * Procedimiento similar a getAllConnection
+     * Procedimiento similar a getMergeAll
      * Define un array de identificadores "ids" a partir de los parametros "data[fieldNameData]"
      * Consulta todos los campos del parametro "entityName" utilizando "ids" y parametro "method" para obtener "response"
      * Recorre "data" y "response", compara "data[i][fieldNameData]" con "response[j][fieldNameResponse]" y realiza una asociacion
@@ -539,7 +535,20 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  postAllConnection2(
+  postMergeAll_({ data, method, entityName, fields, fieldNameData, fieldNameResponse }: { 
+    data: { [index: string]: any; }[]; 
+    method: string; 
+    entityName: string; 
+    fields: string[]; 
+    fieldNameData?: string; 
+    fieldNameResponse?: string; 
+  }): Observable<{ [index: string]: any }[]>{
+    var fieldsObj: {[index:string]:any} = {}
+    for(var i = 0; i < fields.length; i++) fieldsObj[fields[i]] = fields[i]
+    return this.postMergeAll({data,method,fields:fieldsObj,entityName,fieldNameData,fieldNameResponse})
+  }
+
+  postMergeAll2(
     data: { [index: string]: any }[], 
     method:string,
     entityName: string, 
@@ -548,7 +557,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     fieldNameResponse: string, 
   ): Observable<{ [index: string]: any }[]>{
     /**
-     * Variante de postAllConnection que espera recibir un conjunto reducido 
+     * Variante de postMergeAll que espera recibir un conjunto reducido 
      * de respuestas que puede ser utilizado en varias filas
      */
     if(!data.length) return of([]);
@@ -584,7 +593,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
   
-  getAllConnectionUm(
+  getMergeAllUm(
     data: { [index: string]: any }[], 
     fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
     fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
@@ -625,7 +634,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  postAllConnectionUm(
+  postMergeAllUm(
     data: { [index: string]: any }[], 
     method:string,
     entityName: string, 
@@ -674,7 +683,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  selectConnectionUm(
+  postMergeUm(
     data: { [index: string]: any }[], 
     fields: { [index: string]: string }, //fields a consultar (no deben ser funciones de agregacion)
     fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
@@ -702,7 +711,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Se utiliza la nomenclartura "_"+fkName para diferenciarla de fkName+"_" 
      * utilizada para almacenar un json de la relacion de datos consultada
      * 
-     * Siempre que se pueda utilizar el metodo getAllConnectionUm,
+     * Siempre que se pueda utilizar el metodo getMergeAllUm,
      * ya que implementa storage 
      */
     if(!data.length) return of([]);
@@ -734,12 +743,12 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  getConnection(
-    data: { [index: string]: any }, 
-    entityName: string, 
-    fields: { [index: string]: any },
-    fkName?: string, 
-  ): Observable<{ [index: string]: any }>{
+  mergeGet({ data, entityName, fields, fkName }: {
+    data: { [index: string]: any; }; 
+    entityName: string; 
+    fields: { [index: string]: any; }; 
+    fkName?: string;
+  }): Observable<{ [index: string]: any }>{
     /**
      * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
      * Efectua una asociacion 
@@ -761,7 +770,10 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  getConnection_(
+  /**
+   * @todo combinar con mergeGet que sea parametro opcional fkName = id
+   */
+  mergeGetField( 
     data: { [index: string]: any }, 
     fkName: string, 
     entityName: string, 
@@ -795,7 +807,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
   }
 
 
-  getRelObject({data,entityName,fields,id,fkName,idResponse}:{
+  mergeObjectGet({data,entityName,fields,id,fkName,idResponse}:{
     data: { [index: string]: any },
 	  entityName: string, 
     fields: { [index: string]: any },
@@ -831,7 +843,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
   }
 
   /** Variante de getRelObject que trabaja sin alias */
-  getRelObject_({data, entityName, fields, id, fkName, idResponse}: {
+  mergeObjectGet_({data, entityName, fields, id, fkName, idResponse}: {
     data: { [index: string]: any },
 	  entityName: string, 
     fields: string[],
@@ -842,7 +854,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
     var fieldsObj: {[index:string]:any} = {}
     for(var i = 0; i < fields.length; i++) fieldsObj[fields[i]] = fields[i]
-    return this.getRelObject({
+    return this.mergeObjectGet({
       data:data,
       entityName:entityName,
       fields:fieldsObj, 

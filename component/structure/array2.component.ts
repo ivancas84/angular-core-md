@@ -105,7 +105,7 @@ export abstract class Array2Component extends StructureComponent implements OnIn
     override initData(): Observable<any>{
       return this.dd.post("ids", this.entityName, this.display$.value).pipe(
         switchMap(
-          ids => this.dd.entityFieldsGetAll(this.entityName, ids, Object.keys(this.formGroup().controls))
+          ids => this.dd.entityFieldsGetAll({ entityName: this.entityName, ids, fields: Object.keys(this.formGroup().controls) })
         )
       )
     }
