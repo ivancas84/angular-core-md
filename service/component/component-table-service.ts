@@ -83,6 +83,23 @@ export class ComponentTableService {
     control.patchValue(data)
   }
 
+
+  /**
+   * Ordenamiento local (sin servidor)
+   * Se utiliza principalmente cuando se posee el juego completo de datos
+   */
+  onChangeSortLocal(sort: Sort, control: FormArray): void {
+    if (!sort.active || sort.direction === '') return;
+    
+    const data = control.value;
+    
+    data.sort((a: { [x: string]: any; }, b: { [x: string]: any; }) => {    
+      return (sort.direction === 'asc') ? naturalCompare(a[sort.active],b[sort.active]) : naturalCompare(b[sort.active],a[sort.active])
+    });
+
+    control.patchValue(data)
+  }
+
   onChangePage($event: PageEvent, display: Display){
     display.setPage($event.pageIndex+1);
     display.setSize($event.pageSize);
