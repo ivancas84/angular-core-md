@@ -26,9 +26,7 @@ export class ComponentLoadService {
     return this.route.queryParams.pipe(
       map(
         queryParams => { 
-          var display = new Display();
-          display.setSize(100);
-          display.setParamsByQueryParams(queryParams);
+          var display = new Display().setSize(100).setParamsByQueryParams(queryParams);
           display$.next(display)
           return true;
         },
