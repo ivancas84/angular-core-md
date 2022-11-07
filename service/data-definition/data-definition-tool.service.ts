@@ -833,17 +833,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
 	  fkName?: string, 
     idResponse?: string}
   ): Observable<{ [index: string]: { [index: string]: any } }>{
-
     var fieldsObj: {[index:string]:any} = {}
     for(var i = 0; i < fields.length; i++) fieldsObj[fields[i]] = fields[i]
-    return this.mergeObjectGet({
-      data:data,
-      entityName:entityName,
-      fields:fieldsObj, 
-      id:id, 
-      fkName:fkName, 
-      idResponse:idResponse}
-    )
+    return this.mergeObjectGet({data, entityName, fields:fieldsObj, id, fkName, idResponse})
   }
 
   selectConnection(
