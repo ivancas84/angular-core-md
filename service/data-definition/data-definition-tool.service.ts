@@ -743,7 +743,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  mergeGet({ data, entityName, fields, fkName }: {
+  mergeGet({ data, entityName, fields, fkName = "id" }: {
     data: { [index: string]: any; }; 
     entityName: string; 
     fields: { [index: string]: any; }; 
@@ -770,42 +770,22 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  /**
-   * @todo combinar con mergeGet que sea parametro opcional fkName = id
-   */
-  mergeGetField( 
-    data: { [index: string]: any }, 
-    fkName: string, 
-    entityName: string, 
-    fields: { [index: string]: any },
-    join:string=", "
-  ): Observable<{ [index: string]: any }>{
+  mergeGet_({ data, entityName, fields, fkName = "id" }: {
+    data: { [index: string]: any; }; 
+    entityName: string; 
+    fields: string[]; 
+    fkName?: string;
+  }): Observable<{ [index: string]: any }>{
     /**
-     * Consulta un conjunto de relaciones.
-     * Consulta un solo elemento del parametro "entityName" utilizando los 
-     * parametros "data[fkName]" para obtener "response" 
+     * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
      * Efectua una asociacion 
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      */
-    if(!data[fkName]){
-      for(var f in fields) data[f] = null;
-      return of(data);
-    }
-    return this.get(entityName, data[fkName]).pipe(
-      map(
-        response => {
-          if(!response) return data;
-          for(var f in fields){
-            if(fields.hasOwnProperty(f))                    
-              data[f] = response[f];
-          }
-          return data;
-        }
-      )
-    );  
+    var fieldsObj: {[index:string]:string} = {}
+    for(var i =0; i < fields.length; i++) fieldsObj[fields[i]] = fields[i]
+    return this.mergeGet({data,entityName,fields:fieldsObj,fkName})
   }
-
 
   mergeObjectGet({data,entityName,fields,id,fkName,idResponse}:{
     data: { [index: string]: any },
@@ -816,7 +796,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     idResponse?: string
   }): Observable<{ [index: string]: { [index: string]: any } }>{
     /**
-     * Similar a getConnection pero utiliza una estructura de datos diferente de la forma
+     * Similar a mergeGet pero utiliza una estructura de datos diferente de la forma
      * data["alumno"] = {id:"value",activo:"value"} 
      * data["persona"] = {id:"value",activo:"value"}
      */
