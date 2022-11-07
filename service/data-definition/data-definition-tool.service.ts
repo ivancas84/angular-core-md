@@ -802,6 +802,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
      */
     if(!fkName) fkName = entityName;
     if(!idResponse) idResponse = fkName;
+    //ej persona _u domicilio 
+    //-> entityName = domicilio, fkName = domicilio, idResponse = domicilio
+
     data[idResponse] = {};
     if(!isEmptyObject(data)) {
       for(var f in fields) data[idResponse][f] = null;
@@ -822,7 +825,6 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  /** Variante de getRelObject que trabaja sin alias */
   mergeObjectGet_({data, entityName, fields, id, fkName, idResponse}: {
     data: { [index: string]: any },
 	  entityName: string, 
