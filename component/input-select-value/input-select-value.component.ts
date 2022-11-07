@@ -52,7 +52,7 @@ export class InputSelectValueComponent implements OnInit {
     let display  = new Display();
     display.setFieldsArray([this.config.fieldName]);
     display.setOrderByKeys([this.config.fieldName]);
-    this.options$ = this.dd.post("advanced", this.config.entityName, display).pipe(
+    this.options$ = this.dd.post("select", this.config.entityName, display).pipe(
       map(
         rows => arrayColumn(rows, this.config.fieldName).filter(n => n)
       ),
