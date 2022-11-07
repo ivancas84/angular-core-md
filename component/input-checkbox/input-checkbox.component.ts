@@ -2,7 +2,8 @@ import { Input, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FormControlConfig } from '@class/reactive-form-config';
 import { getControlName } from '@function/get-control-name';
-import { startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 
 export class InputCheckboxConfig extends FormControlConfig {
   override component: any = InputCheckboxComponent
@@ -25,20 +26,21 @@ export class InputCheckboxComponent implements OnInit {
    */
   @Input() config!: InputCheckboxConfig;
   @Input() control!: FormControl;
-
+  control$!: Observable<any>
   
   ngOnInit(){
     if(!this.config.label) this.config.label = getControlName(this.control)
 
-    this.control.valueChanges.pipe(
+    this.control$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
-    ).subscribe(
-      value => {
-        if(typeof value != "boolean") {
-            this.control.setValue(false)
+      map(
+        value => {
+          if(typeof value != "boolean") {
+              this.control.setValue(false)
+          }
+          return true;
         }
-      }
-    )
+    ))
   }
 
    
