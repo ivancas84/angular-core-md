@@ -34,3 +34,28 @@ export class CustomDateFormatYyyy {
 })
 export class CustomDateFormatDdMmYyyy {
 }
+
+/**
+ * @example
+ * 
+ <mat-form-field dateFormatYyyy> 
+    <mat-label>Año</mat-label>
+
+    <input matInput 
+        [matDatepicker]="fieldPicker" 
+        formControlName="calendario-anio" 
+        placeholder="Ingrese año">
+
+    <mat-datepicker-toggle matSuffix 
+        [for]="fieldPicker"></mat-datepicker-toggle>
+        
+    <mat-datepicker-toggle matSuffix 
+        (click)="fs.setNullGroupKey(controlSearch,'calendario-anio')">
+        <mat-icon matDatepickerToggleIcon>clear</mat-icon></mat-datepicker-toggle>
+    
+    <mat-datepicker #fieldPicker
+            startView="multi-year"
+            (yearSelected)="fs.datePickerYearGroupKey(controlSearch,'calendario-anio',$event,fieldPicker)">
+    </mat-datepicker>
+</mat-form-field>     
+ */
