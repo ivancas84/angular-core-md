@@ -45,7 +45,6 @@ export class ComponentTableService {
       debounceTime(100),
       map(
         () => {
-
           if(table) table.renderRows()
         }
       )
@@ -98,6 +97,31 @@ export class ComponentTableService {
     });
 
     control.patchValue(data)
+  }
+
+  /**
+   * Variante del sort local que utiliza un metodo adicional para buscar el label y ordenar
+   * Es util cuando en el sort se emplean traduciones como es el caso de los autocomplete o select
+   */
+  onChangeSortLocalLabel(sort: Sort, control: FormArray, options:{[i:string]:{[j:string]:any}[]}): void {
+    if (!sort.active || sort.direction === '') return;
+    
+    const data = control.value;
+    
+    data.sort((a: { [x: string]: any; }, b: { [x: string]: any; }) => {  
+      return (sort.direction === 'asc') ? naturalCompare(this.sortLabelValue(sort.active,a,options),this.sortLabelValue(sort.active, b,options)) : naturalCompare(this.sortLabelValue(sort.active,b,options),this.sortLabelValue(sort.active, a,options))
+    });
+
+    control.patchValue(data)
+  }
+
+  sortLabelValue(fieldName:string, row:{[i:string]:any}, options:{[i:string]:{[j:string]:any}[]}): any{
+    if(!options.hasOwnProperty(fieldName)) return row[fieldName]
+
+    for(var i = 0; i < options[fieldName].length; i++){
+      if(row[fieldName] == options[fieldName][i]["id"]) return options[fieldName][i]["label"]
+    }
+
   }
 
   onChangePage($event: PageEvent, display: Display){

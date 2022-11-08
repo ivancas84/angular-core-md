@@ -2,6 +2,10 @@ import { Component, Input, SimpleChanges, OnChanges} from '@angular/core';
 import { DataDefinitionService } from '@service/data-definition/data-definition.service';
 import { first } from 'rxjs/operators';
 
+/**
+ * Componente para visualizar rapidamente el label de una entidad
+ * Se utiliza principalmente para acelerar el desarrollo.
+ */
 @Component({
   selector: 'core-label',
   templateUrl: './label.component.html',
@@ -9,7 +13,7 @@ import { first } from 'rxjs/operators';
 export class LabelComponent implements OnChanges {
   
   @Input() entityName!: string;
-  @Input() id!: string;
+  @Input() id?: string;
   label?: any;
 
   constructor(
@@ -21,7 +25,7 @@ export class LabelComponent implements OnChanges {
       if(!changes['id'].currentValue) this.label = null;
       else {
         this.dd.post("label_get",this.entityName, this.id).pipe(first()).subscribe(
-          (label:any) => {this.label = label;}
+          (row:any) => {this.label = row["label"];}
         )
       }
     }
