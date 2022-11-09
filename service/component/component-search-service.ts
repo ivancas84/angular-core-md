@@ -22,42 +22,10 @@ export class ComponentSearchService {
 
   constructor(protected dialog: MatDialog, protected router: Router){}
 
-
-  /**
-   * @example this.loadSearch$ = loadControl(...)
-   */
-  loadControl(control: FormGroup, display$: BehaviorSubject<Display>): Observable<any>{
-    return display$.pipe(
-      map(
-        display => {
-          if(!isEmptyObject(display.getParams()))
-          control.reset(display.getParams()) 
-          return true
-        }
-      )
-    )
-    
-  }
-
-  onSubmit(control: FormGroup, display: Display, searchPanel: MatExpansionPanel, isSubmitted: boolean ): void {
-    /**
-     * Transformar valores del atributo display a traves de los valores del formulario
-     */
-
-    isSubmitted = true;
-
-    if (!control.valid) {
-      markAllAsTouched(control);
-      logValidationErrors(control);
-      this.dialog.open(DialogAlertComponent, {
-        data: {title: "Error", message: "El formulario posee errores."}
-      });
-      isSubmitted = false;
-    } else {
-      display.setParams(control.value);    
-      display.setPage(1);
+  searchAndNavigateByUrl(value: any, display: Display, searchPanel: MatExpansionPanel): void {
+      display.setParams(value).setPage(1);
       searchPanel.close();
       this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
-    }
   }
+
 }
