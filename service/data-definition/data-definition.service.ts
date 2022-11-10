@@ -102,6 +102,7 @@ export class DataDefinitionService {
     return this.post("unique_id", entity, params).pipe(
       switchMap(
         id => {
+          if(!id) return of(null)
           return this.get(entity, id);
         }
       )

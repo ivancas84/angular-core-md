@@ -1,6 +1,7 @@
 import { ValidationErrors, FormGroup, FormArray, AbstractControl, FormControl } from "@angular/forms";
 
 export function logValidationErrors(formGroup: FormGroup | FormArray) {
+  console.log(formGroup)
     /**
      * log de errores del formulario
      * Utilizado opcionalmente para propositos de Debug
@@ -17,7 +18,7 @@ export function logValidationErrors(formGroup: FormGroup | FormArray) {
 
       } else if(control instanceof FormGroup ) {
         console.log("FormGroup " + key);
-        logValidationErrors(control.controls[key] as FormGroup);
+        logValidationErrors(control as FormGroup);
       }
       
       else if(control instanceof FormArray ) {
