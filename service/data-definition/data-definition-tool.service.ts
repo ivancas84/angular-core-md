@@ -933,12 +933,8 @@ export class DataDefinitionToolService extends DataDefinitionService{
       }
     }
     if(!ids.length) return of(data);
-    var display = new Display();
-    display.setSize(0);
-    display.setFields(fields);
-    display.setGroupArray([fieldName]);
-    display.addCondition([fieldName,"=",ids]);
-    return this._post("advanced",entityName, display).pipe(
+    var d = new Display().setSize(0).setFields(fields).setGroup_([fieldName]).addCondition([fieldName,"=",ids]);
+    return this._post("select",entityName, d).pipe(
       map(
         response => {
           for(var i = 0; i < data.length; i++){

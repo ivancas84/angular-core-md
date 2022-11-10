@@ -50,7 +50,7 @@ export class InputSelectValueComponent implements OnInit {
     if(!this.config.fieldName) this.config.fieldName = getControlName(this.control)
 
     let display  = new Display();
-    display.setFieldsArray([this.config.fieldName]);
+    display.setFields_([this.config.fieldName]);
     display.setOrderByKeys([this.config.fieldName]);
     this.options$ = this.dd.post("select", this.config.entityName, display).pipe(
       map(

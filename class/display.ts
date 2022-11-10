@@ -105,11 +105,7 @@ export class Display {
     return this;
   }
 
-  public setFieldsArray(fields: string[]){
-    this.fields = {};
-    for(var i = 0; i < fields.length; i++) this.fields[fields[i]] = fields[i];
-    return this;
-  }
+
 
   public addGroup(field: string){
     /**
@@ -145,7 +141,7 @@ export class Display {
     return this;
   }
 
-  public setGroupArray(group: string[]){
+  public setGroup_(group: string[]){
     this.group = {};
     for(var i = 0; i < group.length; i++) this.group[group[i]] = group[i];
     return this;
