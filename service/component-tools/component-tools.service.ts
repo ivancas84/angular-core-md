@@ -1,5 +1,5 @@
 import { ApplicationRef, ElementRef, Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormControl } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -9,9 +9,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Display } from '@class/display';
 import { DialogAlertComponent } from '@component/dialog-alert/dialog-alert.component';
 import { emptyUrl } from '@function/empty-url.function';
+import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { naturalCompare } from '@function/natural-compare';
-import { startWith, map, BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, switchMap, tap } from 'rxjs';
+import { startWith, map, BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, switchMap, tap, first } from 'rxjs';
 import { DataDefinitionToolService } from '../data-definition/data-definition-tool.service';
 import { LocalStorageService } from '../storage/local-storage.service';
 
@@ -135,6 +136,8 @@ export class ComponentToolsService {
     });
   }
 
+ 
+
 
   submittedDisplay(response:{[index:string]:any}, display$:BehaviorSubject<Display>){
     this.submitted(response)
@@ -146,6 +149,32 @@ export class ComponentToolsService {
     this.snackBar.open("Registro realizado", "X");
     this.local.removeItemsContains(".");
     if (response["detail"]) this.local.removeItemsPersisted(response["detail"]);
+  }
+
+
+  /**
+   * @example submitPersona(){
+      this.tools.submit("persona",this.controlPersona,this.display$).pipe(first()).subscribe({
+        error: (error: any) => this.tools.dialogError(error),
+        complete: () => this.isSubmitted = false
+      })
+    }
+   */
+  persist(entityName: string, control: FormGroup, display$: BehaviorSubject<Display>): Observable<any> {
+    if (!control.valid) {
+      logValidationErrors(control)
+      this.cancelSubmit(control)
+      return of(null)
+    } else {
+      return this.dd._post("persist", entityName, control.value).pipe(
+        map(
+          response => {
+            this.submittedDisplay(response,display$)
+            return true;
+          }
+        )
+      );
+    } 
   }
 
 
@@ -308,5 +337,12 @@ export class ComponentToolsService {
     display.setParams(value).setPage(1);
     searchPanel.close();
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
+  }
+
+
+  dialogError(data: {error:string}){
+    this.dialog.open(DialogAlertComponent, {
+      data: {title: "Error", message: data.error}
+    });
   }
 }
