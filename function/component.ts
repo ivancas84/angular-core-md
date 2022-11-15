@@ -6,13 +6,14 @@
  * El objetivo perseguido por este conjunto de funciones es ahorrar codigo, pudiendo ser reemplazado su uso si se requiere.
  */
 
-import { FormArray, FormGroup } from "@angular/forms";
+import { EventEmitter } from "@angular/core";
+import { AbstractControl, FormArray, FormGroup } from "@angular/forms";
 import { MatDatepicker } from "@angular/material/datepicker";
 import { Sort } from "@angular/material/sort";
 import { MatTable } from "@angular/material/table";
 import { Display } from "@class/display";
 import * as moment from 'moment';
-import { BehaviorSubject, Observable, map, debounceTime, Subscription } from "rxjs";
+import { BehaviorSubject, Observable, map, debounceTime, Subscription, filter, startWith, Subject, switchMap, take, tap } from "rxjs";
 import { isEmptyObject } from "./is-empty-object.function";
 import { naturalCompare } from "./natural-compare";
 
@@ -118,11 +119,30 @@ function sortLabelValue(fieldName:string, row:{[i:string]:any}, options:{[i:stri
 
 }
 
-
-
 export function initDisplayedColumns(formGroup: FormGroup) {
   return Object.keys(formGroup.controls)
 }
+
+
+/**
+ * @source https://stackoverflow.com/questions/49516084/reactive-angular-form-to-wait-for-async-validator-complete-on-submit
+ */
+export function onSubmit(onSubmit$: Subject<any>, control:AbstractControl, onSubmit: EventEmitter <string>, fieldsetName:string){
+  onSubmit$
+    .pipe(
+      tap(() => control.markAsDirty()),
+      switchMap(() =>
+        control.statusChanges.pipe(
+          startWith(control.status),
+          filter(status => status !== 'PENDING'),
+          take(1)
+        )
+      ),
+      filter(status => status === 'VALID')
+    )
+    .subscribe((validationSuccessful) => onSubmit.emit(fieldsetName));
+}
+ 
 
 
 

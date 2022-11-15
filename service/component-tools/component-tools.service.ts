@@ -12,7 +12,7 @@ import { emptyUrl } from '@function/empty-url.function';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { naturalCompare } from '@function/natural-compare';
-import { startWith, map, BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, switchMap, tap, first } from 'rxjs';
+import { startWith, map, BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, switchMap, tap } from 'rxjs';
 import { DataDefinitionToolService } from '../data-definition/data-definition-tool.service';
 import { LocalStorageService } from '../storage/local-storage.service';
 
@@ -345,4 +345,6 @@ export class ComponentToolsService {
       data: {title: "Error", message: data.error}
     });
   }
+
+    
 }
