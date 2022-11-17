@@ -1,0 +1,27 @@
+<mat-form-field  *ngIf="loadAutocomplete$ | async">
+    <mat-label *ngIf="title">{{title}}</mat-label>
+    
+    <input readonly="readonly"
+            *ngIf="this.label" type="text" matInput value="{{label}}">
+   
+            <input *ngIf="!label"
+        type="text"
+        matInput
+        [formControl]="searchControl"
+        [matAutocomplete]="ac">
+
+    <button *ngIf="!control.disabled" type="button" mat-icon-button matSuffix (click)="control.setValue(null)">
+      <mat-icon>clear</mat-icon>
+    </button>
+       
+    <mat-autocomplete #ac="matAutocomplete">
+        <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+            {{option["label"]}}
+        </mat-option>
+    </mat-autocomplete>
+
+    <mat-error>
+      <ng-container *ngIf="control!.hasError('required')">Debe completar valor</ng-container>
+    </mat-error>
+         
+</mat-form-field>
