@@ -1,4 +1,4 @@
-import { ApplicationRef, ElementRef, Injectable } from '@angular/core';
+import { ApplicationRef, ElementRef, EventEmitter, Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionPanel } from '@angular/material/expansion';
@@ -12,7 +12,7 @@ import { emptyUrl } from '@function/empty-url.function';
 import { logValidationErrors } from '@function/log-validation-errors';
 import { markAllAsDirty } from '@function/mark-all-as-dirty';
 import { naturalCompare } from '@function/natural-compare';
-import { startWith, map, BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, switchMap, tap } from 'rxjs';
+import { startWith, map, BehaviorSubject, debounceTime, distinctUntilChanged, Observable, of, switchMap, tap, first, filter, Subject, take } from 'rxjs';
 import { DataDefinitionToolService } from '../data-definition/data-definition-tool.service';
 import { LocalStorageService } from '../storage/local-storage.service';
 
@@ -345,6 +345,26 @@ export class ComponentToolsService {
       data: {title: "Error", message: data.error}
     });
   }
+
+  onFileSelect(event: any, control: FormControl): void {
+    if (event.target.files.length > 0) {
+      control.markAsPending();
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append("file", file); //se asigna un identificador "file" al archivo, en el servidor debera leerse al archivo "file"
+      this.dd.upload("file", formData).pipe(first()).subscribe({ //file identifica la forma en que se procesara el archivo en el servidor
+        next: (response: any) => {
+          control.setValue(response["id"]);
+          control.markAsDirty();
+        },
+        error: (error: any) => { 
+          this.dialog.open(DialogAlertComponent, {
+            data: {title: "Error", message: error.error}
+          });
+        }
+      })
+    }
+}
 
     
 }

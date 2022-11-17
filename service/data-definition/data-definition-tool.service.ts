@@ -4,7 +4,7 @@ import { arrayColumn } from '@function/array-column';
 import { arrayUnique } from '@function/array-unique';
 import { fastClone } from '@function/fast-clone';
 import { isEmptyObject } from '@function/is-empty-object.function';
-import { combineLatest, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DataDefinitionService } from './data-definition.service';
 
