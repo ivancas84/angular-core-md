@@ -69,7 +69,7 @@ import { UploadComponent } from "@component/upload/upload.component";
 import { BackupComponent } from "@component/backup/backup.component";
 import { LinkIconComponent } from "@component/link-icon/link-icon.component";
 import { ControlNumberComponent } from "@component/control-number/control-number.component";
-import { CustomDateFormatDdMmYyyy, CustomDateFormatYyyy } from "@directive/date.directive";
+import { CustomDateFormatDdMmYyyy, CustomDateFormatYyyy, CustomDateFormatYyyyMm } from "@directive/date.directive";
 
 registerLocaleData(localeEsAr, 'es-AR');
 
@@ -83,6 +83,7 @@ registerLocaleData(localeEsAr, 'es-AR');
 
     ControlDirective,
     CustomDateFormatYyyy,
+    CustomDateFormatYyyyMm,
     CustomDateFormatDdMmYyyy,
 
     /**************************************************************************
@@ -191,6 +192,7 @@ registerLocaleData(localeEsAr, 'es-AR');
 
     ControlDirective,
     CustomDateFormatYyyy,
+    CustomDateFormatYyyyMm,
     CustomDateFormatDdMmYyyy,
 
     DetailComponent,

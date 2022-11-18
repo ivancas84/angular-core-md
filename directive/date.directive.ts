@@ -3,6 +3,22 @@ import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/materia
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { Y_FORMATS } from 'app/core/const/Y_FORMATS';
 import { DATE_FORMATS } from '../const/DATE_FORMATS';
+import { MY_FORMATS } from '../const/MY_FORMATS';
+
+@Directive({
+  selector: '[dateFormatYyyyMm]',
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+  ],
+})
+export class CustomDateFormatYyyyMm {
+}
 
 
 @Directive({

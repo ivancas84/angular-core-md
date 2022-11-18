@@ -116,7 +116,7 @@ export class DataDefinitionService {
      * Procedimiento:
      *   Se define un array del tamanio del array de ids recibido
      *   Se define un nuevo array "rows" con los valores a retornar
-     *   Se busca la coincidencia del id en el session, y se asigna en la posicion correspondiente de rows
+     *   Se busca la coincidencia del id en el localStorage, y se asigna en la posicion correspondiente de rows
      *   Si no existe coincidencia se define un nuevo array "searchIds" con los ids a buscar en el servidor
      *   Se realiza una consulta al servidor con searchIds y se obtiene un "rows_" auxiliar
      *   Se recorre el resultado de la consulta comparando el id de "rows_" con el id de ids para obtener la posicion corresopndiente
