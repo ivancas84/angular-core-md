@@ -71,7 +71,7 @@ export class CustomDateFormatDdMmYyyy {
     
     <mat-datepicker #fieldPicker
             startView="multi-year"
-            (yearSelected)="fs.datePickerYearGroupKey(controlSearch,'calendario-anio',$event,fieldPicker)">
+            (yearSelected)="fs.chosenYearHandlerClose(controlSearch,'calendario-anio',$event,fieldPicker)">
     </mat-datepicker>
 </mat-form-field>     
  */

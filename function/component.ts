@@ -6,8 +6,9 @@
  * El objetivo perseguido por este conjunto de funciones es ahorrar codigo, pudiendo ser reemplazado su uso si se requiere.
  */
 
+import { group } from "@angular/animations";
 import { EventEmitter } from "@angular/core";
-import { AbstractControl, FormArray, FormGroup } from "@angular/forms";
+import { AbstractControl, FormArray, FormControl, FormGroup } from "@angular/forms";
 import { MatDatepicker } from "@angular/material/datepicker";
 import { Sort } from "@angular/material/sort";
 import { MatTable } from "@angular/material/table";
@@ -17,16 +18,26 @@ import { BehaviorSubject, Observable, map, debounceTime, Subscription, filter, s
 import { isEmptyObject } from "./is-empty-object.function";
 import { naturalCompare } from "./natural-compare";
 
-export function datePickerYearGroupKey(group: FormGroup, key: string, normalizedYear: moment.Moment, datepicker: MatDatepicker<moment.Moment>){
-    // let ctrlValue = group.controls[key].value;
-    let ctrlValue = moment();
-    /**
-     * es conveniente inicializar valor, dependiendo de como se inicialize el valor original puede un string, null o DateTime en vez de un moment()
-     */
-    ctrlValue.year(normalizedYear.year());
-
-    group.controls[key].setValue(ctrlValue);
+export function chosenYearHandlerClose(control: AbstractControl, normalizedYear: moment.Moment, datepicker: MatDatepicker<moment.Moment>){
+    chosenYearHandler(control,normalizedYear)
     datepicker.close();
+}
+
+export function chosenYearHandler(control: AbstractControl, normalizedYear: moment.Moment) {
+  let ctrlValue = control.value;
+  ctrlValue = moment();
+  /**
+   * es conveniente inicializar valor, dependiendo de como se inicialize el valor original puede un string, null o DateTime en vez de un moment()
+   */
+  ctrlValue.year(normalizedYear.year());
+  control.setValue(ctrlValue);
+}
+
+export function chosenMonthHandler(control: FormControl, normalizedMonth: moment.Moment, datepicker: MatDatepicker<moment.Moment>) {
+  let ctrlValue = control.value;
+  ctrlValue.month(normalizedMonth.month());
+  control.setValue(ctrlValue);
+  datepicker.close();
 }
 
 /**
