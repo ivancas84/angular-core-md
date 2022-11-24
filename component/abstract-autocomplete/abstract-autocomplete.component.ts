@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl } from '@angular/forms';
 import { ComponentToolsService } from '@service/component-tools/component-tools.service';
 import { map, Observable } from 'rxjs';
 
@@ -13,7 +13,7 @@ export abstract class AbstractAutocompleteComponent implements OnInit {
   title: string = "";
 
 
-  @Input() control!: FormControl //control
+  @Input() control!: AbstractControl //control
 
   loadAutocomplete$!: Observable<any>; //inicializar
   searchControl: FormControl = new FormControl(null); //control para busqueda, no interfiere con el control del fieldset principal
