@@ -43,23 +43,25 @@ export class ComponentToolsService {
 ){}
     
 
-  serverSort(sort: Sort, length: number, display:Display, control: FormArray, serverSortObligatory: string[] = [], serverSortTranslate:{[index:string]:string[]}= {}): boolean{ 
-    if((!length || !display || control.controls.length >= length)) {
+  serverSort(sort: Sort, length: number, display:Display, data: {[index:string]:any}[], serverSortObligatory: string[] = [], serverSortTranslate:{[index:string]:string[]}= {}): boolean{
+    if((!length || !display || data.length >= length)) {
       if(!serverSortObligatory.includes(sort.active)) return false;
     }
 
     display.setOrderByKeys(
       serverSortTranslate.hasOwnProperty(sort.active) ? serverSortTranslate[sort.active] : [sort.active]
     )
+
     display.setPage(1)
     this.router.navigateByUrl('/' + emptyUrl(this.router.url) + '?' + display.encodeURI());  
+    
     return true;
   }
 
   onChangeSort(sort: Sort, length: number, display:Display, control: FormArray, serverSortTranslate:{[index:string]:string[]}= {}, serverSortObligatory: string[] = [], paginator?: MatPaginator): void {
     if(paginator) paginator.pageIndex = 0;
 
-    if(this.serverSort(sort,length, display, control,serverSortObligatory, serverSortTranslate)) return;
+    if(this.serverSort(sort,length, display, control.controls,serverSortObligatory, serverSortTranslate)) return;
 
     if (!sort.active || sort.direction === '') return;
     
