@@ -94,21 +94,6 @@ export class DataDefinitionService {
     )
   }  
 
-  unique (entity: string, params: any): Observable<any> {
-    /**
-     * para evitar obtener desde el servidor el json del valor de una entidad y sus relaciones pudiendose evitar, 
-     * se opto por obtener solo el id
-     */
-    return this.post("unique_id", entity, params).pipe(
-      switchMap(
-        id => {
-          if(!id) return of(null)
-          return this.get(entity, id);
-        }
-      )
-    )
-  }
-
   getAll (entity: string, ids: Array<string | number>): Observable<{[index:string]:any}[]> { 
     /**
      * Recibe una lista de ids, y retorna sus datos en el mismo orden que se reciben los ids

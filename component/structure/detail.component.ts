@@ -117,7 +117,14 @@ export class DetailComponent extends StructureComponent implements OnInit{
   }
 
   queryData(): Observable<any>{
-    return this.dd.unique(this.entityName, this.params)
+    return this.dd.post("unique_id", "comision", this.params).pipe(
+      switchMap(
+        id => {
+          if(!id) return of({})
+          return this.dd.get("comision",id)
+        }
+      )
+    )
   }
 
   override persist(): Observable<any> {

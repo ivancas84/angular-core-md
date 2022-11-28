@@ -137,9 +137,11 @@ export function initDisplayedColumns(formGroup: FormGroup) {
 
 /**
  * @source https://stackoverflow.com/questions/49516084/reactive-angular-form-to-wait-for-async-validator-complete-on-submit
+ * @example
+ *   onSubmit(onSubmit$,control).subscribe((validationSuccessful) => onSubmit.emit(fieldsetName));
  */
-export function onSubmit(onSubmit$: Subject<any>, control:AbstractControl, onSubmit: EventEmitter <string>, fieldsetName:string){
-  onSubmit$
+export function onSubmit(onSubmit$: Subject<any>, control:AbstractControl){
+  return onSubmit$
     .pipe(
       tap(() => control.markAsDirty()),
       switchMap(() =>
@@ -151,9 +153,11 @@ export function onSubmit(onSubmit$: Subject<any>, control:AbstractControl, onSub
       ),
       filter(status => status === 'VALID')
     )
-    .subscribe((validationSuccessful) => onSubmit.emit(fieldsetName));
+    
 }
  
+
+
 
 
 
