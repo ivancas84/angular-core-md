@@ -147,8 +147,8 @@ export class DataDefinitionToolService extends DataDefinitionService{
     entityName: string; 
     fields: string[]; 
     fieldNameData: string; 
-    fieldNameResponse: string; //debe estar incluido en los fields
-    prefix?:string ;
+    fieldNameResponse: string; 
+    prefix?:string ; 
    }, 
   ): Observable<{ [index: string]: any }[]>{
         /**
@@ -156,6 +156,8 @@ export class DataDefinitionToolService extends DataDefinitionService{
          */
         if(!data.length) return of([]);
       
+        if(!fields.hasOwnProperty(fieldNameResponse)) fields.push(fieldNameResponse)
+
         var ids = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; });
         
         for(var i = 0; i < data.length; i++) {
@@ -567,17 +569,6 @@ export class DataDefinitionToolService extends DataDefinitionService{
               }
             }
           }
-          // for(var i = 0; i < data.length; i++){
-          //   for(var j = 0; j < response.length; j++){
-          //     if(data[i][fieldNameData] == response[j][fieldNameResponse]) {
-          //       for(var f in fields){
-          //         if(fields.hasOwnProperty(f))                    
-          //           data[i][f] = response[j][f];
-          //       }
-          //       break;
-          //     }
-          //   }
-          // }
           return data;
         }
       )

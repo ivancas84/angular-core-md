@@ -215,7 +215,7 @@ export class Display {
     this.condition = [];
     for(let i in params) {
       if(params.hasOwnProperty(i)) {
-        if(!(this.hasOwnProperty(i))) this.addCondition([i, "=", params[i]]); //asignar filtro
+        if(!(this.hasOwnProperty(i))) this.addParam(i, params[i]); //asignar param
         else (this as any)[i] = JSON.parse(decodeURI(params[i])); //asignar parametro
       }
     }

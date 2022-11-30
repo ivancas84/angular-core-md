@@ -106,6 +106,21 @@ export function onChangeSortLocal(sort: Sort, control: FormArray): void {
 
 
 /**
+ * Ordenamiento local (sin servidor)
+ * Se utiliza principalmente cuando se posee el juego completo de datos
+ */
+ export function onChangeSortData(sort: Sort, data: {[i:string]:any}[], table: MatTable<any>): void {
+  if (!sort.active || sort.direction === '') return;
+  
+  data.sort((a: { [x: string]: any; }, b: { [x: string]: any; }) => {  
+    return (sort.direction === 'asc') ? naturalCompare(a[sort.active],b[sort.active]) : naturalCompare(b[sort.active],a[sort.active])
+  });
+
+  table.renderRows()
+}
+
+
+/**
    * Variante del sort local que utiliza un metodo adicional para buscar el label y ordenar
    * Es util cuando en el sort se emplean traduciones como es el caso de los autocomplete o select
    */

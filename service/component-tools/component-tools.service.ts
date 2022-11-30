@@ -285,26 +285,22 @@ export class ComponentToolsService {
    * @example this.loadParams$ = loadParams(this.display$) 
    */
    loadParams(display$:BehaviorSubject<Display>){
-    
-    return this.route.queryParams.pipe(
-      map(
-        queryParams => { 
-          var display = new Display().setSize(100).setParamsByQueryParams(queryParams);
-          display$.next(display)
-          return true;
-        },
-      ),
-    )
+      return this.route.queryParams.pipe(
+          map(
+              queryParams => { 
+                  var display = new Display().setSize(100).setParamsByQueryParams(queryParams);
+                  display$.next(display)
+                  return true;
+              },
+          ),
+      )
   }
 
- 
-  
-
   loadLength(entityName: string, display: Display): Observable<number> {
-    /**
-     * Si no se desea procesar la longitud, retornar of(null)
-     */
-    return this.dd.post("count", entityName, display)
+      /**
+       * Si no se desea procesar la longitud, retornar of(null)
+       */
+      return this.dd.post("count", entityName, display)
   }
 
   loadArrayData(entityName: string, display: Display, keys: string[]): Observable<any>{
