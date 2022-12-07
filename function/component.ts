@@ -92,7 +92,7 @@ export function renderRowsOfTableOnValueChanges(control: FormArray, table: MatTa
  * Ordenamiento local (sin servidor)
  * Se utiliza principalmente cuando se posee el juego completo de datos
  */
-export function onChangeSortLocal(sort: Sort, control: FormArray): void {
+export function onChangeSortLocalControl(sort: Sort, control: FormArray): void {
   if (!sort.active || sort.direction === '') return;
   
   const data = control.value;
