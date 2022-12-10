@@ -1,12 +1,20 @@
 <mat-form-field>
-  <mat-label>{{label}}</mat-label>
+    <mat-label>{{label}}</mat-label>
 
-  <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto" >
+    <input 
+        type="text" 
+        matInput 
+        [formControl]="searchControl" 
+        [matAutocomplete]="auto" >
 
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-      {{option['label']}}
-    </mat-option>
-  </mat-autocomplete>
+    <mat-autocomplete 
+        #auto="matAutocomplete" 
+        [displayWith]="displayFn">
+        <mat-option 
+            *ngFor="let option of filteredOptions | async" 
+            [value]="option">
+                {{option['label']}}
+        </mat-option>
+    </mat-autocomplete>
   
 </mat-form-field>

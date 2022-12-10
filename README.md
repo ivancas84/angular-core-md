@@ -1,4 +1,8 @@
 
+# Version 0.5.2
+
+* Eliminar clases abstractas y generales del core.
+
 # Version 0.5.1
 
 * Adaptar a la versión 0.5 de SQLOrganize.

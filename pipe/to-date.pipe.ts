@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Parser } from '@class/parser';
+import { date } from '@function/parser/date';
 
 @Pipe({name: 'toDate'})
 export class ToDatePipe implements PipeTransform {
@@ -7,6 +7,6 @@ export class ToDatePipe implements PipeTransform {
   constructor() {}
 
   transform(value: string): Date | undefined{
-    return Parser.date(value);
+    return date(value);
   }
 }
