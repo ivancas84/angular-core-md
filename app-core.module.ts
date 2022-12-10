@@ -32,6 +32,7 @@ import { ValidatorsService } from "@service/validators/validators.service";
 import { DataDefinitionStorageService } from "@service/data-definition/data-definition-storage-service";
 import { BackupComponent } from "@component/backup/backup.component";
 import { CustomDateFormatDdMmYyyy, CustomDateFormatYyyy, CustomDateFormatYyyyMm } from "@directive/date.directive";
+import { AutocompleteComponent } from "@component/autocomplete/autocomplete.component";
 
 registerLocaleData(localeEsAr, 'es-AR');
 
@@ -57,7 +58,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputSearchGoComponent,
     BackupComponent,
     LabelComponent,
-    
+    AutocompleteComponent
   ],
   exports: [
     ToDatePipe,
@@ -76,6 +77,7 @@ registerLocaleData(localeEsAr, 'es-AR');
     InputSearchGoComponent,
     BackupComponent,
     LabelComponent,
+    AutocompleteComponent,
     
   ],
   imports: [

@@ -4,15 +4,13 @@ import { ComponentToolsService } from '@service/component-tools/component-tools.
 import { map, Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-abstract-autocomplete',
-  template: ''
+  selector: 'app-autocomplete',
+  templateUrl: './autocomplete.component.html'
 })
-export abstract class AbstractAutocompleteComponent implements OnInit {
+export class AutocompleteComponent implements OnInit {
 
-  entityName!: string;
-  title: string = "";
-
-
+  @Input() entityName!: string;
+  @Input() title: string = "";
   @Input() control!: AbstractControl //control
 
   loadAutocomplete$!: Observable<any>; //inicializar
