@@ -138,9 +138,6 @@ export class ComponentToolsService {
     });
   }
 
- 
-
-
   submittedDisplay(response:{[index:string]:any}, display$:BehaviorSubject<Display>){
     this.submitted(response)
     this.local.removeItemsPrefix(emptyUrl(this.router.url));
