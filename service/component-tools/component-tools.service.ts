@@ -204,7 +204,7 @@ export class ComponentToolsService {
         console.log(value)
         if (typeof value == "string") {
           if(value === "") return of([]);
-          var display = new Display().addCondition(["_label","=~",value]);
+          var display = new Display().addCondition(["label","=~",value]);
           return this.dd.post("label_all",entityName, display)
         }
         else {

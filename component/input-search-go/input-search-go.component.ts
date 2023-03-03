@@ -60,7 +60,7 @@ export class InputSearchGoComponent implements OnInit {
   
   private _filter(value: string): Observable<any> {
     if(value === "") return of([]);
-    var display = new Display().setFields_(["id","label"]).addCondition(["_label_search","=~",value]);
+    var display = new Display().setFields_(["id","label"]).addCondition(["label_search","=~",value]);
     return this.dd.post("select",this.entityName, display);
   }
 
