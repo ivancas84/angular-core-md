@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 })
 export class BackupComponent implements OnDestroy {
 
-  readonly entityName: string = "magistrados";
+  readonly entity_name: string = "magistrados";
   protected subscriptions = new Subscription(); //suscripciones en el ts
 
   constructor( 
@@ -21,7 +21,7 @@ export class BackupComponent implements OnDestroy {
   ) {}
 
   onSubmit(){
-    var s = this.dd._post("backup", this.entityName).subscribe({
+    var s = this.dd._post("backup", this.entity_name).subscribe({
       next: () => {
         this.snackBar.open("Backup realizado correctamente", "X");       
       },

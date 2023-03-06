@@ -1,9 +1,9 @@
 import { arrayColumn } from "./array-column";
 import { arrayUnique } from "./array-unique";
 
-export function arrayUniqueColumn(array: any[], fieldName:string){
+export function arrayUniqueColumn(array: any[], field_name:string){
   return arrayUnique(
-    arrayColumn(array, fieldName).filter(function (el) { return el != null; })
+    arrayColumn(array, field_name).filter(function (el) { return el != null; })
   );
 }
 

@@ -12,7 +12,7 @@ import { first } from 'rxjs/operators';
 })
 export class LabelComponent implements OnChanges {
   
-  @Input() entityName!: string;
+  @Input() entity_name!: string;
   @Input() id?: string;
   label?: any;
 
@@ -24,7 +24,7 @@ export class LabelComponent implements OnChanges {
     if( changes['id'] && changes['id'].previousValue != changes['id'].currentValue ) {
       if(!changes['id'].currentValue) this.label = null;
       else {
-        this.dd.post("label_get",this.entityName, this.id).pipe(first()).subscribe(
+        this.dd.post("label_get",this.entity_name, this.id).pipe(first()).subscribe(
           (row:any) => {this.label = row["label"];}
         )
       }

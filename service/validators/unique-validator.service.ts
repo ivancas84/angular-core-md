@@ -11,8 +11,8 @@ export class UniqueValidator implements AsyncValidator {
    * Debe reimplementarse para asignar valor por defecto a los atributos
    * O debe crearse una clase en vez de un servicio
    */
-  fieldName!: string;
-  entityName!: string;
+  field_name!: string;
+  entity_name!: string;
   idName!: string; //nombre del identificador utilizado para el 
 
   constructor(
@@ -22,11 +22,11 @@ export class UniqueValidator implements AsyncValidator {
   validate(control: FormControl): Observable<ValidationErrors | null> {
     var display: Display = new Display;
     if(!control.value) return of(null);
-    display.setCondition([this.fieldName, "=", control.value]);
+    display.setCondition([this.field_name, "=", control.value]);
 
     return timer(1000).pipe(
       mergeMap(()=> {
-        return this.dd.id(this.entityName, display).pipe(
+        return this.dd.id(this.entity_name, display).pipe(
           map(
             id => {
               return (id && (id != control.parent!.get(this.idName)!.value)) ? { notUnique: id } : null

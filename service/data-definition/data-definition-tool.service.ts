@@ -21,7 +21,7 @@ class EntityFieldsOrganize{
   /**
    * entidad principal
    */
-  entityName!: string 
+  entity_name!: string 
 
   tree: { [index: string]: string[] } = {}
 
@@ -43,14 +43,14 @@ class EntityFieldsOrganize{
   fields!:string[]
 
   /**
-   * Relaciones de entityName
+   * Relaciones de entity_name
    */
   relations!: { [index: string]: any }
 
   fieldsIdOrder:string[] = [] //orden de consulta de fields id
 
-  constructor(entityName: string, fields: string[]) {
-    this.entityName = entityName;
+  constructor(entity_name: string, fields: string[]) {
+    this.entity_name = entity_name;
     this.fields = fields;
   }
 
@@ -81,8 +81,8 @@ class EntityFieldsOrganize{
       if(!this.relQuery[fieldId].includes(field)) this.relQuery[fieldId].push(field)
 
       var parentId:string = this.relations[fieldId]["parent_id"];
-      var fieldName:string = this.relations[fieldId]["field_name"];
-      var fkName:string = (parentId) ? parentId+"-"+fieldName : fieldName;
+      var field_name:string = this.relations[fieldId]["field_name"];
+      var fkName:string = (parentId) ? parentId+"-"+field_name : field_name;
       if(!this.fields.includes(fkName)) this.fields.push(fkName)
     } else {
       this.entityFields.push(this.fields[index])
@@ -122,18 +122,18 @@ export class DataDefinitionToolService extends DataDefinitionService{
    * Consulta de campos de una entidad y sus relaciones
    * Solo pueden consultarse los campos descriptos en el modelo
    */
-  public entityFieldsGetAll({ entityName, ids, fields, prefix = "" }: { entityName: string; ids: string[]; fields: string[]; prefix?:string; }): Observable<any[]>{
-    var efo: EntityFieldsOrganize = new EntityFieldsOrganize(entityName, fields)
+  public entityFieldsGetAll({ entity_name, ids, fields, prefix = "" }: { entity_name: string; ids: string[]; fields: string[]; prefix?:string; }): Observable<any[]>{
+    var efo: EntityFieldsOrganize = new EntityFieldsOrganize(entity_name, fields)
     var response: {[index:string]:any}[] = []
 
-    efo.setRelations(this.session.getItem("relations")[entityName]);
-    efo.setTree(this.session.getItem("tree")[entityName]);
+    efo.setRelations(this.session.getItem("relations")[entity_name]);
+    efo.setTree(this.session.getItem("tree")[entity_name]);
     // efo.organize(this.tree)
     efo.organizeRelQuery(0)
     efo.organizeOrder(efo.tree)
     efo.setPrefix(prefix)
 
-    return this.getAll(entityName, ids).pipe(
+    return this.getAll(entity_name, ids).pipe(
       map(
         data => {
           for(var i = 0; i < data.length; i++) {
@@ -150,35 +150,35 @@ export class DataDefinitionToolService extends DataDefinitionService{
     )
   }
 
-  public entityFieldsMergeAll({ data, entityName, fields, fieldNameData, fieldNameResponse, prefix = "" }: { 
+  public entityFieldsMergeAll({ data, entity_name, fields, field_nameData, field_nameResponse, prefix = "" }: { 
     data: { [index: string]: any; }[]; 
-    entityName: string; 
+    entity_name: string; 
     fields: string[]; 
-    fieldNameData: string; 
-    fieldNameResponse: string; 
+    field_nameData: string; 
+    field_nameResponse: string; 
     prefix?:string ; 
    }, 
   ): Observable<{ [index: string]: any }[]>{
         /**
-         * Similar a getMergeAll pero utiliza un "fieldName", en vez del "id" para realizar la consulta
+         * Similar a getMergeAll pero utiliza un "field_name", en vez del "id" para realizar la consulta
          */
         if(!data.length) return of([]);
       
-        if(!fields.hasOwnProperty(fieldNameResponse)) fields.push(fieldNameResponse)
+        if(!fields.hasOwnProperty(field_nameResponse)) fields.push(field_nameResponse)
 
-        var ids = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; });
+        var ids = arrayColumn(data, field_nameData).filter(function (el) { return el != null; });
         
         for(var i = 0; i < data.length; i++) {
           for(var j = 0; j < fields.length; j++) data[i][prefix+fields[j]] = null; //inicializar en null
         }
         
-        return this.entityFieldsGetAll({entityName,ids,fields,prefix}).pipe(
+        return this.entityFieldsGetAll({entity_name,ids,fields,prefix}).pipe(
           map(
             response => {
               if(!response.length) return data;
               for(var i = 0; i < data.length; i++){
                 for(var j = 0; j < response.length; j++){
-                  if(data[i][fieldNameData] == response[j][prefix+fieldNameResponse]) {
+                  if(data[i][field_nameData] == response[j][prefix+field_nameResponse]) {
                     for(var k = 0; k < fields.length; k++) data[i][prefix+fields[k]] = response[j][prefix+fields[k]];
                     break;
                   }
@@ -212,7 +212,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
   }
 
   /** 
-   * Consultar datos de "entityName" utilizando "data[fkName]" como ids
+   * Consultar datos de "entity_name" utilizando "data[fkName]" como ids
    * A cada campo consultado asignar el prefijo "fieldId"
    * Mergear el resultado con "data"
    */
@@ -223,16 +223,16 @@ export class DataDefinitionToolService extends DataDefinitionService{
   ): Observable<{[x:string]:any}[]>{
       if(!response.length) return of(response);
 
-      var entityName:string = efo.relations[fieldId]["entity_name"];
+      var entity_name:string = efo.relations[fieldId]["entity_name"];
       var parentId:string = efo.relations[fieldId]["parent_id"];
-      var fieldName:string = efo.relations[fieldId]["field_name"];
-      var fkName:string = (parentId) ? efo.prefix+parentId+"-"+fieldName : efo.prefix+fieldName;
+      var field_name:string = efo.relations[fieldId]["field_name"];
+      var fkName:string = (parentId) ? efo.prefix+parentId+"-"+field_name : efo.prefix+field_name;
 
       var ids = arrayUnique(
         arrayColumn(response, fkName).filter(function (el) { return el != null; })
       );
 
-      return this.getAll(entityName, ids).pipe(
+      return this.getAll(entity_name, ids).pipe(
         map(
           data => {
             if(!data.length) return response;
@@ -254,23 +254,23 @@ export class DataDefinitionToolService extends DataDefinitionService{
       );
   }
 
-  public entityFieldsGet({entityName, id, fields, prefix = ""}: {
-    entityName: string,
+  public entityFieldsGet({entity_name, id, fields, prefix = ""}: {
+    entity_name: string,
     id: string,
     fields: string[],
     prefix?: string
   }):  Observable<{ [index: string]: any }>{
 
-    var efo: EntityFieldsOrganize = new EntityFieldsOrganize(entityName, fields)
+    var efo: EntityFieldsOrganize = new EntityFieldsOrganize(entity_name, fields)
     var response: {[index:string]:any} = {}
     
-    efo.setRelations(this.session.getItem("relations")[entityName]);
-    efo.setTree(this.session.getItem("tree")[entityName]);
+    efo.setRelations(this.session.getItem("relations")[entity_name]);
+    efo.setTree(this.session.getItem("tree")[entity_name]);
     efo.organizeRelQuery(0)
     efo.organizeOrder(efo.tree)
     efo.setPrefix(prefix)
 
-    return this.get(entityName, id).pipe(
+    return this.get(entity_name, id).pipe(
       map(
         data => {
           //inicializar campos de relaciones en null
@@ -315,7 +315,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
   }
 
   /** 
-   * Consultar datos de "entityName" utilizando "response[fkName]" como ids
+   * Consultar datos de "entity_name" utilizando "response[fkName]" como ids
    * A cada campo consultado asignar el prefijo "fieldId"
    * Mergear el resultado con "data"
    */
@@ -324,14 +324,14 @@ export class DataDefinitionToolService extends DataDefinitionService{
     efo: EntityFieldsOrganize,
     response: { [index: string]: any },
   ): Observable<{[x:string]:any}>{
-    var entityName:string = efo.relations[fieldId]["entity_name"];
+    var entity_name:string = efo.relations[fieldId]["entity_name"];
     var parentId:string = efo.relations[fieldId]["parent_id"];
-    var fieldName:string = efo.relations[fieldId]["field_name"];
-    var fkName:string = (parentId) ? efo.prefix+parentId+"-"+fieldName : efo.prefix+fieldName;
+    var field_name:string = efo.relations[fieldId]["field_name"];
+    var fkName:string = (parentId) ? efo.prefix+parentId+"-"+field_name : efo.prefix+field_name;
 
     var id = response[fkName]
     if(!id) return of(response)
-    return this.get(entityName, id).pipe(
+    return this.get(entity_name, id).pipe(
       map(
         data => {
           if(response[fkName] == data["id"]) {
@@ -348,13 +348,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
   }
 
 
-  public getMergeAll({ data, entityName, fields, fkName }: {
+  public getMergeAll({ data, entity_name, fields, fkName }: {
     data: { [index: string]: any; }[]; 
-    entityName: string; 
+    entity_name: string; 
     fields: { [index: string]: any; }; /**
      * Objeto para filtrar los campos.
      *
-     * Ciertos campos de entityName tienen el mismo nombre que la relacion de
+     * Ciertos campos de entity_name tienen el mismo nombre que la relacion de
      * origen, a partir del parametro fields, se puede asignar un alias.
      * Debe tenerse el cuidado de que para data se utilice un alias diferente
      * para cada campo.
@@ -369,7 +369,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * Consulta de relaciones directas.
      * Define un array de identificadores "ids" a partir de los parametros 
      * "data[fkName]".
-     * Consulta todos los campos del parametro "entityName" utilizando "ids" 
+     * Consulta todos los campos del parametro "entity_name" utilizando "ids" 
      * para obtener "response".
      * Recorre "data" y "response", compara "data[i][fkName]" con 
      * "response[j][id]" y realiza una asociacion.
@@ -382,7 +382,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * avanzados, utilizar selectConnection o procesar el resultado.
      * No se recomienda utilizar selectConnection porque no usa storage.
      */
-    if(!fkName) fkName = entityName
+    if(!fkName) fkName = entity_name
     if(!data.length) return of([]);
     var ids = arrayUnique(
       arrayColumn(data, fkName).filter(function (el) { return el != null; })
@@ -396,7 +396,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     
     if(!ids.length) return of(data);
     
-    return this.getAll(entityName, ids).pipe(
+    return this.getAll(entity_name, ids).pipe(
       map(
         response => {
           if(!response.length) return data;
@@ -418,13 +418,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  getMergeAll2({ data, entityName, fields, fkName }: {
+  getMergeAll2({ data, entity_name, fields, fkName }: {
     data: { [index: string]: any; }[]; 
-    entityName: string; 
+    entity_name: string; 
     fields: { [index: string]: any; }; /**
      * Objeto para filtrar los campos.
      *
-     * Ciertos campos de entityName tienen el mismo nombre que la relacion de
+     * Ciertos campos de entity_name tienen el mismo nombre que la relacion de
      * origen, a partir del parametro fields, se puede asignar un alias.
      * Debe tenerse el cuidado de que para data se utilice un alias diferente
      * para cada campo.
@@ -450,7 +450,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
     
     if(!ids.length) return of(data);
     
-    return this.getAll(entityName, ids).pipe(
+    return this.getAll(entity_name, ids).pipe(
       map(
         response => {
           if(!response.length) return data;
@@ -473,15 +473,15 @@ export class DataDefinitionToolService extends DataDefinitionService{
   }
 
   mergeAll(
-{ data, entityName, fields, fkName, fieldName }: { 
+{ data, entity_name, fields, fkName, field_name }: { 
     data: { [index: string]: any; }[]; 
-    entityName: string; 
+    entity_name: string; 
     fields: { [index: string]: any; }; 
     fkName: string; 
-    fieldName: string; }, 
+    field_name: string; }, 
   ): Observable<{ [index: string]: any }[]>{
     /**
-     * Similar a getMergeAll pero utiliza un "fieldName", en vez del "id" para realizar la consulta
+     * Similar a getMergeAll pero utiliza un "field_name", en vez del "id" para realizar la consulta
      */
     if(!data.length) return of([]);
 
@@ -497,14 +497,14 @@ export class DataDefinitionToolService extends DataDefinitionService{
     
     var display = new Display();
     display.setSize(0);
-    display.setCondition([fieldName,"=",ids]);
-    return this.all(entityName, display).pipe(
+    display.setCondition([field_name,"=",ids]);
+    return this.all(entity_name, display).pipe(
       map(
         response => {
           if(!response.length) return data;
           for(var i = 0; i < data.length; i++){
             for(var j = 0; j < response.length; j++){
-              if(data[i][fkName] == response[j][fieldName]) {
+              if(data[i][fkName] == response[j][field_name]) {
                 for(var f in fields){
                   if(fields.hasOwnProperty(f))                    
                     data[i][f] = response[j][f];
@@ -519,27 +519,27 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
   
-  postMergeAll({ data, method, entityName, fields, fieldNameData, fieldNameResponse }: { 
+  postMergeAll({ data, method, entity_name, fields, field_nameData, field_nameResponse }: { 
     data: { [index: string]: any; }[]; 
     method: string; 
-    entityName: string; 
+    entity_name: string; 
     fields: { [index: string]: any; }; 
-    fieldNameData?: string; 
-    fieldNameResponse?: string; 
+    field_nameData?: string; 
+    field_nameResponse?: string; 
   }): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta de relaciones directas para metodos no habituales
      * Procedimiento similar a getMergeAll
-     * Define un array de identificadores "ids" a partir de los parametros "data[fieldNameData]"
-     * Consulta todos los campos del parametro "entityName" utilizando "ids" y parametro "method" para obtener "response"
-     * Recorre "data" y "response", compara "data[i][fieldNameData]" con "response[j][fieldNameResponse]" y realiza una asociacion
+     * Define un array de identificadores "ids" a partir de los parametros "data[field_nameData]"
+     * Consulta todos los campos del parametro "entity_name" utilizando "ids" y parametro "method" para obtener "response"
+     * Recorre "data" y "response", compara "data[i][field_nameData]" con "response[j][field_nameResponse]" y realiza una asociacion
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      * En la medida de lo posible evitar el uso de este metodo ya que no utiliza storage
      */
 
-    if(!fieldNameData) fieldNameData = entityName;
-    if(!fieldNameResponse) fieldNameResponse = fieldNameData;
+    if(!field_nameData) field_nameData = entity_name;
+    if(!field_nameResponse) field_nameResponse = field_nameData;
 
     if(!data.length) return of([]);
     data.forEach(element=>{
@@ -550,19 +550,19 @@ export class DataDefinitionToolService extends DataDefinitionService{
       }
     })
       
-    var ids_ = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; })
+    var ids_ = arrayColumn(data, field_nameData).filter(function (el) { return el != null; })
 
     var ids = arrayUnique(ids_);
 
     if(!ids.length) return of(data);
 
-    return this._post(method,entityName,ids).pipe(
+    return this._post(method,entity_name,ids).pipe(
       map(
         response => {
           if(!response.length) return data;
           for(var i = 0; i < data.length; i++){
             for(var j = 0; j < response.length; j++){
-              if(data[i][fieldNameData!] == response[j][fieldNameResponse!]){
+              if(data[i][field_nameData!] == response[j][field_nameResponse!]){
                 for(var f in fields){
                   if(fields.hasOwnProperty(f)) data[i][f] = response[j][fields[f]];
                 }
@@ -576,26 +576,26 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  postMergeAll_({ data, method, entityName, fields, fieldNameData, fieldNameResponse }: { 
+  postMergeAll_({ data, method, entity_name, fields, field_nameData, field_nameResponse }: { 
     data: { [index: string]: any; }[]; 
     method: string; 
-    entityName: string; 
+    entity_name: string; 
     fields: string[]; 
-    fieldNameData?: string; 
-    fieldNameResponse?: string; 
+    field_nameData?: string; 
+    field_nameResponse?: string; 
   }): Observable<{ [index: string]: any }[]>{
     var fieldsObj: {[index:string]:any} = {}
     for(var i = 0; i < fields.length; i++) fieldsObj[fields[i]] = fields[i]
-    return this.postMergeAll({data,method,fields:fieldsObj,entityName,fieldNameData,fieldNameResponse})
+    return this.postMergeAll({data,method,fields:fieldsObj,entity_name,field_nameData,field_nameResponse})
   }
 
   postMergeAll2(
     data: { [index: string]: any }[], 
     method:string,
-    entityName: string, 
+    entity_name: string, 
     fields: { [index: string]: any },
-    fieldNameData: string,
-    fieldNameResponse: string, 
+    field_nameData: string,
+    field_nameResponse: string, 
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Variante de postMergeAll que espera recibir un conjunto reducido 
@@ -610,17 +610,17 @@ export class DataDefinitionToolService extends DataDefinitionService{
       }
     })
       
-    var ids = arrayColumn(data, fieldNameData).filter(function (el) { return el != null; })
+    var ids = arrayColumn(data, field_nameData).filter(function (el) { return el != null; })
 
     if(!ids.length) return of(data);
 
-    return this._post(method,entityName,ids).pipe(
+    return this._post(method,entity_name,ids).pipe(
       map(
         response => {
           if(!response.length) return data;
           for(var j = 0; j < response.length; j++){
             for(var i = 0; i < data.length; i++){
-              if(data[i][fieldNameData] == response[j][fieldNameResponse]){
+              if(data[i][field_nameData] == response[j][field_nameResponse]){
                 for(var f in fields){
                   if(fields.hasOwnProperty(f)) data[i][f] = response[j][fields[f]];
                 }
@@ -636,15 +636,15 @@ export class DataDefinitionToolService extends DataDefinitionService{
   
   getMergeAllUm(
     data: { [index: string]: any }[], 
-    fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
-    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
-    entityName: string, 
+    field_name: string = "id", //se obtiene el conjunto de identificadores data[field_name], habitualmente field_name es id
+    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entity_name) 
+    entity_name: string, 
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta relaciones um de un conjunto de datos
      * Define un conjunto de identificadores "ids", filtrando del parametro 
-     * "data" el campo "fieldName".
-     * Consulta todos los campos del parametro "entityName" utilizando el pa-
+     * "data" el campo "field_name".
+     * Consulta todos los campos del parametro "entity_name" utilizando el pa-
      * rametro "fkName" "(fkName = ids)"
      * Recorre "data" y "response", compara "data[i][fkName]" con 
      * "response[j][id]" y realiza un push de cada coincidencia.
@@ -653,20 +653,20 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * almacena todo el cada resultado como elemento de un array
      */
     if(!data.length) return of([]);
-    var ids = arrayColumn(data, fieldName);
+    var ids = arrayColumn(data, field_name);
     if(!ids.length) return of(data);
     var display = new Display();
     display.setSize(0);
     display.addParam(fkName,ids);
-    return this.all(entityName, display).pipe(
+    return this.all(entity_name, display).pipe(
       map(
         response => {
-          for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+          for(var i = 0; i < data.length; i++) data[i]["_"+entity_name] = []; //inicializar
           if(!response.length) return data;
           for(var j = 0; j < response.length; j++){
             for(var i = 0; i < data.length; i++) { 
-              if(response[j][fkName] == data[i][fieldName]) 
-                data[i]["_"+entityName].push(response[j]);
+              if(response[j][fkName] == data[i][field_name]) 
+                data[i]["_"+entity_name].push(response[j]);
             }
           }
           return data;
@@ -678,16 +678,16 @@ export class DataDefinitionToolService extends DataDefinitionService{
   postMergeAllUm(
     data: { [index: string]: any }[], 
     method:string,
-    entityName: string, 
+    entity_name: string, 
     fields: { [index: string]: any },
-    fieldNameData?: string,
-    fieldNameResponse?: string, 
+    field_nameData?: string,
+    field_nameResponse?: string, 
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta relaciones um de un conjunto de datos
      * Define un conjunto de identificadores "ids", filtrando del parametro 
-     * "data" el campo "fieldName".
-     * Consulta todos los campos del parametro "entityName" utilizando el pa-
+     * "data" el campo "field_name".
+     * Consulta todos los campos del parametro "entity_name" utilizando el pa-
      * rametro "fkName" "(fkName = ids)"
      * Recorre "data" y "response", compara "data[i][fkName]" con 
      * "response[j][id]" y realiza un push de cada coincidencia.
@@ -696,26 +696,26 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * almacena todo el cada resultado como elemento de un array
      */
     
-     if(!fieldNameData) fieldNameData = entityName;
-     if(!fieldNameResponse) fieldNameResponse = fieldNameData;
+     if(!field_nameData) field_nameData = entity_name;
+     if(!field_nameResponse) field_nameResponse = field_nameData;
      if(!data.length) return of([]);
      data.forEach(element=>{
-       element["_"+fieldNameData] = null; //inicializar en null
+       element["_"+field_nameData] = null; //inicializar en null
      })
      
-    var ids_ = arrayColumn(data, fieldNameData);
+    var ids_ = arrayColumn(data, field_nameData);
     var ids = arrayUnique(ids_);
     if(!ids.length) return of(data);
 
-    return this._post(method,entityName,ids).pipe(
+    return this._post(method,entity_name,ids).pipe(
       map(
         response => {
-          // for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+          // for(var i = 0; i < data.length; i++) data[i]["_"+entity_name] = []; //inicializar
           // if(!response.length) return data;
           // for(var j = 0; j < response.length; j++){
           //   for(var i = 0; i < data.length; i++) { 
-          //     if(response[j][fkName] == data[i][fieldName]) 
-          //       data[i]["_"+entityName].push(response[j]);
+          //     if(response[j][fkName] == data[i][field_name]) 
+          //       data[i]["_"+entity_name].push(response[j]);
           //   }
           // }
           return data;
@@ -727,21 +727,21 @@ export class DataDefinitionToolService extends DataDefinitionService{
   postMergeUm(
     data: { [index: string]: any }[], 
     fields: { [index: string]: string }, //fields a consultar (no deben ser funciones de agregacion)
-    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entityName) 
-    entityName: string,
-    fieldName: string = "id", //se obtiene el conjunto de identificadores data[fieldName], habitualmente fieldName es id
+    fkName: string, //se asocia el conjunto de identificadores a fkName (fk de entity_name) 
+    entity_name: string,
+    field_name: string = "id", //se obtiene el conjunto de identificadores data[field_name], habitualmente field_name es id
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta avanzada de relaciones um de un conjunto de datos
      * 
      * Define un conjunto de identificadores "ids", 
-     * filtrando del parametro "data" el campo "fieldName"
+     * filtrando del parametro "data" el campo "field_name"
      * 
-     * Consulta los campos "fields" de la entidad "entityName"
+     * Consulta los campos "fields" de la entidad "entity_name"
      * filtrando por "fkName" "(fkName = ids)"
      * 
      * Recorre "data" y "response", 
-     * compara "data[i][fkName]" con "response[j][fieldName]" 
+     * compara "data[i][fkName]" con "response[j][field_name]" 
      * y realiza un push de cada coincidencia
      * los elementos coincidentes se almacenan en data[i]["_"+fkName]
      * 
@@ -757,25 +757,25 @@ export class DataDefinitionToolService extends DataDefinitionService{
      */
     if(!data.length) return of([]);
 
-    for(var i = 0; i < data.length; i++) data[i]["_"+entityName] = []; //inicializar
+    for(var i = 0; i < data.length; i++) data[i]["_"+entity_name] = []; //inicializar
 
-    var ids = arrayColumn(data, fieldName);
+    var ids = arrayColumn(data, field_name);
     if(!ids.length) return of(data);
 
-    fields[fieldName]=fieldName; //siempre debe existir el fieldName para comparar el resultado
+    fields[field_name]=field_name; //siempre debe existir el field_name para comparar el resultado
 
     var display = new Display();
     display.setSize(0);
     display.setFields(fields);
     display.addParam(fkName,ids);
-    return this._post("advanced",entityName, display).pipe(
+    return this._post("advanced",entity_name, display).pipe(
       map(
         response => {
           if(!response.length) return data;
           for(var j = 0; j < response.length; j++){
             for(var i = 0; i < data.length; i++) { 
-              if(response[j][fkName] == data[i][fieldName]) 
-                data[i]["_"+entityName].push(response[j]);
+              if(response[j][fkName] == data[i][field_name]) 
+                data[i]["_"+entity_name].push(response[j]);
             }
           }
           return data;
@@ -784,21 +784,21 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  mergeGet({ data, entityName, fields, fkName = "id" }: {
+  mergeGet({ data, entity_name, fields, fkName = "id" }: {
     data: { [index: string]: any; }; 
-    entityName: string; 
+    entity_name: string; 
     fields: { [index: string]: any; }; 
     fkName?: string;
   }): Observable<{ [index: string]: any }>{
     /**
-     * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
+     * Consulta un solo elemento del parametro "entity_name" utilizando los parametros "data[fkName]" para obtener "response" 
      * Efectua una asociacion 
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      */
-    if(!fkName) fkName = entityName;
+    if(!fkName) fkName = entity_name;
     if(!isEmptyObject(data)) for(var f in fields) data[f] = null;
-    return this.get(entityName, data[fkName]).pipe(
+    return this.get(entity_name, data[fkName]).pipe(
       map(
         response => {
           if(!response) return data;
@@ -811,26 +811,26 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  mergeGet_({ data, entityName, fields, fkName = "id" }: {
+  mergeGet_({ data, entity_name, fields, fkName = "id" }: {
     data: { [index: string]: any; }; 
-    entityName: string; 
+    entity_name: string; 
     fields: string[]; 
     fkName?: string;
   }): Observable<{ [index: string]: any }>{
     /**
-     * Consulta un solo elemento del parametro "entityName" utilizando los parametros "data[fkName]" para obtener "response" 
+     * Consulta un solo elemento del parametro "entity_name" utilizando los parametros "data[fkName]" para obtener "response" 
      * Efectua una asociacion 
      * La asociacion se realiza mediante parametro "fields", objeto compuesto por "{nombre_asociacion:nombre_field}"
      * Si el "nombre_field" es un array, realiza una concatenacion de los campos utilizando parametro "join"
      */
     var fieldsObj: {[index:string]:string} = {}
     for(var i =0; i < fields.length; i++) fieldsObj[fields[i]] = fields[i]
-    return this.mergeGet({data,entityName,fields:fieldsObj,fkName})
+    return this.mergeGet({data,entity_name,fields:fieldsObj,fkName})
   }
 
-  mergeObjectGet({data,entityName,fields,id,fkName,idResponse}:{
+  mergeObjectGet({data,entity_name,fields,id,fkName,idResponse}:{
     data: { [index: string]: any },
-	  entityName: string, 
+	  entity_name: string, 
     fields: { [index: string]: any },
     id: string,
 	  fkName?: string, 
@@ -841,10 +841,10 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * data["alumno"] = {id:"value",activo:"value"} 
      * data["persona"] = {id:"value",activo:"value"}
      */
-    if(!fkName) fkName = entityName;
+    if(!fkName) fkName = entity_name;
     if(!idResponse) idResponse = fkName;
     //ej persona _u domicilio 
-    //-> entityName = domicilio, fkName = domicilio, idResponse = domicilio
+    //-> entity_name = domicilio, fkName = domicilio, idResponse = domicilio
 
     data[idResponse] = {};
     if(!isEmptyObject(data)) {
@@ -853,7 +853,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
     if(!data[id][fkName]) return of(data);
  
-    return this.get(entityName, data[id][fkName]).pipe(
+    return this.get(entity_name, data[id][fkName]).pipe(
       map(
         response => {
           if(!response) return data;
@@ -866,9 +866,9 @@ export class DataDefinitionToolService extends DataDefinitionService{
     );  
   }
 
-  mergeObjectGet_({data, entityName, fields, id, fkName, idResponse}: {
+  mergeObjectGet_({data, entity_name, fields, id, fkName, idResponse}: {
     data: { [index: string]: any },
-	  entityName: string, 
+	  entity_name: string, 
     fields: string[],
     id: string,
 	  fkName?: string, 
@@ -876,7 +876,7 @@ export class DataDefinitionToolService extends DataDefinitionService{
   ): Observable<{ [index: string]: { [index: string]: any } }>{
     var fieldsObj: {[index:string]:any} = {}
     for(var i = 0; i < fields.length; i++) fieldsObj[fields[i]] = fields[i]
-    return this.mergeObjectGet({data, entityName, fields:fieldsObj, id, fkName, idResponse})
+    return this.mergeObjectGet({data, entity_name, fields:fieldsObj, id, fkName, idResponse})
   }
 
   selectConnection(
@@ -891,20 +891,20 @@ export class DataDefinitionToolService extends DataDefinitionService{
      * @example
      *   {sede:"sed-nombre"}
      */
-    entityName: string, 
+    entity_name: string, 
     fkName: string,
-    fieldName: string = "id", 
+    field_name: string = "id", 
   ): Observable<{ [index: string]: any }[]>{
     /**
-     * @todo faltaria agregar un fieldName y no utilizar siempre el id
+     * @todo faltaria agregar un field_name y no utilizar siempre el id
      * Define un conjunto de identificadores "ids".
      * Para definir "ids", recorre el parametro "data y define un array fil-
      * trando el parametro "fkName".
      * Realiza una consulta avanzada de la entidad identificada con el para-
-     * metro "entityName".
+     * metro "entity_name".
      * Los campos de la consulta avanzada se definen en el parametro "fields".
      * Recorre "data" y "response", compara "data[i][fkName]" con 
-     * "response[j][fieldName]" y realiza una asociacion.
+     * "response[j][field_name]" y realiza una asociacion.
      * La asociacion se realiza mediante parametro "fields", objeto compuesto 
      * por "{nombre_asociacion:nombre_field}"
      * En la medida de lo posible evitar el uso de este metodo ya que no alma-
@@ -921,16 +921,16 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
     var display = new Display();
     var fields_ = fastClone(fields); //auxiliar de fields para incluir el id
-    if(!fields_.hasOwnProperty(fieldName)) fields_[fieldName]=fieldName; //siempre debe existir el id para comparar el resultado
+    if(!fields_.hasOwnProperty(field_name)) fields_[field_name]=field_name; //siempre debe existir el id para comparar el resultado
     display.setFields(fields_);
-    display.addCondition([fieldName,"=",ids]);
-    return this._post("advanced",entityName, display).pipe(
+    display.addCondition([field_name,"=",ids]);
+    return this._post("advanced",entity_name, display).pipe(
       map(
         response => {
           if(!response) return data;
           for(var i = 0; i < response.length; i++){
             for(var j = 0; j < data.length; j++){
-              if(data[j][fkName] == response[i][fieldName]) {
+              if(data[j][fkName] == response[i][field_name]) {
                 for(var f in fields){
                   if(fields.hasOwnProperty(f))                    
                     data[j][f] = response[i][f];
@@ -947,19 +947,19 @@ export class DataDefinitionToolService extends DataDefinitionService{
 
   selectConnectionGroup(
     data: { [index: string]: any }[], 
-    fieldName: string, 
-    entityName: string, 
+    field_name: string, 
+    entity_name: string, 
     fields: { [index: string]: string }, //utilizar solo funciones de agregacion
   ): Observable<{ [index: string]: any }[]>{
     /**
      * Consulta avanzada de relaciones con agrupamiento
      * Define "ids" filtra el campo "id" del parametro "data"
      * Define "display.fields", asigna el parametro fields
-     * Define "display.group", asigna el parametro fieldName
-     * Define "display.condition", utiliza el parametro "fieldName" y el array ids
-     * Consulta entidad indicada en parametro "entityName" para obtener "response"
+     * Define "display.group", asigna el parametro field_name
+     * Define "display.condition", utiliza el parametro "field_name" y el array ids
+     * Consulta entidad indicada en parametro "entity_name" para obtener "response"
      * Realiza asociacion entre "data" y "response"
-     * Si data[i]["id"] == response[j][fieldName] almacena en data los campos indicados en parametro "fieldsResponse"
+     * Si data[i]["id"] == response[j][field_name] almacena en data los campos indicados en parametro "fieldsResponse"
      * "fieldsResponse" es un objeto de la forma {nombre_identificacion:nombre_field}
      * si "nombre_field" es un array realiza un join utilizando el parametro "join"
      * A diferencia de las consultas no avanzadas, se especifican los fields directamente en la consulta y se retornan dichos fields que seran asignados
@@ -974,13 +974,13 @@ export class DataDefinitionToolService extends DataDefinitionService{
       }
     }
     if(!ids.length) return of(data);
-    var d = new Display().setSize(0).setFields(fields).setGroup_([fieldName]).addCondition([fieldName,"=",ids]);
-    return this._post("select",entityName, d).pipe(
+    var d = new Display().setSize(0).setFields(fields).setGroup_([field_name]).addCondition([field_name,"=",ids]);
+    return this._post("select",entity_name, d).pipe(
       map(
         response => {
           for(var i = 0; i < data.length; i++){
             for(var j = 0; j < response.length; j++){
-              if(data[i]["id"] == response[j][fieldName]) {
+              if(data[i]["id"] == response[j][field_name]) {
                 for(var f in fields){
                   if(fields.hasOwnProperty(f)) data[i][f] = response[j][f];
                 }

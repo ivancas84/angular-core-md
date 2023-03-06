@@ -16,10 +16,10 @@ export class InputSearchGoComponent implements OnInit {
    * Componente principal para búsqueda y ruteo 
    */
 
-  @Input() entityName!: string;
+  @Input() entity_name!: string;
   @Input() label: string = "Buscar";
   @Input() route: string = emptyUrl(this.router.url);
-  @Input() fieldName: string = "id";
+  @Input() field_name: string = "id";
 
   //@Input() queryParamsKey: string = "id";
 
@@ -50,7 +50,7 @@ export class InputSearchGoComponent implements OnInit {
         if (typeof value == "string" ) return this._filter(value)
         else {          
           var qp: { [x: string]: any } = {}
-          qp[this.fieldName] = value.id
+          qp[this.field_name] = value.id
           this.router.navigate([this.route],{queryParams: qp});
           return of([])
         }
@@ -61,7 +61,7 @@ export class InputSearchGoComponent implements OnInit {
   private _filter(value: string): Observable<any> {
     if(value === "") return of([]);
     var display = new Display().setFields_(["id","label"]).addCondition(["label_search","=~",value]);
-    return this.dd.post("select",this.entityName, display);
+    return this.dd.post("select",this.entity_name, display);
   }
 
   

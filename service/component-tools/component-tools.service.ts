@@ -159,13 +159,13 @@ export class ComponentToolsService {
       })
     }
    */
-  persist(entityName: string, control: FormGroup, display$: BehaviorSubject<Display>): Observable<any> {
+  persist(entity_name: string, control: FormGroup, display$: BehaviorSubject<Display>): Observable<any> {
     if (!control.valid) {
       logValidationErrors(control)
       this.cancelSubmit(control)
       return of(null)
     } else {
-      return this.dd._post("persist", entityName, control.value).pipe(
+      return this.dd._post("persist", entity_name, control.value).pipe(
         map(
           response => {
             this.submittedDisplay(response,display$)
@@ -184,8 +184,8 @@ export class ComponentToolsService {
    * Inicializar filtered options
    * @example filteredOptions$ = this.formService.filteredOptionsAutocomplete()
    */
-   filteredOptionsAutocomplete({entityName, control, searchControl}: { 
-    entityName: string; 
+   filteredOptionsAutocomplete({entity_name, control, searchControl}: { 
+    entity_name: string; 
     control: AbstractControl; 
     searchControl: FormControl; 
   }): Observable<Array<{ [key: string]: any; }>>{
@@ -205,7 +205,7 @@ export class ComponentToolsService {
         if (typeof value == "string") {
           if(value === "") return of([]);
           var display = new Display().addCondition(["label","=~",value]);
-          return this.dd.post("label_all",entityName, display)
+          return this.dd.post("label_all",entity_name, display)
         }
         else {
           searchControl.disable();
@@ -226,8 +226,8 @@ export class ComponentToolsService {
    *   )
    * )
    */
-  labelAutocomplete({entityName, control, searchControl}: { 
-    entityName: string; 
+  labelAutocomplete({entity_name, control, searchControl}: { 
+    entity_name: string; 
     control: AbstractControl; 
     searchControl: FormControl; 
   }): Observable<any>{
@@ -243,9 +243,9 @@ export class ComponentToolsService {
           }
 
           //existe valor de control
-          return this.searchControlAutocompleteUpdate(entityName,value,searchControl).pipe(
+          return this.searchControlAutocompleteUpdate(entity_name,value,searchControl).pipe(
             switchMap(
-              value => this.dd.post("label_get",entityName, value).pipe(
+              value => this.dd.post("label_get",entity_name, value).pipe(
                 map(label => label["label"])
               )
             )
@@ -255,12 +255,12 @@ export class ComponentToolsService {
     );
   }
 
-  private searchControlAutocompleteUpdate(entityName: string, value:string, searchControl: FormControl, ){
+  private searchControlAutocompleteUpdate(entity_name: string, value:string, searchControl: FormControl, ){
     /** Existe valor de control, se debe actualizar searchControl*/
     if(value && (!searchControl.value
       || (typeof searchControl.value != "string" 
       && searchControl.value.id != value))){
-        return this.dd.get(entityName,value).pipe(
+        return this.dd.get(entity_name,value).pipe(
           map(
             row => {
               searchControl.setValue(row);
@@ -293,29 +293,29 @@ export class ComponentToolsService {
       )
   }
 
-  loadLength(entityName: string, display: Display): Observable<number> {
+  loadLength(entity_name: string, display: Display): Observable<number> {
       /**
        * Si no se desea procesar la longitud, retornar of(null)
        */
-      return this.dd.post("count", entityName, display)
+      return this.dd.post("count", entity_name, display)
   }
 
-  loadArrayData(entityName: string, display: Display, keys: string[]): Observable<any>{
-    return this.dd.post("ids", entityName, display).pipe(
+  loadArrayData(entity_name: string, display: Display, keys: string[]): Observable<any>{
+    return this.dd.post("ids", entity_name, display).pipe(
       switchMap(
-        ids => this.dd.entityFieldsGetAll({ entityName, ids, fields: keys })
+        ids => this.dd.entityFieldsGetAll({ entity_name, ids, fields: keys })
       )
     )
   }
 
-  loadLengthData(entityName: string, display: Display, keys: string[]):  Observable<any>{
+  loadLengthData(entity_name: string, display: Display, keys: string[]):  Observable<any>{
     var length = 0;
-    return this.loadLength(entityName, display).pipe(
+    return this.loadLength(entity_name, display).pipe(
       switchMap(
         _length => {
           length = _length
           if(!length) return of({length:0, data:[]})
-          return this.loadArrayData(entityName,display,keys).pipe(
+          return this.loadArrayData(entity_name,display,keys).pipe(
             map(
               data => {
                 return {length:length,data:data}

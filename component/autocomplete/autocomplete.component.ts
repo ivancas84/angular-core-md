@@ -9,7 +9,7 @@ import { map, Observable } from 'rxjs';
 })
 export class AutocompleteComponent implements OnInit {
 
-  @Input() entityName!: string;
+  @Input() entity_name!: string;
   @Input() title: string = "";
   @Input() control!: AbstractControl //control
 
@@ -25,13 +25,13 @@ export class AutocompleteComponent implements OnInit {
 
   ngOnInit(): void {
     this.filteredOptions$ = this.tools.filteredOptionsAutocomplete({
-      entityName:this.entityName,
+      entity_name:this.entity_name,
       control:this.control,
       searchControl:this.searchControl,
     })
  
     this.loadAutocomplete$ = this.tools.labelAutocomplete({
-      entityName:this.entityName,
+      entity_name:this.entity_name,
       control:this.control,
       searchControl:this.searchControl,
     }).pipe(

@@ -16,20 +16,20 @@ export class DdAsyncValidatorsService {
 
   constructor(protected dd: DataDefinitionService) {}
 
-  unique(fieldName: string, entityName: string, idName: string = "id"): AsyncValidatorFn {
+  unique(field_name: string, entity_name: string, idName: string = "id"): AsyncValidatorFn {
     /**
      * Verificar campo unico
-     * Se puede evitar el fieldName a traves de un metodo de busqueda
+     * Se puede evitar el field_name a traves de un metodo de busqueda
      * No se implementa de esta forma para reducir el procesamiento
      */
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       var display: Display = new Display;
       if(!control.value) return of(null);
-      display.setCondition([fieldName, "=", control.value]);
+      display.setCondition([field_name, "=", control.value]);
 
       return timer(1000).pipe(
         mergeMap(()=> {
-        return this.dd.id(entityName, display).pipe(
+        return this.dd.id(entity_name, display).pipe(
           map(
             id => {
               return (id && (id != control.parent!.get(idName)!.value)) ? { notUnique: id } : null
@@ -40,11 +40,11 @@ export class DdAsyncValidatorsService {
     };
   }
 
-  furtherError(entityName: string): AsyncValidatorFn {
+  furtherError(entity_name: string): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       return timer(1000).pipe(
         mergeMap(()=> {
-          return this.dd.post("further_error", entityName, control.value);
+          return this.dd.post("further_error", entity_name, control.value);
         }
       ))  
     }

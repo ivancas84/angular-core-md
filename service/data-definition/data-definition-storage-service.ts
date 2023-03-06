@@ -16,10 +16,10 @@ export class DataDefinitionStorageService {
     protected session: SessionStorageService
   ) { }
 
-  storage(entityName: string, row: { [index: string]: any }) {
-    var tree = this.session.getItem("tree")[entityName]
+  storage(entity_name: string, row: { [index: string]: any }) {
+    var tree = this.session.getItem("tree")[entity_name]
     this.recursive(row, tree)
-    this.local.setItem(entityName + row["id"], row);
+    this.local.setItem(entity_name + row["id"], row);
     return row;
   }
 
