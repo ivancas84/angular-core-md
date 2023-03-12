@@ -4,7 +4,7 @@ import { ComponentToolsService } from '@service/component-tools/component-tools.
 import { map, Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-autocomplete',
+  selector: 'core-autocomplete',
   templateUrl: './autocomplete.component.html'
 })
 export class AutocompleteComponent implements OnInit {
